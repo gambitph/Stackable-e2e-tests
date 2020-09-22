@@ -32,9 +32,11 @@ const blockList = [
 describe( 'New Page', () => {
 	it( 'should do something', () => {
 		cy.newPage()
-		const cardBlock = cy.addUgbBlockInInserterTextarea( 'card' )
-		cardBlock.openInspector( 'style' )
-		cardBlock.collapse( 'Block Title' )
-		cardBlock.collapse( 'Title' )
+		blockList.forEach( block => {
+			const cardBlock = cy.addUgbBlockInInserterTextarea( block )
+			cardBlock.openInspector( 'style' )
+			cardBlock.collapse( 'Block Title' )
+			cardBlock.collapse( 'Title' )
+		} )
 	} )
 } )
