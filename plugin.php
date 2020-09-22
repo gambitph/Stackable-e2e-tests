@@ -35,6 +35,32 @@ if ( isset( $_GET['setup'] ) ) {
 			do_action( 'wp_login', $user->user_login, $user );
 		}
 
+		// Reset all stackable settings.
+		update_option( 'stackable_editor_roles_content_only', [] );
+		update_option( 'stackable_global_colors', [] );
+		update_option( 'stackable_global_colors_palette_only', false );
+		update_option( 'stackable_global_content_selector', '' );
+		update_option( 'stackable_global_force_typography', false );
+		update_option( 'stackable_global_typography', [] );
+		update_option( 'stackable_global_typography_apply_to', '' );
+		update_option( 'stackable_help_tooltip_disabled', '1' );
+		update_option( 'stackable_icons_dont_show_fa_error', '' );
+		update_option( 'stackable_icons_fa_kit', '' );
+		update_option( 'stackable_icons_fa_version', '' );
+		update_option( 'stackable_load_v1_styles', '' );
+		update_option( 'stackable_show_pro_notices', '' );
+
+		// Get all pages in the site.
+		$all_pages = get_posts( array(
+			'post_type' => 'page',
+			'post_status' => 'any'
+		) );
+
+		// Remove all pages.
+		forEach( $all_pages as $pages ){
+			wp_delete_post( $pages->ID );
+		}
+
 		die();
 	});
 }
