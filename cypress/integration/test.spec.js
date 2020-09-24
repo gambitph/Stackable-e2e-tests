@@ -33,10 +33,62 @@ describe( 'New Page', () => {
 	it( 'should do something', () => {
 		cy.newPage()
 		blockList.forEach( block => {
-			const cardBlock = cy.addUgbBlockInInserterTextarea( block )
-			cardBlock.openInspector( 'style' )
-			cardBlock.collapse( 'Block Title' )
-			cardBlock.collapse( 'Title' )
+			const addedBlock = cy.addUgbBlockInInserterTextarea( block )
+			addedBlock.openInspector( 'style' )
+			addedBlock.adjustOptions( {
+				general: {
+					closeAdjacentOnOpen: true,
+					openAtTheStart: true,
+					reverseArrow: true,
+					borderRadius: 35,
+					shadowOutline: 2,
+					align: 'left',
+				},
+			} )
+
+			addedBlock.adjustOptions( {
+				columnBackground: {
+					backgroundType: 'gradient',
+					backgroundColor1: '1', // Selecting the first entry in the color picker.
+					backgroundColor2: '#eaeaea', // Picking a custon color.
+					gradientSettings: {
+						gradientDirection: 110,
+						color1Location: 55,
+						color2Location: 43,
+						backgroundBlendMode: 'normal',
+					},
+				},
+			} )
+
+			addedBlock.adjustOptions( {
+				title: {
+					typography: {
+						fontFamily: 'Sans-serif',
+						fontSize: 48,
+						fontWeight: '900',
+						fontTransform: 'uppercase',
+						lineHeight: 4.7,
+						letterSpacing: 4.3,
+					},
+					fontSize: 55,
+					htmlTag: 'h1',
+					titleColor: '#a3a3a3',
+				},
+			} )
+
+			addedBlock.adjustOptions( {
+				arrow: {
+					size: 31,
+					color: '#643eee',
+				},
+			} )
+
+			addedBlock.adjustOptions( {
+				spacing: {
+					padding: 126,
+					title: 43,
+				},
+			} )
 		} )
 	} )
 } )

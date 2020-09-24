@@ -37,7 +37,7 @@ if ( isset( $_GET['setup'] ) ) {
 
 		// Reset all stackable settings.
 		update_option( 'stackable_editor_roles_content_only', [] );
-		update_option( 'stackable_global_colors', [] );
+		update_option( 'stackable_global_colors', [[]] );
 		update_option( 'stackable_global_colors_palette_only', false );
 		update_option( 'stackable_global_content_selector', '' );
 		update_option( 'stackable_global_force_typography', false );
