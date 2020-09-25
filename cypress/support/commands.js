@@ -15,7 +15,14 @@
 /**
  * External dependencies
  */
-import { kebabCase, keys } from 'lodash'
+import {
+	kebabCase, keys,
+} from 'lodash'
+
+/**
+ * Internal dependencies
+ */
+import SELECTORS from './selectors/index'
 
 Cypress.Commands.add( 'setupWP', () => {
 	cy.visit( '/?setup' )
@@ -200,147 +207,6 @@ Cypress.Commands.add( 'toggleStyle', { prevSubject: 'element' }, ( subject, name
 } )
 
 /**
- * DOM Selector for each options in the block
- * inspector.
- */
-const CONTROLS = {
-	general: {
-		closeAdjacentOnOpen: {
-			type: 'checkbox',
-			selector: '.ugb--help-tip-accordion-adjacent-open',
-		},
-		openAtTheStart: {
-			type: 'checkbox',
-			selector: '.ugb--help-tip-accordion-open-start',
-		},
-		reverseArrow: {
-			type: 'checkbox',
-			selector: '.ugb--help-tip-accordion-reverse-arrow',
-		},
-		borderRadius: {
-			type: 'range-control',
-			selector: '.ugb--help-tip-general-border-radius',
-		},
-		shadowOutline: {
-			type: 'range-control',
-			selector: '.ugb--help-tip-general-shadow',
-		},
-		align: {
-			type: 'button-group',
-			selector: '.ugb--help-tip-alignment-all',
-		},
-	},
-	columnBackground: {
-		backgroundType: {
-			type: 'button-group',
-			selector: '.ugb--help-tip-background-color-type>div>div',
-		},
-		backgroundColor1: {
-			type: 'color-picker',
-			selector: '.ugb--help-tip-background-color1',
-		},
-		backgroundColor2: {
-			type: 'color-picker',
-			selector: '.ugb--help-tip-background-color2',
-		},
-		gradientSettings: {
-			type: 'popover-settings',
-			selector: '.ugb--help-tip-gradient-color-settings',
-			childOptions: {
-				gradientDirection: {
-					type: 'range-control',
-					selector: '.ugb--help-tip-gradient-direction',
-				},
-				color1Location: {
-					type: 'range-control',
-					selector: '.ugb--help-tip-gradient-location1',
-				},
-				color2Location: {
-					type: 'range-control',
-					selector: '.ugb--help-tip-gradient-location2',
-				},
-				backgroundBlendMode: {
-					type: 'dropdown',
-					selector: '.ugb--help-tip-background-blend-mode',
-				},
-			},
-		},
-		// TODO: Background Image or Video
-	},
-	title: {
-		typography: {
-			type: 'popover-settings',
-			selector: '.ugb--help-tip-typography',
-			childOptions: {
-				fontFamily: {
-					type: 'font-family',
-					selector: '.ugb--help-tip-typography-family',
-				},
-				fontSize: {
-					type: 'range-control',
-					selector: '.ugb--help-tip-typography-size',
-				},
-				fontWeight: {
-					type: 'dropdown',
-					selector: '.ugb--help-tip-typography-weight',
-				},
-				fontTransform: {
-					type: 'dropdown',
-					selector: '.ugb--help-tip-typography-transform',
-				},
-				lineHeight: {
-					type: 'range-control',
-					selector: '.ugb--help-tip-typography-line-height',
-				},
-				letterSpacing: {
-					type: 'range-control',
-					selector: '.ugb--help-tip-typography-letter-spacing',
-				},
-			},
-		},
-		fontSize: {
-			type: 'range-control',
-			selector: '.ugb--help-tip-typography-size',
-		},
-		htmlTag: {
-			type: 'button-group',
-			selector: '.ugb--help-tip-typography-html-tag',
-		},
-		titleColor: {
-			type: 'color-picker',
-			selector: '.ugb--help-tip-title-color',
-		},
-		titleAlign: {
-			type: 'button-group',
-			selector: '.ugb--help-tip-alignment-title',
-		},
-	},
-
-	// Accordion Option.
-	arrow: {
-		size: {
-			type: 'range-control',
-			selector: '.ugb--help-tip-arrow-size',
-		},
-		color: {
-			type: 'color-picker',
-			selector: '.ugb--help-tip-accordion-arrow-color',
-		},
-	},
-
-	spacing: {
-		padding: {
-			type: 'range-control',
-			selector: '.ugb--help-tip-spacing-padding>div>.ugb-four-range-control__range>div',
-		},
-		title: {
-			type: 'range-control',
-			selector: '.ugb--help-tip-spacing-title',
-		},
-	},
-}
-
-/**
  * Command for changing the value in a checkbox control.
  */
 Cypress.Commands.add( 'checkboxControl', ( selector, value ) => {
@@ -358,7 +224,23 @@ Cypress.Commands.add( 'checkboxControl', ( selector, value ) => {
  * Command for changing the value in a four range control.
  */
 Cypress.Commands.add( 'fourRangeControl', ( selector, value ) => {
-	// TODO: Add a fourRangeControl Handler here.
+	cy.document().then( doc => {
+		if ( typeof value === 'number' ) {
+			// If the value is a string asign the value for all controls.
+			const inputContainerSelector = `${ selector }>div>.ugb-four-range-control__range>div>div>.components-range-control>div>span>.components-number-control>div>input`
+			const fourRangeControlInputContainer = doc.querySelector( inputContainerSelector )
+			if ( fourRangeControlInputContainer ) {
+				cy.get( inputContainerSelector ).type( `{selectall}${ value }` )
+			}
+		} else if ( Array.isArray( value ) ) {
+			cy.get( `${ selector }>div>.ugb-base-control-multi-label>.ugb-base-control-multi-label__units>button` ).click( { force: true } )
+
+			value.forEach( ( valueEntry = '', index ) => {
+				const inputContainerSelector = `${ selector }>div>div:nth-child(${ index + 2 })>div>div>.components-range-control>div>span>div>div>input`
+				cy.get( inputContainerSelector ).type( `{selectall}${ valueEntry }` )
+			} )
+		}
+	} )
 } )
 
 /**
@@ -430,9 +312,9 @@ Cypress.Commands.add( 'dropdownControl', ( selector, value ) => {
 } )
 
 /**
- * General Commands
+ * General Commands in style tab.
  */
-Cypress.Commands.add( 'adjustOptions', { prevSubject: 'element' }, ( subject, options = {} ) => {
+Cypress.Commands.add( 'adjustStyles', { prevSubject: 'element' }, ( subject, options = {} ) => {
 	//
 	/**
 	 * List of commands based on control type.
@@ -444,6 +326,10 @@ Cypress.Commands.add( 'adjustOptions', { prevSubject: 'element' }, ( subject, op
 
 		[ `range-control` ]( selector, value ) {
 			cy.rangeInputControl( selector, value )
+		},
+
+		[ `four-range-control` ]( selector, value ) {
+			cy.fourRangeControl( selector, value )
 		},
 
 		[ `button-group` ]( selector, value, option, optionEntry ) {
@@ -471,7 +357,7 @@ Cypress.Commands.add( 'adjustOptions', { prevSubject: 'element' }, ( subject, op
 				const {
 					type: childType = '',
 					selector: childSelector = '',
-				} = CONTROLS[ option ][ optionEntry ].childOptions[ entry ]
+				} = SELECTORS[ option ][ optionEntry ].childOptions[ entry ]
 				const childValue = value[ entry ]
 
 				cy.scrollSidebarToView( childSelector )
@@ -500,7 +386,7 @@ Cypress.Commands.add( 'adjustOptions', { prevSubject: 'element' }, ( subject, op
 					const {
 						type = '',
 						selector = '',
-					} = CONTROLS[ option ][ optionEntry ]
+					} = SELECTORS[ option ][ optionEntry ]
 					const el = doc.querySelector( selector )
 					if ( ! el ) {
 						cy.get( subject ).collapse( option )
