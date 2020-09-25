@@ -54,7 +54,7 @@ describe( 'New Page', () => {
 			// 	},
 			// } )
 
-			addedBlock.adjustSyles( {
+			addedBlock.adjustStyles( {
 				columnBackground: {
 					backgroundType: 'gradient',
 					backgroundColor1: '1', // Selecting the first entry in the color picker.
