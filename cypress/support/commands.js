@@ -59,44 +59,16 @@ Cypress.Commands.add( 'toggleBlockInserterButton', () => {
 /**
  * Command for adding a specific ugb block in the inserter button.
  */
-Cypress.Commands.add( 'addUgbBlockInInserterButton', ( blockname = 'accordion' ) => {
+Cypress.Commands.add( 'addStackableBlock', ( blockname = 'accordion' ) => {
 	cy.toggleBlockInserterButton()
 	cy.get( `.block-editor-block-types-list>.block-editor-block-types-list__list-item>.editor-block-list-item-ugb-${ blockname }:first` ).click( { force: true } )
 	return cy.get( `[data-type="ugb/${ blockname }"]` ).last()
 } )
 
 /**
- * Command for typing in the block inserter textarea.
- */
-Cypress.Commands.add( 'typeInInserterTextarea', ( input = '' ) => {
-	cy.document().then( doc => {
-		// Sometimes the textarea has to be clicked first before typing.
-		if ( doc.querySelector( `.block-editor-default-block-appender` ) ) {
-			cy.get( `textarea[aria-label="Add block"]` ).click( { force: true } )
-		}
-		cy.get( `p[aria-label="Empty block; start writing or type forward slash to choose a block"]` ).click( { force: true } ).type( input, { force: true } )
-	} )
-} )
-
-/**
- * Command for adding a specific ugb block in the inserter textarea.
- */
-Cypress.Commands.add( 'addUgbBlockInInserterTextarea', ( blockname = 'accordion' ) => {
-	if ( blockname === 'feature' || blockname === 'icon' ) {
-		cy.typeInInserterTextarea( `/${ blockname }{downarrow}{enter}` )
-		return cy.get( `[data-type="ugb/${ blockname }"]` ).last()
-	} else if ( blockname === 'text' ) {
-		cy.typeInInserterTextarea( `/advanced-${ blockname }{downarrow}{enter}` )
-		return cy.get( `[data-type="ugb/${ blockname }"]` ).last()
-	}
-	cy.typeInInserterTextarea( `/${ blockname }{enter}` )
-	return cy.get( `[data-type="ugb/${ blockname }"]` ).last()
-} )
-
-/**
  * Command for deleting a specific block.
  */
-Cypress.Commands.add( 'removeBlock', { prevSubject: 'element' }, subject => {
+Cypress.Commands.add( 'removeBlock', subject => {
 	cy.log( subject )
 	cy.get( subject ).click( { force: true } )
 	cy.get( `.components-button.components-dropdown-menu__toggle[aria-label="More options"]` ).click( { force: true } )
@@ -106,12 +78,12 @@ Cypress.Commands.add( 'removeBlock', { prevSubject: 'element' }, subject => {
 /**
  * Command for opening the block inspectore of a block.
  */
-Cypress.Commands.add( 'openInspector', { prevSubject: 'element' }, ( subject, tab ) => {
+Cypress.Commands.add( 'openInspector', ( subject, tab ) => {
 	// We are only allowing chain wp-block elements to enter this command.
 	if ( cy.get( subject ).should( 'have.class', 'wp-block' ) ) {
 		cy.get( subject ).click( { force: true } )
 		cy.document().then( doc => {
-			if ( ! doc.querySelector( '.interface-interface-skeleton__sidebar' ) ) {
+			if ( ! doc.querySelector( '.interface-complementary-area' ) ) {
 				cy.get( 'button[aria-label="Settings"]' ).click( { force: true } )
 			}
 			if ( tab ) {
@@ -168,7 +140,7 @@ Cypress.Commands.add( 'scrollSidebarToView', selector => {
 /**
  * Command for collapsing an accordion.
  */
-Cypress.Commands.add( 'collapse', { prevSubject: 'element' }, ( subject, name = 'General' ) => {
+Cypress.Commands.add( 'collapse', ( subject, name = 'General' ) => {
 	// We are only allowing chain wp-block elements to enter this command.
 	if ( cy.get( subject ).should( 'have.class', 'wp-block' ) ) {
 		const kebabCaseName = kebabCase( name )
@@ -189,7 +161,7 @@ Cypress.Commands.add( 'collapse', { prevSubject: 'element' }, ( subject, name = 
  * Command for enabling/disabling an
  * accordion.
  */
-Cypress.Commands.add( 'toggleStyle', { prevSubject: 'element' }, ( subject, name = 'Block Title', enabled = true ) => {
+Cypress.Commands.add( 'toggleStyle', ( subject, name = 'Block Title', enabled = true ) => {
 	// We are only allowing chain wp-block elements to enter this command.
 	if ( cy.get( subject ).should( 'have.class', 'wp-block' ) ) {
 		cy.document().then( doc => {
@@ -314,7 +286,7 @@ Cypress.Commands.add( 'dropdownControl', ( selector, value ) => {
 /**
  * General Commands in style tab.
  */
-Cypress.Commands.add( 'adjustStyles', { prevSubject: 'element' }, ( subject, options = {} ) => {
+Cypress.Commands.add( 'adjustStyles', ( subject, options = {} ) => {
 	//
 	/**
 	 * List of commands based on control type.
@@ -388,8 +360,9 @@ Cypress.Commands.add( 'adjustStyles', { prevSubject: 'element' }, ( subject, opt
 						selector = '',
 					} = SELECTORS[ option ][ optionEntry ]
 					const el = doc.querySelector( selector )
+
 					if ( ! el ) {
-						cy.get( subject ).collapse( option )
+						cy.collapse( subject, option )
 					}
 					cy.scrollSidebarToView( selector )
 					// Execute commands based on selector, option, and optionEntry.

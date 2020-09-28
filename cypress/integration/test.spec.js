@@ -32,72 +32,91 @@ const blockList = [
 describe( 'New Page', () => {
 	it( 'should do something', () => {
 		cy.newPage()
-		blockList.forEach( block => {
-			const addedBlock = cy.addUgbBlockInInserterTextarea( block )
-			addedBlock.openInspector( 'style' )
-
-			addedBlock.adjustStyles( {
-				general: {
-					closeAdjacentOnOpen: true,
-					openAtTheStart: true,
-					reverseArrow: true,
-					borderRadius: 35,
-					shadowOutline: 2,
-					align: 'left',
-				},
-			} )
-
-			// addedBlock.adjustStyles( {
-			// 	quotation: {
-			// 		icon: 'square',
-			// 		color: '#adadad',
-			// 	},
-			// } )
-
-			addedBlock.adjustStyles( {
-				columnBackground: {
-					backgroundType: 'gradient',
-					backgroundColor1: '1', // Selecting the first entry in the color picker.
-					backgroundColor2: '#eaeaea', // Picking a custon color.
-					gradientSettings: {
-						gradientDirection: 110,
-						color1Location: 55,
-						color2Location: 43,
-						backgroundBlendMode: 'normal',
+		cy.addStackableBlock( 'accordion' ).then( $accordion => {
+			cy.addStackableBlock( 'card' ).then( $card => {
+				cy.openInspector( $accordion, 'style' )
+				cy.adjustStyles( $accordion, {
+					general: {
+						reverseArrow: true,
 					},
-				},
-			} )
-
-			addedBlock.adjustStyles( {
-				title: {
-					typography: {
-						fontFamily: 'Sans-serif',
-						fontSize: 48,
-						fontWeight: '900',
-						fontTransform: 'uppercase',
-						lineHeight: 4.7,
-						letterSpacing: 4.3,
+				} )
+				cy.openInspector( $card, 'style' )
+				cy.adjustStyles( $card, {
+					general: {
+						align: 'right',
 					},
-					fontSize: 55,
-					htmlTag: 'h1',
-					titleColor: '#a3a3a3',
-					titleAlign: 'center',
-				},
-			} )
-
-			addedBlock.adjustStyles( {
-				arrow: {
-					size: 31,
-					color: '#643eee',
-				},
-			} )
-
-			addedBlock.adjustStyles( {
-				spacing: {
-					padding: [ 40, 45, 40, 45 ],
-					title: 43,
-				},
+				} )
+				cy.removeBlock( $accordion )
+				cy.removeBlock( $card )
 			} )
 		} )
+
+		// blockList.forEach( block => {
+		// const addedBlock = cy.addStackableBlock( block )
+		// addedBlock.openInspector( 'style' )
+
+		// addedBlock.adjustStyles( {
+		// 	general: {
+		// 		closeAdjacentOnOpen: true,
+		// 		openAtTheStart: true,
+		// 		reverseArrow: true,
+		// 		borderRadius: 35,
+		// 		shadowOutline: 2,
+		// 		align: 'left',
+		// 	},
+		// } )
+
+		// addedBlock.adjustStyles( {
+		// 	quotation: {
+		// 		icon: 'square',
+		// 		color: '#adadad',
+		// 	},
+		// } )
+
+		// addedBlock.adjustStyles( {
+		// 	columnBackground: {
+		// 		backgroundType: 'gradient',
+		// 		backgroundColor1: '1', // Selecting the first entry in the color picker.
+		// 		backgroundColor2: '#eaeaea', // Picking a custon color.
+		// 		gradientSettings: {
+		// 			gradientDirection: 110,
+		// 			color1Location: 55,
+		// 			color2Location: 43,
+		// 			backgroundBlendMode: 'normal',
+		// 		},
+		// 	},
+		// } )
+
+		// addedBlock.adjustStyles( {
+		// 	title: {
+		// 		typography: {
+		// 			fontFamily: 'Sans-serif',
+		// 			fontSize: 48,
+		// 			fontWeight: '900',
+		// 			fontTransform: 'uppercase',
+		// 			lineHeight: 4.7,
+		// 			letterSpacing: 4.3,
+		// 		},
+		// 		fontSize: 55,
+		// 		htmlTag: 'h1',
+		// 		titleColor: '#a3a3a3',
+		// 		titleAlign: 'center',
+		// 	},
+		// } )
+
+		// addedBlock.adjustStyles( {
+		// 	arrow: {
+		// 		size: 31,
+		// 		color: '#643eee',
+		// 	},
+		// } )
+
+		// addedBlock.adjustStyles( {
+		// 	spacing: {
+		// 		padding: [ 40, 45, 40, 45 ],
+		// 		title: 43,
+		// 	},
+		// } )
+		// } )
 	} )
 } )
