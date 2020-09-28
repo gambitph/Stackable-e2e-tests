@@ -19,11 +19,6 @@ import {
 	kebabCase, keys,
 } from 'lodash'
 
-/**
- * Internal dependencies
- */
-import SELECTORS from './selectors/index'
-
 Cypress.Commands.add( 'setupWP', () => {
 	cy.visit( '/?setup' )
 } )
@@ -57,52 +52,60 @@ Cypress.Commands.add( 'toggleBlockInserterButton', () => {
 } )
 
 /**
- * Command for adding a specific ugb block in the inserter button.
+ * Command for adding a specific block in the inserter button.
  */
-Cypress.Commands.add( 'addStackableBlock', ( blockname = 'accordion' ) => {
+Cypress.Commands.add( 'addBlock', ( blockname = 'ugb/accordion' ) => {
 	cy.toggleBlockInserterButton()
-	cy.get( `.block-editor-block-types-list>.block-editor-block-types-list__list-item>.editor-block-list-item-ugb-${ blockname }:first` ).click( { force: true } )
-	return cy.get( `[data-type="ugb/${ blockname }"]` ).last()
+	const [ plugin, block ] = blockname.split( '/' )
+	if ( plugin === 'core' ) {
+		cy.get( `.block-editor-block-types-list>.block-editor-block-types-list__list-item>.editor-block-list-item-${ block }:first` ).click( { force: true } )
+	} else {
+		cy.get( `.block-editor-block-types-list>.block-editor-block-types-list__list-item>.editor-block-list-item-${ plugin }-${ block }:first` ).click( { force: true } )
+	}
+	return cy.get( `[data-type="${ blockname }"]` ).last()
+} )
+
+/**
+ * Command for selecting a specific block.
+ */
+Cypress.Commands.add( 'selectBlock', ( subject, selector ) => {
+	if ( selector && typeof selector === 'number' ) {
+		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).eq( selector ).click( { force: true } )
+	} else if ( selector && typeof selector === 'string' ) {
+		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).contains( selector ).click( { force: true } )
+	} else {
+		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).last().click( { force: true } )
+	}
 } )
 
 /**
  * Command for deleting a specific block.
  */
-Cypress.Commands.add( 'removeBlock', subject => {
-	cy.log( subject )
-	cy.get( subject ).click( { force: true } )
-	cy.get( `.components-button.components-dropdown-menu__toggle[aria-label="More options"]` ).click( { force: true } )
-	cy.get( `button` ).contains( `Remove Block` ).click( { force: true } )
+Cypress.Commands.add( 'deleteBlock', ( subject, selector ) => {
+	cy.selectBlock( subject, selector )
+	cy.get( 'button[aria-label="More options"]' ).first().click( { force: true } )
+	cy.get( 'button' ).contains( 'Remove Block' ).click( { force: true } )
 } )
 
 /**
  * Command for opening the block inspectore of a block.
  */
-Cypress.Commands.add( 'openInspector', ( subject, tab ) => {
-	// We are only allowing chain wp-block elements to enter this command.
-	if ( cy.get( subject ).should( 'have.class', 'wp-block' ) ) {
-		cy.get( subject ).click( { force: true } )
-		cy.document().then( doc => {
-			if ( ! doc.querySelector( '.interface-complementary-area' ) ) {
-				cy.get( 'button[aria-label="Settings"]' ).click( { force: true } )
-			}
-			if ( tab ) {
-				const TABS = {
-					layout: 'Layout',
-					style: 'Style',
-					advanced: 'Advanced',
-				}
-
-				cy.document().then( doc => {
-					if ( ! doc.querySelector( `[data-label="${ TABS[ tab.toLowerCase() ] } Tab"]` ) ) {
-						cy.get( '[data-label="Block"]' ).click( { force: true } )
-					}
-					cy.get( `[data-label="${ TABS[ tab.toLowerCase() ] } Tab"]` ).click( { force: true } )
-				} )
+Cypress.Commands.add( 'openInspector', ( subject, tab, selector ) => {
+	cy.selectBlock( subject, selector )
+	cy
+		.get( 'button[aria-label="Settings"]' )
+		.invoke( 'attr', 'aria-expanded' )
+		.then( ariaExpanded => {
+			if ( ariaExpanded === 'false' ) {
+				cy
+					.get( 'button[aria-label="Settings"]' )
+					.click( { force: true } )
 			}
 		} )
-	}
-	return cy.get( subject )
+
+	cy
+		.get( `button[aria-label="${ tab } Tab"]` )
+		.click( { force: true } )
 } )
 
 /**
@@ -140,239 +143,251 @@ Cypress.Commands.add( 'scrollSidebarToView', selector => {
 /**
  * Command for collapsing an accordion.
  */
-Cypress.Commands.add( 'collapse', ( subject, name = 'General' ) => {
-	// We are only allowing chain wp-block elements to enter this command.
-	if ( cy.get( subject ).should( 'have.class', 'wp-block' ) ) {
-		const kebabCaseName = kebabCase( name )
-		cy.document().then( doc => {
-			const el = doc.querySelector( `.ugb-panel--${ kebabCaseName }>h2>button` )
-			if ( el ) {
-				if ( el.getAttribute( 'aria-expanded' ) === 'false' ) {
-					cy.scrollSidebarToView( `.ugb-panel--${ kebabCaseName }>h2>button` )
-					cy.get( `.ugb-panel--${ kebabCaseName }>h2>button` ).click( { force: true } )
-				}
+Cypress.Commands.add( 'collapse', ( subject, name = 'General', selector ) => {
+	cy.openInspector( subject, 'Style', selector )
+	cy
+		.get( '.ugb-toggle-panel-body' )
+		.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+		.parentsUntil( '.ugb-toggle-panel-body' )
+		.parent()
+		.find( 'button.components-panel__body-toggle' )
+		.invoke( 'attr', 'aria-expanded' )
+		.then( ariaExpanded => {
+			if ( ariaExpanded === 'false' ) {
+				cy
+					.get( '.ugb-toggle-panel-body' )
+					.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+					.parentsUntil( '.ugb-toggle-panel-body' )
+					.parent()
+					.find( 'button.components-panel__body-toggle' )
+					.click( { force: true } )
 			}
 		} )
-	}
-	return cy.get( subject )
 } )
 
 /**
  * Command for enabling/disabling an
  * accordion.
  */
-Cypress.Commands.add( 'toggleStyle', ( subject, name = 'Block Title', enabled = true ) => {
-	// We are only allowing chain wp-block elements to enter this command.
-	if ( cy.get( subject ).should( 'have.class', 'wp-block' ) ) {
-		cy.document().then( doc => {
-			const kebabCaseName = kebabCase( name )
-			const el = doc.querySelector( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle` )
-			if ( el ) {
-				if ( enabled === ! Array.from( el.classList ).includes( 'is-checked' ) ) {
-					cy.scrollSidebarToView( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle>input` )
-					cy.get( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle>input` ).click( { force: true } )
-				}
+Cypress.Commands.add( 'toggleStyle', ( subject, name = 'Block Title', enabled = true, selector ) => {
+	cy.openInspector( subject, 'Style', selector )
+	cy.document().then( doc => {
+		const kebabCaseName = kebabCase( name )
+		const el = doc.querySelector( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle` )
+		if ( el ) {
+			if ( ( enabled && ! Array.from( el.classList ).includes( 'is-checked' ) ) || ( ! enabled && Array.from( el.classList ).includes( 'is-checked' ) ) ) {
+				cy.log( 'here' )
+				cy.scrollSidebarToView( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle>input` )
+				cy.get( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle>input` ).click( { force: true } )
+			}
+		}
+	} )
+} )
+
+/**
+ * Command for enabling/disabling a toggle control.
+ */
+Cypress.Commands.add( 'toggleControl', ( name, value, isInPopover = false ) => {
+	let baseControlEl = ! isInPopover ? cy.get( '.components-panel__body>.components-base-control' ) : cy.get( '.components-popover__content' ).find( '.components-base-control' )
+
+	baseControlEl
+		.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
+		.parent()
+		.find( 'span.components-form-toggle' )
+		.invoke( 'attr', 'class' )
+		.then( classNames => {
+			const parsedClassNames = classNames.split( ' ' )
+			if ( ( value && ! parsedClassNames.includes( 'is-checked' ) ) || ( ! value && parsedClassNames.includes( 'is-checked' ) ) ) {
+				baseControlEl = ! isInPopover ? cy.get( '.components-panel__body>.components-base-control' ) : cy.get( '.components-popover__content' ).find( '.components-base-control' )
+				baseControlEl
+					.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+					.parentsUntil( '.components-panel__body>.components-base-control' )
+					.parent()
+					.find( 'input' )
+					.click( { force: true } )
 			}
 		} )
+} )
+
+/**
+ * Command for adjusting the advanced range control.
+ */
+Cypress.Commands.add( 'rangeControl', ( name, value, isInPopover = false ) => {
+	const baseControlEl = ! isInPopover ? cy.get( '.components-panel__body>.components-base-control' ) : cy.get( '.components-popover__content' ).find( '.components-base-control' )
+
+	baseControlEl
+		.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
+		.parent()
+		.find( 'input.components-input-control__input' )
+		.type( `{selectall}${ value }` )
+} )
+
+/**
+ * Command for adjusting the toolbar control
+ */
+Cypress.Commands.add( 'toolbarControl', ( name, value, isInPopover = false ) => {
+	// Compatibility for default values
+	const defaultValues = [
+		'single',
+	]
+
+	if ( defaultValues.includes( value ) ) {
+		value = ''
 	}
-	return cy.get( subject )
+
+	const baseControlEl = ! isInPopover ? cy.get( '.components-panel__body>.components-base-control' ) : cy.get( '.components-popover__content' ).find( '.components-base-control' )
+
+	baseControlEl
+		.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
+		.parent()
+		.find( `button[value="${ value }"]` )
+		.click( { force: true } )
 } )
 
 /**
- * Command for changing the value in a checkbox control.
+ * Command for adjusting the color picker
  */
-Cypress.Commands.add( 'checkboxControl', ( selector, value ) => {
-	cy.document().then( doc => {
-		const spanIsCheckedElementIndicator = doc.querySelector( `${ selector }>div>span` )
-		if ( spanIsCheckedElementIndicator ) {
-			if ( value === ! Array.from( spanIsCheckedElementIndicator.classList ).includes( 'is-checked' ) ) {
-				cy.get( `${ selector }>div>span>input` ).click( { force: true } )
+Cypress.Commands.add( 'colorControl', ( name, value, isInPopover = false ) => {
+	let baseControlEl = ! isInPopover ? cy.get( '.components-panel__body>.components-base-control' ) : cy.get( '.components-popover__content' ).find( '.components-base-control' )
+
+	if ( typeof value === 'string' && value.match( /^#/ ) ) {
+		// Use custom color.
+		baseControlEl
+			.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+			.parentsUntil( '.components-panel__body>.components-base-control' )
+			.parent()
+			.find( 'button' )
+			.contains( 'Custom color' )
+			.click( { force: true } )
+
+		cy
+			.get( '.components-popover__content' )
+			.find( 'input[type="text"]' )
+			.type( `{selectall}${ value }{enter}` )
+
+		// Declare the variable again
+		baseControlEl = ! isInPopover ? cy.get( '.components-panel__body>.components-base-control' ) : cy.get( '.components-popover__content' ).find( '.components-base-control' )
+
+		baseControlEl
+			.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+			.parentsUntil( '.components-panel__body>.components-base-control' )
+			.parent()
+			.find( 'button' )
+			.contains( 'Custom color' )
+			.click( { force: true } )
+	} else if ( typeof value === 'number' ) {
+		// Get the nth color in the color picker.
+		baseControlEl
+			.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+			.parentsUntil( '.components-panel__body>.components-base-control' )
+			.parent()
+			.find( 'button.components-circular-option-picker__option' )
+			.eq( value - 1 )
+			.click( { force: true } )
+	}
+} )
+
+/**
+ * Command for adjusting the popover control.
+ */
+Cypress.Commands.add( 'popoverControl', ( name, value ) => {
+	cy
+		.get( '.components-panel__body>.components-base-control' )
+		.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
+		.parent()
+		.find( 'button[aria-label="Edit"]' )
+		.click( { force: true } )
+
+	keys( value ).forEach( key => {
+		cy.adjustStyle( key, value[ key ], true )
+	} )
+
+	cy
+		.get( '.components-panel__body>.components-base-control' )
+		.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
+		.parent()
+		.find( 'button[aria-label="Edit"]' )
+		.click( { force: true } )
+} )
+
+/**
+ * Command for adjusting the dropdown control.
+ */
+Cypress.Commands.add( 'dropdownControl', ( name, value, isInPopover = false ) => {
+	// Compatibility for default values
+	const defaultValues = [
+		'none',
+	]
+
+	if ( defaultValues.includes( value ) ) {
+		value = ''
+	}
+
+	const baseControlEl = ! isInPopover ? cy.get( '.components-panel__body>.components-base-control' ) : cy.get( '.components-popover__content' ).find( '.components-base-control' )
+
+	baseControlEl
+		.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
+		.parent()
+		.find( 'select' )
+		.select( value, { force: true } )
+} )
+
+/**
+ * Command for adjusting the auto suggestion control.
+ */
+Cypress.Commands.add( 'suggestionControl', ( name, value, isInPopover = false ) => {
+	const baseControlEl = ! isInPopover ? cy.get( '.components-panel__body>.components-base-control' ) : cy.get( '.components-popover__content' ).find( '.components-base-control' )
+
+	baseControlEl
+		.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
+		.parent()
+		.find( 'input' )
+		.type( `{selectall}${ value }{enter}` )
+} )
+
+/**
+ * Command for adjusting settings in styles tab
+ */
+Cypress.Commands.add( 'adjustStyle', ( name, value, isInPopover = false ) => {
+	cy
+		.get( '.components-panel__body>.components-base-control' )
+		.contains( new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` ) )
+		.last()
+		.parentsUntil( '.components-panel__body>.components-base-control' )
+		.parent()
+		.invoke( 'attr', 'class' )
+		.then( classNames => {
+			cy.log( classNames )
+			const parsedClassNames = classNames.split( ' ' )
+
+			const commandsBasedOnClassName = {
+				 'components-toggle-control': 'toggleControl',
+				 'ugb-advanced-range-control': 'rangeControl',
+				 'ugb-advanced-toolbar-control': 'toolbarControl',
+				 'editor-color-palette-control': 'colorControl',
+				 'ugb-button-icon-control': 'popoverControl',
+				 'ugb-advanced-autosuggest-control': 'suggestionControl',
+
+				 // Custom selectors.
+				 'ugb--help-tip-background-color-type': 'toolbarControl',
+				 'ugb--help-tip-background-blend-mode': 'dropdownControl',
+				 'ugb--help-tip-typography-weight': 'dropdownControl',
+				 'ugb--help-tip-typography-transform': 'dropdownControl',
 			}
-		}
-	} )
-} )
 
-/**
- * Command for changing the value in a four range control.
- */
-Cypress.Commands.add( 'fourRangeControl', ( selector, value ) => {
-	cy.document().then( doc => {
-		if ( typeof value === 'number' ) {
-			// If the value is a string asign the value for all controls.
-			const inputContainerSelector = `${ selector }>div>.ugb-four-range-control__range>div>div>.components-range-control>div>span>.components-number-control>div>input`
-			const fourRangeControlInputContainer = doc.querySelector( inputContainerSelector )
-			if ( fourRangeControlInputContainer ) {
-				cy.get( inputContainerSelector ).type( `{selectall}${ value }` )
-			}
-		} else if ( Array.isArray( value ) ) {
-			cy.get( `${ selector }>div>.ugb-base-control-multi-label>.ugb-base-control-multi-label__units>button` ).click( { force: true } )
-
-			value.forEach( ( valueEntry = '', index ) => {
-				const inputContainerSelector = `${ selector }>div>div:nth-child(${ index + 2 })>div>div>.components-range-control>div>span>div>div>input`
-				cy.get( inputContainerSelector ).type( `{selectall}${ valueEntry }` )
-			} )
-		}
-	} )
-} )
-
-/**
- * Command for changing the value in a range input control.
- */
-Cypress.Commands.add( 'rangeInputControl', ( selector, value ) => {
-	cy.document().then( doc => {
-		const inputContainerSelector = `${ selector }>div>.components-range-control>div>span>.components-number-control>div>input`
-		const rangeControlInputContainer = doc.querySelector( inputContainerSelector )
-		if ( rangeControlInputContainer ) {
-			cy.get( inputContainerSelector ).type( `{selectall}${ value }` )
-		}
-	} )
-} )
-
-/**
- * Command for changing the value in font family control.
- */
-Cypress.Commands.add( 'fontFamilyControl', ( selector, value ) => {
-	cy.document().then( doc => {
-		const fontFamilyInputSelector = `${ selector }>div>.ugb-advanced-autosuggest-control__select>div>input`
-		const fontFamilyInput = doc.querySelector( fontFamilyInputSelector )
-		if ( fontFamilyInput ) {
-			cy.get( fontFamilyInputSelector ).type( `{selectall}${ value }{enter}` )
-		}
-	} )
-} )
-
-/**
- * Command for changing the value in a buttongroup control.
- */
-Cypress.Commands.add( 'buttonGroupControl', ( selector, value ) => {
-	const buttonOptionsContainerSelector = `${ selector }>div>.components-button-group`
-	cy.get( `${ buttonOptionsContainerSelector }>button[value="${ value }"]` ).click( { force: true } )
-} )
-
-/**
- * Command for changing the value in a color picker control.
- */
-Cypress.Commands.add( 'colorPickerControl', ( selector, value ) => {
-	cy.document().then( doc => {
-		const colorPickerOptionsSelector = `${ selector }>div>.editor-color-palette-control__color-palette`
-		const colorPickerOptions = doc.querySelector( colorPickerOptionsSelector )
-		if ( colorPickerOptions ) {
-			if ( ! value.match( /^#/ ) ) {
-				// Pick a color in the color picker.
-				cy.get( `${ colorPickerOptionsSelector }>div:nth-child(${ value })>button` ).click( { force: true } )
-			} else {
-				// Pick a custom color.
-				cy.get( `${ colorPickerOptionsSelector }>.components-circular-option-picker__custom-clear-wrapper>div>button` ).click( { force: true } )
-				cy.get( '.components-color-picker__inputs-field>div>input' ).type( `{selectall}${ value }{enter}` )
-				cy.get( `${ colorPickerOptionsSelector }>.components-circular-option-picker__custom-clear-wrapper>div>button` ).click( { force: true } )
-			}
-		}
-	} )
-} )
-
-/**
- * Command for changing the value in a dropdown control.
- */
-Cypress.Commands.add( 'dropdownControl', ( selector, value ) => {
-	cy.document().then( doc => {
-		const dropdownContainerSelector = `${ selector }>div>select`
-		const dropdownContainer = doc.querySelector( dropdownContainerSelector )
-		if ( dropdownContainer ) {
-			cy.get( dropdownContainerSelector ).select( value )
-		}
-	} )
-} )
-
-/**
- * General Commands in style tab.
- */
-Cypress.Commands.add( 'adjustStyles', ( subject, options = {} ) => {
-	//
-	/**
-	 * List of commands based on control type.
-	 */
-	const execCommands = {
-		[ `checkbox` ]( selector, value ) {
-			cy.checkboxControl( selector, value )
-		},
-
-		[ `range-control` ]( selector, value ) {
-			cy.rangeInputControl( selector, value )
-		},
-
-		[ `four-range-control` ]( selector, value ) {
-			cy.fourRangeControl( selector, value )
-		},
-
-		[ `button-group` ]( selector, value, option, optionEntry ) {
-			// Compatibility for default values.
-			if ( option === 'columnBackground' && optionEntry === 'backgroundType' ) {
-				// Transform the 'single' value to empty string
-				value = value === 'single' ? '' : value
-			}
-			cy.buttonGroupControl( selector, value )
-		},
-
-		[ `color-picker` ]( selector, value ) {
-			cy.colorPickerControl( selector, value )
-		},
-
-		[ `font-family` ]( selector, value ) {
-			cy.fontFamilyControl( selector, value )
-		},
-
-		[ `popover-settings` ]( selector, value, option, optionEntry ) {
-			const buttonPopoverSelector = `${ selector }>div>div>button[aria-label="Edit"]`
-			cy.get( buttonPopoverSelector ).click( { force: true } )
-
-			keys( options[ option ][ optionEntry ] || {} ).forEach( entry => {
-				const {
-					type: childType = '',
-					selector: childSelector = '',
-				} = SELECTORS[ option ][ optionEntry ].childOptions[ entry ]
-				const childValue = value[ entry ]
-
-				cy.scrollSidebarToView( childSelector )
-				this[ childType ]( `.components-popover__content>div>.components-panel__body>${ childSelector }`, childValue, option, entry )
-			} )
-
-			cy.get( buttonPopoverSelector ).click( { force: true } )
-		},
-
-		[ `dropdown` ]( selector, value, option, optionEntry ) {
-			// Compatibility for default values.
-			if ( option === 'columnBackground' && optionEntry === 'backgroundBlendMode' ) {
-				if ( value === 'none' ) {
-					value = ''
+			keys( commandsBasedOnClassName ).forEach( key => {
+				if ( parsedClassNames.includes( key ) ) {
+					cy[ commandsBasedOnClassName[ key ] ]( name, value, isInPopover )
 				}
-			}
-			cy.dropdownControl( selector, value )
-		},
-	}
-
-	// We are only allowing chain wp-block elements to enter this command.
-	if ( cy.get( subject ).should( 'have.class', 'wp-block' ) ) {
-		keys( options ).forEach( option => {
-			keys( options[ option ] ).forEach( optionEntry => {
-				cy.document().then( doc => {
-					const {
-						type = '',
-						selector = '',
-					} = SELECTORS[ option ][ optionEntry ]
-					const el = doc.querySelector( selector )
-
-					if ( ! el ) {
-						cy.collapse( subject, option )
-					}
-					cy.scrollSidebarToView( selector )
-					// Execute commands based on selector, option, and optionEntry.
-					execCommands[ type ]( selector, options[ option ][ optionEntry ], option, optionEntry )
-				} )
 			} )
 		} )
-	}
-
-	return cy.get( subject )
 } )
 
 // -- This is a child command --

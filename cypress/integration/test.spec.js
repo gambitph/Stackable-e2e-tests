@@ -1,122 +1,90 @@
-const blockList = [
-	'accordion',
-	// 'blockquote',
-	// 'blog-posts',
-	// 'button',
-	// 'cta',
-	// 'card',
-	// 'columns',
-	// 'container',
-	// 'count-up',
-	// 'design-library',
-	// 'divider',
-	// 'expand',
-	// 'feature-grid',
-	// 'feature',
-	// 'header',
-	// 'heading',
-	// 'icon-list',
-	// 'icon',
-	// 'image-box',
-	// 'notification',
-	// 'number-box',
-	// 'pricing-box',
-	// 'separator',
-	// 'spacer',
-	// 'team-member',
-	// 'testimonial',
-	// 'text',
-	// 'video-popup',
-]
+// const blockList = [
+// 'accordion',
+// 'blockquote',
+// 'blog-posts',
+// 'button',
+// 'cta',
+// 'card',
+// 'columns',
+// 'container',
+// 'count-up',
+// 'design-library',
+// 'divider',
+// 'expand',
+// 'feature-grid',
+// 'feature',
+// 'header',
+// 'heading',
+// 'icon-list',
+// 'icon',
+// 'image-box',
+// 'notification',
+// 'number-box',
+// 'pricing-box',
+// 'separator',
+// 'spacer',
+// 'team-member',
+// 'testimonial',
+// 'text',
+// 'video-popup',
+// ]
 
 describe( 'New Page', () => {
 	it( 'should do something', () => {
 		cy.newPage()
-		cy.addStackableBlock( 'accordion' ).then( $accordion => {
-			cy.addStackableBlock( 'card' ).then( $card => {
-				cy.openInspector( $accordion, 'style' )
-				cy.adjustStyles( $accordion, {
-					general: {
-						reverseArrow: true,
-					},
-				} )
-				cy.openInspector( $card, 'style' )
-				cy.adjustStyles( $card, {
-					general: {
-						align: 'right',
-					},
-				} )
-				cy.removeBlock( $accordion )
-				cy.removeBlock( $card )
-			} )
+		cy.addBlock( 'ugb/accordion' )
+
+		cy.openInspector( 'ugb/accordion', 'Style' )
+
+		cy.adjustStyle( 'Close adjacent on open', true )
+		cy.adjustStyle( 'Open at the start', true )
+		cy.adjustStyle( 'Reverse arrow', true )
+		cy.adjustStyle( 'Border Radius', 35 )
+		cy.adjustStyle( 'Shadow / Outline', 5 )
+		cy.adjustStyle( 'Align', 'right' )
+
+		cy.collapse( 'ugb/accordion', 'Container Background' )
+
+		cy.adjustStyle( 'Background Color Opacity', 0.4 )
+		cy.adjustStyle( 'Background Color Type', 'gradient' )
+		cy.adjustStyle( 'Background Color #1', 2 )
+		cy.adjustStyle( 'Background Color #1', '#aeaeae' )
+		cy.adjustStyle( 'Background Color #2', 4 )
+		cy.adjustStyle( 'Background Color #2', '#ffffff' )
+		cy.adjustStyle( 'Adv. Gradient Color Settings', {
+			[ `Gradient Direction (degrees)` ]: 110,
+			[ `Color 1 Location` ]: 95,
+			[ `Color 2 Location` ]: 103,
+			[ `Background Gradient Blend Mode` ]: 'normal',
 		} )
+		// TODO: Upload an image or video
 
-		// blockList.forEach( block => {
-		// const addedBlock = cy.addStackableBlock( block )
-		// addedBlock.openInspector( 'style' )
+		cy.collapse( 'ugb/accordion', 'Title' )
 
-		// addedBlock.adjustStyles( {
-		// 	general: {
-		// 		closeAdjacentOnOpen: true,
-		// 		openAtTheStart: true,
-		// 		reverseArrow: true,
-		// 		borderRadius: 35,
-		// 		shadowOutline: 2,
-		// 		align: 'left',
-		// 	},
-		// } )
+		cy.adjustStyle( 'Typography', {
+			[ `Font Family` ]: 'Sans-serif',
+			[ `Size` ]: 43,
+			[ `Weight` ]: '800',
+			[ `Transform` ]: 'uppercase',
+			[ `Line-Height` ]: 2.8,
+			[ `Letter Spacing` ]: 3,
+		} )
+		cy.adjustStyle( 'Size', 32 )
+		cy.adjustStyle( 'Title HTML Tag', 'h1' )
+		cy.adjustStyle( 'Title Color', 2 )
+		cy.adjustStyle( 'Title Color', '#808080' )
+		cy.adjustStyle( 'Align', 'center' )
 
-		// addedBlock.adjustStyles( {
-		// 	quotation: {
-		// 		icon: 'square',
-		// 		color: '#adadad',
-		// 	},
-		// } )
+		cy.collapse( 'ugb/accordion', 'Arrow' )
 
-		// addedBlock.adjustStyles( {
-		// 	columnBackground: {
-		// 		backgroundType: 'gradient',
-		// 		backgroundColor1: '1', // Selecting the first entry in the color picker.
-		// 		backgroundColor2: '#eaeaea', // Picking a custon color.
-		// 		gradientSettings: {
-		// 			gradientDirection: 110,
-		// 			color1Location: 55,
-		// 			color2Location: 43,
-		// 			backgroundBlendMode: 'normal',
-		// 		},
-		// 	},
-		// } )
+		cy.adjustStyle( 'Size', 28 )
+		cy.adjustStyle( 'Color', 3 )
+		cy.adjustStyle( 'Color', '#acacac' )
 
-		// addedBlock.adjustStyles( {
-		// 	title: {
-		// 		typography: {
-		// 			fontFamily: 'Sans-serif',
-		// 			fontSize: 48,
-		// 			fontWeight: '900',
-		// 			fontTransform: 'uppercase',
-		// 			lineHeight: 4.7,
-		// 			letterSpacing: 4.3,
-		// 		},
-		// 		fontSize: 55,
-		// 		htmlTag: 'h1',
-		// 		titleColor: '#a3a3a3',
-		// 		titleAlign: 'center',
-		// 	},
-		// } )
+		cy.collapse( 'ugb/accordion', 'Spacing' )
 
-		// addedBlock.adjustStyles( {
-		// 	arrow: {
-		// 		size: 31,
-		// 		color: '#643eee',
-		// 	},
-		// } )
-
-		// addedBlock.adjustStyles( {
-		// 	spacing: {
-		// 		padding: [ 40, 45, 40, 45 ],
-		// 		title: 43,
-		// 	},
-		// } )
-		// } )
+		// TODO: Four Range Control
+		cy.adjustStyle( 'Title', 54 )
 	} )
 } )
+
