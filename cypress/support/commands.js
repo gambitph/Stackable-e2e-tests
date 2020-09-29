@@ -201,7 +201,7 @@ Cypress.Commands.add( 'toggleControl', ( name, value, options = {} ) => {
 	getActiveTab( tab => {
 		getBaseControl( tab, isInPopover )
 			.contains( containsRegExp( name ) )
-			.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
 			.find( 'span.components-form-toggle' )
 			.invoke( 'attr', 'class' )
@@ -210,7 +210,7 @@ Cypress.Commands.add( 'toggleControl', ( name, value, options = {} ) => {
 				if ( ( value && ! parsedClassNames.includes( 'is-checked' ) ) || ( ! value && parsedClassNames.includes( 'is-checked' ) ) ) {
 					getBaseControl( tab, isInPopover )
 						.contains( containsRegExp( name ) )
-						.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+						.parentsUntil( `.components-panel__body>.components-base-control` )
 						.parent()
 						.find( 'input' )
 						.click( { force: true } )
@@ -234,7 +234,7 @@ Cypress.Commands.add( 'rangeControl', ( name, value, options = {} ) => {
 		changeUnit( unit, name, tab, isInPopover )
 		getBaseControl( tab, isInPopover )
 			.contains( containsRegExp( name ) )
-			.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
 			.find( 'input.components-input-control__input' )
 			.type( `{selectall}${ value }`, { force: true } )
@@ -263,7 +263,7 @@ Cypress.Commands.add( 'toolbarControl', ( name, value, options = {} ) => {
 		changeResponsiveMode( viewport, name, tab, isInPopover )
 		getBaseControl( tab, isInPopover )
 			.contains( containsRegExp( name ) )
-			.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
 			.find( `button[value="${ value }"]` )
 			.click( { force: true } )
@@ -283,7 +283,7 @@ Cypress.Commands.add( 'colorControl', ( name, value, options = {} ) => {
 		getActiveTab( tab => {
 			getBaseControl( tab, isInPopover )
 				.contains( containsRegExp( name ) )
-				.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+				.parentsUntil( `.components-panel__body>.components-base-control` )
 				.parent()
 				.find( 'button' )
 				.contains( 'Custom color' )
@@ -299,7 +299,7 @@ Cypress.Commands.add( 'colorControl', ( name, value, options = {} ) => {
 		getActiveTab( tab => {
 			getBaseControl( tab, isInPopover )
 				.contains( containsRegExp( name ) )
-				.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+				.parentsUntil( `.components-panel__body>.components-base-control` )
 				.parent()
 				.find( 'button' )
 				.contains( 'Custom color' )
@@ -310,7 +310,7 @@ Cypress.Commands.add( 'colorControl', ( name, value, options = {} ) => {
 		getActiveTab( tab => {
 			getBaseControl( tab, isInPopover )
 				.contains( containsRegExp( name ) )
-				.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+				.parentsUntil( `.components-panel__body>.components-base-control` )
 				.parent()
 				.find( 'button.components-circular-option-picker__option' )
 				.eq( value - 1 )
@@ -322,7 +322,8 @@ Cypress.Commands.add( 'colorControl', ( name, value, options = {} ) => {
 /**
  * Command for adjusting the popover control.
  */
-Cypress.Commands.add( 'popoverControl', ( name, value ) => {
+Cypress.Commands.add( 'popoverControl', ( name, value, options = {} ) => {
+	options.isInPopover = true
 	const clickPopoverButton = () => {
 		getActiveTab( tab => {
 			cy
@@ -339,7 +340,7 @@ Cypress.Commands.add( 'popoverControl', ( name, value ) => {
 	clickPopoverButton()
 
 	keys( value ).forEach( key => {
-		cy.adjustStyle( key, value[ key ], { isInPopover: true } )
+		cy.adjustStyle( key, value[ key ], options )
 	} )
 
 	// Close the popover button.
@@ -366,7 +367,7 @@ Cypress.Commands.add( 'dropdownControl', ( name, value, options = {} ) => {
 	getActiveTab( tab => {
 		getBaseControl( tab, isInPopover )
 			.contains( containsRegExp( name ) )
-			.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
 			.find( 'select' )
 			.select( value, { force: true } )
@@ -384,7 +385,7 @@ Cypress.Commands.add( 'suggestionControl', ( name, value, options = {} ) => {
 	getActiveTab( tab => {
 		getBaseControl( tab, isInPopover )
 			.contains( containsRegExp( name ) )
-			.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
 			.find( 'input' )
 			.type( `{selectall}${ value }{enter}` )
@@ -404,7 +405,7 @@ Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
 	const clickLockButton = () => getActiveTab( tab => {
 		getBaseControl( tab, isInPopover )
 			.contains( containsRegExp( name ) )
-			.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
 			.find( 'button.ugb-four-range-control__lock' )
 			.click( { force: true } )
@@ -416,7 +417,7 @@ Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
 			changeUnit( unit, name, tab, isInPopover )
 			getBaseControl( tab, isInPopover )
 				.contains( containsRegExp( name ) )
-				.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+				.parentsUntil( `.components-panel__body>.components-base-control` )
 				.parent()
 				.find( 'input.components-input-control__input' )
 				.type( `{selectall}${ value }` )
@@ -427,7 +428,7 @@ Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
 			changeUnit( unit, name, tab, isInPopover )
 			getBaseControl( tab, isInPopover )
 				.contains( containsRegExp( name ) )
-				.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+				.parentsUntil( `.components-panel__body>.components-base-control` )
 				.parent()
 				.find( 'button.ugb-four-range-control__lock' )
 				.invoke( 'attr', 'class' )
@@ -443,7 +444,7 @@ Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
 			getActiveTab( tab => {
 				getBaseControl( tab, isInPopover )
 					.contains( containsRegExp( name ) )
-					.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+					.parentsUntil( `.components-panel__body>.components-base-control` )
 					.parent()
 					.find( 'input.components-input-control__input' )
 					.eq( index )

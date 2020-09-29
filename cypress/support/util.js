@@ -51,28 +51,29 @@ export const getActiveTab = ( callbackFunc = () => {} ) => {
  * @param {boolean} isInPopover if the control is in popover
  */
 export const changeResponsiveMode = ( viewport = 'Desktop', name = '', tab = 'style', isInPopover = false ) => {
-	cy.document().then( doc => {
-		const responsiveButtonGroupElement = doc.querySelector( '.ugb-base-control-multi-label__responsive' )
+	getBaseControl( tab, isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+		.then( $baseControl => {
+			if ( $baseControl.find( '.ugb-base-control-multi-label__responsive>button[aria-label="Desktop"]' ).length ) {
+				if ( ! $baseControl.find( `button[aria-label="${ viewport }"]` ).length ) {
+					getBaseControl( tab, isInPopover )
+						.contains( containsRegExp( name ) )
+						.parentsUntil( `.components-panel__body>.components-base-control` )
+						.parent()
+						.find( `button[aria-label="Desktop"]` )
+						.click( { force: true } )
+				}
 
-		if ( responsiveButtonGroupElement ) {
-			const responsiveButtonElement = doc.querySelector( `button[aria-label="${ viewport }"]` )
-			if ( ! responsiveButtonElement ) {
 				getBaseControl( tab, isInPopover )
 					.contains( containsRegExp( name ) )
-					.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+					.parentsUntil( `.components-panel__body>.components-base-control` )
 					.parent()
-					.find( `button[aria-label="Desktop"]` )
+					.find( `button[aria-label="${ viewport }"]` )
 					.click( { force: true } )
 			}
-
-			getBaseControl( tab, isInPopover )
-				.contains( containsRegExp( name ) )
-				.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
-				.parent()
-				.find( `button[aria-label="${ viewport }"]` )
-				.click( { force: true } )
-		}
-	} )
+		} )
 }
 
 /**
@@ -85,19 +86,21 @@ export const changeResponsiveMode = ( viewport = 'Desktop', name = '', tab = 'st
  */
 export const changeUnit = ( unit = '', name = '', tab = 'style', isInPopover = false ) => {
 	if ( unit ) {
-		cy.document().then( doc => {
-			const unitsButtonGroupElement = doc.querySelector( '.ugb-base-control-multi-label__units' )
-
-			if ( unitsButtonGroupElement ) {
-				getBaseControl( tab, isInPopover )
-					.contains( containsRegExp( name ) )
-					.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
-					.parent()
-					.find( `button` )
-					.contains( containsRegExp( unit ) )
-					.click( { force: true } )
-			}
-		} )
+		getBaseControl( tab, isInPopover )
+			.contains( containsRegExp( name ) )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
+			.parent()
+			.then( $baseControl => {
+				if ( $baseControl.find( '.ugb-base-control-multi-label__units' ).length ) {
+					getBaseControl( tab, isInPopover )
+						.contains( containsRegExp( name ) )
+						.parentsUntil( `.components-panel__body>.components-base-control` )
+						.parent()
+						.find( `button` )
+						.contains( containsRegExp( unit ) )
+						.click( { force: true } )
+				}
+			} )
 	}
 }
 
