@@ -1,4 +1,5 @@
 {
 	"baseUrl": "http://e2etest.local/",
-	"viewportWidth": 1200
+	"viewportWidth": 1200,
+	"defaultCommandTimeout": 500
 }
