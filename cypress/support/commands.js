@@ -242,6 +242,29 @@ Cypress.Commands.add( 'rangeControl', ( name, value, options = {} ) => {
 } )
 
 /**
+ * Command for resetting the advanced range control.
+ */
+Cypress.Commands.add( 'rangeControlReset', ( name, options = {} ) => {
+	const {
+		isInPopover = false,
+		viewport = 'Desktop',
+		unit = '',
+	} = options
+
+	getActiveTab( tab => {
+		changeResponsiveMode( viewport, name, tab, isInPopover )
+		changeUnit( unit, name, tab, isInPopover )
+		getBaseControl( tab, isInPopover )
+			.contains( containsRegExp( name ) )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
+			.parent()
+			.find( 'button' )
+			.contains( containsRegExp( 'Reset' ) )
+			.click( { force: true } )
+	} )
+} )
+
+/**
  * Command for adjusting the toolbar control
  */
 Cypress.Commands.add( 'toolbarControl', ( name, value, options = {} ) => {
@@ -302,7 +325,7 @@ Cypress.Commands.add( 'colorControl', ( name, value, options = {} ) => {
 				.parentsUntil( `.components-panel__body>.components-base-control` )
 				.parent()
 				.find( 'button' )
-				.contains( 'Custom color' )
+				.contains( containsRegExp( 'Custom color' ) )
 				.click( { force: true } )
 		} )
 	} else if ( typeof value === 'number' ) {
@@ -317,6 +340,27 @@ Cypress.Commands.add( 'colorControl', ( name, value, options = {} ) => {
 				.click( { force: true } )
 		} )
 	}
+} )
+
+/**
+ * Command for resetting the color picker.
+ */
+Cypress.Commands.add( 'colorControlClear', ( name, options = {} ) => {
+	const {
+		isInPopover = false,
+	} = options
+
+	getActiveTab( tab => {
+		getBaseControl( tab, isInPopover )
+			.contains( containsRegExp( name ) )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
+			.parent()
+			.find( 'button' )
+			.contains( containsRegExp( 'Clear' ) )
+			.click( { force: true } )
+			// We are adding an additional as sometimes click does not register.
+			.click( { force: true, log: false } )
+	} )
 } )
 
 /**
@@ -340,11 +384,33 @@ Cypress.Commands.add( 'popoverControl', ( name, value, options = {} ) => {
 	clickPopoverButton()
 
 	keys( value ).forEach( key => {
-		cy.adjustStyle( key, value[ key ], options )
+		cy.adjust( key, value[ key ], options )
 	} )
 
 	// Close the popover button.
 	clickPopoverButton()
+} )
+
+/**
+ * Command for resetting the popover control.
+ */
+Cypress.Commands.add( 'popoverControlReset', name => {
+	const selector = tab => cy
+		.get( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
+		.parent()
+
+	getActiveTab( tab => {
+		selector( tab )
+			.then( $parent => {
+				if ( $parent.find( 'button[aria-label="Reset"]' ).length ) {
+					selector( tab )
+						.find( 'button[aria-label="Reset"]' )
+						.click( { force: true } )
+				}
+			} )
+	} )
 } )
 
 /**
@@ -389,6 +455,24 @@ Cypress.Commands.add( 'suggestionControl', ( name, value, options = {} ) => {
 			.parent()
 			.find( 'input' )
 			.type( `{selectall}${ value }{enter}` )
+	} )
+} )
+
+/**
+ * Command for resetting the auto suggestion control.
+ */
+Cypress.Commands.add( 'suggestionControlClear', ( name, options = {} ) => {
+	const {
+		isInPopover = false,
+	} = options
+
+	getActiveTab( tab => {
+		getBaseControl( tab, isInPopover )
+			.contains( containsRegExp( name ) )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
+			.parent()
+			.find( 'input' )
+			.type( `{selectall}{backspace}{enter}` )
 	} )
 } )
 
@@ -455,9 +539,48 @@ Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
 } )
 
 /**
- * Command for adjusting settings in styles tab
+ * Command for resetting the four range control.
  */
-Cypress.Commands.add( 'adjustStyle', ( name, value, options = {} ) => {
+Cypress.Commands.add( 'fourRangeControlReset', ( name, options = {} ) => {
+	const {
+		isInPopover = false,
+		viewport = 'Desktop',
+	} = options
+
+	const selector = ( tab, isInPopover ) => getBaseControl( tab, isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+
+	const clickLockButton = () => getActiveTab( tab => {
+		selector( tab, isInPopover )
+			.find( 'button.ugb-four-range-control__lock' )
+			.click( { force: true } )
+	} )
+
+	getActiveTab( tab => {
+		changeResponsiveMode( viewport, name, tab, isInPopover )
+		selector( tab, isInPopover )
+			.find( 'button.ugb-four-range-control__lock' )
+			.invoke( 'attr', 'class' )
+			.then( className => {
+				const parsedClassName = className.split( ' ' )
+				if ( ! parsedClassName.includes( 'ugb--is-locked' ) ) {
+					clickLockButton()
+				}
+
+				selector( tab, isInPopover )
+					.find( 'button' )
+					.contains( containsRegExp( 'Reset' ) )
+					.click( { force: true } )
+			} )
+	} )
+} )
+
+/**
+ * Command for adjusting settings.
+ */
+Cypress.Commands.add( 'adjust', ( name, value, options = {} ) => {
 	const selector = () => cy
 		.get( '.components-panel__body.is-opened>.components-base-control' )
 		.contains( containsRegExp( name ) )
@@ -502,13 +625,39 @@ Cypress.Commands.add( 'adjustStyle', ( name, value, options = {} ) => {
 		} )
 } )
 
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+/**
+ * Command for resetting the style.
+ */
+Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
+	const selector = () => cy
+		.get( '.components-panel__body.is-opened>.components-base-control' )
+		.contains( containsRegExp( name ) )
+		.last()
+		.parentsUntil( '.components-panel__body.is-opened>.components-base-control' )
+		.parent()
+
+	return selector()
+		.invoke( 'attr', 'class' )
+		.then( classNames => {
+			const parsedClassNames = classNames.split( ' ' )
+
+			const commandsBasedOnClassName = {
+				 'ugb-advanced-range-control': 'rangeControlReset',
+				 'editor-color-palette-control': 'colorControlClear',
+				 'ugb-button-icon-control': 'popoverControlReset',
+				 'ugb-advanced-autosuggest-control': 'suggestionControlClear',
+				 'ugb-four-range-control': 'fourRangeControlReset',
+			}
+
+			const executeCommand = key => {
+				if ( parsedClassNames.includes( key ) ) {
+					cy[ commandsBasedOnClassName[ key ] ]( name, options )
+					return true
+				}
+				return false
+			}
+
+			keys( commandsBasedOnClassName ).forEach( executeCommand )
+		} )
+} )
+
