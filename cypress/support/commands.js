@@ -672,9 +672,7 @@ Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
 			const executeCommand = key => {
 				if ( parsedClassNames.includes( key ) ) {
 					cy[ commandsBasedOnClassName[ key ] ]( name, options )
-					return true
 				}
-				return false
 			}
 
 			keys( commandsBasedOnClassName ).forEach( executeCommand )
