@@ -51,6 +51,26 @@ Cypress.Commands.add( 'newPage', () => {
 	cy.hideAnyGutenbergTip()
 } )
 
+Cypress.Commands.add( 'deactivatePlugin', slug => {
+	cy.get( 'body' ).then( $body => {
+		if ( $body.find( 'form[name="loginform"]' ) ) {
+			cy.loginAdmin()
+		}
+	} )
+	cy.visit( `/?deactivate-plugin=${ slug }` )
+	cy.visit( `/wp-admin/` )
+} )
+
+Cypress.Commands.add( 'activatePlugin', slug => {
+	cy.get( 'body' ).then( $body => {
+		if ( $body.find( 'form[name="loginform"]' ) ) {
+			cy.loginAdmin()
+		}
+	} )
+	cy.visit( `/?activate-plugin=${ slug }` )
+	cy.visit( `/wp-admin/` )
+} )
+
 /**
  * Command for clicking the block inserter button
  */
@@ -660,4 +680,3 @@ Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
 			keys( commandsBasedOnClassName ).forEach( executeCommand )
 		} )
 } )
-

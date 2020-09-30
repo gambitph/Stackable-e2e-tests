@@ -117,5 +117,10 @@ describe( 'New Page', () => {
 		cy.collapse( 'Custom CSS' )
 		// TODO: Add Custom CSS.
 	} )
+
+	// it( 'should deactivate the plugin', () => {
+	// cy.deactivatePlugin( 'stackable-dev' )
+	// cy.activatePlugin( 'stackable-2.10.0' )
+	// } )
 } )
 

@@ -64,3 +64,25 @@ if ( isset( $_GET['setup'] ) ) {
 		die();
 	});
 }
+
+if ( isset( $_GET['deactivate-plugin'] ) ) {
+	add_action( 'init', function() {
+		$plugin = $_GET['deactivate-plugin'];
+		deactivate_plugins( '/'. $plugin .'/plugin.php');
+		die();
+	} );
+}
+
+if ( isset( $_GET['activate-plugin'] ) ) {
+	add_action( 'init', function() {
+		$plugin = '/' . $_GET['activate-plugin'] . '/plugin.php';
+
+		$active_plugins = get_option( 'active_plugins' );
+		if ( ! in_array( $plugin, $active_plugins ) ) {
+			$active_plugins[] = $plugin;
+			update_option( 'active_plugins', $active_plugins );
+		}
+
+		die();
+	} );
+}
