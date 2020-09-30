@@ -54,6 +54,7 @@ Cypress.Commands.add( 'newPage', () => {
 Cypress.Commands.add( 'deactivatePlugin', slug => {
 	cy.get( 'body' ).then( $body => {
 		if ( $body.find( 'form[name="loginform"]' ) ) {
+			// Login user if still not logged in.
 			cy.loginAdmin()
 		}
 	} )
@@ -64,6 +65,7 @@ Cypress.Commands.add( 'deactivatePlugin', slug => {
 Cypress.Commands.add( 'activatePlugin', slug => {
 	cy.get( 'body' ).then( $body => {
 		if ( $body.find( 'form[name="loginform"]' ) ) {
+			// Login user if still not logged in.
 			cy.loginAdmin()
 		}
 	} )
@@ -85,6 +87,7 @@ Cypress.Commands.add( 'addBlock', ( blockname = 'ugb/accordion' ) => {
 	cy.toggleBlockInserterButton()
 	const [ plugin, block ] = blockname.split( '/' )
 	if ( plugin === 'core' ) {
+		// core blocks have different selector buttons.
 		cy.get( `.block-editor-block-types-list>.block-editor-block-types-list__list-item>.editor-block-list-item-${ block }:first` ).click( { force: true } )
 	} else {
 		cy.get( `.block-editor-block-types-list>.block-editor-block-types-list__list-item>.editor-block-list-item-${ plugin }-${ block }:first` ).click( { force: true } )
@@ -97,10 +100,13 @@ Cypress.Commands.add( 'addBlock', ( blockname = 'ugb/accordion' ) => {
  */
 Cypress.Commands.add( 'selectBlock', ( subject, selector ) => {
 	if ( selector && typeof selector === 'number' ) {
+		// Select a specific block based on nth position (base zero).
 		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).eq( selector ).click( { force: true } )
 	} else if ( selector && typeof selector === 'string' ) {
-		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).contains( selector ).click( { force: true } )
+		// Select a selector based on text input inside
+		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).contains( containsRegExp( selector ) ).click( { force: true } )
 	} else {
+		// Otherwise, just select the last matched block.
 		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).last().click( { force: true } )
 	}
 } )
@@ -123,6 +129,7 @@ Cypress.Commands.add( 'openInspector', ( subject, tab, selector ) => {
 		.get( 'button[aria-label="Settings"]' )
 		.invoke( 'attr', 'aria-expanded' )
 		.then( ariaExpanded => {
+			// Open the inspector first if not visible.
 			if ( ariaExpanded === 'false' ) {
 				cy
 					.get( 'button[aria-label="Settings"]' )
@@ -155,7 +162,7 @@ Cypress.Commands.add( 'scrollSidebarToView', selector => {
  * Command for scrolling the editor panel to
  * a specific selector.
  */
-Cypress.Commands.add( 'scrollSidebarToView', selector => {
+Cypress.Commands.add( 'scrollEditorToView', selector => {
 	cy.document().then( doc => {
 		const selectedEl = doc.querySelector( selector )
 		if ( selectedEl ) {
@@ -180,6 +187,7 @@ Cypress.Commands.add( 'collapse', ( name = 'General' ) => {
 			.find( 'button.components-panel__body-toggle' )
 			.invoke( 'attr', 'aria-expanded' )
 			.then( ariaExpanded => {
+				// Open the accordion of aria-expanded is false.
 				if ( ariaExpanded === 'false' ) {
 					cy
 						.get( `.ugb-panel-${ tab }>.components-panel__body` )
@@ -218,20 +226,19 @@ Cypress.Commands.add( 'toggleControl', ( name, value, options = {} ) => {
 		isInPopover = false,
 	} = options
 
+	const selector = tab => getBaseControl( tab, isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+
 	getActiveTab( tab => {
-		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
+		selector( tab )
 			.find( 'span.components-form-toggle' )
 			.invoke( 'attr', 'class' )
 			.then( classNames => {
 				const parsedClassNames = classNames.split( ' ' )
 				if ( ( value && ! parsedClassNames.includes( 'is-checked' ) ) || ( ! value && parsedClassNames.includes( 'is-checked' ) ) ) {
-					getBaseControl( tab, isInPopover )
-						.contains( containsRegExp( name ) )
-						.parentsUntil( `.components-panel__body>.components-base-control` )
-						.parent()
+					selector( tab )
 						.find( 'input' )
 						.click( { force: true } )
 				}
@@ -321,13 +328,15 @@ Cypress.Commands.add( 'colorControl', ( name, value, options = {} ) => {
 		isInPopover = false,
 	} = options
 
+	const selector = tab => getBaseControl( tab, isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+
 	if ( typeof value === 'string' && value.match( /^#/ ) ) {
 		// Use custom color.
 		getActiveTab( tab => {
-			getBaseControl( tab, isInPopover )
-				.contains( containsRegExp( name ) )
-				.parentsUntil( `.components-panel__body>.components-base-control` )
-				.parent()
+			selector( tab )
 				.find( 'button' )
 				.contains( 'Custom color' )
 				.click( { force: true } )
@@ -340,10 +349,7 @@ Cypress.Commands.add( 'colorControl', ( name, value, options = {} ) => {
 
 		// Declare the variable again
 		getActiveTab( tab => {
-			getBaseControl( tab, isInPopover )
-				.contains( containsRegExp( name ) )
-				.parentsUntil( `.components-panel__body>.components-base-control` )
-				.parent()
+			selector( tab )
 				.find( 'button' )
 				.contains( containsRegExp( 'Custom color' ) )
 				.click( { force: true } )
@@ -351,10 +357,7 @@ Cypress.Commands.add( 'colorControl', ( name, value, options = {} ) => {
 	} else if ( typeof value === 'number' ) {
 		// Get the nth color in the color picker.
 		getActiveTab( tab => {
-			getBaseControl( tab, isInPopover )
-				.contains( containsRegExp( name ) )
-				.parentsUntil( `.components-panel__body>.components-base-control` )
-				.parent()
+			selector( tab )
 				.find( 'button.components-circular-option-picker__option' )
 				.eq( value - 1 )
 				.click( { force: true } )
@@ -378,7 +381,7 @@ Cypress.Commands.add( 'colorControlClear', ( name, options = {} ) => {
 			.find( 'button' )
 			.contains( containsRegExp( 'Clear' ) )
 			.click( { force: true } )
-			// We are adding an additional as sometimes click does not register.
+			// We are adding an additional click as sometimes click does not register.
 			.click( { force: true, log: false } )
 	} )
 } )
@@ -506,11 +509,13 @@ Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
 		unit = '',
 	} = options
 
+	const selector = tab => getBaseControl( tab, isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+
 	const clickLockButton = () => getActiveTab( tab => {
-		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
+		selector( tab )
 			.find( 'button.ugb-four-range-control__lock' )
 			.click( { force: true } )
 	} )
@@ -519,10 +524,7 @@ Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
 		getActiveTab( tab => {
 			changeResponsiveMode( viewport, name, tab, isInPopover )
 			changeUnit( unit, name, tab, isInPopover )
-			getBaseControl( tab, isInPopover )
-				.contains( containsRegExp( name ) )
-				.parentsUntil( `.components-panel__body>.components-base-control` )
-				.parent()
+			selector( tab )
 				.find( 'input.components-input-control__input' )
 				.type( `{selectall}${ value }` )
 		} )
@@ -530,10 +532,7 @@ Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
 		getActiveTab( tab => {
 			changeResponsiveMode( viewport, name, tab, isInPopover )
 			changeUnit( unit, name, tab, isInPopover )
-			getBaseControl( tab, isInPopover )
-				.contains( containsRegExp( name ) )
-				.parentsUntil( `.components-panel__body>.components-base-control` )
-				.parent()
+			selector( tab )
 				.find( 'button.ugb-four-range-control__lock' )
 				.invoke( 'attr', 'class' )
 				.then( className => {
@@ -546,10 +545,7 @@ Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
 
 		value.forEach( ( entry, index ) => {
 			getActiveTab( tab => {
-				getBaseControl( tab, isInPopover )
-					.contains( containsRegExp( name ) )
-					.parentsUntil( `.components-panel__body>.components-base-control` )
-					.parent()
+				selector( tab )
 					.find( 'input.components-input-control__input' )
 					.eq( index )
 					.type( `{selectall}${ entry }`, { force: true } )
