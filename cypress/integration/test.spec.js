@@ -39,14 +39,14 @@ describe( 'New Page', () => {
 
 		cy.adjust( 'Close adjacent on open', true )
 		cy.adjust( 'Open at the start', true )
-		cy.adjust( 'Reverse arrow', true )
-		cy.adjust( 'Border Radius', 35 )
-		cy.adjust( 'Shadow / Outline', 5 )
-		cy.adjust( 'Align', 'right', { viewport: 'Tablet' } )
+		cy.adjust( 'Reverse arrow', true ).assertComputedStyle( 'flex-direction', '.ugb-accordion__heading', 'row-reverse' )
+		cy.adjust( 'Border Radius', 35 ).assertComputedStyle( 'border-radius', '.ugb-accordion__heading', '35px' )
+		cy.adjust( 'Shadow / Outline', 5 ).assertClassName( '.ugb-accordion__heading', 'ugb--shadow-5' )
+		cy.adjust( 'Align', 'right', { viewport: 'Tablet' } ).assertComputedStyle( 'text-align', '.ugb-inner-block', 'right' )
 
 		cy.collapse( 'Container Background' )
 
-		cy.adjust( 'Background Color Opacity', 0.4 )
+		cy.adjust( 'Background Color Opacity', 0.4 ).assertComputedStyle( 'background-color', '.ugb-accordion__heading', 'rgba(255, 255, 255, 0.4)' )
 		cy.adjust( 'Background Color Type', 'gradient' )
 		cy.adjust( 'Background Color #1', 2 )
 		cy.adjust( 'Background Color #1', '#aeaeae' )
@@ -116,11 +116,7 @@ describe( 'New Page', () => {
 
 		cy.collapse( 'Custom CSS' )
 		// TODO: Add Custom CSS.
+		cy.publish()
 	} )
-
-	// it( 'should deactivate the plugin', () => {
-	// cy.deactivatePlugin( 'stackable-dev' )
-	// cy.activatePlugin( 'stackable-2.10.0' )
-	// } )
 } )
 

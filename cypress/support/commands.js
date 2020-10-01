@@ -16,7 +16,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys,
+	kebabCase, keys, camelCase,
 } from 'lodash'
 
 /**
@@ -109,6 +109,64 @@ Cypress.Commands.add( 'selectBlock', ( subject, selector ) => {
 		// Otherwise, just select the last matched block.
 		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).last().click( { force: true } )
 	}
+} )
+
+/**
+ * Command for asserting the computed style of a block.
+ */
+Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subject, cssAttribute = '', customSelector = '', expectedValue = '' ) => {
+	cy
+		.get( subject )
+		.invoke( 'attr', 'id' )
+		.then( id => {
+			const block = cy.get( `#${ id }${ ` ${ customSelector }` || `` }` )
+			block.then( $block => {
+				cy.window().then( win => {
+					expect( win.getComputedStyle( $block[ 0 ] )[ camelCase( cssAttribute ) ] ).toBe( expectedValue )
+				} )
+			} )
+		} )
+} )
+
+/**
+ * Command for asserting the included classNames.
+ */
+Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, ( subject, customSelector = '', expectedValue = '' ) => {
+	cy
+		.get( subject )
+		.invoke( 'attr', 'id' )
+		.then( id => {
+			const block = cy.get( `#${ id }${ ` ${ customSelector }` || `` }` )
+			block
+				.invoke( 'attr', 'class' )
+				.then( $classNames => {
+					const parsedClassNames = $classNames.split( ' ' )
+					expect( parsedClassNames.includes( expectedValue ) ).toBe( true )
+				} )
+		} )
+} )
+
+/**
+ * Command for changing the preview mode.
+ */
+Cypress.Commands.add( 'changePreviewMode', ( mode = 'Desktop' ) => {
+	cy
+		.get( 'button' )
+		.contains( containsRegExp( 'Preview' ) )
+		.invoke( 'attr', 'aria-expanded' )
+		.then( $ariaExpanded => {
+			if ( $ariaExpanded === 'false' ) {
+				cy
+					.get( 'button' )
+					.contains( containsRegExp( 'Preview' ) )
+					.click( { force: true } )
+			}
+
+			cy
+				.get( 'button.block-editor-post-preview__button-resize' )
+				.contains( containsRegExp( mode ) )
+				.click( { force: true } )
+		} )
 } )
 
 /**
@@ -604,7 +662,7 @@ Cypress.Commands.add( 'adjust', ( name, value, options = {} ) => {
 		.parentsUntil( '.components-panel__body.is-opened>.components-base-control' )
 		.parent()
 
-	return selector()
+	 selector()
 		.invoke( 'attr', 'class' )
 		.then( classNames => {
 			const parsedClassNames = classNames.split( ' ' )
@@ -639,6 +697,8 @@ Cypress.Commands.add( 'adjust', ( name, value, options = {} ) => {
 					} )
 			}
 		} )
+
+	return cy.get( '.wp-block.is-selected' )
 } )
 
 /**
@@ -652,7 +712,7 @@ Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
 		.parentsUntil( '.components-panel__body.is-opened>.components-base-control' )
 		.parent()
 
-	return selector()
+	 selector()
 		.invoke( 'attr', 'class' )
 		.then( classNames => {
 			const parsedClassNames = classNames.split( ' ' )
@@ -672,5 +732,36 @@ Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
 			}
 
 			keys( commandsBasedOnClassName ).forEach( executeCommand )
+		} )
+
+	return cy.get( '.wp-block.is-selected' )
+} )
+
+/**
+ * Command for publishing a page.
+ */
+Cypress.Commands.add( 'publish', () => {
+	const selector = () => cy
+		.get( 'button' )
+		.contains( containsRegExp( 'Publish' ) )
+
+	selector()
+		.invoke( 'attr', 'aria-disabled' )
+		.then( ariaDisabled => {
+			if ( ariaDisabled === 'false' ) {
+				selector()
+					.click( { force: true } )
+			}
+
+			cy
+				.get( '.interface-interface-skeleton__actions' )
+				.then( $actions => {
+					if ( $actions.find( '.editor-post-publish-panel' ).length ) {
+						cy
+							.get( '.editor-post-publish-panel' )
+							.contains( containsRegExp( 'Publish' ) )
+							.click( { force: true } )
+					}
+				} )
 		} )
 } )
