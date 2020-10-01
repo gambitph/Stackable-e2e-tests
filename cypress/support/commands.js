@@ -136,6 +136,9 @@ Cypress.Commands.add( 'typeBlock', ( subject, contentSelector = '', content = ''
 		.find( contentSelector )
 		.click( { force: true } )
 		.type( `{selectall}${ content }`, { force: true } )
+		.then( $element => {
+			expect( $element ).to.contain( content )
+		} )
 } )
 
 /**
