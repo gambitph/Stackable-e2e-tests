@@ -382,7 +382,7 @@ Cypress.Commands.add( 'toolbarControl', ( name, value, options = {} ) => {
 
 	// Compatibility for default values
 	const defaultValues = [
-		'single',
+		'single', // Default value for column background type.
 	]
 
 	if ( defaultValues.includes( value ) ) {
@@ -396,6 +396,25 @@ Cypress.Commands.add( 'toolbarControl', ( name, value, options = {} ) => {
 			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
 			.find( `button[value="${ value }"]` )
+			.click( { force: true } )
+	} )
+} )
+
+/**
+ * Command for adjusting the design control.
+ * Mainly used for top and bottom separator modules.
+ */
+Cypress.Commands.add( 'designControl', ( name, value, options = {} ) => {
+	const {
+		isInPopover = false,
+	} = options
+
+	getActiveTab( tab => {
+		getBaseControl( tab, isInPopover )
+			.contains( containsRegExp( name ) )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
+			.parent()
+			.find( `input[value="${ kebabCase( value ) }"]` )
 			.click( { force: true } )
 	} )
 } )
@@ -469,7 +488,7 @@ Cypress.Commands.add( 'colorControlClear', ( name, options = {} ) => {
 /**
  * Command for adjusting the popover control.
  */
-Cypress.Commands.add( 'popoverControl', ( name, value ) => {
+Cypress.Commands.add( 'popoverControl', ( name, value = {} ) => {
 	const clickPopoverButton = () => {
 		getActiveTab( tab => {
 			cy
@@ -482,29 +501,58 @@ Cypress.Commands.add( 'popoverControl', ( name, value ) => {
 		} )
 	}
 
-	// Open the popover button.
-	clickPopoverButton()
+	if ( typeof value === 'object' ) {
+		// Open the popover button.
+		clickPopoverButton()
 
-	keys( value ).forEach( key => {
-		// If an option entry is an object, get the value, unit, and vieport property to be passed
-		// in adjust function.
-		if ( typeof value[ key ] === 'object' && ! Array.isArray( value[ key ] ) ) {
-			const {
-				viewport = 'Desktop',
-				unit = '',
-				value: childValue = '',
-			} = value[ key ]
+		/**
+		 * If the value is an object, open the popover and adjust the settings
+		 */
+		keys( value ).forEach( key => {
+			// If an option entry is an object, get the value, unit, and vieport property to be passed
+			// in adjust function.
+			if ( typeof value[ key ] === 'object' && ! Array.isArray( value[ key ] ) ) {
+				const {
+					viewport = 'Desktop',
+					unit = '',
+					value: childValue = '',
+				} = value[ key ]
 
-			cy.adjust( key, childValue, {
-				viewport, unit, isInPopover: true,
-			} )
-		} else {
-			cy.adjust( key, value[ key ], { isInPopover: true } )
-		}
-	} )
+				cy.adjust( key, childValue, {
+					viewport, unit, isInPopover: true,
+				} )
+			} else {
+				cy.adjust( key, value[ key ], { isInPopover: true } )
+			}
+		} )
 
-	// Close the popover button.
-	clickPopoverButton()
+		// Close the popover button.
+		clickPopoverButton()
+	} else if ( typeof value === 'boolean' ) {
+		// In some cases, a popover control has an input checkbox.
+		getActiveTab( tab => {
+			cy
+				.get( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+				.contains( containsRegExp( name ) )
+				.parentsUntil( '.components-panel__body>.components-base-control' )
+				.parent()
+				.find( 'span.components-form-toggle' )
+				.invoke( 'attr', 'class' )
+				.then( $classNames => {
+					const parsedClassNames = $classNames.split( ' ' )
+
+					if ( ( value && ! parsedClassNames.includes( 'is-checked' ) ) || ( ! value === parsedClassNames.includes( 'is-checked' ) ) ) {
+						cy
+							.get( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+							.contains( containsRegExp( name ) )
+							.parentsUntil( '.components-panel__body>.components-base-control' )
+							.parent()
+							.find( 'input[type="checkbox"]' )
+							.click( { force: true } )
+					}
+				} )
+		} )
+	}
 } )
 
 /**
@@ -716,6 +764,7 @@ Cypress.Commands.add( 'adjust', ( name, value, options = {} ) => {
 				 'ugb-button-icon-control': 'popoverControl',
 				 'ugb-advanced-autosuggest-control': 'suggestionControl',
 				 'ugb-four-range-control': 'fourRangeControl',
+				 'ugb-design-separator-control': 'designControl',
 
 				 // Custom selectors.
 				 'ugb--help-tip-background-color-type': 'toolbarControl',

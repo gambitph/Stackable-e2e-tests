@@ -8,6 +8,20 @@ describe( 'Block Test', () => {
 		cy.adjustLayout( 'Basic' )
 		cy.adjustDesign( 'Header 3' )
 
+		cy.openInspector( 'ugb/header', 'Style' )
+		cy.toggleStyle( 'Top Separator' )
+
+		cy.adjust( 'Design', 'Slant 1' )
+		cy.adjust( 'Separator Layer 2', true )
+		cy.adjust( 'Separator Layer 2', {
+			[ `Color` ]: '#aeaeae',
+			[ `Layer Height` ]: 1.67,
+			[ `Layer Width` ]: 1.11,
+			[ `Flip Horizontally` ]: true,
+			[ `Opacity` ]: 0.3,
+			[ `Mix Blend Mode` ]: 'screen',
+		} )
+
 		cy.addGlobalColor( { name: 'Test', color: '#fff' } )
 		cy.resetGlobalColor()
 		cy.adjust( 'Use only Stackable colors', true )
