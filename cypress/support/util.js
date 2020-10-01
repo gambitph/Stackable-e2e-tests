@@ -11,7 +11,7 @@ import { lowerCase } from 'lodash'
  * @return {*} generated cypress getter
  */
 export const getBaseControl = ( tab = 'style', isInPopover = false ) => {
-	const baseControlEl = ! isInPopover ? cy.get( `.ugb-panel-${ tab }>.components-panel__body.is-opened>.components-base-control` ) : cy.get( '.components-popover__content' ).find( '.components-base-control' )
+	const baseControlEl = ! isInPopover ? cy.get( `${ tab ? `.ugb-panel-${ tab }>` : `` }.components-panel__body.is-opened>.components-base-control` ) : cy.get( '.components-popover__content' ).find( '.components-base-control' )
 	return baseControlEl
 }
 
@@ -31,15 +31,22 @@ export const containsRegExp = ( name = '' ) => new RegExp( `^${ name.replace( /[
  * @param {*} callbackFunc callback function
  */
 export const getActiveTab = ( callbackFunc = () => {} ) => {
-	cy
-		.get( '.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active' )
-		.invoke( 'attr', 'aria-label' )
-		.then( ariaLabel => {
-			// Get the active tab.
-			const tab = lowerCase( ariaLabel.split( ' ' )[ 0 ] )
+	cy.document().then( doc => {
+		if ( doc.querySelector( '.ugb-global-settings__inspector' ) ) {
+			// Pass an empty string to callback function if the current sidebar opened is Global Settings.
+			callbackFunc( '' )
+		} else {
+			cy
+				.get( '.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active' )
+				.invoke( 'attr', 'aria-label' )
+				.then( ariaLabel => {
+					// Get the active tab.
+					const tab = lowerCase( ariaLabel.split( ' ' )[ 0 ] )
 
-			callbackFunc( tab )
-		} )
+					callbackFunc( tab )
+				} )
+		}
+	} )
 }
 
 /**

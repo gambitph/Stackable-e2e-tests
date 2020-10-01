@@ -16,7 +16,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys, camelCase,
+	kebabCase, keys, camelCase, findIndex,
 } from 'lodash'
 
 /**
@@ -467,8 +467,7 @@ Cypress.Commands.add( 'colorControlClear', ( name, options = {} ) => {
 /**
  * Command for adjusting the popover control.
  */
-Cypress.Commands.add( 'popoverControl', ( name, value, options = {} ) => {
-	options.isInPopover = true
+Cypress.Commands.add( 'popoverControl', ( name, value ) => {
 	const clickPopoverButton = () => {
 		getActiveTab( tab => {
 			cy
@@ -485,7 +484,21 @@ Cypress.Commands.add( 'popoverControl', ( name, value, options = {} ) => {
 	clickPopoverButton()
 
 	keys( value ).forEach( key => {
-		cy.adjust( key, value[ key ], options )
+		// If the options is an object, get the value and options property to be passed
+		// in adjust function.
+		if ( typeof value[ key ] === 'object' && ! Array.isArray( value[ key ] ) ) {
+			const {
+				viewport = 'Desktop',
+				unit = '',
+				value: childValue = '',
+			} = value[ key ]
+
+			cy.adjust( key, childValue, {
+				viewport, unit, isInPopover: true,
+			} )
+		} else {
+			cy.adjust( key, value[ key ], { isInPopover: true } )
+		}
 	} )
 
 	// Close the popover button.
@@ -718,7 +731,7 @@ Cypress.Commands.add( 'adjust', ( name, value, options = {} ) => {
 			}
 		} )
 
-	return cy.get( '.wp-block.is-selected' )
+	return cy.get( '.block-editor-block-list__block.is-selected' )
 } )
 
 /**
@@ -754,7 +767,7 @@ Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
 			keys( commandsBasedOnClassName ).forEach( executeCommand )
 		} )
 
-	return cy.get( '.wp-block.is-selected' )
+	return cy.get( '.block-editor-block-list__block.is-selected' )
 } )
 
 /**
@@ -784,4 +797,199 @@ Cypress.Commands.add( 'publish', () => {
 					}
 				} )
 		} )
+} )
+
+/**
+ * Command for changing the layout of the block.
+ */
+Cypress.Commands.add( 'adjustLayout', ( option = '' ) => {
+	cy
+		.get( '.ugb-design-control-wrapper' )
+		.find( `input[value="${ kebabCase( option ) }"]` )
+		.click( { force: true } )
+} )
+
+/**
+ * Command for changing the design of the block.
+ */
+Cypress.Commands.add( 'adjustDesign', ( option = '' ) => {
+	cy
+		.get( '.ugb-design-library-items' )
+		.find( '.ugb-design-library-item' )
+		.contains( containsRegExp( option ) )
+		.parentsUntil( '.ugb-design-library-item' )
+		.parent()
+		.find( 'button' )
+		.click( { force: true } )
+} )
+
+/**
+ * Command for adding a global color in Stackable Settings.
+ */
+Cypress.Commands.add( 'addGlobalColor', ( options = {} ) => {
+	const {
+		name = '',
+		color = '',
+	} = options
+
+	cy.openSidebar( 'Stackable Settings' )
+	cy
+		.get( 'button[aria-label="Add New Color"]' )
+		.click( { force: true } )
+		.then( () => {
+			if ( color ) {
+				cy
+					.get( '.components-color-picker__inputs-field' )
+					.contains( containsRegExp( 'Color value in hexadecimal' ) )
+					.parentsUntil( '.components-color-picker__inputs-field' )
+					.find( 'input' )
+					.click( { force: true } )
+					.type( `{selectall}${ color }{enter}` )
+			}
+
+			if ( name ) {
+				cy
+					.get( '.components-color-picker__input-field' )
+					.contains( containsRegExp( 'Style name' ) )
+					.parentsUntil( '.components-color-picker__input-field' )
+					.find( 'input' )
+					.click( { force: true } )
+					.type( `{selectall}${ name }{enter}` )
+			}
+
+			cy
+				.get( '.ugb-global-settings-color-picker' )
+				.click( { force: true } )
+		} )
+} )
+
+/**
+ * Command for resetting the global color palette.
+ */
+Cypress.Commands.add( 'resetGlobalColor', () => {
+	cy.openSidebar( 'Stackable Settings' )
+	const selector = () => cy
+		.get( '.ugb-global-settings-color-picker__reset-button' )
+		.find( 'button' )
+
+	selector()
+		.invoke( 'attr', 'disabled' )
+		.then( $disabled => {
+			if ( typeof $disabled === 'undefined' ) {
+				selector()
+					.click( { force: true } )
+
+				cy
+					.get( '.components-button-group' )
+					.find( 'button' )
+					.contains( 'Reset' )
+					.click( { force: true } )
+			}
+		} )
+} )
+
+/**
+ * Command for deleting a global color in Stackable Settings.
+ */
+Cypress.Commands.add( 'deleteGlobalColor', ( selector = 0 ) => {
+	cy.openSidebar( 'Stackable Settings' )
+
+	if ( typeof selector === 'number' ) {
+		// Delete a global color by index number.
+		cy
+			.get( '.components-circular-option-picker__option-wrapper' )
+			.eq( selector )
+			.find( 'button' )
+			.click( { force: true } )
+	} else if ( typeof selector === 'string' ) {
+		// Delete a global color by name.
+		cy
+			.get( '.components-circular-option-picker__option-wrapper' )
+			.find( `button[aria-label="${ selector }"]` )
+			.click( { force: true } )
+	}
+
+	cy
+		.get( 'button' )
+		.contains( containsRegExp( 'Delete color' ) )
+		.click( { force: true } )
+
+	cy
+		.get( 'button' )
+		.contains( containsRegExp( 'Delete' ) )
+		.click( { force: true } )
+} )
+
+/**
+ * Command for adjusting the global typography in Stackable Settings.
+ */
+Cypress.Commands.add( 'adjustGlobalTypography', ( selector = 'h1', options = {} ) => {
+	const globalTypographyOptions = [
+		'h1',
+		'h2',
+		'h3',
+		'h4',
+		'h5',
+		'h6',
+		'p',
+	]
+
+	cy.openSidebar( 'Stackable Settings' )
+
+	const clickEditButton = () => cy
+		.get( '.ugb-global-settings-typography-control' )
+		.eq( findIndex( globalTypographyOptions, value => value === selector ) )
+		.find( 'button[aria-label="Edit"]' )
+		.click( { force: true } )
+
+	clickEditButton()
+
+	keys( options ).forEach( key => {
+		// If the options is an object, get the value and options property to be passed
+		// in adjust function.
+		if ( typeof options[ key ] === 'object' && ! Array.isArray( options[ key ] ) ) {
+			const {
+				viewport = 'Desktop',
+				unit = '',
+				value = '',
+			} = options[ key ]
+
+			cy.adjust( key, value, {
+				viewport, unit, isInPopover: true,
+			} )
+		} else {
+			cy.adjust( key, options[ key ], { isInPopover: true } )
+		}
+	} )
+
+	clickEditButton()
+} )
+
+/**
+ * Command for resetting the global typogragpy style.
+ */
+Cypress.Commands.add( 'resetGlobalTypography', ( selector = 'h1' ) => {
+	const globalTypographyOptions = [
+		'h1',
+		'h2',
+		'h3',
+		'h4',
+		'h5',
+		'h6',
+		'p',
+	]
+
+	cy.openSidebar( 'Stackable Settings' )
+
+	cy
+		.get( '.ugb-global-settings-typography-control' )
+		.eq( findIndex( globalTypographyOptions, value => value === selector ) )
+		.find( 'button[aria-label="Reset"]' )
+		.click( { force: true } )
+
+	cy
+		.get( '.components-button-group' )
+		.find( 'button' )
+		.contains( 'Reset' )
+		.click( { force: true } )
 } )
