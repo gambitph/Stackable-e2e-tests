@@ -129,6 +129,16 @@ Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subje
 } )
 
 /**
+ * Command for typing in blocks
+ */
+Cypress.Commands.add( 'typeBlock', ( subject, contentSelector = '', content = '', customSelector = '' ) => {
+	cy.selectBlock( subject, customSelector )
+		.find( contentSelector )
+		.click( { force: true } )
+		.type( `{selectall}${ content }`, { force: true } )
+} )
+
+/**
  * Command for asserting the included classNames.
  */
 Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, ( subject, customSelector = '', expectedValue = '' ) => {
@@ -179,21 +189,28 @@ Cypress.Commands.add( 'deleteBlock', ( subject, selector ) => {
 } )
 
 /**
- * Command for opening the block inspectore of a block.
+ * Command for opening a sidebar button.
  */
-Cypress.Commands.add( 'openInspector', ( subject, tab, selector ) => {
-	cy.selectBlock( subject, selector )
+Cypress.Commands.add( 'openSidebar', ( label = 'Settings' ) => {
 	cy
-		.get( 'button[aria-label="Settings"]' )
+		.get( `button[aria-label="${ label }"]` )
 		.invoke( 'attr', 'aria-expanded' )
 		.then( ariaExpanded => {
 			// Open the inspector first if not visible.
 			if ( ariaExpanded === 'false' ) {
 				cy
-					.get( 'button[aria-label="Settings"]' )
+					.get( `button[aria-label="${ label }"]` )
 					.click( { force: true } )
 			}
 		} )
+} )
+
+/**
+ * Command for opening the block inspectore of a block.
+ */
+Cypress.Commands.add( 'openInspector', ( subject, tab, selector ) => {
+	cy.selectBlock( subject, selector )
+	cy.openSidebar( 'Settings' )
 
 	cy
 		.get( `button[aria-label="${ tab } Tab"]` )
