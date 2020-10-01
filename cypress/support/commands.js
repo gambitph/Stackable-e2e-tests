@@ -53,7 +53,7 @@ Cypress.Commands.add( 'newPage', () => {
 
 Cypress.Commands.add( 'deactivatePlugin', slug => {
 	cy.get( 'body' ).then( $body => {
-		if ( $body.find( 'form[name="loginform"]' ) ) {
+		if ( $body.find( 'form[name="loginform"]' ).length ) {
 			// Login user if still not logged in.
 			cy.loginAdmin()
 		}
@@ -64,7 +64,7 @@ Cypress.Commands.add( 'deactivatePlugin', slug => {
 
 Cypress.Commands.add( 'activatePlugin', slug => {
 	cy.get( 'body' ).then( $body => {
-		if ( $body.find( 'form[name="loginform"]' ) ) {
+		if ( $body.find( 'form[name="loginform"]' ).length ) {
 			// Login user if still not logged in.
 			cy.loginAdmin()
 		}
@@ -77,6 +77,7 @@ Cypress.Commands.add( 'activatePlugin', slug => {
  * Command for clicking the block inserter button
  */
 Cypress.Commands.add( 'toggleBlockInserterButton', () => {
+	// Click the adder button located at the upper left part of the screen.
 	cy.get( '.edit-post-header-toolbar__inserter-toggle' ).click( { force: true } )
 } )
 
@@ -265,7 +266,7 @@ Cypress.Commands.add( 'collapse', ( name = 'General' ) => {
 			.find( 'button.components-panel__body-toggle' )
 			.invoke( 'attr', 'aria-expanded' )
 			.then( ariaExpanded => {
-				// Open the accordion of aria-expanded is false.
+				// Open the accordion if aria-expanded is false.
 				if ( ariaExpanded === 'false' ) {
 					cy
 						.get( `.ugb-panel-${ tab }>.components-panel__body` )
@@ -283,11 +284,12 @@ Cypress.Commands.add( 'collapse', ( name = 'General' ) => {
  * Command for enabling/disabling an
  * accordion.
  */
-Cypress.Commands.add( 'toggleStyle', ( subject, name = 'Block Title', enabled = true ) => {
+Cypress.Commands.add( 'toggleStyle', ( name = 'Block Title', enabled = true ) => {
 	cy.document().then( doc => {
 		const kebabCaseName = kebabCase( name )
 		const el = doc.querySelector( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle` )
 		if ( el ) {
+			// Click the checkbox if necessary. Otherwise, don't check the checkbox.
 			if ( ( enabled && ! Array.from( el.classList ).includes( 'is-checked' ) ) || ( ! enabled && Array.from( el.classList ).includes( 'is-checked' ) ) ) {
 				cy.scrollSidebarToView( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle>input` )
 				cy.get( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle>input` ).click( { force: true } )
@@ -484,7 +486,7 @@ Cypress.Commands.add( 'popoverControl', ( name, value ) => {
 	clickPopoverButton()
 
 	keys( value ).forEach( key => {
-		// If the options is an object, get the value and options property to be passed
+		// If an option entry is an object, get the value, unit, and vieport property to be passed
 		// in adjust function.
 		if ( typeof value[ key ] === 'object' && ! Array.isArray( value[ key ] ) ) {
 			const {
@@ -612,6 +614,7 @@ Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
 	} )
 
 	if ( typeof value === 'number' ) {
+		// Adjust the single control field.
 		getActiveTab( tab => {
 			changeResponsiveMode( viewport, name, tab, isInPopover )
 			changeUnit( unit, name, tab, isInPopover )
@@ -620,6 +623,7 @@ Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
 				.type( `{selectall}${ value }` )
 		} )
 	} else if ( Array.isArray( value ) ) {
+		// Adjust the four control field.
 		getActiveTab( tab => {
 			changeResponsiveMode( viewport, name, tab, isInPopover )
 			changeUnit( unit, name, tab, isInPopover )
@@ -700,6 +704,10 @@ Cypress.Commands.add( 'adjust', ( name, value, options = {} ) => {
 		.then( classNames => {
 			const parsedClassNames = classNames.split( ' ' )
 
+			/**
+			 * These are the list of selectors
+			 * and their corresponding commands.
+			 */
 			const commandsBasedOnClassName = {
 				 'components-toggle-control': 'toggleControl',
 				 'ugb-advanced-range-control': 'rangeControl',
@@ -731,6 +739,7 @@ Cypress.Commands.add( 'adjust', ( name, value, options = {} ) => {
 			}
 		} )
 
+	// Always return the selected block which will be used in functions that require chained wp-block elements.
 	return cy.get( '.block-editor-block-list__block.is-selected' )
 } )
 
@@ -750,6 +759,10 @@ Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
 		.then( classNames => {
 			const parsedClassNames = classNames.split( ' ' )
 
+			/**
+			 * These are the list of selectors
+			 * and their corresponding commands.
+			 */
 			const commandsBasedOnClassName = {
 				 'ugb-advanced-range-control': 'rangeControlReset',
 				 'editor-color-palette-control': 'colorControlClear',
@@ -767,6 +780,7 @@ Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
 			keys( commandsBasedOnClassName ).forEach( executeCommand )
 		} )
 
+	// Always return the selected block which will be used in functions that require chained wp-block elements.
 	return cy.get( '.block-editor-block-list__block.is-selected' )
 } )
 
@@ -789,6 +803,11 @@ Cypress.Commands.add( 'publish', () => {
 			cy
 				.get( '.interface-interface-skeleton__actions' )
 				.then( $actions => {
+					//
+					/**
+					 * Click the publish button in publish panel
+					 * when necessary.
+					 */
 					if ( $actions.find( '.editor-post-publish-panel' ).length ) {
 						cy
 							.get( '.editor-post-publish-panel' )
@@ -837,6 +856,7 @@ Cypress.Commands.add( 'addGlobalColor', ( options = {} ) => {
 		.get( 'button[aria-label="Add New Color"]' )
 		.click( { force: true } )
 		.then( () => {
+			// Type the color if defined.
 			if ( color ) {
 				cy
 					.get( '.components-color-picker__inputs-field' )
@@ -847,6 +867,7 @@ Cypress.Commands.add( 'addGlobalColor', ( options = {} ) => {
 					.type( `{selectall}${ color }{enter}` )
 			}
 
+			// Type the name if defined.
 			if ( name ) {
 				cy
 					.get( '.components-color-picker__input-field' )
@@ -857,6 +878,7 @@ Cypress.Commands.add( 'addGlobalColor', ( options = {} ) => {
 					.type( `{selectall}${ name }{enter}` )
 			}
 
+			// Click outside the popover to close it.
 			cy
 				.get( '.ugb-global-settings-color-picker' )
 				.click( { force: true } )
@@ -879,6 +901,9 @@ Cypress.Commands.add( 'resetGlobalColor', () => {
 				selector()
 					.click( { force: true } )
 
+				/**
+				 * Click the cconfirmation reset button.
+				 */
 				cy
 					.get( '.components-button-group' )
 					.find( 'button' )
@@ -914,6 +939,7 @@ Cypress.Commands.add( 'deleteGlobalColor', ( selector = 0 ) => {
 		.contains( containsRegExp( 'Delete color' ) )
 		.click( { force: true } )
 
+	// Delete the confirm Delete button.
 	cy
 		.get( 'button' )
 		.contains( containsRegExp( 'Delete' ) )
@@ -945,7 +971,7 @@ Cypress.Commands.add( 'adjustGlobalTypography', ( selector = 'h1', options = {} 
 	clickEditButton()
 
 	keys( options ).forEach( key => {
-		// If the options is an object, get the value and options property to be passed
+		// If the an option entry is an object, get the value, viewport, and unit property to be passed
 		// in adjust function.
 		if ( typeof options[ key ] === 'object' && ! Array.isArray( options[ key ] ) ) {
 			const {
@@ -981,12 +1007,14 @@ Cypress.Commands.add( 'resetGlobalTypography', ( selector = 'h1' ) => {
 
 	cy.openSidebar( 'Stackable Settings' )
 
+	// Click the reset button.
 	cy
 		.get( '.ugb-global-settings-typography-control' )
 		.eq( findIndex( globalTypographyOptions, value => value === selector ) )
 		.find( 'button[aria-label="Reset"]' )
 		.click( { force: true } )
 
+	// Click the confirmation reset button.
 	cy
 		.get( '.components-button-group' )
 		.find( 'button' )
