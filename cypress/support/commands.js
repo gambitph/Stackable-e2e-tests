@@ -1189,3 +1189,11 @@ Cypress.Commands.add( 'changeIcon', ( selector, index = 1, keyword = '', icon ) 
 	}
 } )
 
+/**
+ * Command for asserting an error due to
+ * plugin activation.
+ */
+Cypress.Commands.add( 'assertPluginError', () => {
+	cy.get( '.xdebug-error' ).should( 'not.exist' )
+} )
+

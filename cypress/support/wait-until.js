@@ -1,3 +1,10 @@
+/**
+ * Function for waiting an assertion to be true
+ * before proceeding to the next command.
+ *
+ * @see https://github.com/NoriSte/cypress-wait-until#readme
+ */
+
 const logCommand = ( { options, originalOptions } ) => {
 	if ( options.log ) {
 		options.logger( {
