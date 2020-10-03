@@ -27,10 +27,9 @@ import {
 	getBaseControl, containsRegExp, getActiveTab, changeResponsiveMode, changeUnit, waitLoader,
 } from './util'
 
-Cypress.Commands.add( 'setupWP', args => {
+Cypress.Commands.add( 'setupWP', ( args = {} ) => {
 	const params = new URLSearchParams( {
-		plugins: [],
-		...args,
+		plugins: args.plugins || [],
 		setup: true,
 	} )
 	cy.visit( '/?' +  params.toString() )

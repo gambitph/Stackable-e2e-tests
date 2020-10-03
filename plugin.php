@@ -36,7 +36,7 @@ if ( isset( $_GET['setup'] ) ) {
 
 		// Make sure our tested plugin is activated.
 		$plugins_activated = array( plugin_basename( __FILE__ ) );
-		if ( ! isset( $_GET['plugins'] ) ) {
+		if ( ! isset( $_GET['plugins'] ) || empty( $_GET['plugins'] ) ) {
 			$plugins_activated[] = get_plugin_slug( 'stackable' );
 		} else {
 			$plugins_to_activate = explode( ',', $_GET['plugins'] );
