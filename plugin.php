@@ -18,14 +18,42 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 $PLUGIN = 'stackable/plugin.php';
 
+function get_plugin_slug( $folder_name ) {
+	if ( ! function_exists( 'get_plugins' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
+	$plugin_slugs = array_keys( get_plugins() );
+	$match = array_values( array_filter( $plugin_slugs, function( $slug ) use( $folder_name ) {
+		return stripos( $slug, $folder_name . '/' ) === 0;
+	} ) );
+	return count( $match ) ? $match[0] : false;
+}
+
 if ( isset( $_GET['setup'] ) ) {
 	add_action('init', function() {
 		// Always make sure that Stackable is active.
 		$active_plugins = get_option( 'active_plugins' );
-		if ( ! in_array( $PLUGIN, $active_plugins ) ) {
-			$active_plugins[] = $PLUGIN;
-			update_option( 'active_plugins', $active_plugins );
+
+		// Make sure our tested plugin is activated.
+		$plugins_activated = array( plugin_basename( __FILE__ ) );
+		if ( ! isset( $_GET['plugins'] ) ) {
+			$plugins_activated[] = get_plugin_slug( 'stackable' );
+		} else {
+			$plugins_to_activate = explode( ',', $_GET['plugins'] );
+			foreach ( $plugins_to_activate as $plugin_name ) {
+				$plugin_slug = get_plugin_slug( $plugin_name );
+				if ( $plugin_slug ) {
+					$plugins_activated[] = $plugin_slug;
+				}
+			}
 		}
+
+		// Cleanup plugin names.
+		$plugins_activated = array_values( array_filter( $plugins_activated, function( $slug ) {
+			return ! empty( $slug );
+		} ) );
+
+		update_option( 'active_plugins', $plugins_activated );
 
 		$user_id = 1;
 		$user = get_user_by( 'id', $user_id );

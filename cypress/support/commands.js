@@ -27,8 +27,13 @@ import {
 	getBaseControl, containsRegExp, getActiveTab, changeResponsiveMode, changeUnit, waitLoader,
 } from './util'
 
-Cypress.Commands.add( 'setupWP', () => {
-	cy.visit( '/?setup' )
+Cypress.Commands.add( 'setupWP', args => {
+	const params = new URLSearchParams( {
+		plugins: [],
+		...args,
+		setup: true,
+	} )
+	cy.visit( '/?' +  params.toString() )
 } )
 
 Cypress.Commands.add( 'loginAdmin', () => {
@@ -47,7 +52,6 @@ Cypress.Commands.add( 'hideAnyGutenbergTip', () => {
 } )
 
 Cypress.Commands.add( 'newPage', () => {
-	cy.setupWP()
 	cy.visit( '/wp-admin/post-new.php?post_type=page' )
 	cy.hideAnyGutenbergTip()
 } )
