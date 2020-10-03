@@ -22,8 +22,9 @@ import {
 /**
  * Internal dependencies
  */
+import './wait-until'
 import {
-	getBaseControl, containsRegExp, getActiveTab, changeResponsiveMode, changeUnit,
+	getBaseControl, containsRegExp, getActiveTab, changeResponsiveMode, changeUnit, waitLoader,
 } from './util'
 
 Cypress.Commands.add( 'setupWP', () => {
@@ -737,6 +738,85 @@ Cypress.Commands.add( 'fourRangeControlReset', ( name, options = {} ) => {
 } )
 
 /**
+ * Command for adjusting the icon control.
+ */
+Cypress.Commands.add( 'iconControl', ( name, value, options = {} ) => {
+	const {
+		isInPopover = false,
+	} = options
+
+	const clickIconButton = () => getActiveTab( tab => {
+		getBaseControl( tab, isInPopover )
+			.contains( containsRegExp( name ) )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
+			.parent()
+			.find( '.ugb-icon-control__button-wrapper>.ugb-icon-control__icon-button' )
+			.click( { force: true } )
+	} )
+
+	clickIconButton()
+	if ( typeof value === 'string' ) {
+		// Select the first icon based on keyword
+		cy
+			.get( 'input[placeholder="Type to search icon"]' )
+			.click( { force: true } )
+			.type( value )
+
+		// Wait until the loader disappears.
+		waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
+
+		cy
+			.get( `.ugb-icon-popover__iconlist>button` )
+			.first()
+			.click( { force: true } )
+	} else if ( typeof value === 'object' ) {
+		const {
+			keyword = '',
+			icon = '',
+		} = value
+
+		cy
+			.get( 'input[placeholder="Type to search icon"]' )
+			.click( { force: true } )
+			.type( keyword )
+
+		// Wait until the loader disappears.
+		waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
+
+		if ( icon ) {
+			cy
+				.get( `.ugb-icon-popover__iconlist>button.${ icon }` )
+				.first()
+				.click( { force: true } )
+		} else {
+			cy
+				.get( `.ugb-icon-popover__iconlist>button` )
+				.first()
+				.click( { force: true } )
+		}
+	}
+} )
+
+/**
+ * Command for resetting the icon control.
+ */
+Cypress.Commands.add( 'iconControlReset', ( name, options = {} ) => {
+	const {
+		isInPopover = false,
+	} = options
+
+	getActiveTab( tab => {
+		getBaseControl( tab, isInPopover )
+			.contains( containsRegExp( name ) )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
+			.parent()
+			.find( 'button' )
+			.contains( 'Reset' )
+			.click( { force: true } )
+	} )
+} )
+
+/**
  * Command for adjusting settings.
  */
 Cypress.Commands.add( 'adjust', ( name, value, options = {} ) => {
@@ -765,6 +845,7 @@ Cypress.Commands.add( 'adjust', ( name, value, options = {} ) => {
 				 'ugb-advanced-autosuggest-control': 'suggestionControl',
 				 'ugb-four-range-control': 'fourRangeControl',
 				 'ugb-design-separator-control': 'designControl',
+				 'ugb-icon-control': 'iconControl',
 
 				 // Custom selectors.
 				 'ugb--help-tip-background-color-type': 'toolbarControl',
@@ -818,6 +899,7 @@ Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
 				 'ugb-button-icon-control': 'popoverControlReset',
 				 'ugb-advanced-autosuggest-control': 'suggestionControlClear',
 				 'ugb-four-range-control': 'fourRangeControlReset',
+				 'ugb-icon-control': 'iconControlReset',
 			}
 
 			const executeCommand = key => {
@@ -1070,3 +1152,36 @@ Cypress.Commands.add( 'resetGlobalTypography', ( selector = 'h1' ) => {
 		.contains( 'Reset' )
 		.click( { force: true } )
 } )
+
+/**
+ * Command for changing the icon in icon block.
+ */
+Cypress.Commands.add( 'changeIcon', ( selector, index = 1, keyword = '', icon ) => {
+	cy.selectBlock( 'ugb/icon', selector )
+	cy
+		.get( '.block-editor-block-list__block.is-selected' )
+		.find( '.ugb-svg-icon-placeholder__button' )
+		.eq( index - 1 )
+		.click( { force: true } )
+
+	cy
+		.get( 'input[placeholder="Type to search icon"]' )
+		.click( { force: true } )
+		.type( keyword )
+
+	// Wait until the loader disappears.
+	waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
+
+	if ( icon ) {
+		cy
+			.get( `.ugb-icon-popover__iconlist>button.${ icon }` )
+			.first()
+			.click( { force: true } )
+	} else {
+		cy
+			.get( `.ugb-icon-popover__iconlist>button` )
+			.first()
+			.click( { force: true } )
+	}
+} )
+

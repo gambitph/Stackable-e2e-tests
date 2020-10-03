@@ -111,3 +111,10 @@ export const changeUnit = ( unit = '', name = '', tab = 'style', isInPopover = f
 	}
 }
 
+/**
+ * Function for waiting a spinner button to disappear.
+ *
+ * @param {string} selector
+ */
+export const waitLoader = ( selector = '' ) => cy.waitUntil( () => cy.document().then( doc => doc.querySelector( selector ) ) )
+
