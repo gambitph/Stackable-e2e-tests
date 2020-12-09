@@ -24,7 +24,7 @@ import {
  */
 import './wait-until'
 import {
-	getBaseControl, containsRegExp, getActiveTab, changeResponsiveMode, changeUnit, waitLoader,
+	getBaseControl, containsRegExp, getActiveTab, changeResponsiveMode, changeUnit, waitLoader, rgbToHex,
 } from './util'
 
 Cypress.Commands.add( 'setupWP', ( args = {} ) => {
@@ -119,18 +119,23 @@ Cypress.Commands.add( 'selectBlock', ( subject, selector ) => {
 /**
  * Command for asserting the computed style of a block.
  */
-Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subject, cssAttribute = '', customSelector = '', expectedValue = '' ) => {
-	cy
-		.get( subject )
-		.invoke( 'attr', 'id' )
-		.then( id => {
-			const block = cy.get( `#${ id }${ ` ${ customSelector }` || `` }` )
-			block.then( $block => {
+Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subject, cssObject = {} ) => {
+	keys( cssObject ).forEach( selector => {
+		cy
+			.get( `.is-selected${ ` ${ selector }` }` )
+			.then( $block => {
 				cy.window().then( win => {
-					expect( win.getComputedStyle( $block[ 0 ] )[ camelCase( cssAttribute ) ] ).toBe( expectedValue )
+					keys( cssObject[ selector ] ).forEach( cssRule => {
+						let computedStyle = win.getComputedStyle( $block[ 0 ] )[ camelCase( cssRule ) ]
+						if ( typeof computedStyle === 'string' && computedStyle.match( /rgb\(/ ) ) {
+						// Force rgb computed style to be hex.
+							computedStyle = rgbToHex( computedStyle )
+						}
+						expect( computedStyle ).toBe( cssObject[ selector ][ cssRule ] )
+					} )
 				} )
 			} )
-		} )
+	} )
 } )
 
 /**

@@ -22,6 +22,13 @@ describe( 'Block Test', () => {
 			[ `Flip Horizontally` ]: true,
 			[ `Opacity` ]: 0.3,
 			[ `Mix Blend Mode` ]: 'screen',
+		} ).assertComputedStyle( {
+			'.ugb-separator__layer-2': {
+				[ `fill` ]: '#aeaeae',
+				[ `opacity` ]: '0.3',
+				[ `mix-blend-mode` ]: 'screen',
+				[ `transform` ]: 'matrix(-1.11, 0, 0, 1.67, 0, 0)',
+			},
 		} )
 
 		cy.addGlobalColor( { name: 'Test', color: '#fff' } )
@@ -69,8 +76,12 @@ describe( 'Block Test', () => {
 		cy.adjust( 'Columns', 3 )
 
 		cy.collapse( 'Container' )
-		cy.adjust( 'Border Radius', 15 )
-		cy.adjust( 'Shadow / Outline', 5 )
+		cy.adjust( 'Border Radius', 15 ).assertComputedStyle( {
+			[ `.ugb-card__item` ]: {
+				[ `border-radius` ]: '15px',
+			},
+		} )
+		cy.adjust( 'Shadow / Outline', 5 ).assertClassName( '.ugb-card__item', 'ugb--shadow-5' )
 
 		cy.openSidebar( 'Stackable Settings' )
 
