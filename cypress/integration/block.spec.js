@@ -69,6 +69,7 @@ describe( 'Block Test', () => {
 		cy.adjust( 'Shadow / Outline', 5 )
 
 		cy.openSidebar( 'Stackable Settings' )
+		cy.openSidebar( 'Stackable Settings' )
 
 		// Test the catching of errors
 		cy.window().then( win => {
