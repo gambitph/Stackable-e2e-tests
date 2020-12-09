@@ -32,7 +32,7 @@ Cypress.Commands.add( 'setupWP', ( args = {} ) => {
 		plugins: args.plugins || [],
 		setup: true,
 	} )
-	cy.visit( '/?' +  params.toString() )
+	cy.visit( '/?' + params.toString() )
 } )
 
 Cypress.Commands.add( 'loginAdmin', () => {
@@ -193,7 +193,7 @@ Cypress.Commands.add( 'changePreviewMode', ( mode = 'Desktop' ) => {
 Cypress.Commands.add( 'deleteBlock', ( subject, selector ) => {
 	cy.selectBlock( subject, selector )
 	cy.get( 'button[aria-label="More options"]' ).first().click( { force: true } )
-	cy.get( 'button' ).contains( 'Remove Block' ).click( { force: true } )
+	cy.get( 'button' ).contains( 'Remove block' ).click( { force: true } )
 } )
 
 /**
@@ -986,36 +986,50 @@ Cypress.Commands.add( 'addGlobalColor', ( options = {} ) => {
 	} = options
 
 	cy.openSidebar( 'Stackable Settings' )
+
 	cy
-		.get( 'button[aria-label="Add New Color"]' )
-		.click( { force: true } )
-		.then( () => {
-			// Type the color if defined.
-			if ( color ) {
+		.get( '.components-panel__body-toggle' )
+		.contains( containsRegExp( 'Global Color Palette' ) )
+		.invoke( 'attr', 'aria-expanded' )
+		.then( ariaExpanded => {
+			if ( ariaExpanded === 'false' ) {
 				cy
-					.get( '.components-color-picker__inputs-field' )
-					.contains( containsRegExp( 'Color value in hexadecimal' ) )
-					.parentsUntil( '.components-color-picker__inputs-field' )
-					.find( 'input' )
+					.get( 'button' )
+					.contains( containsRegExp( 'Global Color Palette' ) )
 					.click( { force: true } )
-					.type( `{selectall}${ color }{enter}` )
 			}
 
-			// Type the name if defined.
-			if ( name ) {
-				cy
-					.get( '.components-color-picker__input-field' )
-					.contains( containsRegExp( 'Style name' ) )
-					.parentsUntil( '.components-color-picker__input-field' )
-					.find( 'input' )
-					.click( { force: true } )
-					.type( `{selectall}${ name }{enter}` )
-			}
-
-			// Click outside the popover to close it.
 			cy
-				.get( '.ugb-global-settings-color-picker' )
+				.get( 'button[aria-label="Add New Color"]' )
 				.click( { force: true } )
+				.then( () => {
+					// Type the color if defined.
+					if ( color ) {
+						cy
+							.get( '.components-color-picker__inputs-field' )
+							.contains( containsRegExp( 'Color value in hexadecimal' ) )
+							.parentsUntil( '.components-color-picker__inputs-field' )
+							.find( 'input' )
+							.click( { force: true } )
+							.type( `{selectall}${ color }{enter}` )
+					}
+
+					// Type the name if defined.
+					if ( name ) {
+						cy
+							.get( '.components-color-picker__input-field' )
+							.contains( containsRegExp( 'Style name' ) )
+							.parentsUntil( '.components-color-picker__input-field' )
+							.find( 'input' )
+							.click( { force: true } )
+							.type( `{selectall}${ name }{enter}` )
+					}
+
+					// Click outside the popover to close it.
+					cy
+						.get( '.ugb-global-settings-color-picker' )
+						.click( { force: true } )
+				} )
 		} )
 } )
 
@@ -1102,27 +1116,40 @@ Cypress.Commands.add( 'adjustGlobalTypography', ( selector = 'h1', options = {} 
 		.find( 'button[aria-label="Edit"]' )
 		.click( { force: true } )
 
-	clickEditButton()
+	cy
+		.get( '.components-panel__body-toggle' )
+		.contains( containsRegExp( 'Global Typography' ) )
+		.invoke( 'attr', 'aria-expanded' )
+		.then( ariaExpanded => {
+			if ( ariaExpanded === 'false' ) {
+				cy
+					.get( '.components-panel__body-toggle' )
+					.contains( containsRegExp( 'Global Typography' ) )
+					.click( { force: true } )
+			}
 
-	keys( options ).forEach( key => {
-		// If the an option entry is an object, get the value, viewport, and unit property to be passed
-		// in adjust function.
-		if ( typeof options[ key ] === 'object' && ! Array.isArray( options[ key ] ) ) {
-			const {
-				viewport = 'Desktop',
-				unit = '',
-				value = '',
-			} = options[ key ]
+			clickEditButton()
 
-			cy.adjust( key, value, {
-				viewport, unit, isInPopover: true,
+			keys( options ).forEach( key => {
+				// If the an option entry is an object, get the value, viewport, and unit property to be passed
+				// in adjust function.
+				if ( typeof options[ key ] === 'object' && ! Array.isArray( options[ key ] ) ) {
+					const {
+						viewport = 'Desktop',
+						unit = '',
+						value = '',
+					} = options[ key ]
+
+					cy.adjust( key, value, {
+						viewport, unit, isInPopover: true,
+					} )
+				} else {
+					cy.adjust( key, options[ key ], { isInPopover: true } )
+				}
 			} )
-		} else {
-			cy.adjust( key, options[ key ], { isInPopover: true } )
-		}
-	} )
 
-	clickEditButton()
+			clickEditButton()
+		} )
 } )
 
 /**
