@@ -5,6 +5,7 @@ describe( 'Block Test', () => {
 		cy.newPage()
 
 		cy.addBlock( 'ugb/header' )
+
 		cy.openInspector( 'ugb/header', 'Layout' )
 		cy.adjustLayout( 'Plain' )
 		cy.adjustLayout( 'Center Overlay' )
@@ -30,6 +31,9 @@ describe( 'Block Test', () => {
 				[ `mix-blend-mode` ]: 'screen',
 				[ `transform` ]: 'matrix(-1.11, 0, 0, 1.67, 0, 0)',
 			},
+		},
+		{
+			assertFrontend: true,
 		} )
 
 		cy.addGlobalColor( { name: 'Test', color: '#fff' } )
@@ -81,6 +85,9 @@ describe( 'Block Test', () => {
 			[ `.ugb-card__item` ]: {
 				[ `border-radius` ]: '15px',
 			},
+		},
+		{
+			assertFrontend: true,
 		} )
 		cy.adjust( 'Shadow / Outline', 5 ).assertClassName( '.ugb-card__item', 'ugb--shadow-5' )
 

@@ -16,7 +16,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys, camelCase, findIndex,
+	kebabCase, keys, camelCase, findIndex, startCase,
 } from 'lodash'
 
 /**
@@ -119,22 +119,75 @@ Cypress.Commands.add( 'selectBlock', ( subject, selector ) => {
 /**
  * Command for asserting the computed style of a block.
  */
-Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subject, cssObject = {} ) => {
-	keys( cssObject ).forEach( selector => {
-		cy
-			.get( `.is-selected${ ` ${ selector }` }` )
-			.then( $block => {
-				cy.window().then( win => {
-					keys( cssObject[ selector ] ).forEach( cssRule => {
-						let computedStyle = win.getComputedStyle( $block[ 0 ] )[ camelCase( cssRule ) ]
-						if ( typeof computedStyle === 'string' && computedStyle.match( /rgb\(/ ) ) {
-						// Force rgb computed style to be hex.
-							computedStyle = rgbToHex( computedStyle )
-						}
-						expect( computedStyle ).toBe( cssObject[ selector ][ cssRule ] )
+Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subject, cssObject = {}, options = {} ) => {
+	const assertComputedStyle = ( win, element, cssRule, expectedValue ) => {
+		let computedStyle = win.getComputedStyle( element )[ camelCase( cssRule ) ]
+		if ( typeof computedStyle === 'string' && computedStyle.match( /rgb\(/ ) ) {
+			// Force rgb computed style to be hex.
+			computedStyle = rgbToHex( computedStyle )
+		}
+		expect( computedStyle ).toBe( expectedValue )
+	}
+
+	getActiveTab( tab => {
+		cy.document().then( doc => {
+			const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
+			cy
+				.get( subject )
+				.find( '.ugb-main-block' )
+				.invoke( 'attr', 'class' )
+				.then( classList => {
+					const parsedClassList = classList.split( ' ' ).map( className => `.${ className }` ).join( '' )
+					keys( cssObject ).forEach( selector => {
+						cy
+							.get( `.is-selected${ ` ${ selector }` }` )
+							.then( $block => {
+								cy.window().then( win => {
+									keys( cssObject[ selector ] ).forEach( cssRule => {
+										assertComputedStyle( win, $block[ 0 ], cssRule, cssObject[ selector ][ cssRule ] )
+									} )
+								} )
+							} )
 					} )
+
+					if ( options.assertFrontend ) {
+						cy.publish()
+						cy.window().then( _win => {
+							const currUrl = _win.location.href
+							const parsedPostID = currUrl.match( /post=([0-9]*)/g )[ 0 ].split( '=' )[ 1 ]
+
+							cy.visit( `/?page_id=${ parsedPostID }&preview=true` )
+
+							cy.window().then( frontendWindow => {
+								cy.document().then( frontendDocument => {
+									keys( cssObject ).forEach( selector => {
+										const willAssertElement = frontendDocument.querySelector( `${ parsedClassList } ${ selector }` )
+										if ( willAssertElement ) {
+											keys( cssObject[ selector ] ).forEach( cssRule => {
+												assertComputedStyle( frontendWindow, willAssertElement, cssRule, cssObject[ selector ][ cssRule ] )
+											} )
+										}
+									} )
+								} )
+							} )
+
+							cy.visit( currUrl.replace( 'http://e2etest.local', '' ) )
+
+							cy
+								.get( parsedClassList )
+								.click( { force: true } )
+
+							cy.openSidebar( 'Settings' )
+
+							cy
+								.get( `button[aria-label="${ startCase( tab ) } Tab"]` )
+								.click( { force: true } )
+
+							cy.collapse( activePanel )
+						} )
+					}
 				} )
-			} )
+		} )
 	} )
 } )
 
@@ -949,8 +1002,7 @@ Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
  */
 Cypress.Commands.add( 'publish', () => {
 	const selector = () => cy
-		.get( 'button' )
-		.contains( containsRegExp( 'Publish' ) )
+		.get( 'button.editor-post-publish-button__button' )
 
 	selector()
 		.invoke( 'attr', 'aria-disabled' )
@@ -972,6 +1024,10 @@ Cypress.Commands.add( 'publish', () => {
 						cy
 							.get( '.editor-post-publish-panel' )
 							.contains( containsRegExp( 'Publish' ) )
+							.click( { force: true } )
+
+						cy
+							.get( 'button[aria-label="Close panel"]' )
 							.click( { force: true } )
 					}
 				} )
@@ -1012,6 +1068,7 @@ Cypress.Commands.add( 'addGlobalColor', ( options = {} ) => {
 	} = options
 
 	cy.openSidebar( 'Stackable Settings' )
+	cy.collapse( 'Global Color Palette' )
 
 	cy
 		.get( '.components-panel__body-toggle' )
@@ -1064,6 +1121,8 @@ Cypress.Commands.add( 'addGlobalColor', ( options = {} ) => {
  */
 Cypress.Commands.add( 'resetGlobalColor', () => {
 	cy.openSidebar( 'Stackable Settings' )
+	cy.collapse( 'Global Color Palette' )
+
 	const selector = () => cy
 		.get( '.ugb-global-settings-color-picker__reset-button' )
 		.find( 'button' )
@@ -1092,6 +1151,7 @@ Cypress.Commands.add( 'resetGlobalColor', () => {
  */
 Cypress.Commands.add( 'deleteGlobalColor', ( selector = 0 ) => {
 	cy.openSidebar( 'Stackable Settings' )
+	cy.collapse( 'Global Color Palette' )
 
 	if ( typeof selector === 'number' ) {
 		// Delete a global color by index number.
@@ -1135,6 +1195,7 @@ Cypress.Commands.add( 'adjustGlobalTypography', ( selector = 'h1', options = {} 
 	]
 
 	cy.openSidebar( 'Stackable Settings' )
+	cy.collapse( 'Global Typography' )
 
 	const clickEditButton = () => cy
 		.get( '.ugb-global-settings-typography-control' )
@@ -1193,6 +1254,7 @@ Cypress.Commands.add( 'resetGlobalTypography', ( selector = 'h1' ) => {
 	]
 
 	cy.openSidebar( 'Stackable Settings' )
+	cy.collapse( 'Global Typography' )
 
 	// Click the reset button.
 	cy
