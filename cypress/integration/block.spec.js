@@ -1,12 +1,14 @@
 describe( 'Block Test', () => {
 	it( 'should manipulate block contents and attributes', () => {
+		cy.setupWP()
+		cy.loginAdmin()
 		cy.newPage()
 		cy.addBlock( 'ugb/header' )
 		cy.openInspector( 'ugb/header', 'Layout' )
 		cy.adjustLayout( 'Plain' )
 		cy.adjustLayout( 'Center Overlay' )
 		cy.adjustLayout( 'Basic' )
-		cy.adjustDesign( 'Header 3' )
+		cy.adjustDesign( 'Aspire Header' )
 
 		cy.openInspector( 'ugb/header', 'Style' )
 		cy.toggleStyle( 'Top Separator' )
@@ -68,7 +70,6 @@ describe( 'Block Test', () => {
 		cy.adjust( 'Border Radius', 15 )
 		cy.adjust( 'Shadow / Outline', 5 )
 
-		cy.openSidebar( 'Stackable Settings' )
 		cy.openSidebar( 'Stackable Settings' )
 
 		// Test the catching of errors

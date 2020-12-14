@@ -32,7 +32,7 @@ Cypress.Commands.add( 'setupWP', ( args = {} ) => {
 		plugins: args.plugins || [],
 		setup: true,
 	} )
-	cy.visit( '/?' +  params.toString() )
+	cy.visit( '/?' + params.toString() )
 } )
 
 Cypress.Commands.add( 'loginAdmin', () => {
@@ -987,6 +987,7 @@ Cypress.Commands.add( 'addGlobalColor', ( options = {} ) => {
 
 	cy.openSidebar( 'Stackable Settings' )
 	cy
+		//.click( 'Global Color Palette' )
 		.get( 'button[aria-label="Add New Color"]' )
 		.click( { force: true } )
 		.then( () => {
