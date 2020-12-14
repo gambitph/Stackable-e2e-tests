@@ -3,6 +3,7 @@ describe( 'Block Test', () => {
 		cy.setupWP()
 		cy.loginAdmin()
 		cy.newPage()
+
 		cy.addBlock( 'ugb/header' )
 		cy.openInspector( 'ugb/header', 'Layout' )
 		cy.adjustLayout( 'Plain' )

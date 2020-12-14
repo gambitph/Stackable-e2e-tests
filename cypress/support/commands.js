@@ -265,28 +265,49 @@ Cypress.Commands.add( 'scrollEditorToView', selector => {
 /**
  * Command for collapsing an accordion.
  */
-Cypress.Commands.add( 'collapse', ( name = 'General' ) => {
-	getActiveTab( tab => {
-		cy
-			.get( `.ugb-panel-${ tab }>.components-panel__body` )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
-			.parent()
-			.find( 'button.components-panel__body-toggle' )
-			.invoke( 'attr', 'aria-expanded' )
-			.then( ariaExpanded => {
-				// Open the accordion if aria-expanded is false.
-				if ( ariaExpanded === 'false' ) {
+Cypress.Commands.add( 'collapse', ( name = 'General', toggle = true ) => {
+	cy
+		.document()
+		.then( doc => {
+			const globalSettingsElement = doc.querySelector( '.ugb-global-settings__inspector' )
+
+			if ( globalSettingsElement ) {
+				cy
+					.get( 'button.components-panel__body-toggle' )
+					.contains( containsRegExp( name ) )
+					.invoke( 'attr', 'aria-expanded' )
+					.then( ariaExpanded => {
+						if ( ariaExpanded !== toggle.toString() ) {
+							cy
+								.get( 'button.components-panel__body-toggle' )
+								.contains( containsRegExp( name ) )
+								.click( { force: true } )
+						}
+					} )
+			} else {
+				getActiveTab( tab => {
 					cy
 						.get( `.ugb-panel-${ tab }>.components-panel__body` )
 						.contains( containsRegExp( name ) )
 						.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
 						.parent()
 						.find( 'button.components-panel__body-toggle' )
-						.click( { force: true } )
-				}
-			} )
-	} )
+						.invoke( 'attr', 'aria-expanded' )
+						.then( ariaExpanded => {
+							// Open the accordion if aria-expanded is false.
+							if ( ariaExpanded !== toggle.toString() ) {
+								cy
+									.get( `.ugb-panel-${ tab }>.components-panel__body` )
+									.contains( containsRegExp( name ) )
+									.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
+									.parent()
+									.find( 'button.components-panel__body-toggle' )
+									.click( { force: true } )
+							}
+						} )
+				} )
+			}
+		} )
 } )
 
 /**
@@ -1227,4 +1248,3 @@ Cypress.Commands.add( 'changeIcon', ( selector, index = 1, keyword = '', icon ) 
 Cypress.Commands.add( 'assertPluginError', () => {
 	cy.get( '.xdebug-error' ).should( 'not.exist' )
 } )
-
