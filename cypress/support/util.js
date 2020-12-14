@@ -118,3 +118,24 @@ export const changeUnit = ( unit = '', name = '', tab = 'style', isInPopover = f
  */
 export const waitLoader = ( selector = '' ) => cy.waitUntil( () => cy.document().then( doc => doc.querySelector( selector ) ) )
 
+/**
+ * Function used for converting rgb to hex.
+ *
+ * @param {string} rgb
+ * @return {string} converted string
+ */
+export const rgbToHex = rgb => {
+	if ( ! rgb.match( /rgb\(/ ) ) {
+		return rgb
+	}
+
+	const parsedRgb = rgb.replace( 'rgb(', '' ).replace( ')', '' ).trim()
+	const [ r, g, b ] = parsedRgb.split( ',' ).map( colorCode => parseInt( colorCode ) )
+	const componentToHex = component => {
+		const hex = component.toString( 16 )
+		return hex.length === 1 ? '0' + hex : hex
+	}
+
+	return `#${ componentToHex( r ) }${ componentToHex( g ) }${ componentToHex( b ) }`
+}
+

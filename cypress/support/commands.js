@@ -24,7 +24,7 @@ import {
  */
 import './wait-until'
 import {
-	getBaseControl, containsRegExp, getActiveTab, changeResponsiveMode, changeUnit, waitLoader,
+	getBaseControl, containsRegExp, getActiveTab, changeResponsiveMode, changeUnit, waitLoader, rgbToHex,
 } from './util'
 
 Cypress.Commands.add( 'setupWP', ( args = {} ) => {
@@ -119,18 +119,23 @@ Cypress.Commands.add( 'selectBlock', ( subject, selector ) => {
 /**
  * Command for asserting the computed style of a block.
  */
-Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subject, cssAttribute = '', customSelector = '', expectedValue = '' ) => {
-	cy
-		.get( subject )
-		.invoke( 'attr', 'id' )
-		.then( id => {
-			const block = cy.get( `#${ id }${ ` ${ customSelector }` || `` }` )
-			block.then( $block => {
+Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subject, cssObject = {} ) => {
+	keys( cssObject ).forEach( selector => {
+		cy
+			.get( `.is-selected${ ` ${ selector }` }` )
+			.then( $block => {
 				cy.window().then( win => {
-					expect( win.getComputedStyle( $block[ 0 ] )[ camelCase( cssAttribute ) ] ).toBe( expectedValue )
+					keys( cssObject[ selector ] ).forEach( cssRule => {
+						let computedStyle = win.getComputedStyle( $block[ 0 ] )[ camelCase( cssRule ) ]
+						if ( typeof computedStyle === 'string' && computedStyle.match( /rgb\(/ ) ) {
+						// Force rgb computed style to be hex.
+							computedStyle = rgbToHex( computedStyle )
+						}
+						expect( computedStyle ).toBe( cssObject[ selector ][ cssRule ] )
+					} )
 				} )
 			} )
-		} )
+	} )
 } )
 
 /**
@@ -193,7 +198,7 @@ Cypress.Commands.add( 'changePreviewMode', ( mode = 'Desktop' ) => {
 Cypress.Commands.add( 'deleteBlock', ( subject, selector ) => {
 	cy.selectBlock( subject, selector )
 	cy.get( 'button[aria-label="More options"]' ).first().click( { force: true } )
-	cy.get( 'button' ).contains( 'Remove Block' ).click( { force: true } )
+	cy.get( 'button' ).contains( 'Remove block' ).click( { force: true } )
 } )
 
 /**
@@ -260,28 +265,49 @@ Cypress.Commands.add( 'scrollEditorToView', selector => {
 /**
  * Command for collapsing an accordion.
  */
-Cypress.Commands.add( 'collapse', ( name = 'General' ) => {
-	getActiveTab( tab => {
-		cy
-			.get( `.ugb-panel-${ tab }>.components-panel__body` )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
-			.parent()
-			.find( 'button.components-panel__body-toggle' )
-			.invoke( 'attr', 'aria-expanded' )
-			.then( ariaExpanded => {
-				// Open the accordion if aria-expanded is false.
-				if ( ariaExpanded === 'false' ) {
+Cypress.Commands.add( 'collapse', ( name = 'General', toggle = true ) => {
+	cy
+		.document()
+		.then( doc => {
+			const globalSettingsElement = doc.querySelector( '.ugb-global-settings__inspector' )
+
+			if ( globalSettingsElement ) {
+				cy
+					.get( 'button.components-panel__body-toggle' )
+					.contains( containsRegExp( name ) )
+					.invoke( 'attr', 'aria-expanded' )
+					.then( ariaExpanded => {
+						if ( ariaExpanded !== toggle.toString() ) {
+							cy
+								.get( 'button.components-panel__body-toggle' )
+								.contains( containsRegExp( name ) )
+								.click( { force: true } )
+						}
+					} )
+			} else {
+				getActiveTab( tab => {
 					cy
 						.get( `.ugb-panel-${ tab }>.components-panel__body` )
 						.contains( containsRegExp( name ) )
 						.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
 						.parent()
 						.find( 'button.components-panel__body-toggle' )
-						.click( { force: true } )
-				}
-			} )
-	} )
+						.invoke( 'attr', 'aria-expanded' )
+						.then( ariaExpanded => {
+							// Open the accordion if aria-expanded is false.
+							if ( ariaExpanded !== toggle.toString() ) {
+								cy
+									.get( `.ugb-panel-${ tab }>.components-panel__body` )
+									.contains( containsRegExp( name ) )
+									.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
+									.parent()
+									.find( 'button.components-panel__body-toggle' )
+									.click( { force: true } )
+							}
+						} )
+				} )
+			}
+		} )
 } )
 
 /**
@@ -986,37 +1012,50 @@ Cypress.Commands.add( 'addGlobalColor', ( options = {} ) => {
 	} = options
 
 	cy.openSidebar( 'Stackable Settings' )
+
 	cy
-		//.click( 'Global Color Palette' )
-		.get( 'button[aria-label="Add New Color"]' )
-		.click( { force: true } )
-		.then( () => {
-			// Type the color if defined.
-			if ( color ) {
+		.get( '.components-panel__body-toggle' )
+		.contains( containsRegExp( 'Global Color Palette' ) )
+		.invoke( 'attr', 'aria-expanded' )
+		.then( ariaExpanded => {
+			if ( ariaExpanded === 'false' ) {
 				cy
-					.get( '.components-color-picker__inputs-field' )
-					.contains( containsRegExp( 'Color value in hexadecimal' ) )
-					.parentsUntil( '.components-color-picker__inputs-field' )
-					.find( 'input' )
+					.get( 'button' )
+					.contains( containsRegExp( 'Global Color Palette' ) )
 					.click( { force: true } )
-					.type( `{selectall}${ color }{enter}` )
 			}
 
-			// Type the name if defined.
-			if ( name ) {
-				cy
-					.get( '.components-color-picker__input-field' )
-					.contains( containsRegExp( 'Style name' ) )
-					.parentsUntil( '.components-color-picker__input-field' )
-					.find( 'input' )
-					.click( { force: true } )
-					.type( `{selectall}${ name }{enter}` )
-			}
-
-			// Click outside the popover to close it.
 			cy
-				.get( '.ugb-global-settings-color-picker' )
+				.get( 'button[aria-label="Add New Color"]' )
 				.click( { force: true } )
+				.then( () => {
+					// Type the color if defined.
+					if ( color ) {
+						cy
+							.get( '.components-color-picker__inputs-field' )
+							.contains( containsRegExp( 'Color value in hexadecimal' ) )
+							.parentsUntil( '.components-color-picker__inputs-field' )
+							.find( 'input' )
+							.click( { force: true } )
+							.type( `{selectall}${ color }{enter}` )
+					}
+
+					// Type the name if defined.
+					if ( name ) {
+						cy
+							.get( '.components-color-picker__input-field' )
+							.contains( containsRegExp( 'Style name' ) )
+							.parentsUntil( '.components-color-picker__input-field' )
+							.find( 'input' )
+							.click( { force: true } )
+							.type( `{selectall}${ name }{enter}` )
+					}
+
+					// Click outside the popover to close it.
+					cy
+						.get( '.ugb-global-settings-color-picker' )
+						.click( { force: true } )
+				} )
 		} )
 } )
 
@@ -1103,27 +1142,40 @@ Cypress.Commands.add( 'adjustGlobalTypography', ( selector = 'h1', options = {} 
 		.find( 'button[aria-label="Edit"]' )
 		.click( { force: true } )
 
-	clickEditButton()
+	cy
+		.get( '.components-panel__body-toggle' )
+		.contains( containsRegExp( 'Global Typography' ) )
+		.invoke( 'attr', 'aria-expanded' )
+		.then( ariaExpanded => {
+			if ( ariaExpanded === 'false' ) {
+				cy
+					.get( '.components-panel__body-toggle' )
+					.contains( containsRegExp( 'Global Typography' ) )
+					.click( { force: true } )
+			}
 
-	keys( options ).forEach( key => {
-		// If the an option entry is an object, get the value, viewport, and unit property to be passed
-		// in adjust function.
-		if ( typeof options[ key ] === 'object' && ! Array.isArray( options[ key ] ) ) {
-			const {
-				viewport = 'Desktop',
-				unit = '',
-				value = '',
-			} = options[ key ]
+			clickEditButton()
 
-			cy.adjust( key, value, {
-				viewport, unit, isInPopover: true,
+			keys( options ).forEach( key => {
+				// If the an option entry is an object, get the value, viewport, and unit property to be passed
+				// in adjust function.
+				if ( typeof options[ key ] === 'object' && ! Array.isArray( options[ key ] ) ) {
+					const {
+						viewport = 'Desktop',
+						unit = '',
+						value = '',
+					} = options[ key ]
+
+					cy.adjust( key, value, {
+						viewport, unit, isInPopover: true,
+					} )
+				} else {
+					cy.adjust( key, options[ key ], { isInPopover: true } )
+				}
 			} )
-		} else {
-			cy.adjust( key, options[ key ], { isInPopover: true } )
-		}
-	} )
 
-	clickEditButton()
+			clickEditButton()
+		} )
 } )
 
 /**
@@ -1196,4 +1248,3 @@ Cypress.Commands.add( 'changeIcon', ( selector, index = 1, keyword = '', icon ) 
 Cypress.Commands.add( 'assertPluginError', () => {
 	cy.get( '.xdebug-error' ).should( 'not.exist' )
 } )
-
