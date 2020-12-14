@@ -10,7 +10,7 @@ describe( 'Block Test', () => {
 		cy.adjustLayout( 'Plain' )
 		cy.adjustLayout( 'Center Overlay' )
 		cy.adjustLayout( 'Basic' )
-		cy.adjustDesign( 'Angled Header' )
+		cy.adjustDesign( 'Aspire Header' )
 
 		cy.openInspector( 'ugb/header', 'Style' )
 		cy.toggleStyle( 'Top Separator' )
