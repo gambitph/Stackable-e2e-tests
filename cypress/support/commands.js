@@ -24,7 +24,7 @@ import {
  */
 import './wait-until'
 import {
-	getBaseControl, containsRegExp, getActiveTab, changeResponsiveMode, changeUnit, waitLoader, rgbToHex,
+	getBaseControl, containsRegExp, getActiveTab, changeResponsiveMode, changeUnit, waitLoader, rgbToHex, getAddresses,
 } from './util'
 
 Cypress.Commands.add( 'setupWP', ( args = {} ) => {
@@ -33,6 +33,7 @@ Cypress.Commands.add( 'setupWP', ( args = {} ) => {
 		setup: true,
 	} )
 	cy.visit( '/?' + params.toString() )
+	cy.loginAdmin()
 } )
 
 Cypress.Commands.add( 'loginAdmin', () => {
@@ -120,6 +121,10 @@ Cypress.Commands.add( 'selectBlock', ( subject, selector ) => {
  * Command for asserting the computed style of a block.
  */
 Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subject, cssObject = {}, options = {} ) => {
+	const {
+		assertFrontend = true,
+	} = options
+
 	const assertComputedStyle = ( win, element, cssRule, expectedValue ) => {
 		let computedStyle = win.getComputedStyle( element )[ camelCase( cssRule ) ]
 		if ( typeof computedStyle === 'string' && computedStyle.match( /rgb\(/ ) ) {
@@ -150,13 +155,10 @@ Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subje
 							} )
 					} )
 
-					if ( options.assertFrontend ) {
+					if ( assertFrontend ) {
 						cy.publish()
-						cy.window().then( _win => {
-							const currUrl = _win.location.href
-							const parsedPostID = currUrl.match( /post=([0-9]*)/g )[ 0 ].split( '=' )[ 1 ]
-
-							cy.visit( `/?page_id=${ parsedPostID }&preview=true` )
+						getAddresses( ( { currUrl, previewUrl } ) => {
+							cy.visit( previewUrl )
 
 							cy.window().then( frontendWindow => {
 								cy.document().then( frontendDocument => {
@@ -171,7 +173,7 @@ Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subje
 								} )
 							} )
 
-							cy.visit( currUrl.replace( 'http://e2etest.local', '' ) )
+							cy.visit( currUrl )
 
 							cy
 								.get( parsedClassList )
@@ -184,7 +186,8 @@ Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subje
 								.click( { force: true } )
 
 							cy.collapse( activePanel )
-						} )
+						}
+						)
 					}
 				} )
 		} )
@@ -195,13 +198,28 @@ Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subje
  * Command for typing in blocks
  */
 Cypress.Commands.add( 'typeBlock', ( subject, contentSelector = '', content = '', customSelector = '' ) => {
-	cy.selectBlock( subject, customSelector )
-		.find( contentSelector )
-		.click( { force: true } )
-		.type( `{selectall}${ content }`, { force: true } )
-		.then( $element => {
-			expect( $element ).to.contain( content )
-		} )
+	const block = cy.selectBlock( subject, customSelector )
+	if ( contentSelector ) {
+		block
+			.find( contentSelector )
+			.click( { force: true } )
+			.type( `{selectall}${ content }`, { force: true } )
+			.then( $element => {
+				expect( $element ).to.contain( content )
+			} )
+	} else {
+		block
+			.click( { force: true } )
+			.type( `{selectall}${ content }`, { force: true } )
+			.then( $element => {
+				if ( content[ 0 ] !== '/' ) {
+					expect( $element ).to.contain( content )
+				}
+			} )
+	}
+	if ( content[ 0 ] !== '/' ) {
+		cy.selectBlock( subject, customSelector )
+	}
 } )
 
 /**
@@ -1026,9 +1044,11 @@ Cypress.Commands.add( 'publish', () => {
 							.contains( containsRegExp( 'Publish' ) )
 							.click( { force: true } )
 
-						cy
-							.get( 'button[aria-label="Close panel"]' )
-							.click( { force: true } )
+						if ( $actions.find( 'button[aria-label="Close panel"]' ).length ) {
+							cy
+								.get( 'button[aria-label="Close panel"]' )
+								.click( { force: true } )
+						}
 					}
 				} )
 		} )

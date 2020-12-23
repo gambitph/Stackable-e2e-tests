@@ -139,3 +139,20 @@ export const rgbToHex = rgb => {
 	return `#${ componentToHex( r ) }${ componentToHex( g ) }${ componentToHex( b ) }`
 }
 
+/**
+ * Function that returns the original link address and preview address
+ *
+ * @param {Function} callback
+ */
+export const getAddresses = ( callback = () => {} ) => {
+	cy.window().then( _win => {
+		const _currUrl = _win.location.href
+		const parsedPostID = _currUrl.match( /post=([0-9]*)/g )[ 0 ].split( '=' )[ 1 ]
+		const previewUrl = `/?page_id=${ parsedPostID }&preview=true`
+		const currUrl = _currUrl.replace( 'http://e2etest.local', '' )
+		callback( {
+			currUrl, previewUrl, postID: parsedPostID,
+		} )
+	} )
+}
+
