@@ -56,17 +56,18 @@ export const getActiveTab = ( callbackFunc = () => {} ) => {
  * @param {string} name selector name
  * @param {string} tab current active tab
  * @param {boolean} isInPopover if the control is in popover
+ * @param {string} customRegExp sometimes selector requires custom regexpressions
  */
-export const changeResponsiveMode = ( viewport = 'Desktop', name = '', tab = 'style', isInPopover = false ) => {
+export const changeResponsiveMode = ( viewport = 'Desktop', name = '', tab = 'style', isInPopover = false, customRegExp = '' ) => {
 	getBaseControl( tab, isInPopover )
-		.contains( containsRegExp( name ) )
+		.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
 		.parent()
 		.then( $baseControl => {
 			if ( $baseControl.find( '.ugb-base-control-multi-label__responsive>button[aria-label="Desktop"]' ).length ) {
 				if ( ! $baseControl.find( `button[aria-label="${ viewport }"]` ).length ) {
 					getBaseControl( tab, isInPopover )
-						.contains( containsRegExp( name ) )
+						.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
 						.parentsUntil( `.components-panel__body>.components-base-control` )
 						.parent()
 						.find( `button[aria-label="Desktop"]` )
@@ -74,7 +75,7 @@ export const changeResponsiveMode = ( viewport = 'Desktop', name = '', tab = 'st
 				}
 
 				getBaseControl( tab, isInPopover )
-					.contains( containsRegExp( name ) )
+					.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
 					.parentsUntil( `.components-panel__body>.components-base-control` )
 					.parent()
 					.find( `button[aria-label="${ viewport }"]` )

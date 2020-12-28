@@ -27,36 +27,91 @@ import {
 	getBaseControl, containsRegExp, getActiveTab, changeResponsiveMode, changeUnit, waitLoader, rgbToHex, getAddresses,
 } from './util'
 
-Cypress.Commands.add( 'setupWP', ( args = {} ) => {
+const AdjustCommands = {
+	toggleControl,
+	rangeControl,
+	toolbarControl,
+	designControl,
+	colorControl,
+	popoverControl,
+	dropdownControl,
+	suggestionControl,
+	fourRangeControl,
+	iconControl,
+}
+
+const ResetCommands = {
+	rangeControlReset,
+	colorControlClear,
+	popoverControlReset,
+	suggestionControlClear,
+	fourRangeControlReset,
+	iconControlReset,
+}
+
+Cypress.Commands.add( 'setupWP', setupWP )
+Cypress.Commands.add( 'loginAdmin', loginAdmin )
+Cypress.Commands.add( 'hideAnyGutenbergTip', hideAnyGutenbergTip )
+Cypress.Commands.add( 'newPage', newPage )
+Cypress.Commands.add( 'deactivatePlugin', deactivatePlugin )
+Cypress.Commands.add( 'activatePlugin', activatePlugin )
+Cypress.Commands.add( 'toggleBlockInserterButton', toggleBlockInserterButton )
+Cypress.Commands.add( 'addBlock', addBlock )
+Cypress.Commands.add( 'selectBlock', selectBlock )
+Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, assertComputedStyle )
+Cypress.Commands.add( 'typeBlock', typeBlock )
+Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, assertClassName )
+Cypress.Commands.add( 'changePreviewMode', changePreviewMode )
+Cypress.Commands.add( 'deleteBlock', deleteBlock )
+Cypress.Commands.add( 'openSidebar', openSidebar )
+Cypress.Commands.add( 'openInspector', openInspector )
+Cypress.Commands.add( 'scrollSidebarToView', scrollSidebarToView )
+Cypress.Commands.add( 'scrollEditorToView', scrollEditorToView )
+Cypress.Commands.add( 'collapse', collapse )
+Cypress.Commands.add( 'toggleStyle', toggleStyle )
+Cypress.Commands.add( 'adjust', adjust )
+Cypress.Commands.add( 'resetStyle', resetStyle )
+Cypress.Commands.add( 'publish', publish )
+Cypress.Commands.add( 'adjustLayout', adjustLayout )
+Cypress.Commands.add( 'adjustDesign', adjustDesign )
+Cypress.Commands.add( 'addGlobalColor', addGlobalColor )
+Cypress.Commands.add( 'resetGlobalColor', resetGlobalColor )
+Cypress.Commands.add( 'deleteGlobalColor', deleteGlobalColor )
+Cypress.Commands.add( 'adjustGlobalTypography', adjustGlobalTypography )
+Cypress.Commands.add( 'resetGlobalTypography', resetGlobalTypography )
+Cypress.Commands.add( 'changeIcon', changeIcon )
+Cypress.Commands.add( 'assertPluginError', assertPluginError )
+
+function setupWP( args = {} ) {
 	const params = new URLSearchParams( {
 		plugins: args.plugins || [],
 		setup: true,
 	} )
 	cy.visit( '/?' + params.toString() )
-	cy.loginAdmin()
-} )
+	loginAdmin()
+}
 
-Cypress.Commands.add( 'loginAdmin', () => {
+function loginAdmin() {
 	cy.visit( '/wp-login.php' )
 	cy.get( '#user_login' ).clear().type( 'admin' )
 	cy.get( '#user_pass' ).clear().type( 'admin' )
 	cy.get( '#loginform' ).submit()
-} )
+}
 
-Cypress.Commands.add( 'hideAnyGutenbergTip', () => {
+function hideAnyGutenbergTip() {
 	cy.get( 'body' ).then( $body => {
 		if ( $body.find( '.edit-post-welcome-guide' ).length ) {
 			cy.get( '.edit-post-welcome-guide button:eq(0)' ).click()
 		}
 	} )
-} )
+}
 
-Cypress.Commands.add( 'newPage', () => {
+function newPage() {
 	cy.visit( '/wp-admin/post-new.php?post_type=page' )
-	cy.hideAnyGutenbergTip()
-} )
+	hideAnyGutenbergTip()
+}
 
-Cypress.Commands.add( 'deactivatePlugin', slug => {
+function deactivatePlugin( slug ) {
 	cy.get( 'body' ).then( $body => {
 		if ( $body.find( 'form[name="loginform"]' ).length ) {
 			// Login user if still not logged in.
@@ -65,9 +120,9 @@ Cypress.Commands.add( 'deactivatePlugin', slug => {
 	} )
 	cy.visit( `/?deactivate-plugin=${ slug }` )
 	cy.visit( `/wp-admin/` )
-} )
+}
 
-Cypress.Commands.add( 'activatePlugin', slug => {
+function activatePlugin( slug ) {
 	cy.get( 'body' ).then( $body => {
 		if ( $body.find( 'form[name="loginform"]' ).length ) {
 			// Login user if still not logged in.
@@ -76,21 +131,23 @@ Cypress.Commands.add( 'activatePlugin', slug => {
 	} )
 	cy.visit( `/?activate-plugin=${ slug }` )
 	cy.visit( `/wp-admin/` )
-} )
+}
 
 /**
  * Command for clicking the block inserter button
  */
-Cypress.Commands.add( 'toggleBlockInserterButton', () => {
+function toggleBlockInserterButton() {
 	// Click the adder button located at the upper left part of the screen.
 	cy.get( '.edit-post-header-toolbar__inserter-toggle' ).click( { force: true } )
-} )
+}
 
 /**
  * Command for adding a specific block in the inserter button.
+ *
+ * @param {string} blockname
  */
-Cypress.Commands.add( 'addBlock', ( blockname = 'ugb/accordion' ) => {
-	cy.toggleBlockInserterButton()
+function addBlock( blockname = 'ugb/accordion' ) {
+	toggleBlockInserterButton()
 	const [ plugin, block ] = blockname.split( '/' )
 	if ( plugin === 'core' ) {
 		// core blocks have different selector buttons.
@@ -99,12 +156,15 @@ Cypress.Commands.add( 'addBlock', ( blockname = 'ugb/accordion' ) => {
 		cy.get( `.block-editor-block-types-list>.block-editor-block-types-list__list-item>.editor-block-list-item-${ plugin }-${ block }:first` ).click( { force: true } )
 	}
 	return cy.get( `[data-type="${ blockname }"]` ).last()
-} )
+}
 
 /**
  * Command for selecting a specific block.
+ *
+ * @param {*} subject
+ * @param {string} selector
  */
-Cypress.Commands.add( 'selectBlock', ( subject, selector ) => {
+function selectBlock( subject, selector ) {
 	if ( selector && typeof selector === 'number' ) {
 		// Select a specific block based on nth position (base zero).
 		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).eq( selector ).click( { force: true } )
@@ -115,21 +175,25 @@ Cypress.Commands.add( 'selectBlock', ( subject, selector ) => {
 		// Otherwise, just select the last matched block.
 		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).last().click( { force: true } )
 	}
-} )
+}
 
 /**
  * Command for asserting the computed style of a block.
+ *
+ * @param {*} subject
+ * @param {Object} cssObject
+ * @param {Object} options
  */
-Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subject, cssObject = {}, options = {} ) => {
+function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	const {
 		assertFrontend = true,
 	} = options
 
-	const assertComputedStyle = ( win, element, cssRule, expectedValue ) => {
-		let computedStyle = win.getComputedStyle( element )[ camelCase( cssRule ) ]
+	const _assertComputedStyle = ( win, element, cssRule, expectedValue, pseudoEl ) => {
+		let computedStyle = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )[ camelCase( cssRule ) ]
 		if ( typeof computedStyle === 'string' && computedStyle.match( /rgb\(/ ) ) {
 			// Force rgb computed style to be hex.
-			computedStyle = rgbToHex( computedStyle )
+			computedStyle = computedStyle.replace( /rgb\(([0-9]*), ([0-9]*), ([0-9]*)\)/g, val => rgbToHex( val ) )
 		}
 		expect( computedStyle ).toBe( expectedValue )
 	}
@@ -143,30 +207,32 @@ Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subje
 				.invoke( 'attr', 'class' )
 				.then( classList => {
 					const parsedClassList = classList.split( ' ' ).map( className => `.${ className }` ).join( '' )
-					keys( cssObject ).forEach( selector => {
+					keys( cssObject ).forEach( _selector => {
+						const selector = _selector.split( ':' )
 						cy
-							.get( `.is-selected${ ` ${ selector }` }` )
+							.get( `.is-selected${ ` ${ selector[ 0 ] }` }` )
 							.then( $block => {
 								cy.window().then( win => {
-									keys( cssObject[ selector ] ).forEach( cssRule => {
-										assertComputedStyle( win, $block[ 0 ], cssRule, cssObject[ selector ][ cssRule ] )
+									keys( cssObject[ _selector ] ).forEach( cssRule => {
+										_assertComputedStyle( win, $block[ 0 ], cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ] )
 									} )
 								} )
 							} )
 					} )
 
 					if ( assertFrontend ) {
-						cy.publish()
+						publish()
 						getAddresses( ( { currUrl, previewUrl } ) => {
 							cy.visit( previewUrl )
 
 							cy.window().then( frontendWindow => {
 								cy.document().then( frontendDocument => {
-									keys( cssObject ).forEach( selector => {
-										const willAssertElement = frontendDocument.querySelector( `${ parsedClassList } ${ selector }` )
+									keys( cssObject ).forEach( _selector => {
+										const selector = _selector.split( ':' )
+										const willAssertElement = frontendDocument.querySelector( `${ parsedClassList } ${ selector[ 0 ] }` )
 										if ( willAssertElement ) {
-											keys( cssObject[ selector ] ).forEach( cssRule => {
-												assertComputedStyle( frontendWindow, willAssertElement, cssRule, cssObject[ selector ][ cssRule ] )
+											keys( cssObject[ _selector ] ).forEach( cssRule => {
+												_assertComputedStyle( frontendWindow, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ] )
 											} )
 										}
 									} )
@@ -179,25 +245,30 @@ Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( subje
 								.get( parsedClassList )
 								.click( { force: true } )
 
-							cy.openSidebar( 'Settings' )
+							openSidebar( 'Settings' )
 
 							cy
 								.get( `button[aria-label="${ startCase( tab ) } Tab"]` )
 								.click( { force: true } )
 
-							cy.collapse( activePanel )
+							collapse( activePanel )
 						}
 						)
 					}
 				} )
 		} )
 	} )
-} )
+}
 
 /**
  * Command for typing in blocks
+ *
+ * @param {*} subject
+ * @param {string} contentSelector
+ * @param {string} content
+ * @param {string} customSelector
  */
-Cypress.Commands.add( 'typeBlock', ( subject, contentSelector = '', content = '', customSelector = '' ) => {
+function typeBlock( subject, contentSelector = '', content = '', customSelector = '' ) {
 	const block = cy.selectBlock( subject, customSelector )
 	if ( contentSelector ) {
 		block
@@ -218,14 +289,18 @@ Cypress.Commands.add( 'typeBlock', ( subject, contentSelector = '', content = ''
 			} )
 	}
 	if ( content[ 0 ] !== '/' ) {
-		cy.selectBlock( subject, customSelector )
+		selectBlock( subject, customSelector )
 	}
-} )
+}
 
 /**
  * Command for asserting the included classNames.
+ *
+ * @param  {*} subject
+ * @param {string} customSelector
+ * @param {string} expectedValue
  */
-Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, ( subject, customSelector = '', expectedValue = '' ) => {
+function assertClassName( subject, customSelector = '', expectedValue = '' ) {
 	cy
 		.get( subject )
 		.invoke( 'attr', 'id' )
@@ -238,12 +313,14 @@ Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, ( subject, 
 					expect( parsedClassNames.includes( expectedValue ) ).toBe( true )
 				} )
 		} )
-} )
+}
 
 /**
  * Command for changing the preview mode.
+ *
+ * @param {string} mode
  */
-Cypress.Commands.add( 'changePreviewMode', ( mode = 'Desktop' ) => {
+function changePreviewMode( mode = 'Desktop' ) {
 	cy
 		.get( 'button' )
 		.contains( containsRegExp( 'Preview' ) )
@@ -261,21 +338,26 @@ Cypress.Commands.add( 'changePreviewMode', ( mode = 'Desktop' ) => {
 				.contains( containsRegExp( mode ) )
 				.click( { force: true } )
 		} )
-} )
+}
 
 /**
  * Command for deleting a specific block.
+ *
+ * @param {*} subject
+ * @param {string} selector
  */
-Cypress.Commands.add( 'deleteBlock', ( subject, selector ) => {
-	cy.selectBlock( subject, selector )
+function deleteBlock( subject, selector ) {
+	selectBlock( subject, selector )
 	cy.get( 'button[aria-label="More options"]' ).first().click( { force: true } )
 	cy.get( 'button' ).contains( 'Remove block' ).click( { force: true } )
-} )
+}
 
 /**
  * Command for opening a sidebar button.
+ *
+ * @param {string} label
  */
-Cypress.Commands.add( 'openSidebar', ( label = 'Settings' ) => {
+function openSidebar( label = 'Settings' ) {
 	cy
 		.get( `button[aria-label="${ label }"]` )
 		.invoke( 'attr', 'aria-expanded' )
@@ -287,25 +369,31 @@ Cypress.Commands.add( 'openSidebar', ( label = 'Settings' ) => {
 					.click( { force: true } )
 			}
 		} )
-} )
+}
 
 /**
  * Command for opening the block inspectore of a block.
+ *
+ * @param {*} subject
+ * @param {string} tab
+ * @param {string} selector
  */
-Cypress.Commands.add( 'openInspector', ( subject, tab, selector ) => {
-	cy.selectBlock( subject, selector )
-	cy.openSidebar( 'Settings' )
+function openInspector( subject, tab, selector ) {
+	selectBlock( subject, selector )
+	openSidebar( 'Settings' )
 
 	cy
 		.get( `button[aria-label="${ tab } Tab"]` )
 		.click( { force: true } )
-} )
+}
 
 /**
  * Command for scrolling the sidebar panel to
  * a specific selector.
+ *
+ * @param {string} selector
  */
-Cypress.Commands.add( 'scrollSidebarToView', selector => {
+function scrollSidebarToView( selector ) {
 	cy.document().then( doc => {
 		const selectedEl = doc.querySelector( selector )
 		if ( selectedEl ) {
@@ -315,13 +403,15 @@ Cypress.Commands.add( 'scrollSidebarToView', selector => {
 			}
 		}
 	} )
-} )
+}
 
 /**
  * Command for scrolling the editor panel to
  * a specific selector.
+ *
+ * @param {string} selector
  */
-Cypress.Commands.add( 'scrollEditorToView', selector => {
+function scrollEditorToView( selector ) {
 	cy.document().then( doc => {
 		const selectedEl = doc.querySelector( selector )
 		if ( selectedEl ) {
@@ -331,12 +421,15 @@ Cypress.Commands.add( 'scrollEditorToView', selector => {
 			}
 		}
 	} )
-} )
+}
 
 /**
  * Command for collapsing an accordion.
+ *
+ * @param {string} name
+ * @param {boolean} toggle
  */
-Cypress.Commands.add( 'collapse', ( name = 'General', toggle = true ) => {
+function collapse( name = 'General', toggle = true ) {
 	cy
 		.document()
 		.then( doc => {
@@ -379,30 +472,37 @@ Cypress.Commands.add( 'collapse', ( name = 'General', toggle = true ) => {
 				} )
 			}
 		} )
-} )
+}
 
 /**
  * Command for enabling/disabling an
  * accordion.
+ *
+ * @param {string} name
+ * @param {boolean} enabled
  */
-Cypress.Commands.add( 'toggleStyle', ( name = 'Block Title', enabled = true ) => {
+function toggleStyle( name = 'Block Title', enabled = true ) {
 	cy.document().then( doc => {
 		const kebabCaseName = kebabCase( name )
 		const el = doc.querySelector( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle` )
 		if ( el ) {
 			// Click the checkbox if necessary. Otherwise, don't check the checkbox.
 			if ( ( enabled && ! Array.from( el.classList ).includes( 'is-checked' ) ) || ( ! enabled && Array.from( el.classList ).includes( 'is-checked' ) ) ) {
-				cy.scrollSidebarToView( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle>input` )
+				scrollSidebarToView( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle>input` )
 				cy.get( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle>input` ).click( { force: true } )
 			}
 		}
 	} )
-} )
+}
 
 /**
  * Command for enabling/disabling a toggle control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
  */
-Cypress.Commands.add( 'toggleControl', ( name, value, options = {} ) => {
+function toggleControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 	} = options
@@ -425,12 +525,16 @@ Cypress.Commands.add( 'toggleControl', ( name, value, options = {} ) => {
 				}
 			} )
 	} )
-} )
+}
 
 /**
  * Command for adjusting the advanced range control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
  */
-Cypress.Commands.add( 'rangeControl', ( name, value, options = {} ) => {
+function rangeControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		viewport = 'Desktop',
@@ -447,12 +551,15 @@ Cypress.Commands.add( 'rangeControl', ( name, value, options = {} ) => {
 			.find( 'input.components-input-control__input' )
 			.type( `{selectall}${ value }`, { force: true } )
 	} )
-} )
+}
 
 /**
  * Command for resetting the advanced range control.
+ *
+ * @param {string} name
+ * @param {Object} options
  */
-Cypress.Commands.add( 'rangeControlReset', ( name, options = {} ) => {
+function rangeControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
 		viewport = 'Desktop',
@@ -470,12 +577,17 @@ Cypress.Commands.add( 'rangeControlReset', ( name, options = {} ) => {
 			.contains( containsRegExp( 'Reset' ) )
 			.click( { force: true } )
 	} )
-} )
+}
 
 /**
  * Command for adjusting the toolbar control
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ * @param {string} customRegExp
  */
-Cypress.Commands.add( 'toolbarControl', ( name, value, options = {} ) => {
+function toolbarControl( name, value, options = {}, customRegExp = '' ) {
 	const {
 		isInPopover = false,
 		viewport = 'Desktop',
@@ -491,21 +603,25 @@ Cypress.Commands.add( 'toolbarControl', ( name, value, options = {} ) => {
 	}
 
 	getActiveTab( tab => {
-		changeResponsiveMode( viewport, name, tab, isInPopover )
+		changeResponsiveMode( viewport, name, tab, isInPopover, customRegExp )
 		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
+			.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
 			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
 			.find( `button[value="${ value }"]` )
 			.click( { force: true } )
 	} )
-} )
+}
 
 /**
  * Command for adjusting the design control.
  * Mainly used for top and bottom separator modules.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
  */
-Cypress.Commands.add( 'designControl', ( name, value, options = {} ) => {
+function designControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 	} = options
@@ -518,12 +634,16 @@ Cypress.Commands.add( 'designControl', ( name, value, options = {} ) => {
 			.find( `input[value="${ kebabCase( value ) }"]` )
 			.click( { force: true } )
 	} )
-} )
+}
 
 /**
  * Command for adjusting the color picker
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
  */
-Cypress.Commands.add( 'colorControl', ( name, value, options = {} ) => {
+function colorControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 	} = options
@@ -563,12 +683,15 @@ Cypress.Commands.add( 'colorControl', ( name, value, options = {} ) => {
 				.click( { force: true } )
 		} )
 	}
-} )
+}
 
 /**
  * Command for resetting the color picker.
+ *
+ * @param {string} name
+ * @param {Object} options
  */
-Cypress.Commands.add( 'colorControlClear', ( name, options = {} ) => {
+function colorControlClear( name, options = {} ) {
 	const {
 		isInPopover = false,
 	} = options
@@ -584,16 +707,25 @@ Cypress.Commands.add( 'colorControlClear', ( name, options = {} ) => {
 			// We are adding an additional click as sometimes click does not register.
 			.click( { force: true, log: false } )
 	} )
-} )
+}
 
 /**
  * Command for adjusting the popover control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ * @param {string} customRegex
  */
-Cypress.Commands.add( 'popoverControl', ( name, value = {} ) => {
+function popoverControl( name, value = {}, options = {}, customRegex = '' ) {
+	cy.log( JSON.stringify( value ) )
+	const {
+		isInPopover = false,
+	} = options
+
 	const clickPopoverButton = () => {
 		getActiveTab( tab => {
-			cy
-				.get( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+			getBaseControl( tab, isInPopover )
 				.contains( containsRegExp( name ) )
 				.parentsUntil( '.components-panel__body>.components-base-control' )
 				.parent()
@@ -619,11 +751,11 @@ Cypress.Commands.add( 'popoverControl', ( name, value = {} ) => {
 					value: childValue = '',
 				} = value[ key ]
 
-				cy.adjust( key, childValue, {
+				adjust( key, childValue === '' ? value[ key ] : childValue, {
 					viewport, unit, isInPopover: true,
-				} )
+				}, customRegex )
 			} else {
-				cy.adjust( key, value[ key ], { isInPopover: true } )
+				adjust( key, value[ key ], { isInPopover: true }, customRegex )
 			}
 		} )
 
@@ -632,8 +764,7 @@ Cypress.Commands.add( 'popoverControl', ( name, value = {} ) => {
 	} else if ( typeof value === 'boolean' ) {
 		// In some cases, a popover control has an input checkbox.
 		getActiveTab( tab => {
-			cy
-				.get( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+			getBaseControl( tab, isInPopover )
 				.contains( containsRegExp( name ) )
 				.parentsUntil( '.components-panel__body>.components-base-control' )
 				.parent()
@@ -654,12 +785,14 @@ Cypress.Commands.add( 'popoverControl', ( name, value = {} ) => {
 				} )
 		} )
 	}
-} )
+}
 
 /**
  * Command for resetting the popover control.
+ *
+ * @param {string} name
  */
-Cypress.Commands.add( 'popoverControlReset', name => {
+function popoverControlReset( name ) {
 	const selector = tab => cy
 		.get( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
 		.contains( containsRegExp( name ) )
@@ -676,12 +809,16 @@ Cypress.Commands.add( 'popoverControlReset', name => {
 				}
 			} )
 	} )
-} )
+}
 
 /**
  * Command for adjusting the dropdown control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
  */
-Cypress.Commands.add( 'dropdownControl', ( name, value, options = {} ) => {
+function dropdownControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 	} = options
@@ -703,12 +840,16 @@ Cypress.Commands.add( 'dropdownControl', ( name, value, options = {} ) => {
 			.find( 'select' )
 			.select( value, { force: true } )
 	} )
-} )
+}
 
 /**
  * Command for adjusting the auto suggestion control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
  */
-Cypress.Commands.add( 'suggestionControl', ( name, value, options = {} ) => {
+function suggestionControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 	} = options
@@ -721,12 +862,15 @@ Cypress.Commands.add( 'suggestionControl', ( name, value, options = {} ) => {
 			.find( 'input' )
 			.type( `{selectall}${ value }{enter}` )
 	} )
-} )
+}
 
 /**
  * Command for resetting the auto suggestion control.
+ *
+ * @param {string} name
+ * @param {Object} options
  */
-Cypress.Commands.add( 'suggestionControlClear', ( name, options = {} ) => {
+function suggestionControlClear( name, options = {} ) {
 	const {
 		isInPopover = false,
 	} = options
@@ -739,12 +883,16 @@ Cypress.Commands.add( 'suggestionControlClear', ( name, options = {} ) => {
 			.find( 'input' )
 			.type( `{selectall}{backspace}{enter}` )
 	} )
-} )
+}
 
 /**
  * Command for adjusting the four range control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
  */
-Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
+function fourRangeControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		viewport = 'Desktop',
@@ -796,12 +944,15 @@ Cypress.Commands.add( 'fourRangeControl', ( name, value, options = {} ) => {
 			} )
 		} )
 	}
-} )
+}
 
 /**
  * Command for resetting the four range control.
+ *
+ * @param {string} name
+ * @param {Object} options
  */
-Cypress.Commands.add( 'fourRangeControlReset', ( name, options = {} ) => {
+function fourRangeControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
 		viewport = 'Desktop',
@@ -835,12 +986,16 @@ Cypress.Commands.add( 'fourRangeControlReset', ( name, options = {} ) => {
 					.click( { force: true } )
 			} )
 	} )
-} )
+}
 
 /**
  * Command for adjusting the icon control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
  */
-Cypress.Commands.add( 'iconControl', ( name, value, options = {} ) => {
+function iconControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 	} = options
@@ -895,12 +1050,15 @@ Cypress.Commands.add( 'iconControl', ( name, value, options = {} ) => {
 				.click( { force: true } )
 		}
 	}
-} )
+}
 
 /**
  * Command for resetting the icon control.
+ *
+ * @param {string} name
+ * @param {Object} options
  */
-Cypress.Commands.add( 'iconControlReset', ( name, options = {} ) => {
+function iconControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
 	} = options
@@ -914,18 +1072,38 @@ Cypress.Commands.add( 'iconControlReset', ( name, options = {} ) => {
 			.contains( 'Reset' )
 			.click( { force: true } )
 	} )
-} )
+}
 
 /**
  * Command for adjusting settings.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
  */
-Cypress.Commands.add( 'adjust', ( name, value, options = {} ) => {
-	const selector = () => cy
-		.get( '.components-panel__body.is-opened>.components-base-control' )
-		.contains( containsRegExp( name ) )
-		.last()
-		.parentsUntil( '.components-panel__body.is-opened>.components-base-control' )
-		.parent()
+function adjust( name, value, options = {} ) {
+	// Handle custom style options without label
+	const customLabels = {
+		[ `Color Type` ]: 'Single|Gradient',
+	}
+
+	const selector = () => {
+		if ( customLabels[ name ] ) {
+			return cy
+				.get( '.components-panel__body.is-opened>.components-base-control' )
+				.contains( new RegExp( customLabels[ name ] ) )
+				.last()
+				.parentsUntil( '.components-panel__body.is-opened>.components-base-control' )
+				.parent()
+		}
+
+		return cy
+			.get( '.components-panel__body.is-opened>.components-base-control' )
+			.contains( containsRegExp( name ) )
+			.last()
+			.parentsUntil( '.components-panel__body.is-opened>.components-base-control' )
+			.parent()
+	}
 
 	 selector()
 		.invoke( 'attr', 'class' )
@@ -953,7 +1131,7 @@ Cypress.Commands.add( 'adjust', ( name, value, options = {} ) => {
 
 			const executeCommand = key => {
 				if ( parsedClassNames.includes( key ) ) {
-					cy[ commandsBasedOnClassName[ key ] ]( name, value, options )
+					AdjustCommands[ commandsBasedOnClassName[ key ] ]( name, value, options, customLabels[ name ] )
 					return true
 				}
 				return false
@@ -964,19 +1142,22 @@ Cypress.Commands.add( 'adjust', ( name, value, options = {} ) => {
 				return selector()
 					.find( 'select' )
 					.then( () => {
-						return cy.dropdownControl( name, value, options )
+						return dropdownControl( name, value, options )
 					} )
 			}
 		} )
 
 	// Always return the selected block which will be used in functions that require chained wp-block elements.
 	return cy.get( '.block-editor-block-list__block.is-selected' )
-} )
+}
 
 /**
  * Command for resetting the style.
+ *
+ * @param {string} name
+ * @param {Object} options
  */
-Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
+function resetStyle( name, options = {} ) {
 	const selector = () => cy
 		.get( '.components-panel__body.is-opened>.components-base-control' )
 		.contains( containsRegExp( name ) )
@@ -1004,7 +1185,7 @@ Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
 
 			const executeCommand = key => {
 				if ( parsedClassNames.includes( key ) ) {
-					cy[ commandsBasedOnClassName[ key ] ]( name, options )
+					ResetCommands[ commandsBasedOnClassName[ key ] ]( name, options )
 				}
 			}
 
@@ -1013,12 +1194,12 @@ Cypress.Commands.add( 'resetStyle', ( name, options = {} ) => {
 
 	// Always return the selected block which will be used in functions that require chained wp-block elements.
 	return cy.get( '.block-editor-block-list__block.is-selected' )
-} )
+}
 
 /**
  * Command for publishing a page.
  */
-Cypress.Commands.add( 'publish', () => {
+function publish() {
 	const selector = () => cy
 		.get( 'button.editor-post-publish-button__button' )
 
@@ -1054,22 +1235,26 @@ Cypress.Commands.add( 'publish', () => {
 					cy.wait( 1000 )
 				} )
 		} )
-} )
+}
 
 /**
  * Command for changing the layout of the block.
+ *
+ * @param {string} option
  */
-Cypress.Commands.add( 'adjustLayout', ( option = '' ) => {
+function adjustLayout( option = '' ) {
 	cy
 		.get( '.ugb-design-control-wrapper' )
 		.find( `input[value="${ kebabCase( option ) }"]` )
 		.click( { force: true } )
-} )
+}
 
 /**
  * Command for changing the design of the block.
+ *
+ * @param {string} option
  */
-Cypress.Commands.add( 'adjustDesign', ( option = '' ) => {
+function adjustDesign( option = '' ) {
 	cy
 		.get( '.ugb-design-library-items' )
 		.find( '.ugb-design-library-item' )
@@ -1078,19 +1263,21 @@ Cypress.Commands.add( 'adjustDesign', ( option = '' ) => {
 		.parent()
 		.find( 'button' )
 		.click( { force: true } )
-} )
+}
 
 /**
  * Command for adding a global color in Stackable Settings.
+ *
+ * @param {Object} options
  */
-Cypress.Commands.add( 'addGlobalColor', ( options = {} ) => {
+function addGlobalColor( options = {} ) {
 	const {
 		name = '',
 		color = '',
 	} = options
 
-	cy.openSidebar( 'Stackable Settings' )
-	cy.collapse( 'Global Color Palette' )
+	openSidebar( 'Stackable Settings' )
+	collapse( 'Global Color Palette' )
 
 	cy
 		.get( '.components-panel__body-toggle' )
@@ -1136,14 +1323,14 @@ Cypress.Commands.add( 'addGlobalColor', ( options = {} ) => {
 						.click( { force: true } )
 				} )
 		} )
-} )
+}
 
 /**
  * Command for resetting the global color palette.
  */
-Cypress.Commands.add( 'resetGlobalColor', () => {
-	cy.openSidebar( 'Stackable Settings' )
-	cy.collapse( 'Global Color Palette' )
+function resetGlobalColor() {
+	openSidebar( 'Stackable Settings' )
+	collapse( 'Global Color Palette' )
 
 	const selector = () => cy
 		.get( '.ugb-global-settings-color-picker__reset-button' )
@@ -1166,14 +1353,16 @@ Cypress.Commands.add( 'resetGlobalColor', () => {
 					.click( { force: true } )
 			}
 		} )
-} )
+}
 
 /**
  * Command for deleting a global color in Stackable Settings.
+ *
+ * @param {number} selector
  */
-Cypress.Commands.add( 'deleteGlobalColor', ( selector = 0 ) => {
-	cy.openSidebar( 'Stackable Settings' )
-	cy.collapse( 'Global Color Palette' )
+function deleteGlobalColor( selector = 0 ) {
+	openSidebar( 'Stackable Settings' )
+	collapse( 'Global Color Palette' )
 
 	if ( typeof selector === 'number' ) {
 		// Delete a global color by index number.
@@ -1200,12 +1389,15 @@ Cypress.Commands.add( 'deleteGlobalColor', ( selector = 0 ) => {
 		.get( 'button' )
 		.contains( containsRegExp( 'Delete' ) )
 		.click( { force: true } )
-} )
+}
 
 /**
  * Command for adjusting the global typography in Stackable Settings.
+ *
+ * @param {string} selector
+ * @param {Object} options
  */
-Cypress.Commands.add( 'adjustGlobalTypography', ( selector = 'h1', options = {} ) => {
+function adjustGlobalTypography( selector = 'h1', options = {} ) {
 	const globalTypographyOptions = [
 		'h1',
 		'h2',
@@ -1216,8 +1408,8 @@ Cypress.Commands.add( 'adjustGlobalTypography', ( selector = 'h1', options = {} 
 		'p',
 	]
 
-	cy.openSidebar( 'Stackable Settings' )
-	cy.collapse( 'Global Typography' )
+	openSidebar( 'Stackable Settings' )
+	collapse( 'Global Typography' )
 
 	const clickEditButton = () => cy
 		.get( '.ugb-global-settings-typography-control' )
@@ -1259,12 +1451,14 @@ Cypress.Commands.add( 'adjustGlobalTypography', ( selector = 'h1', options = {} 
 
 			clickEditButton()
 		} )
-} )
+}
 
 /**
  * Command for resetting the global typogragpy style.
+ *
+ * @param {string} selector
  */
-Cypress.Commands.add( 'resetGlobalTypography', ( selector = 'h1' ) => {
+function resetGlobalTypography( selector = 'h1' ) {
 	const globalTypographyOptions = [
 		'h1',
 		'h2',
@@ -1275,8 +1469,8 @@ Cypress.Commands.add( 'resetGlobalTypography', ( selector = 'h1' ) => {
 		'p',
 	]
 
-	cy.openSidebar( 'Stackable Settings' )
-	cy.collapse( 'Global Typography' )
+	openSidebar( 'Stackable Settings' )
+	collapse( 'Global Typography' )
 
 	// Click the reset button.
 	cy
@@ -1291,12 +1485,17 @@ Cypress.Commands.add( 'resetGlobalTypography', ( selector = 'h1' ) => {
 		.find( 'button' )
 		.contains( 'Reset' )
 		.click( { force: true } )
-} )
+}
 
 /**
  * Command for changing the icon in icon block.
+ *
+ * @param {string} selector
+ * @param {number} index
+ * @param {string} keyword
+ * @param {string} icon
  */
-Cypress.Commands.add( 'changeIcon', ( selector, index = 1, keyword = '', icon ) => {
+function changeIcon( selector, index = 1, keyword = '', icon ) {
 	cy.selectBlock( 'ugb/icon', selector )
 	cy
 		.get( '.block-editor-block-list__block.is-selected' )
@@ -1323,12 +1522,12 @@ Cypress.Commands.add( 'changeIcon', ( selector, index = 1, keyword = '', icon ) 
 			.first()
 			.click( { force: true } )
 	}
-} )
+}
 
 /**
  * Command for asserting an error due to
  * plugin activation.
  */
-Cypress.Commands.add( 'assertPluginError', () => {
+function assertPluginError() {
 	cy.get( '.xdebug-error' ).should( 'not.exist' )
-} )
+}
