@@ -1,17 +1,3 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add("login", (email, password) => { ... })
-
 /**
  * External dependencies
  */
@@ -115,7 +101,7 @@ function deactivatePlugin( slug ) {
 	cy.get( 'body' ).then( $body => {
 		if ( $body.find( 'form[name="loginform"]' ).length ) {
 			// Login user if still not logged in.
-			cy.loginAdmin()
+			loginAdmin()
 		}
 	} )
 	cy.visit( `/?deactivate-plugin=${ slug }` )
@@ -126,7 +112,7 @@ function activatePlugin( slug ) {
 	cy.get( 'body' ).then( $body => {
 		if ( $body.find( 'form[name="loginform"]' ).length ) {
 			// Login user if still not logged in.
-			cy.loginAdmin()
+			loginAdmin()
 		}
 	} )
 	cy.visit( `/?activate-plugin=${ slug }` )
@@ -273,7 +259,7 @@ function assertComputedStyle( subject, cssObject = {}, options = {} ) {
  * @param {string} customSelector
  */
 function typeBlock( subject, contentSelector = '', content = '', customSelector = '' ) {
-	const block = cy.selectBlock( subject, customSelector )
+	const block = selectBlock( subject, customSelector )
 	if ( contentSelector ) {
 		block
 			.find( contentSelector )
@@ -722,7 +708,6 @@ function colorControlClear( name, options = {} ) {
  * @param {string} customRegex
  */
 function popoverControl( name, value = {}, options = {}, customRegex = '' ) {
-	cy.log( JSON.stringify( value ) )
 	const {
 		isInPopover = false,
 	} = options
@@ -1445,11 +1430,11 @@ function adjustGlobalTypography( selector = 'h1', options = {} ) {
 						value = '',
 					} = options[ key ]
 
-					cy.adjust( key, value, {
+					adjust( key, value, {
 						viewport, unit, isInPopover: true,
 					} )
 				} else {
-					cy.adjust( key, options[ key ], { isInPopover: true } )
+					adjust( key, options[ key ], { isInPopover: true } )
 				}
 			} )
 
@@ -1500,7 +1485,7 @@ function resetGlobalTypography( selector = 'h1' ) {
  * @param {string} icon
  */
 function changeIcon( selector, index = 1, keyword = '', icon ) {
-	cy.selectBlock( 'ugb/icon', selector )
+	selectBlock( 'ugb/icon', selector )
 	cy
 		.get( '.block-editor-block-list__block.is-selected' )
 		.find( '.ugb-svg-icon-placeholder__button' )
