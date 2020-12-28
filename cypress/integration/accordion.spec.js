@@ -1,9 +1,18 @@
-const { blocks } = require( '../config' )
-const { range } = require( 'lodash' )
-const { getAddresses } = require( '../support/util' )
-const {
+
+/**
+ * External dependencies
+ */
+import { range } from 'lodash'
+
+/**
+ * Internal dependencies
+ */
+import { blocks } from '../config'
+import { getAddresses } from '../support/util'
+import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
-} = require( '../support/helpers' )
+} from '../support/helpers'
+
 describe( 'Accordion Block', () => {
 	// it( 'should show the block', assertBlockExist( 'ugb/accordion', '.ugb-accordion' ) )
 
