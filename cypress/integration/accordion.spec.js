@@ -1,21 +1,13 @@
 const { blocks } = require( '../config' )
 const { range } = require( 'lodash' )
 const { getAddresses } = require( '../support/util' )
+const {
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+} = require( '../support/helpers' )
 describe( 'Accordion Block', () => {
-	it( 'should show the block', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/accordion' )
-		cy.get( '.ugb-accordion' ).should( 'exist' )
-	} )
+	it( 'should show the block', assertBlockExist( 'ugb/accordion', '.ugb-accordion' ) )
 
-	it( 'should not trigger block error when refreshing the page', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/accordion' )
-		cy.publish()
-		cy.reload()
-	} )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/accordion' ) )
 
 	it( 'should allow adding inner blocks inside accordion', () => {
 		cy.setupWP()
@@ -26,52 +18,21 @@ describe( 'Accordion Block', () => {
 		cy.deleteBlock( 'core/paragraph' )
 		cy.wait( 1000 )
 
-		blocks.forEach( blockName => {
-			cy
-				.get( 'button.block-editor-button-block-appender' )
-				.click( { force: true } )
-
-			cy
-				.get( 'button' )
-				.contains( 'Browse all' )
-				.click( { force: true } )
-
-			cy
-				.get( `button.editor-block-list-item-${ blockName.replace( '/', '-' ) }:first` )
-				.click( { force: true } )
-
-			cy.deleteBlock( blockName, blockName === 'ugb/accordion' && 1 )
-		} )
+		blocks
+			.filter( blockName => blockName !== 'ugb/accordion' )
+			.forEach( blockName => cy.appendBlock( blockName ) )
 	} )
-
-	it( 'should switch layout', () => {
-		const layouts = [ 'Basic', 'Plain', 'Line Colored', 'Colored' ]
-
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/accordion' )
-		layouts.forEach( layout => {
-			cy.openInspector( 'ugb/accordion', 'Layout' )
-			cy.adjustLayout( layout )
-			cy.publish()
-			cy.reload()
-		} )
-	} )
-
-	it( 'should switch design', () => {
-		const designs = [ 'Dim Accordion', 'Elevate Accordion', 'Lounge Accordion' ]
-
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/accordion' )
-		designs.forEach( layout => {
-			cy.openInspector( 'ugb/accordion', 'Layout' )
-			cy.adjustDesign( layout )
-			cy.wait( 1000 )
-			cy.publish()
-			cy.reload()
-		} )
-	} )
+	it( 'should switch layout', switchLayouts( 'ugb/accordion', [
+		'Basic',
+		'Plain',
+		'Line Colored',
+		'Colored',
+	] ) )
+	it( 'should switch design', switchDesigns( 'ugb/accordion', [
+		'Dim Accordion',
+		'Elevate Accordion',
+		'Lounge Accordion',
+	] ) )
 
 	it( 'should adjust options inside style tab', () => {
 		cy.setupWP()
