@@ -206,7 +206,11 @@ function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 				.find( '.ugb-main-block' )
 				.invoke( 'attr', 'class' )
 				.then( classList => {
-					const parsedClassList = classList.split( ' ' ).map( className => `.${ className }` ).join( '' )
+					const excludedClassNames = [ 'ugb-accordion--open' ]
+					const parsedClassList = classList.split( ' ' )
+						.filter( className => ! className.match( /ugb-(.......)$/ ) && ! excludedClassNames.includes( className ) )
+						.map( className => `.${ className }` )
+						.join( '' )
 					keys( cssObject ).forEach( _selector => {
 						const selector = _selector.split( ':' )
 						cy
