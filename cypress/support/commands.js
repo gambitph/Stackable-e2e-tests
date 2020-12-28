@@ -1050,6 +1050,8 @@ Cypress.Commands.add( 'publish', () => {
 								.click( { force: true } )
 						}
 					}
+
+					cy.wait( 1000 )
 				} )
 		} )
 } )
