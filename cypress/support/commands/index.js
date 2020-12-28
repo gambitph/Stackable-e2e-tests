@@ -509,7 +509,7 @@ export function publish() {
 export function adjustLayout( option = '' ) {
 	cy
 		.get( '.ugb-design-control-wrapper' )
-		.find( `input[value="${ kebabCase( option ) }"]` )
+		.find( `input[value="${ typeof option === 'object' ? option.value : kebabCase( option ) }"]` )
 		.click( { force: true } )
 }
 
