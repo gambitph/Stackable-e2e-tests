@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys,
+	kebabCase, keys, camelCase, startCase,
 } from 'lodash'
 
 /**
@@ -10,8 +10,17 @@ import {
  */
 import '../wait-until'
 import {
-	getBaseControl, containsRegExp, getActiveTab, changeResponsiveMode, changeUnit, waitLoader,
+	getBaseControl,
+	containsRegExp,
+	getActiveTab,
+	changeResponsiveMode,
+	changeUnit,
+	waitLoader,
+	getAddresses,
+	rgbToHex,
 } from '../util'
+import { publish } from './index'
+import { openSidebar, collapse } from './inspector'
 
 export const AdjustCommands = {
 	toggleControl,
@@ -36,8 +45,15 @@ export const ResetCommands = {
 	iconControlReset,
 }
 
+/**
+ * Register functions to Cypress Commands.
+ */
 Cypress.Commands.add( 'adjust', adjust )
 Cypress.Commands.add( 'resetStyle', resetStyle )
+Cypress.Commands.add( 'adjustLayout', adjustLayout )
+Cypress.Commands.add( 'adjustDesign', adjustDesign )
+Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, assertComputedStyle )
+Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, assertClassName )
 
 /**
  * Command for enabling/disabling a toggle control.
@@ -763,4 +779,141 @@ export function resetStyle( name, options = {} ) {
 
 	// Always return the selected block which will be used in functions that require chained wp-block elements.
 	return cy.get( '.block-editor-block-list__block.is-selected' )
+}
+
+/**
+ * Command for changing the layout of the block.
+ *
+ * @param {string} option
+ */
+export function adjustLayout( option = '' ) {
+	cy
+		.get( '.ugb-design-control-wrapper' )
+		.find( `input[value="${ typeof option === 'object' ? option.value : kebabCase( option ) }"]` )
+		.click( { force: true } )
+}
+
+/**
+ * Command for changing the design of the block.
+ *
+ * @param {string} option
+ */
+export function adjustDesign( option = '' ) {
+	cy
+		.get( '.ugb-design-library-items' )
+		.find( '.ugb-design-library-item' )
+		.contains( containsRegExp( option ) )
+		.parentsUntil( '.ugb-design-library-item' )
+		.parent()
+		.find( 'button' )
+		.click( { force: true } )
+}
+
+/**
+ * Command for asserting the computed style of a block.
+ *
+ * @param {*} subject
+ * @param {Object} cssObject
+ * @param {Object} options
+ */
+export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
+	const {
+		assertFrontend = true,
+	} = options
+
+	const _assertComputedStyle = ( win, element, cssRule, expectedValue, pseudoEl ) => {
+		let computedStyle = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )[ camelCase( cssRule ) ]
+		if ( typeof computedStyle === 'string' && computedStyle.match( /rgb\(/ ) ) {
+			// Force rgb computed style to be hex.
+			computedStyle = computedStyle.replace( /rgb\(([0-9]*), ([0-9]*), ([0-9]*)\)/g, val => rgbToHex( val ) )
+		}
+		expect( computedStyle ).toBe( expectedValue )
+	}
+
+	getActiveTab( tab => {
+		cy.document().then( doc => {
+			const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
+			cy
+				.get( subject )
+				.find( '.ugb-main-block' )
+				.invoke( 'attr', 'class' )
+				.then( classList => {
+					const excludedClassNames = [ 'ugb-accordion--open' ]
+					const parsedClassList = classList.split( ' ' )
+						.filter( className => ! className.match( /ugb-(.......)$/ ) && ! excludedClassNames.includes( className ) )
+						.map( className => `.${ className }` )
+						.join( '' )
+					keys( cssObject ).forEach( _selector => {
+						const selector = _selector.split( ':' )
+						cy
+							.get( `.is-selected${ ` ${ selector[ 0 ] }` }` )
+							.then( $block => {
+								cy.window().then( win => {
+									keys( cssObject[ _selector ] ).forEach( cssRule => {
+										_assertComputedStyle( win, $block[ 0 ], cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ] )
+									} )
+								} )
+							} )
+					} )
+
+					if ( assertFrontend ) {
+						publish()
+						getAddresses( ( { currUrl, previewUrl } ) => {
+							cy.visit( previewUrl )
+
+							cy.window().then( frontendWindow => {
+								cy.document().then( frontendDocument => {
+									keys( cssObject ).forEach( _selector => {
+										const selector = _selector.split( ':' )
+										const willAssertElement = frontendDocument.querySelector( `${ parsedClassList } ${ selector[ 0 ] }` )
+										if ( willAssertElement ) {
+											keys( cssObject[ _selector ] ).forEach( cssRule => {
+												_assertComputedStyle( frontendWindow, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ] )
+											} )
+										}
+									} )
+								} )
+							} )
+
+							cy.visit( currUrl )
+
+							cy
+								.get( parsedClassList )
+								.click( { force: true } )
+
+							openSidebar( 'Settings' )
+
+							cy
+								.get( `button[aria-label="${ startCase( tab ) } Tab"]` )
+								.click( { force: true } )
+
+							collapse( activePanel )
+						}
+						)
+					}
+				} )
+		} )
+	} )
+}
+
+/**
+ * Command for asserting the included classNames.
+ *
+ * @param  {*} subject
+ * @param {string} customSelector
+ * @param {string} expectedValue
+ */
+export function assertClassName( subject, customSelector = '', expectedValue = '' ) {
+	cy
+		.get( subject )
+		.invoke( 'attr', 'id' )
+		.then( id => {
+			const block = cy.get( `#${ id }${ ` ${ customSelector }` || `` }` )
+			block
+				.invoke( 'attr', 'class' )
+				.then( $classNames => {
+					const parsedClassNames = $classNames.split( ' ' )
+					expect( parsedClassNames.includes( expectedValue ) ).toBe( true )
+				} )
+		} )
 }

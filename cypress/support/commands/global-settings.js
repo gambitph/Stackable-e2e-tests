@@ -17,6 +17,9 @@ import {
 	adjust, openSidebar, collapse,
 } from './index'
 
+/**
+ * Register functions to Cypress Commands.
+ */
 Cypress.Commands.add( 'addGlobalColor', addGlobalColor )
 Cypress.Commands.add( 'resetGlobalColor', resetGlobalColor )
 Cypress.Commands.add( 'deleteGlobalColor', deleteGlobalColor )
