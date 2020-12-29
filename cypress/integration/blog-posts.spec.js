@@ -5,7 +5,7 @@ import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
 } from '../support/helpers'
 
-describe( 'Blog Posts', () => {
+describe( 'Blog Posts Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/blog-posts', '.ugb-blog-posts' ) )
 
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/blog-posts' ) )
