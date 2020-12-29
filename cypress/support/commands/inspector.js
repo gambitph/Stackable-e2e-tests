@@ -14,7 +14,6 @@ import { containsRegExp, getActiveTab } from '../util'
  */
 Cypress.Commands.add( 'openSidebar', openSidebar )
 Cypress.Commands.add( 'openInspector', openInspector )
-Cypress.Commands.add( 'scrollSidebarToView', scrollSidebarToView )
 Cypress.Commands.add( 'collapse', collapse )
 Cypress.Commands.add( 'toggleStyle', toggleStyle )
 

@@ -14,13 +14,11 @@ import {
 /**
  * Register functions to Cypress Commands.
  */
-Cypress.Commands.add( 'toggleBlockInserterButton', toggleBlockInserterButton )
 Cypress.Commands.add( 'addBlock', addBlock )
 Cypress.Commands.add( 'selectBlock', selectBlock )
 Cypress.Commands.add( 'typeBlock', typeBlock )
 Cypress.Commands.add( 'changePreviewMode', changePreviewMode )
 Cypress.Commands.add( 'deleteBlock', deleteBlock )
-Cypress.Commands.add( 'scrollEditorToView', scrollEditorToView )
 Cypress.Commands.add( 'publish', publish )
 Cypress.Commands.add( 'changeIcon', changeIcon )
 Cypress.Commands.add( 'assertPluginError', assertPluginError )
