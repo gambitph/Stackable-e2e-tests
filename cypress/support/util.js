@@ -1,7 +1,12 @@
 /**
  * External dependencies
  */
-import { lowerCase, update } from 'lodash'
+import { lowerCase } from 'lodash'
+
+/**
+ * Internal dependencies
+ */
+import config from '../../cypress.json'
 
 /**
  * Function for getting the base control
@@ -171,7 +176,7 @@ export const getAddresses = ( callback = () => {} ) => {
 		const _currUrl = _win.location.href
 		const parsedPostID = _currUrl.match( /post=([0-9]*)/g )[ 0 ].split( '=' )[ 1 ]
 		const previewUrl = `/?page_id=${ parsedPostID }&preview=true`
-		const currUrl = _currUrl.replace( 'http://e2etest.local', '' )
+		const currUrl = _currUrl.replace( config.baseUrl, '/' )
 		callback( {
 			currUrl, previewUrl, postID: parsedPostID,
 		} )
