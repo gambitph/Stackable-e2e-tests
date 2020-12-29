@@ -5,7 +5,7 @@ import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
 } from '../support/helpers'
 
-describe( 'Image Box', () => {
+describe( 'Image Box Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/image-box', '.ugb-image-box' ) )
 
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/image-box' ) )

@@ -5,7 +5,7 @@ import {
 	assertBlockExist, blockErrorTest, switchLayouts,
 } from '../support/helpers'
 
-describe( 'Separator', () => {
+describe( 'Separator Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/separator', '.ugb-separator' ) )
 
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/separator' ) )

@@ -12,7 +12,7 @@ import {
 } from '../support/helpers'
 import config from '../../cypress.json'
 
-describe( 'Advanced Columns and Grid', () => {
+describe( 'Advanced Columns and Grid Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/columns', '.ugb-columns' ) )
 
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/columns' ) )
