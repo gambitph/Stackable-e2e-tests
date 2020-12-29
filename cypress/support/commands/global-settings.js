@@ -9,7 +9,6 @@ import {
 /**
  * Internal dependencies
  */
-import '../wait-until'
 import {
 	containsRegExp,
 } from '../util'

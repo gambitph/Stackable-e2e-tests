@@ -35,10 +35,9 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( blockName )
-	designs.forEach( layout => {
+	designs.forEach( design => {
 		cy.openInspector( blockName, 'Layout' )
-		cy.adjustDesign( layout )
-		cy.wait( 1000 )
+		cy.adjustDesign( design )
 		cy.publish()
 		cy.reload()
 	} )

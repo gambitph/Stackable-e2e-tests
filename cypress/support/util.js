@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { lowerCase } from 'lodash'
+import { lowerCase, update } from 'lodash'
 
 /**
  * Function for getting the base control
@@ -116,8 +116,29 @@ export const changeUnit = ( unit = '', name = '', tab = 'style', isInPopover = f
  * Function for waiting a spinner button to disappear.
  *
  * @param {string} selector
+ * @param {number} interval
  */
-export const waitLoader = ( selector = '' ) => cy.waitUntil( () => cy.document().then( doc => doc.querySelector( selector ) ) )
+export const waitLoader = ( selector = '', interval = 100 ) => {
+	cy.wait( 300, { log: false } )
+	let done = false
+
+	const update = () => {
+		done = ! Cypress.$( selector ).length
+		check()
+	}
+
+	const check = () => {
+		if ( done ) {
+			return done
+		}
+
+		cy.wait( interval, { log: false } ).then( () => {
+			update()
+		} )
+	}
+
+	return check()
+}
 
 /**
  * Function used for converting rgb to hex.

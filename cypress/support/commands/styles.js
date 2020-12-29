@@ -8,7 +8,6 @@ import {
 /**
  * Internal dependencies
  */
-import '../wait-until'
 import {
 	getBaseControl,
 	containsRegExp,
@@ -807,6 +806,8 @@ export function adjustDesign( option = '' ) {
 		.parent()
 		.find( 'button' )
 		.click( { force: true } )
+
+	waitLoader( '.ugb-design-library-item>span.components-spinner' )
 }
 
 /**

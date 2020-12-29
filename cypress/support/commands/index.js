@@ -6,7 +6,6 @@ import './inspector'
 /**
  * Internal dependencies
  */
-import '../wait-until'
 import {
 	containsRegExp, waitLoader,
 } from '../util'
@@ -192,7 +191,7 @@ export function publish() {
 						}
 					}
 
-					cy.wait( 1000 )
+					waitLoader( '.editor-post-publish-button.is-busy' )
 				} )
 		} )
 }
