@@ -35,73 +35,103 @@ describe( 'Advanced Columns and Grid Block', () => {
 		'Tiled',
 	] ) )
 
-	// it( 'should adjust desktop options inside style tab', () => {
-	// cy.setupWP()
-	// cy.newPage()
-	// cy.addBlock( 'ugb/columns' )
+	it( 'should adjust desktop options inside style tab', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/columns' )
 
-	// cy.openInspector( 'ugb/columns', 'Style' )
-	// cy.collapse( 'General' )
-	// range( 2, 7 ).forEach( idx => {
-	// 	cy.adjust( 'Columns', idx )
-	// 	cy
-	// 		.get( '.ugb-columns' )
-	// 		.find( '.ugb-column' )
-	// 		.should( 'have.length', idx )
-	// } )
+		cy.openInspector( 'ugb/columns', 'Style' )
+		cy.collapse( 'General' )
+		range( 2, 7 ).forEach( idx => {
+			cy.adjust( 'Columns', idx )
+			cy
+				.get( '.ugb-columns' )
+				.find( '.ugb-column' )
+				.should( 'have.length', idx )
+		} )
 
-	// TODO: Column Arrangement
+		// TODO: Column Arrangement
 
-	// cy.adjust( 'Columns', 2 )
-	// cy.adjust( 'Column Widths', [ 20 ] ).assertComputedStyle( {
-	// 	[ `.ugb-columns__item` ]: {
-	// 		[ `grid-template-columns` ]: '0.4fr 1fr',
-	// 	},
-	// }, {
-	// 	assertFrontend: false,
-	// } )
+		cy.adjust( 'Columns', 2 )
+		cy.adjust( 'Column Widths', [ 20 ] ).assertComputedStyle( {
+			[ `.ugb-columns__item` ]: {
+				[ `grid-template-columns` ]: '0.4fr 1fr',
+			},
+		}, {
+			assertFrontend: false,
+		} )
 
-	// cy.adjust( 'Column Gap', 115 ).assertComputedStyle( {
-	// 	[ `.ugb-columns__item` ]: {
-	// 		[ `grid-column-gap` ]: '115px',
-	// 	},
-	// } )
+		cy.adjust( 'Column Gap', 115 ).assertComputedStyle( {
+			[ `.ugb-columns__item` ]: {
+				[ `grid-column-gap` ]: '115px',
+			},
+		} )
 
-	// cy.adjust( 'Height', 'half' ).assertComputedStyle( {
-	// 	[ `.ugb-columns__item` ]: {
-	// 		[ `min-height` ]: `${ config.viewportHeight / 2 }px`,
-	// 	},
-	// } )
+		cy.adjust( 'Height', 'half' ).assertComputedStyle( {
+			[ `.ugb-columns__item` ]: {
+				[ `min-height` ]: `${ config.viewportHeight / 2 }px`,
+			},
+		} )
 
-	// cy.adjust( 'Height', 'full' ).assertComputedStyle( {
-	// 	[ `.ugb-columns__item` ]: {
-	// 		[ `min-height` ]: `${ config.viewportHeight }px`,
-	// 	},
-	// } )
+		cy.adjust( 'Height', 'full' ).assertComputedStyle( {
+			[ `.ugb-columns__item` ]: {
+				[ `min-height` ]: `${ config.viewportHeight }px`,
+			},
+		} )
 
-	// cy.adjust( 'Height', 'custom' )
-	// cy.adjust( 'Custom Height', 220 ).assertComputedStyle( {
-	// 	[ `.ugb-columns__item` ]: {
-	// 		[ `min-height` ]: '220px',
-	// 	},
-	// } )
+		cy.adjust( 'Height', 'custom' )
+		cy.adjust( 'Custom Height', 220 ).assertComputedStyle( {
+			[ `.ugb-columns__item` ]: {
+				[ `min-height` ]: '220px',
+			},
+		} )
 
-	// cy.adjust( 'Column Vertical Align', 'center' ).assertComputedStyle( {
-	// 	[ `.ugb-column` ]: {
-	// 		[ `justify-content` ]: 'center',
-	// 	},
-	// } )
+		cy.adjust( 'Column Vertical Align', 'center' ).assertComputedStyle( {
+			[ `.ugb-column` ]: {
+				[ `justify-content` ]: 'center',
+			},
+		} )
 
-	// 	cy.toggleStyle( 'Block Title' )
-	// 	cy.collapse( 'Block Title' )
-	// 	cy.adjust( 'Title HTML Tag', 'h5' )
-	// 	cy.adjust( 'Typography', {
-	// 		[ `Font Family` ]: 'Monospace',
-	// 		[ `Size` ]: 75,
-	// 		[ `Weight` ]: 600,
-	// 		[ `Transform` ]: 'uppercase',
-	// 		[ `Line-Height` ]: 1.9,
-	// 		[ `Letter Spacing` ]: 7.1,
-	// } )
-	// } )
+		cy.toggleStyle( 'Block Title' )
+		cy.collapse( 'Block Title' )
+		cy.adjust( 'Title HTML Tag', 'h5' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Monospace',
+			[ `Size` ]: 75,
+			[ `Weight` ]: 600,
+			[ `Transform` ]: 'uppercase',
+			[ `Line-Height` ]: 1.9,
+			[ `Letter Spacing` ]: 7.1,
+		} )
+	} )
+
+	it( 'should adjust tablet options inside style tab', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/columns' )
+	} )
+
+	it( 'should adjust mobile options inside style tab', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/columns' )
+	} )
+
+	it( 'should adjust desktop options inside advanced tab', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/columns' )
+	} )
+
+	it( 'should adjust tablet options inside advanced tab', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/columns' )
+	} )
+
+	it( 'should adjust mobile options inside advanced tab', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/columns' )
+	} )
 } )
