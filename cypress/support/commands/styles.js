@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys, camelCase, startCase,
+	kebabCase, keys, camelCase, startCase, isEmpty,
 } from 'lodash'
 
 /**
@@ -17,9 +17,11 @@ import {
 	waitLoader,
 	getAddresses,
 	rgbToHex,
+	getPreviewMode,
 } from '../util'
 import { publish } from './index'
 import { openSidebar, collapse } from './inspector'
+import config from '../../../cypress.json'
 
 export const AdjustCommands = {
 	toggleControl,
@@ -53,6 +55,7 @@ Cypress.Commands.add( 'adjustLayout', adjustLayout )
 Cypress.Commands.add( 'adjustDesign', adjustDesign )
 Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, assertComputedStyle )
 Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, assertClassName )
+Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, assertHtmlTag )
 
 /**
  * Command for enabling/disabling a toggle control.
@@ -822,13 +825,33 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		assertFrontend = true,
 	} = options
 
-	const _assertComputedStyle = ( win, element, cssRule, expectedValue, pseudoEl ) => {
+	const _assertComputedStyle = ( win, element, cssRule, expectedValue, pseudoEl, parentEl ) => {
 		let computedStyle = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )[ camelCase( cssRule ) ]
+
+		/**
+		 * Section for overriding computed styles.
+		 */
 		if ( typeof computedStyle === 'string' && computedStyle.match( /rgb\(/ ) ) {
 			// Force rgb computed style to be hex.
 			computedStyle = computedStyle.replace( /rgb\(([0-9]*), ([0-9]*), ([0-9]*)\)/g, val => rgbToHex( val ) )
 		}
-		expect( computedStyle ).toBe( expectedValue )
+
+		if ( typeof expectedValue === 'string' && expectedValue.match( /%/ ) ) {
+			// Convert % to px
+			const elWidth = parseInt( win.getComputedStyle( element.parentElement ).width )
+			expectedValue = `${ parseInt( ( elWidth / 100 ) * parseInt( expectedValue ) ) }px`
+			computedStyle = `${ parseInt( computedStyle ) }px`
+		}
+
+		if ( typeof expectedValue === 'string' && expectedValue.match( /em/ ) ) {
+			// Determine the theme's default font size.
+			const fontSize = win.getComputedStyle( parentEl ).fontSize
+			const oneEm = parseInt( fontSize )
+
+			expectedValue = `${ parseFloat( oneEm * parseFloat( expectedValue ) ) }px`
+		}
+
+		assert.equal( computedStyle, expectedValue, `'${ camelCase( cssRule ) }' expected to be ${ expectedValue }. Found '${ computedStyle }'.` )
 	}
 
 	getActiveTab( tab => {
@@ -844,6 +867,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 						.filter( className => ! className.match( /ugb-(.......)$/ ) && ! excludedClassNames.includes( className ) )
 						.map( className => `.${ className }` )
 						.join( '' )
+
 					keys( cssObject ).forEach( _selector => {
 						const selector = _selector.split( ':' )
 						cy
@@ -851,46 +875,57 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 							.then( $block => {
 								cy.window().then( win => {
 									keys( cssObject[ _selector ] ).forEach( cssRule => {
-										_assertComputedStyle( win, $block[ 0 ], cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ] )
+										_assertComputedStyle( win, $block[ 0 ], cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ) )
 									} )
 								} )
 							} )
 					} )
 
 					if ( assertFrontend ) {
-						publish()
-						getAddresses( ( { currUrl, previewUrl } ) => {
-							cy.visit( previewUrl )
+						getPreviewMode( previewMode => {
+							publish()
+							getAddresses( ( { currUrl, previewUrl } ) => {
+								cy.visit( previewUrl )
 
-							cy.window().then( frontendWindow => {
-								cy.document().then( frontendDocument => {
-									keys( cssObject ).forEach( _selector => {
-										const selector = _selector.split( ':' )
-										const willAssertElement = frontendDocument.querySelector( `${ parsedClassList } ${ selector[ 0 ] }` )
-										if ( willAssertElement ) {
-											keys( cssObject[ _selector ] ).forEach( cssRule => {
-												_assertComputedStyle( frontendWindow, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ] )
-											} )
+								if ( previewMode !== 'Desktop' ) {
+									cy.viewport( config[ `viewport${ previewMode }Width` ], config.viewportHeight )
+								}
+
+								cy.window().then( frontendWindow => {
+									cy.document().then( frontendDocument => {
+										keys( cssObject ).forEach( _selector => {
+											const selector = _selector.split( ':' )
+											const willAssertElement = frontendDocument.querySelector( `${ parsedClassList }${ parsedClassList.match( selector[ 0 ] ) ? '' : ` ${ selector[ 0 ] }` }` )
+											cy.log( willAssertElement )
+											if ( willAssertElement ) {
+												keys( cssObject[ _selector ] ).forEach( cssRule => {
+													_assertComputedStyle( frontendWindow, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], frontendDocument.querySelector( 'body' ) )
+												} )
+											}
+										} )
+
+										if ( previewMode !== 'Desktop' ) {
+											cy.viewport( config.viewportWidth, config.viewportHeight )
 										}
 									} )
 								} )
-							} )
 
-							cy.visit( currUrl )
+								cy.visit( currUrl )
 
-							cy
-								.get( parsedClassList )
-								.click( { force: true } )
+								cy
+									.get( parsedClassList )
+									.click( { force: true } )
 
-							openSidebar( 'Settings' )
+								openSidebar( 'Settings' )
 
-							cy
-								.get( `button[aria-label="${ startCase( tab ) } Tab"]` )
-								.click( { force: true } )
+								cy
+									.get( `button[aria-label="${ startCase( tab ) } Tab"]` )
+									.click( { force: true } )
 
-							collapse( activePanel )
-						}
-						)
+								collapse( activePanel )
+							}
+							)
+						} )
 					}
 				} )
 		} )
@@ -914,7 +949,22 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 				.invoke( 'attr', 'class' )
 				.then( $classNames => {
 					const parsedClassNames = $classNames.split( ' ' )
-					expect( parsedClassNames.includes( expectedValue ) ).toBe( true )
+					assert.isTrue( parsedClassNames.includes( expectedValue ), `${ customSelector } must be present in block #${ id }` )
 				} )
+		} )
+}
+
+/**
+ * Command for asserting the html tag
+ *
+ * @param {*} subject
+ * @param {string} customSelector
+ * @param {string} expectedValue
+ */
+export function assertHtmlTag( subject, customSelector = '', expectedValue = '' ) {
+	cy
+		.get( subject )
+		.then( $block => {
+			assert.isTrue( ! isEmpty( $block.find( `${ expectedValue }${ customSelector }` ) ), `${ customSelector } must have HTML tag '${ expectedValue }'` )
 		} )
 }

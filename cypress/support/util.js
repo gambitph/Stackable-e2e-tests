@@ -190,3 +190,18 @@ export const getAddresses = ( callback = () => {} ) => {
 	} )
 }
 
+/**
+ * Function that returns the current editor's preview mode.
+ *
+ * @param {Function} callback
+ */
+export const getPreviewMode = ( callback = () => {} ) => {
+	cy
+		.get( '.ugb-base-control-multi-label__responsive button.is-active' )
+		.first()
+		.invoke( 'attr', 'aria-label' )
+		.then( ariaLabel => {
+			callback( ariaLabel )
+		} )
+}
+
