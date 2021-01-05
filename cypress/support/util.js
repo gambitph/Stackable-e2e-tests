@@ -196,12 +196,24 @@ export const getAddresses = ( callback = () => {} ) => {
  * @param {Function} callback
  */
 export const getPreviewMode = ( callback = () => {} ) => {
-	cy
-		.get( '.ugb-base-control-multi-label__responsive button.is-active' )
-		.first()
-		.invoke( 'attr', 'aria-label' )
-		.then( ariaLabel => {
-			callback( ariaLabel )
-		} )
+	cy.window().then( win => {
+		const previewMode =	win.wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
+		callback( previewMode )
+	} )
+}
+
+/**
+ * Function used to generate a parsed class names to be
+ * used as a selector.
+ *
+ * @param {Array} classList
+ */
+export const parseClassList = ( classList = [] ) => {
+	const excludedClassNames = [ 'ugb-accordion--open' ]
+	const parsedClassList = classList.split( ' ' )
+		.filter( className => ! className.match( /ugb-(.......)$/ ) && ! excludedClassNames.includes( className ) )
+		.map( className => `.${ className }` )
+		.join( '' )
+	return parsedClassList
 }
 

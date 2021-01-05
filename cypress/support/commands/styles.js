@@ -18,6 +18,7 @@ import {
 	getAddresses,
 	rgbToHex,
 	getPreviewMode,
+	parseClassList,
 } from '../util'
 import { publish } from './index'
 import { openSidebar, collapse } from './inspector'
@@ -862,12 +863,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 				.find( '.ugb-main-block' )
 				.invoke( 'attr', 'class' )
 				.then( classList => {
-					const excludedClassNames = [ 'ugb-accordion--open' ]
-					const parsedClassList = classList.split( ' ' )
-						.filter( className => ! className.match( /ugb-(.......)$/ ) && ! excludedClassNames.includes( className ) )
-						.map( className => `.${ className }` )
-						.join( '' )
-
+					const parsedClassList = parseClassList( classList )
 					keys( cssObject ).forEach( _selector => {
 						const selector = _selector.split( ':' )
 						cy
@@ -896,7 +892,6 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 										keys( cssObject ).forEach( _selector => {
 											const selector = _selector.split( ':' )
 											const willAssertElement = frontendDocument.querySelector( `${ parsedClassList }${ parsedClassList.match( selector[ 0 ] ) ? '' : ` ${ selector[ 0 ] }` }` )
-											cy.log( willAssertElement )
 											if ( willAssertElement ) {
 												keys( cssObject[ _selector ] ).forEach( cssRule => {
 													_assertComputedStyle( frontendWindow, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], frontendDocument.querySelector( 'body' ) )
@@ -938,20 +933,81 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
  * @param  {*} subject
  * @param {string} customSelector
  * @param {string} expectedValue
+ * @param {Object} options
  */
-export function assertClassName( subject, customSelector = '', expectedValue = '' ) {
-	cy
-		.get( subject )
-		.invoke( 'attr', 'id' )
-		.then( id => {
-			const block = cy.get( `#${ id }${ ` ${ customSelector }` || `` }` )
-			block
+export function assertClassName( subject, customSelector = '', expectedValue = '', options = {} ) {
+	const {
+		assertFrontend = true,
+	} = options
+
+	getActiveTab( tab => {
+		cy.document().then( doc => {
+			const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
+			cy
+				.get( subject )
+				.find( '.ugb-main-block' )
 				.invoke( 'attr', 'class' )
-				.then( $classNames => {
-					const parsedClassNames = $classNames.split( ' ' )
-					assert.isTrue( parsedClassNames.includes( expectedValue ), `${ customSelector } must be present in block #${ id }` )
+				.then( classList => {
+					const parsedClassList = parseClassList( classList )
+					cy
+						.get( subject )
+						.invoke( 'attr', 'id' )
+						.then( id => {
+							const block = cy.get( `#${ id }${ ` ${ customSelector }` || `` }` )
+							block
+								.invoke( 'attr', 'class' )
+								.then( $classNames => {
+									const parsedClassNames = $classNames.split( ' ' )
+									assert.isTrue( parsedClassNames.includes( expectedValue ), `${ expectedValue } must be present in block #${ id }` )
+								} )
+						} )
+
+					if ( assertFrontend ) {
+						getPreviewMode( previewMode => {
+							publish()
+							getAddresses( ( { currUrl, previewUrl } ) => {
+								cy.visit( previewUrl )
+								if ( previewMode !== 'Desktop' ) {
+									cy.viewport( config[ `viewport${ previewMode }Width` ], config.viewportHeight )
+								}
+
+								cy.document().then( frontendDocument => {
+									const willAssertElement = frontendDocument.querySelector( `${ parsedClassList }${ parsedClassList.match( customSelector ) ? '' : ` ${ customSelector }` }` )
+									if ( willAssertElement ) {
+										cy
+											.get( parsedClassList )
+											.find( customSelector )
+											.invoke( 'attr', 'class' )
+											.then( $classNames => {
+												const parsedClassNames = $classNames.split( ' ' )
+												assert.isTrue( parsedClassNames.includes( expectedValue ), `${ expectedValue } must be present in block` )
+											} )
+									}
+
+									if ( previewMode !== 'Desktop' ) {
+										cy.viewport( config.viewportWidth, config.viewportHeight )
+									}
+								} )
+
+								cy.visit( currUrl )
+
+								cy
+									.get( parsedClassList )
+									.click( { force: true } )
+
+								openSidebar( 'Settings' )
+
+								cy
+									.get( `button[aria-label="${ startCase( tab ) } Tab"]` )
+									.click( { force: true } )
+
+								collapse( activePanel )
+							} )
+						} )
+					}
 				} )
 		} )
+	} )
 }
 
 /**
@@ -960,11 +1016,69 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
  * @param {*} subject
  * @param {string} customSelector
  * @param {string} expectedValue
+ * @param {Object} options
  */
-export function assertHtmlTag( subject, customSelector = '', expectedValue = '' ) {
-	cy
-		.get( subject )
-		.then( $block => {
-			assert.isTrue( ! isEmpty( $block.find( `${ expectedValue }${ customSelector }` ) ), `${ customSelector } must have HTML tag '${ expectedValue }'` )
+export function assertHtmlTag( subject, customSelector = '', expectedValue = '', options = {} ) {
+	const {
+		assertFrontend = true,
+	} = options
+
+	getActiveTab( tab => {
+		cy.document().then( doc => {
+			const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
+			cy
+				.get( subject )
+				.find( '.ugb-main-block' )
+				.invoke( 'attr', 'class' )
+				.then( classList => {
+					const parsedClassList = parseClassList( classList )
+
+					// TODO: Support for Advanced Block HTML Tag
+					cy
+						.get( subject )
+						.then( $block => {
+							assert.isTrue( ! isEmpty( $block.find( `${ expectedValue }${ customSelector }` ) ), `${ customSelector } must have HTML tag '${ expectedValue }'` )
+						} )
+
+					if ( assertFrontend ) {
+						getPreviewMode( previewMode => {
+							publish()
+							getAddresses( ( { currUrl, previewUrl } ) => {
+								cy.visit( previewUrl )
+								if ( previewMode !== 'Desktop' ) {
+									cy.viewport( config[ `viewport${ previewMode }Width` ], config.viewportHeight )
+								}
+
+								cy
+									.get( parsedClassList )
+									.then( $block => {
+										if ( parsedClassList.match( customSelector ) ) {
+											assert.isTrue( ! isEmpty( Cypress.$( `${ expectedValue }${ parsedClassList }` ) ), `${ customSelector } must have HTML tag '${ expectedValue }'` )
+										} else {
+											assert.isTrue( ! isEmpty( $block.find( `${ expectedValue }${ customSelector }` ) ), `${ customSelector } must have HTML tag '${ expectedValue }'` )
+										}
+										if ( previewMode !== 'Desktop' ) {
+											cy.viewport( config.viewportWidth, config.viewportHeight )
+										}
+									} )
+
+								cy.visit( currUrl )
+
+								cy
+									.get( parsedClassList )
+									.click( { force: true } )
+
+								openSidebar( 'Settings' )
+
+								cy
+									.get( `button[aria-label="${ startCase( tab ) } Tab"]` )
+									.click( { force: true } )
+
+								collapse( activePanel )
+							} )
+						} )
+					}
+				} )
 		} )
+	} )
 }
