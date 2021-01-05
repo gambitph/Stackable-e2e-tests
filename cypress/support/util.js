@@ -69,7 +69,7 @@ export const changeResponsiveMode = ( viewport = 'Desktop', name = '', tab = 'st
 		.parentsUntil( `.components-panel__body>.components-base-control` )
 		.parent()
 		.then( $baseControl => {
-			if ( $baseControl.find( '.ugb-base-control-multi-label__responsive>button[aria-label="Desktop"]' ).length ) {
+			if ( $baseControl.find( '.ugb-base-control-multi-label__responsive button[aria-label="Desktop"]' ).length ) {
 				if ( ! $baseControl.find( `button[aria-label="${ viewport }"]` ).length ) {
 					getBaseControl( tab, isInPopover )
 						.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
@@ -78,6 +78,13 @@ export const changeResponsiveMode = ( viewport = 'Desktop', name = '', tab = 'st
 						.find( `button[aria-label="Desktop"]` )
 						.click( { force: true } )
 				}
+
+				getBaseControl( tab, isInPopover )
+					.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
+					.parentsUntil( `.components-panel__body>.components-base-control` )
+					.parent()
+					.find( `button[aria-label="Desktop"]` )
+					.trigger( 'mouseover', { force: true } )
 
 				getBaseControl( tab, isInPopover )
 					.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
