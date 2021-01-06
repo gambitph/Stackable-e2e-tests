@@ -69,5 +69,6 @@ module.exports = {
 		it: true,
 		expect: true,
 		describe: true,
+		assert: true,
 	},
 }
