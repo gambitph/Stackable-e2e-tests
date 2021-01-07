@@ -2,15 +2,12 @@
 /**
  * External dependencies
  */
-import { range } from 'lodash'
 
 /**
  * Internal dependencies
  */
-import { blocks } from '../config'
-import { getAddresses } from '../support/util'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns,
 } from '../support/helpers'
 
 describe( 'Video Popup Block', () => {
