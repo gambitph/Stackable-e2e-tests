@@ -1,7 +1,6 @@
 /**
  * Register functions to Cypress Commands.
  */
-
 Cypress.Commands.add( 'setupWP', setupWP )
 Cypress.Commands.add( 'loginAdmin', loginAdmin )
 Cypress.Commands.add( 'hideAnyGutenbergTip', hideAnyGutenbergTip )
