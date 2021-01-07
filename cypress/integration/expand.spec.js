@@ -1,16 +1,8 @@
-
-/**
- * External dependencies
- */
-import { range } from 'lodash'
-
 /**
  * Internal dependencies
  */
-import { blocks } from '../config'
-import { getAddresses } from '../support/util'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest,
 } from '../support/helpers'
 
 describe( 'Expand Block', () => {

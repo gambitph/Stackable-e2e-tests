@@ -11,18 +11,18 @@ import {
 } from '../support/helpers'
 
 describe( 'Call To Action Block', () => {
-	// it( 'should show the block', assertBlockExist( 'ugb/cta', '.ugb-cta' ) )
+	it( 'should show the block', assertBlockExist( 'ugb/cta', '.ugb-cta' ) )
 
-	// it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/cta' ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/cta' ) )
 
-	// it( 'should switch layout', switchLayouts( 'ugb/cta', [
-	// 	'Basic',
-	// 	'Plain',
-	// 	'Horizontal',
-	// 	'Horizontal 2',
-	// 	'Horizontal 3',
-	// 	'Split Centered',
-	// ] ) )
+	it( 'should switch layout', switchLayouts( 'ugb/cta', [
+		'Basic',
+		'Plain',
+		'Horizontal',
+		'Horizontal 2',
+		'Horizontal 3',
+		'Split Centered',
+	] ) )
 	it( 'should switch design', switchDesigns( 'ugb/cta', [
 		'Angled Call to Action 1',
 		'Angled Call to Action 2',

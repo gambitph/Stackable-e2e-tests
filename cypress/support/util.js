@@ -197,7 +197,7 @@ export const getAddresses = ( callback = () => {} ) => {
  */
 export const getPreviewMode = ( callback = () => {} ) => {
 	cy.window().then( win => {
-		const previewMode =	win.wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
+		const previewMode =	win.wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType ? win.wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType() : 'Desktop'
 		callback( previewMode )
 	} )
 }
