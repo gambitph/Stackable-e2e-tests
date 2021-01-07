@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
 } from '../support/helpers'
+
 describe( 'Testimonial Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/testimonial', '.ugb-testimonial' ) )
 

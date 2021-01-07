@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, switchLayouts, switchDesigns,
 } from '../support/helpers'
+
 describe( 'Advanced Text Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/text', '.ugb-text' ) )
 
