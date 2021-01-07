@@ -11,17 +11,17 @@ import {
 } from '../support/helpers'
 
 describe( 'Card Block', () => {
-	// it( 'should show the block', assertBlockExist( 'ugb/card', '.ugb-card' ) )
+	it( 'should show the block', assertBlockExist( 'ugb/card', '.ugb-card' ) )
 
-	// it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/card' ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/card' ) )
 
-	// it( 'should switch layout', switchLayouts( 'ugb/card', [
-	// 	'Basic',
-	// 	'Plain',
-	// 	'Horizontal',
-	// 	'Full',
-	// 	'Faded',
-	// ] ) )
+	it( 'should switch layout', switchLayouts( 'ugb/card', [
+		'Basic',
+		'Plain',
+		'Horizontal',
+		'Full',
+		'Faded',
+	] ) )
 	it( 'should switch design', switchDesigns( 'ugb/card', [
 		'Angled Card',
 		'Arch Card',

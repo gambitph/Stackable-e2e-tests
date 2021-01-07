@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
 } from '../support/helpers'
+
 describe( 'Team Member Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/team-member', '.ugb-team-member' ) )
 
