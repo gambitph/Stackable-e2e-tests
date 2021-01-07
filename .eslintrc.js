@@ -59,7 +59,9 @@ module.exports = {
 		'@wordpress/no-unguarded-get-range-at': 'off',
 
 		// LF style line breaks.
-		'linebreak-style': [ 'error', 'unix' ],
+		// 'linebreak-style': [ 'error', 'unix' ],
+		// Added linebreak-style off to avoid cross platform eol error.
+		'linebreak-style': 'off',
 	},
 	globals: {
 		Cypress: true,
