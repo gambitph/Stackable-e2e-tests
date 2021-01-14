@@ -186,7 +186,7 @@ describe( 'Blockquote Block', () => {
 		} ).assertComputedStyle( {
 			'.ugb-top-separator .ugb-separator__layer-2': {
 				[ `fill` ]: '#ffffff',
-				[ `transform` ]: 'matrix(-1.9, 0, 0, 1.16, 0, 0)', //scaleX(-1)scaleY(1.16)scaleX(1.9)
+				[ `transform` ]: 'matrix(-1.9, 0, 0, 1.16, 0, 0)',
 				[ `opacity` ]: '0.3',
 				[ `mix-blend-mode` ]: 'exclusion',
 			},
