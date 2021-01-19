@@ -255,4 +255,146 @@ describe( 'Blockquote Block', () => {
 			},
 		} )
 	} )
+
+	it( 'should adjust tablet options in style tab', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/blockquote' )
+		cy.openInspector( 'ugb/blockquote', 'Style' )
+		cy.changePreviewMode( 'Tablet' )
+
+		cy.collapse( 'General' )
+		const aligns = [ 'left', 'center', 'right' ]
+		aligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
+				'.ugb-inner-block': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		cy.collapse( 'Spacing' )
+		cy.adjust( 'Paddings', 28, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-blockquote__item': {
+				[ `padding-top` ]: '28px',
+				[ `padding-bottom` ]: '28px',
+				[ `padding-right` ]: '28px',
+				[ `padding-left` ]: '28px',
+			},
+		} )
+
+		cy.collapse( 'Quotation Mark' )
+		cy.adjust( 'Size', 93, { viewport: 'Tablet' } )
+		cy.adjust( 'Horizontal Position', 76, { viewport: 'Tablet' } )
+		cy.adjust( 'Vertical Position', 59, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-blockquote__quote': {
+				[ `width` ]: '93px',
+				[ `height` ]: '93px',
+				[ `left` ]: '76px',
+				[ `top` ]: '59px',
+			},
+		} )
+
+		cy.collapse( 'Text' )
+		cy.adjust( 'Size', 22, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-blockquote__text': {
+				[ `font-size` ]: '22px',
+			},
+		} )
+		const textAligns = [ 'left', 'center', 'right' ]
+		textAligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
+				'.ugb-blockquote__item': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		cy.collapse( 'Top Separator' )
+		cy.toggleStyle( 'Top Separator' )
+		cy.adjust( 'Height', 247, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-top-separator': {
+				[ `height` ]: '247px',
+			},
+		} )
+
+		cy.collapse( 'Bottom Separator' )
+		cy.toggleStyle( 'Bottom Separator' )
+		cy.adjust( 'Height', 157, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-bottom-separator': {
+				[ `height` ]: '157px',
+			},
+		} )
+	} )
+
+	it( 'should adjust mobile options in style tab', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/blockquote' )
+		cy.openInspector( 'ugb/blockquote', 'Style' )
+		cy.changePreviewMode( 'Mobile' )
+
+		cy.collapse( 'General' )
+		const aligns = [ 'left', 'center', 'right' ]
+		aligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
+				'.ugb-inner-block': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		cy.collapse( 'Spacing' )
+		cy.adjust( 'Paddings', 28, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-blockquote__item': {
+				[ `padding-top` ]: '28px',
+				[ `padding-bottom` ]: '28px',
+				[ `padding-right` ]: '28px',
+				[ `padding-left` ]: '28px',
+			},
+		} )
+
+		cy.collapse( 'Quotation Mark' )
+		cy.adjust( 'Size', 93, { viewport: 'Mobile' } )
+		cy.adjust( 'Horizontal Position', 76, { viewport: 'Mobile' } )
+		cy.adjust( 'Vertical Position', 59, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-blockquote__quote': {
+				[ `width` ]: '93px',
+				[ `height` ]: '93px',
+				[ `left` ]: '76px',
+				[ `top` ]: '59px',
+			},
+		} )
+
+		cy.collapse( 'Text' )
+		cy.adjust( 'Size', 22, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-blockquote__text': {
+				[ `font-size` ]: '22px',
+			},
+		} )
+		const textAligns = [ 'left', 'center', 'right' ]
+		textAligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
+				'.ugb-blockquote__item': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		cy.collapse( 'Top Separator' )
+		cy.toggleStyle( 'Top Separator' )
+		cy.adjust( 'Height', 247, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-top-separator': {
+				[ `height` ]: '247px',
+			},
+		} )
+
+		cy.collapse( 'Bottom Separator' )
+		cy.toggleStyle( 'Bottom Separator' )
+		cy.adjust( 'Height', 157, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-bottom-separator': {
+				[ `height` ]: '157px',
+			},
+		} )
+	} )
 } )
