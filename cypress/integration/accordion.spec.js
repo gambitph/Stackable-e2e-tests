@@ -240,4 +240,90 @@ describe( 'Accordion Block', () => {
 				},
 			} )
 	} )
+
+	it( 'should adjust tablet options inside style tab', () => {
+		cy.setupWP()
+		cy.activatePlugin( 'stackable-ultimate-gutenberg-blocks' )
+		cy.newPage()
+		cy.addBlock( 'ugb/accordion' )
+		cy.openInspector( 'ugb/accordion', 'Style' )
+		cy.changePreviewMode( 'Tablet' )
+
+		//Test General Alignment
+		cy.collapse( 'General' )
+		const aligns = [ 'left', 'center', 'right' ]
+		aligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
+				'.ugb-inner-block': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		//TODO: Background Image / Video
+		cy.collapse( 'Spacing' )
+		cy.adjust( 'Title', 20, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-accordion__heading': {
+				[ `margin-bottom` ]: '20px',
+			},
+		} )
+
+		cy.collapse( 'Title' )
+		cy.adjust( 'Size', 50, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-accordion__title': {
+				[ `font-size` ]: '50px',
+			},
+		} )
+		const titleAligns = [ 'left', 'center', 'right' ]
+		titleAligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
+				'.ugb-accordion__title': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+	} )
+
+	it( 'should adjust mobile options inside style tab', () => {
+		cy.setupWP()
+		cy.activatePlugin( 'stackable-ultimate-gutenberg-blocks' )
+		cy.newPage()
+		cy.addBlock( 'ugb/accordion' )
+		cy.openInspector( 'ugb/accordion', 'Style' )
+		cy.changePreviewMode( 'Mobile' )
+
+		//Test General Alignment
+		cy.collapse( 'General' )
+		const aligns = [ 'left', 'center', 'right' ]
+		aligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
+				'.ugb-inner-block': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		//TODO: Background Image / Video
+		cy.collapse( 'Spacing' )
+		cy.adjust( 'Title', 38, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-accordion__heading': {
+				[ `margin-bottom` ]: '38px',
+			},
+		} )
+
+		cy.collapse( 'Title' )
+		cy.adjust( 'Size', 45, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-accordion__title': {
+				[ `font-size` ]: '45px',
+			},
+		} )
+		const titleAligns = [ 'left', 'center', 'right' ]
+		titleAligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
+				'.ugb-accordion__title': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+	} )
 } )
