@@ -244,7 +244,6 @@ describe( 'Accordion Block', () => {
 
 	it( 'should adjust tablet options inside style tab', () => {
 		cy.setupWP()
-		cy.activatePlugin( 'stackable-ultimate-gutenberg-blocks' )
 		cy.newPage()
 		cy.addBlock( 'ugb/accordion' )
 		cy.openInspector( 'ugb/accordion', 'Style' )
@@ -287,7 +286,6 @@ describe( 'Accordion Block', () => {
 
 	it( 'should adjust mobile options inside style tab', () => {
 		cy.setupWP()
-		cy.activatePlugin( 'stackable-ultimate-gutenberg-blocks' )
 		cy.newPage()
 		cy.addBlock( 'ugb/accordion' )
 		cy.openInspector( 'ugb/accordion', 'Style' )
