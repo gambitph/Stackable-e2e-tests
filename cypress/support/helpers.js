@@ -123,7 +123,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 								} )
 
 								if ( previewMode !== 'Desktop' ) {
-									cy.viewPort( config.viewportWidth, config.viewportHeight )
+									cy.viewport( config.viewportWidth, config.viewportHeight )
 								}
 
 								cy.visit( currUrl )
