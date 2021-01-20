@@ -100,7 +100,7 @@ describe( 'Accordion Block', () => {
 				} )
 		} )
 
-		//Test 'Reverse arrow'
+		// Test 'Reverse arrow'
 		cy.openInspector( 'ugb/accordion', 'Style' )
 		cy.collapse( 'General' )
 		cy.adjust( 'Reverse arrow', true ).assertComputedStyle( {
@@ -109,7 +109,7 @@ describe( 'Accordion Block', () => {
 			},
 		} )
 
-		//Test General Alignment
+		// Test General Alignment
 		const aligns = [ 'left', 'center', 'right' ]
 		aligns.forEach( align => {
 			cy.adjust( 'Align', align ).assertComputedStyle( {
@@ -120,7 +120,8 @@ describe( 'Accordion Block', () => {
 		} )
 
 		cy.collapse( 'Container' )
-		//Test Single Background Color
+
+		// Test Single Background Color
 		cy.adjust( 'Background', {
 			[ `Color Type` ]: 'single',
 			[ `Background Color` ]: '#000000',
@@ -131,7 +132,7 @@ describe( 'Accordion Block', () => {
 			},
 		} )
 
-		//Test Gradient Background Color
+		// Test Gradient Background Color
 		cy.collapse( 'Container' )
 		cy.adjust( 'Background', {
 			[ `Color Type` ]: 'gradient',
@@ -150,14 +151,14 @@ describe( 'Accordion Block', () => {
 			},
 		} )
 
-		//Test Border Radius
+		// Test Border Radius
 		cy.adjust( 'Border Radius', 30 ).assertComputedStyle( {
 			'.ugb-accordion__heading': {
 				[ `border-radius` ]: '30px',
 			},
 		} )
 
-		//Test Border Options
+		// Test Border Options
 		cy.adjust( 'Borders', 'solid' )
 		cy.adjust( 'Border Width', 3 )
 		cy.adjust( 'Border Color', '#f1f1f1' ).assertComputedStyle( {
@@ -171,7 +172,7 @@ describe( 'Accordion Block', () => {
 			},
 		} )
 
-		//Test Shadow / Outline
+		// Test Shadow / Outline
 		cy.adjust( 'Shadow / Outline', 9 )
 			.assertClassName( '.ugb-accordion__heading', 'ugb--shadow-9' )
 
@@ -186,7 +187,7 @@ describe( 'Accordion Block', () => {
 			},
 		} )
 
-		//Test Title spacing
+		// Test Title spacing
 		cy.adjust( 'Title', 63 )
 		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', `Accordion 1` )
 			.assertComputedStyle( {
@@ -195,7 +196,7 @@ describe( 'Accordion Block', () => {
 				},
 			} )
 
-		//Test Title options
+		// Test Title options
 		cy.collapse( 'Title' )
 		cy.adjust( 'Title HTML Tag', 'h3' )
 			.assertHtmlTag( '.ugb-accordion__title', 'h3' )
@@ -228,7 +229,7 @@ describe( 'Accordion Block', () => {
 			} )
 		} )
 
-		//Test Arrow settings
+		// Test Arrow settings
 		cy.collapse( 'Arrow' )
 		cy.adjust( 'Size', 31 )
 		cy.adjust( 'Color', '#333333' )
@@ -249,7 +250,7 @@ describe( 'Accordion Block', () => {
 		cy.openInspector( 'ugb/accordion', 'Style' )
 		cy.changePreviewMode( 'Tablet' )
 
-		//Test General Alignment
+		// Test General Alignment
 		cy.collapse( 'General' )
 		const aligns = [ 'left', 'center', 'right' ]
 		aligns.forEach( align => {
@@ -260,7 +261,7 @@ describe( 'Accordion Block', () => {
 			} )
 		} )
 
-		//TODO: Background Image / Video
+		// TODO: Background Image / Video
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Title', 20, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-accordion__heading': {
@@ -292,7 +293,7 @@ describe( 'Accordion Block', () => {
 		cy.openInspector( 'ugb/accordion', 'Style' )
 		cy.changePreviewMode( 'Mobile' )
 
-		//Test General Alignment
+		// Test General Alignment
 		cy.collapse( 'General' )
 		const aligns = [ 'left', 'center', 'right' ]
 		aligns.forEach( align => {
@@ -303,7 +304,7 @@ describe( 'Accordion Block', () => {
 			} )
 		} )
 
-		//TODO: Background Image / Video
+		// TODO: Background Image / Video
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Title', 38, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-accordion__heading': {
