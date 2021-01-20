@@ -190,7 +190,7 @@ describe( 'Accordion Block', () => {
 		cy.adjust( 'Title', 63 )
 		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', `Accordion 1` )
 			.assertComputedStyle( {
-				'.ugb-accordion--open': {
+				'.ugb-accordion__heading': {
 					[ `margin-bottom` ]: '63px',
 				},
 			} )
