@@ -21,7 +21,8 @@ describe( 'Advanced Heading Block', () => {
 		cy.addBlock( 'ugb/heading' )
 		cy.openInspector( 'ugb/heading', 'Style' )
 
-		//Test General Alignment
+		// Test General Alignment
+
 		cy.collapse( 'General' )
 		const aligns = [ 'left', 'center', 'right' ]
 		aligns.forEach( align => {
@@ -32,7 +33,8 @@ describe( 'Advanced Heading Block', () => {
 			} )
 		} )
 
-		//Test Title Options
+		// Test Title Options
+
 		cy.collapse( 'Title' )
 		cy.adjust( 'Title HTML Tag', 'h3' )
 			.assertHtmlTag( '.ugb-heading__title', 'h3' )
@@ -56,7 +58,8 @@ describe( 'Advanced Heading Block', () => {
 				},
 			} )
 
-		//Test Title Alignment
+		// Test Title Alignment
+
 		const titleAligns = [ 'left', 'center', 'right' ]
 		titleAligns.forEach( align => {
 			cy.adjust( 'Align', align ).assertComputedStyle( {
@@ -66,7 +69,8 @@ describe( 'Advanced Heading Block', () => {
 			} )
 		} )
 
-		//Test Subtitle options
+		// Test Subtitle options
+
 		cy.collapse( 'Subtitle' )
 		cy.adjust( 'Typography', {
 			[ `Font Family` ]: 'Serif',
@@ -90,7 +94,8 @@ describe( 'Advanced Heading Block', () => {
 				},
 			} )
 
-		//Test Subtitle Alignment
+		// Test Subtitle Alignment
+
 		const subtitleAligns = [ 'left', 'center', 'right' ]
 		subtitleAligns.forEach( align => {
 			cy.adjust( 'Align', align ).assertComputedStyle( {
@@ -100,7 +105,8 @@ describe( 'Advanced Heading Block', () => {
 			} )
 		} )
 
-		//Test Top Line options
+		// Test Top Line options
+
 		cy.collapse( 'Top Line' )
 		cy.toggleStyle( 'Top Line' )
 		cy.adjust( 'Line Color', '#000000' )
@@ -113,7 +119,8 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 
-		//Test Top Line Alignment
+		// Test Top Line Alignment
+
 		cy.adjust( 'Align', 'left' ).assertComputedStyle( {
 			'.ugb-heading__top-line': {
 				[ `margin-left` ]: '0px',
@@ -126,7 +133,8 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 
-		//Test Bottom Line options
+		// Test Bottom Line options
+
 		cy.collapse( 'Bottom Line' )
 		cy.toggleStyle( 'Bottom Line' )
 		cy.adjust( 'Line Color', '#000000' )
@@ -139,7 +147,8 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 
-		//Test Bottom Line Alignment
+		// Test Bottom Line Alignment
+
 		cy.adjust( 'Align', 'left' ).assertComputedStyle( {
 			'.ugb-heading__bottom-line': {
 				[ `margin-left` ]: '0px',
@@ -152,7 +161,8 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 
-		//Test Spacing options
+		// Test Spacing options
+
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Top Line', 36 ).assertComputedStyle( {
 			'.ugb-heading__top-line': {
@@ -183,7 +193,8 @@ describe( 'Advanced Heading Block', () => {
 		cy.openInspector( 'ugb/heading', 'Style' )
 		cy.changePreviewMode( 'Tablet' )
 
-		//Test General Alignment
+		// Test General Alignment
+
 		cy.collapse( 'General' )
 		const aligns = [ 'left', 'center', 'right' ]
 		aligns.forEach( align => {
@@ -196,7 +207,8 @@ describe( 'Advanced Heading Block', () => {
 
 		cy.changePreviewMode( 'Tablet' )
 
-		//Test Title Size
+		// Test Title Size
+
 		cy.collapse( 'Title' )
 		cy.adjust( 'Size', 38, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-heading__title': {
@@ -204,7 +216,8 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 
-		//Test Title Alignment
+		// Test Title Alignment
+
 		const titleAligns = [ 'left', 'center', 'right' ]
 		titleAligns.forEach( align => {
 			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
@@ -216,7 +229,8 @@ describe( 'Advanced Heading Block', () => {
 
 		cy.changePreviewMode( 'Tablet' )
 
-		//Test Subtitle Size
+		// Test Subtitle Size
+
 		cy.collapse( 'Subtitle' )
 		cy.adjust( 'Size', 26, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-heading__subtitle': {
@@ -224,7 +238,8 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 
-		//Test Subtitle Alignment
+		// Test Subtitle Alignment
+
 		const subtitleAligns = [ 'left', 'center', 'right' ]
 		subtitleAligns.forEach( align => {
 			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
@@ -234,7 +249,8 @@ describe( 'Advanced Heading Block', () => {
 			} )
 		} )
 
-		//Test Top Line Alignment
+		// Test Top Line Alignment
+
 		cy.collapse( 'Top Line' )
 		cy.adjust( 'Align', 'left', { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-heading__top-line': {
@@ -248,7 +264,8 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 
-		//Test Bottom Line Alignment
+		// Test Bottom Line Alignment
+
 		cy.collapse( 'Bottom Line' )
 		cy.adjust( 'Align', 'left', { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-heading__bottom-line': {
@@ -262,7 +279,8 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 
-		//Test Spacing options
+		// Test Spacing options
+
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Top Line', 7, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-heading__top-line': {
@@ -293,7 +311,8 @@ describe( 'Advanced Heading Block', () => {
 		cy.openInspector( 'ugb/heading', 'Style' )
 		cy.changePreviewMode( 'Mobile' )
 
-		//Test General Alignment
+		// Test General Alignment
+
 		cy.collapse( 'General' )
 		const aligns = [ 'left', 'center', 'right' ]
 		aligns.forEach( align => {
@@ -306,7 +325,8 @@ describe( 'Advanced Heading Block', () => {
 
 		cy.changePreviewMode( 'Mobile' )
 
-		//Test Title Size
+		// Test Title Size
+
 		cy.collapse( 'Title' )
 		cy.adjust( 'Size', 38, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-heading__title': {
@@ -314,7 +334,8 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 
-		//Test Title Alignment
+		// Test Title Alignment
+
 		const titleAligns = [ 'left', 'center', 'right' ]
 		titleAligns.forEach( align => {
 			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
@@ -326,7 +347,8 @@ describe( 'Advanced Heading Block', () => {
 
 		cy.changePreviewMode( 'Mobile' )
 
-		//Test Subtitle Size
+		// Test Subtitle Size
+
 		cy.collapse( 'Subtitle' )
 		cy.adjust( 'Size', 26, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-heading__subtitle': {
@@ -334,7 +356,8 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 
-		//Test Subtitle Alignment
+		// Test Subtitle Alignment
+
 		const subtitleAligns = [ 'left', 'center', 'right' ]
 		subtitleAligns.forEach( align => {
 			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
@@ -344,7 +367,8 @@ describe( 'Advanced Heading Block', () => {
 			} )
 		} )
 
-		//Test Top Line Alignment
+		// Test Top Line Alignment
+
 		cy.collapse( 'Top Line' )
 		cy.adjust( 'Align', 'left', { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-heading__top-line': {
@@ -358,7 +382,8 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 
-		//Test Bottom Line Alignment
+		// Test Bottom Line Alignment
+
 		cy.collapse( 'Bottom Line' )
 		cy.adjust( 'Align', 'left', { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-heading__bottom-line': {
@@ -372,7 +397,8 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 
-		//Test Spacing options
+		// Test Spacing options
+
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Top Line', 10, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-heading__top-line': {
