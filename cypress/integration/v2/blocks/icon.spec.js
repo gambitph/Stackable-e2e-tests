@@ -401,8 +401,6 @@ describe( 'Icon Block', () => {
 			} )
 		} )
 
-		cy.changePreviewMode( 'Tablet' )
-
 		// Test Icon options
 		cy.collapse( 'Icon' )
 		cy.contains( 'Shaped' ).click( { force: true } )
@@ -444,8 +442,6 @@ describe( 'Icon Block', () => {
 		} )
 		cy.adjust( 'Icon Rotation', 59 )
 
-		cy.changePreviewMode( 'Tablet' )
-
 		// Test Title options
 		cy.adjust( 'Typography', {
 			[ `Font Family` ]: 'Monospace',
@@ -476,14 +472,10 @@ describe( 'Icon Block', () => {
 			} )
 		} )
 
-		cy.changePreviewMode( 'Tablet' )
-
 		// Test Effects option
 		cy.collapse( 'Effects' )
 		cy.adjust( 'Hover Effect', 'scale-more' )
 			.assertClassName( '.ugb-icon__item', 'ugb--hover-scale-more' )
-
-		cy.changePreviewMode( 'Tablet' )
 
 		// Test Block Title
 		cy.collapse( 'Block Title' )
@@ -519,8 +511,6 @@ describe( 'Icon Block', () => {
 			} )
 		} )
 
-		cy.changePreviewMode( 'Tablet' )
-
 		// Test Block Background options
 		cy.collapse( 'Block Background' )
 		cy.toggleStyle( 'Block Background' )
@@ -546,8 +536,6 @@ describe( 'Icon Block', () => {
 		} )
 		// TODO: Add Background Image test
 
-		cy.changePreviewMode( 'Tablet' )
-
 		// Test Top Separator
 		cy.collapse( 'Top Separator' )
 		cy.toggleStyle( 'Top Separator' )
@@ -569,8 +557,6 @@ describe( 'Icon Block', () => {
 				'z-index': '6',
 			},
 		} )
-
-		cy.changePreviewMode( 'Tablet' )
 
 		// Test Bottom Separator
 		cy.collapse( 'Bottom Separator' )
