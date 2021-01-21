@@ -27,7 +27,7 @@ describe( 'Icon Block', () => {
 		// Test General options
 		cy.collapse( 'General' )
 		cy.adjust( 'Number of Icons / Columns', 4 )
-		cy.get( 'div.ugb-icon__content-wrapper' ).find( '.ugb-icon__item4' )
+		cy.get( 'div.ugb-icon__content-wrapper' ).find( '.ugb-icon__item4' ).should( 'exist' )
 
 		const aligns = [ 'left', 'center', 'right' ]
 		aligns.forEach( align => {
@@ -390,7 +390,7 @@ describe( 'Icon Block', () => {
 		// Test General options
 		cy.collapse( 'General' )
 		cy.adjust( 'Number of Icons / Columns', 6 )
-		cy.get( 'div.ugb-icon__content-wrapper' ).find( '.ugb-icon__item6' )
+		cy.get( 'div.ugb-icon__content-wrapper' ).find( '.ugb-icon__item6' ).should( 'exist' )
 
 		const aligns = [ 'left', 'center', 'right' ]
 		aligns.forEach( align => {
