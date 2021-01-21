@@ -403,46 +403,31 @@ describe( 'Icon Block', () => {
 
 		// Test Icon options
 		cy.collapse( 'Icon' )
-		cy.contains( 'Shaped' ).click( { force: true } )
-		cy.adjust( 'Color Type', 'gradient' )
-		cy.adjust( 'Icon Color #1', '#ff0000' )
-		cy.adjust( 'Icon Color #2', '#ffb6b6' )
-		cy.adjust( 'Gradient Direction (degrees)', 180 ).assertComputedStyle( {
-			'.ugb-icon-inner-svg': {
-				[ `fill` ]: 'url(#grad-ff0000-ffb6b6-180)',
-			},
-		} )
-		cy.adjust( 'Icon Shape Color', '#d5d5d5' )
-		cy.adjust( 'Icon Shape Border Radius', 35 )
-		cy.adjust( 'Icon Shape Padding', 10 ).assertComputedStyle( {
-			'.ugb-icon__design-wrapper': {
-				[ `background-color` ]: '#d5d5d5',
-				[ `border-bottom-left-radius` ]: '35%',
-				[ `border-bottom-right-radius` ]: '35%',
-				[ `border-top-left-radius` ]: '35%',
-				[ `border-top-right-radius` ]: '35%',
-				[ `padding-bottom` ]: '10px',
-				[ `padding-left` ]: '10px',
-				[ `padding-right` ]: '10px',
-				[ `padding-top` ]: '10px',
-			},
-		} )
-		cy.adjust( 'Shadow / Outline', 4 )
-			.assertClassName( '.ugb-icon__design-wrapper', 'ugb--shadow-4' )
 		cy.adjust( 'Icon Size', 45, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-icon-inner-svg': {
 				[ `height` ]: '45px',
 				[ `width` ]: '45px',
 			},
 		} )
-		cy.adjust( 'Icon Opacity', 0.8 ).assertComputedStyle( {
+		cy.adjust( 'Align', 'left', { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-icon__icon': {
-				[ `opacity` ]: '0.8',
+				[ `align-self` ]: 'flex-start',
 			},
 		} )
-		cy.adjust( 'Icon Rotation', 59 )
+		cy.adjust( 'Align', 'center', { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'center',
+			},
+		} )
+		cy.adjust( 'Align', 'right', { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-end',
+			},
+		} )
 
 		// Test Title options
+		cy.collapse( 'Title' )
+		cy.toggleStyle( 'Title' )
 		cy.adjust( 'Typography', {
 			[ `Font Family` ]: 'Monospace',
 			[ `Size` ]: 18,
@@ -450,17 +435,8 @@ describe( 'Icon Block', () => {
 			[ `Transform` ]: 'lowercase',
 			[ `Line-Height` ]: 1.6,
 			[ `Letter Spacing` ]: 1.3,
-		} )
+		}, { viewport: 'Tablet' } )
 		cy.adjust( 'Size', 22, { viewport: 'Tablet' } )
-		cy.adjust( 'Title Color', '#636363' ).assertComputedStyle( {
-			'.ugb-icon__title': {
-				[ `font-size` ]: '22px',
-				[ `font-weight` ]: '200',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '1.3px',
-				[ `color` ]: '#636363',
-			},
-		} )
 
 		// Test Title Alignment
 		const titleAligns = [ 'left', 'center', 'right' ]
@@ -487,7 +463,7 @@ describe( 'Icon Block', () => {
 			[ `Transform` ]: 'uppercase',
 			[ `Line-Height` ]: 1.6,
 			[ `Letter Spacing` ]: 1.3,
-		} )
+		}, { viewport: 'Tablet' } )
 		cy.adjust( 'Size', 46, { viewport: 'Tablet' } )
 		cy.adjust( 'Title Color', '#636363' )
 		cy.adjust( 'Max Width', 748, { viewport: 'Tablet' } ).assertComputedStyle( {
@@ -511,72 +487,88 @@ describe( 'Icon Block', () => {
 			} )
 		} )
 
-		// Test Block Background options
-		cy.collapse( 'Block Background' )
-		cy.toggleStyle( 'Block Background' )
-		cy.adjust( 'Background Color', '#ffffff' )
-		cy.adjust( 'Background Color Opacity', 0.8 ).assertComputedStyle( {
-			'.ugb-icon': {
-				[ `background-color` ]: 'rgba(255, 255, 255, 0.8)',
+		// Test Block Description
+		cy.collapse( 'Block Description' )
+		cy.toggleStyle( 'Block Description' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Sans-Serif',
+			[ `Size` ]: 21,
+			[ `Weight` ]: '700',
+			[ `Transform` ]: 'uppercase',
+			[ `Line-Height` ]: 1.6,
+			[ `Letter Spacing` ]: 1.3,
+		}, { viewport: 'Tablet' } )
+		cy.adjust( 'Size', 36, { viewport: 'Tablet' } )
+		cy.adjust( 'Title Color', '#636363' )
+		cy.adjust( 'Max Width', 748, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-block-description': {
+				[ `font-size` ]: '36px',
+				[ `font-weight` ]: '700',
+				[ `text-transform` ]: 'uppercase',
+				[ `letter-spacing` ]: '1.3px',
+				[ `color` ]: '#636363',
+				[ `max-width` ]: '748px',
 			},
 		} )
-		cy.adjust( 'Color Type', 'gradient' )
-		cy.adjust( 'Background Color #1', '#e0ffec' )
-		cy.adjust( 'Background Color #2', '#37694a' )
-		cy.adjust( 'Adv. Gradient Color Settings', {
-			[ `Gradient Direction (degrees)` ]: '180deg',
-			[ `Color 1 Location` ]: '26%',
-			[ `Color 2 Location` ]: '84%',
-			[ `Background Gradient Blend Mode` ]: 'soft-light',
-		} ).assertComputedStyle( {
-			'.ugb-icon:before': {
-				[ `background-image` ]: 'linear-gradient(#e0ffec 26%, #37694a 84%)',
-				[ `mix-blend-mode` ]: 'soft-light',
+
+		// Test Block Description Alignment
+		const descAligns = [ 'left', 'center', 'right' ]
+		descAligns.forEach( align => {
+			cy.adjust( 'Text Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
+				'.ugb-block-description': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Spacing options
+		cy.collapse( 'Spacing' )
+		cy.adjust( 'Block Title', 25, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-block-title': {
+				[ `margin-bottom` ]: '25px',
 			},
 		} )
+		cy.adjust( 'Block Description', 35, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-block-description': {
+				[ `margin-bottom` ]: '35px',
+			},
+		} )
+		cy.adjust( 'Paddings', 20, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__content-wrapper': {
+				[ `padding-bottom` ]: '20px',
+				[ `padding-left` ]: '20px',
+				[ `padding-right` ]: '20px',
+				[ `padding-top` ]: '20px',
+			},
+		} )
+		cy.adjust( 'Icon', 24, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `margin-bottom` ]: '24px',
+			},
+		} )
+		cy.adjust( 'Title', 15, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__title': {
+				[ `margin-bottom` ]: '15px',
+			},
+		} )
+
 		// TODO: Add Background Image test
 
 		// Test Top Separator
 		cy.collapse( 'Top Separator' )
 		cy.toggleStyle( 'Top Separator' )
-		cy.adjust( 'Design', 'rounded-3' )
-		cy.adjust( 'Width', 1.7 )
 		cy.adjust( 'Height', 191, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-top-separator .ugb-separator-wrapper': {
 				[ `height` ]: '191px',
-				[ `transform` ]: 'matrix(1.7, 0, 0, 1, 0, 0)',
-			},
-		} )
-		cy.adjust( 'Color', '#007fff' ).assertComputedStyle( {
-			'.ugb-top-separator svg': {
-				[ `fill` ]: '#007fff',
-			},
-		} )
-		cy.adjust( 'Bring to Front', true ).assertComputedStyle( {
-			'.ugb-top-separator': {
-				'z-index': '6',
 			},
 		} )
 
 		// Test Bottom Separator
 		cy.collapse( 'Bottom Separator' )
 		cy.toggleStyle( 'Bottom Separator' )
-		cy.adjust( 'Design', 'wave-2' )
-		cy.adjust( 'Width', 1.9 )
 		cy.adjust( 'Height', 150, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-bottom-separator .ugb-separator-wrapper': {
 				[ `height` ]: '150px',
-				[ `transform` ]: 'matrix(1.9, 0, 0, 1, 0, 0)',
-			},
-		} )
-		cy.adjust( 'Color', '#f8ff97' ).assertComputedStyle( {
-			'.ugb-bottom-separator svg': {
-				[ `fill` ]: '#f8ff97',
-			},
-		} )
-		cy.adjust( 'Bring to Front', true ).assertComputedStyle( {
-			'.ugb-bottom-separator': {
-				'z-index': '6',
 			},
 		} )
 	} )
