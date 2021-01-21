@@ -40,15 +40,13 @@ describe( 'Icon Block', () => {
 
 		// Test Icon options
 		cy.collapse( 'Icon' )
-		cy.adjust( 'Design', 'shaped' )
-		cy.adjust( 'Icon Color Type', 'single' )
 		cy.adjust( 'Icon Color', '#acacac' ).assertComputedStyle( {
 			'.ugb-icon-inner-svg': {
 				[ `color` ]: '#acacac',
 				[ `fill` ]: '#acacac',
 			},
 		} )
-		cy.adjust( 'Icon Color Type', 'gradient' )
+		cy.contains( 'Gradient' ).click( { force: true } )
 		cy.adjust( 'Icon Color #1', '#f00069' )
 		cy.adjust( 'Icon Color #2', '#000000' )
 		cy.adjust( 'Gradient Direction (degrees)', 180 )
@@ -261,14 +259,13 @@ describe( 'Icon Block', () => {
 		cy.collapse( 'Block Background' )
 		cy.toggleStyle( 'Block Background' )
 		cy.adjust( 'No Paddings', true )
-		cy.adjust( 'Color Type', 'single' )
 		cy.adjust( 'Background Color', '#ffffff' )
 		cy.adjust( 'Background Color Opacity', 0.7 ).assertComputedStyle( {
 			'.ugb-icon': {
 				[ `background-color` ]: 'rgba(255, 255, 255, 0.7)',
 			},
 		} )
-		cy.adjust( 'Color Type', 'gradient' )
+		cy.contains( 'Gradient' ).click( { force: true } )
 		cy.adjust( 'Background Color #1', '#6d6d6d' )
 		cy.adjust( 'Background Color #2', '#cd2653' )
 		cy.adjust( 'Adv. Gradient Color Settings', {
@@ -379,6 +376,221 @@ describe( 'Icon Block', () => {
 				[ `fill` ]: '#6d6d6d',
 				[ `transform` ]: 'matrix(-1.2, 0, 0, 1.03, 0, 0)',
 				[ `opacity` ]: '0.8',
+			},
+		} )
+	} )
+
+	it( 'should adjust tablet options inside style tab', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/icon' )
+		cy.openInspector( 'ugb/icon', 'Style' )
+		cy.changePreviewMode( 'Tablet' )
+
+		// Test General options
+		cy.collapse( 'General' )
+		cy.adjust( 'Number of Icons / Columns', 6 )
+		cy.get( 'div.ugb-icon__content-wrapper' ).find( '.ugb-icon__item6' )
+
+		const aligns = [ 'left', 'center', 'right' ]
+		aligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
+				'.ugb-inner-block': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		cy.changePreviewMode( 'Tablet' )
+
+		// Test Icon options
+		cy.collapse( 'Icon' )
+		cy.contains( 'Shaped' ).click( { force: true } )
+		cy.contains( 'Gradient' ).click( { force: true } )
+		cy.adjust( 'Icon Color #1', '#ff0000' )
+		cy.adjust( 'Icon Color #2', '#ffb6b6' )
+		cy.adjust( 'Gradient Direction (degrees)', 180 ).assertComputedStyle( {
+			'.ugb-icon-inner-svg': {
+				[ `fill` ]: 'url(#grad-ff0000-ffb6b6-180)',
+			},
+		} )
+		cy.adjust( 'Icon Shape Color', '#d5d5d5' )
+		cy.adjust( 'Icon Shape Border Radius', 35 )
+		cy.adjust( 'Icon Shape Padding', 10 ).assertComputedStyle( {
+			'.ugb-icon__design-wrapper': {
+				[ `background-color` ]: '#d5d5d5',
+				[ `border-bottom-left-radius` ]: '35%',
+				[ `border-bottom-right-radius` ]: '35%',
+				[ `border-top-left-radius` ]: '35%',
+				[ `border-top-right-radius` ]: '35%',
+				[ `padding-bottom` ]: '10px',
+				[ `padding-left` ]: '10px',
+				[ `padding-right` ]: '10px',
+				[ `padding-top` ]: '10px',
+			},
+		} )
+		cy.adjust( 'Shadow / Outline', 4 )
+			.assertClassName( '.ugb-icon__design-wrapper', 'ugb--shadow-4' )
+		cy.adjust( 'Icon Size', 45, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon-inner-svg': {
+				[ `height` ]: '45px',
+				[ `width` ]: '45px',
+			},
+		} )
+		cy.adjust( 'Icon Opacity', 0.8 ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `opacity` ]: '0.8',
+			},
+		} )
+		cy.adjust( 'Icon Rotation', 59 )
+
+		cy.changePreviewMode( 'Tablet' )
+
+		// Test Title options
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Monospace',
+			[ `Size` ]: 18,
+			[ `Weight` ]: '200',
+			[ `Transform` ]: 'lowercase',
+			[ `Line-Height` ]: 1.6,
+			[ `Letter Spacing` ]: 1.3,
+		} )
+		cy.adjust( 'Size', 22, { viewport: 'Tablet' } )
+		cy.adjust( 'Title Color', '#636363' ).assertComputedStyle( {
+			'.ugb-icon__title': {
+				[ `font-size` ]: '22px',
+				[ `font-weight` ]: '200',
+				[ `text-transform` ]: 'lowercase',
+				[ `letter-spacing` ]: '1.3px',
+				[ `color` ]: '#636363',
+			},
+		} )
+
+		// Test Title Alignment
+		const titleAligns = [ 'left', 'center', 'right' ]
+		titleAligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
+				'.ugb-icon__title': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		cy.changePreviewMode( 'Tablet' )
+
+		// Test Effects option
+		cy.collapse( 'Effects' )
+		cy.adjust( 'Hover Effect', 'scale-more' )
+			.assertClassName( '.ugb-icon__item', 'ugb--hover-scale-more' )
+
+		cy.changePreviewMode( 'Tablet' )
+
+		// Test Block Title
+		cy.collapse( 'Block Title' )
+		cy.toggleStyle( 'Block Title' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Sans-Serif',
+			[ `Size` ]: 31,
+			[ `Weight` ]: '700',
+			[ `Transform` ]: 'uppercase',
+			[ `Line-Height` ]: 1.6,
+			[ `Letter Spacing` ]: 1.3,
+		} )
+		cy.adjust( 'Size', 46, { viewport: 'Tablet' } )
+		cy.adjust( 'Title Color', '#636363' )
+		cy.adjust( 'Max Width', 748, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-block-title': {
+				[ `font-size` ]: '46px',
+				[ `font-weight` ]: '700',
+				[ `text-transform` ]: 'uppercase',
+				[ `letter-spacing` ]: '1.3px',
+				[ `color` ]: '#636363',
+				[ `max-width` ]: '748px',
+			},
+		} )
+
+		// Test Block Title Alignment
+		const textAligns = [ 'left', 'center', 'right' ]
+		textAligns.forEach( align => {
+			cy.adjust( 'Text Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
+				'.ugb-block-title': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		cy.changePreviewMode( 'Tablet' )
+
+		// Test Block Background options
+		cy.collapse( 'Block Background' )
+		cy.toggleStyle( 'Block Background' )
+		cy.adjust( 'Background Color', '#ffffff' )
+		cy.adjust( 'Background Color Opacity', 0.8 ).assertComputedStyle( {
+			'.ugb-icon': {
+				[ `background-color` ]: 'rgba(255, 255, 255, 0.8)',
+			},
+		} )
+		cy.contains( 'Gradient' ).click( { force: true } )
+		cy.adjust( 'Background Color #1', '#e0ffec' )
+		cy.adjust( 'Background Color #2', '#37694a' )
+		cy.adjust( 'Adv. Gradient Color Settings', {
+			[ `Gradient Direction (degrees)` ]: '180deg',
+			[ `Color 1 Location` ]: '26%',
+			[ `Color 2 Location` ]: '84%',
+			[ `Background Gradient Blend Mode` ]: 'soft-light',
+		} ).assertComputedStyle( {
+			'.ugb-icon:before': {
+				[ `background-image` ]: 'linear-gradient(#e0ffec 26%, #37694a 84%)',
+				[ `mix-blend-mode` ]: 'soft-light',
+			},
+		} )
+		// TODO: Add Background Image test
+
+		cy.changePreviewMode( 'Tablet' )
+
+		// Test Top Separator
+		cy.collapse( 'Top Separator' )
+		cy.toggleStyle( 'Top Separator' )
+		cy.adjust( 'Design', 'rounded-3' )
+		cy.adjust( 'Width', 1.7 )
+		cy.adjust( 'Height', 191, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-top-separator .ugb-separator-wrapper': {
+				[ `height` ]: '191px',
+				[ `transform` ]: 'matrix(1.7, 0, 0, 1, 0, 0)',
+			},
+		} )
+		cy.adjust( 'Color', '#007fff' ).assertComputedStyle( {
+			'.ugb-top-separator svg': {
+				[ `fill` ]: '#007fff',
+			},
+		} )
+		cy.adjust( 'Bring to Front', true ).assertComputedStyle( {
+			'.ugb-top-separator': {
+				'z-index': '6',
+			},
+		} )
+
+		cy.changePreviewMode( 'Tablet' )
+
+		// Test Bottom Separator
+		cy.collapse( 'Bottom Separator' )
+		cy.toggleStyle( 'Bottom Separator' )
+		cy.adjust( 'Design', 'wave-2' )
+		cy.adjust( 'Width', 1.9 )
+		cy.adjust( 'Height', 150, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-bottom-separator .ugb-separator-wrapper': {
+				[ `height` ]: '150px',
+				[ `transform` ]: 'matrix(1.9, 0, 0, 1, 0, 0)',
+			},
+		} )
+		cy.adjust( 'Color', '#f8ff97' ).assertComputedStyle( {
+			'.ugb-bottom-separator svg': {
+				[ `fill` ]: '#f8ff97',
+			},
+		} )
+		cy.adjust( 'Bring to Front', true ).assertComputedStyle( {
+			'.ugb-bottom-separator': {
+				'z-index': '6',
 			},
 		} )
 	} )
