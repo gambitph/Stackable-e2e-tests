@@ -46,7 +46,7 @@ describe( 'Icon Block', () => {
 				[ `fill` ]: '#acacac',
 			},
 		} )
-		cy.contains( 'Gradient' ).click( { force: true } )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Icon Color #1', '#f00069' )
 		cy.adjust( 'Icon Color #2', '#000000' )
 		cy.adjust( 'Gradient Direction (degrees)', 180 )
@@ -265,7 +265,7 @@ describe( 'Icon Block', () => {
 				[ `background-color` ]: 'rgba(255, 255, 255, 0.7)',
 			},
 		} )
-		cy.contains( 'Gradient' ).click( { force: true } )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Background Color #1', '#6d6d6d' )
 		cy.adjust( 'Background Color #2', '#cd2653' )
 		cy.adjust( 'Adv. Gradient Color Settings', {
@@ -406,7 +406,7 @@ describe( 'Icon Block', () => {
 		// Test Icon options
 		cy.collapse( 'Icon' )
 		cy.contains( 'Shaped' ).click( { force: true } )
-		cy.contains( 'Gradient' ).click( { force: true } )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Icon Color #1', '#ff0000' )
 		cy.adjust( 'Icon Color #2', '#ffb6b6' )
 		cy.adjust( 'Gradient Direction (degrees)', 180 ).assertComputedStyle( {
@@ -530,7 +530,7 @@ describe( 'Icon Block', () => {
 				[ `background-color` ]: 'rgba(255, 255, 255, 0.8)',
 			},
 		} )
-		cy.contains( 'Gradient' ).click( { force: true } )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Background Color #1', '#e0ffec' )
 		cy.adjust( 'Background Color #2', '#37694a' )
 		cy.adjust( 'Adv. Gradient Color Settings', {
