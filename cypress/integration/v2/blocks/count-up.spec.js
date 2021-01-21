@@ -1,9 +1,9 @@
 /**
- * Internal dependencies
+ * External dependencies
  */
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Count Up Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/count-up', '.ugb-count-up' ) )

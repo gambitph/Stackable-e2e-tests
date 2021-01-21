@@ -1,9 +1,9 @@
 /**
- * Internal dependencies
+ * External dependencies
  */
 import {
 	assertBlockExist, blockErrorTest, switchLayouts,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Separator Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/separator', '.ugb-separator' ) )

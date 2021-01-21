@@ -1,10 +1,10 @@
 /**
- * Internal dependencies
+ * External dependencies
  */
-import { blocks } from '../config'
+import { blocks } from '~stackable-e2e/config'
 import {
 	assertBlockExist, blockErrorTest, switchLayouts,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Container Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/container', '.ugb-container' ) )

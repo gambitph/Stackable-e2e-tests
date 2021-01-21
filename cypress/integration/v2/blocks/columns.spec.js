@@ -2,15 +2,11 @@
  * External dependencies
  */
 import { range } from 'lodash'
-
-/**
- * Internal dependencies
- */
-import { blocks } from '../config'
+import { blocks } from '~stackable-e2e/config'
 import {
 	assertBlockExist, blockErrorTest, switchLayouts,
-} from '../support/helpers'
-import config from '../../cypress.json'
+} from '~stackable-e2e/helpers'
+import config from 'root/cypress.json'
 
 describe( 'Advanced Columns and Grid Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/columns', '.ugb-columns' ) )

@@ -1,9 +1,9 @@
 /**
- * Internal dependencies
+ * External dependencies
  */
 import {
 	assertBlockExist, blockErrorTest, switchLayouts, switchDesigns,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Advanced Text Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/text', '.ugb-text' ) )

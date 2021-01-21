@@ -2,13 +2,9 @@
 /**
  * External dependencies
  */
-
-/**
- * Internal dependencies
- */
 import {
 	assertBlockExist, blockErrorTest, switchDesigns,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Video Popup Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/video-popup', '.ugb-video-popup' ) )

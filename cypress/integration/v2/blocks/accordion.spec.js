@@ -3,15 +3,11 @@
  * External dependencies
  */
 import { range } from 'lodash'
-
-/**
- * Internal dependencies
- */
-import { blocks } from '../config'
-import { getAddresses } from '../support/util'
+import { blocks } from '~stackable-e2e/config'
+import { getAddresses } from '~stackable-e2e/util'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Accordion Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/accordion', '.ugb-accordion' ) )

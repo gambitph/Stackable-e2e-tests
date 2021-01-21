@@ -1,9 +1,9 @@
 /**
- * Internal dependencies
+ * External dependencies
  */
 import {
 	assertBlockExist, blockErrorTest,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Expand Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/expand', '.ugb-expand' ) )
