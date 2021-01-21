@@ -5,7 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "cypress open",
-		"lint:js": "wp-scripts lint-js"
+		"lint": "npm run lint-js",
+		"lint-js": "wp-scripts lint-js"
 	},
 	"keywords": [],
 	"author": "",
@@ -21,6 +22,19 @@
 	},
 	"dependencies": {
 		"@cypress/webpack-preprocessor": "^5.5.0",
+		"husky": "^4.3.8",
+		"lint-staged": "^10.5.3",
+		"stylelint": "^13.9.0",
 		"webpack": "^5.16.0"
+	},
+	"lint-staged": {
+		"*.js": [
+			 "./node_modules/.bin/eslint ."
+		]
+	},
+	"husky": {
+		"hooks": {
+			"pre-commit": "lint-staged"
+		}
 	}
 }
