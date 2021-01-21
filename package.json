@@ -18,5 +18,9 @@
 		"eslint-plugin-jest": "^24.0.0",
 		"lodash": "^4.17.20",
 		"prettier": "^2.1.1"
+	},
+	"dependencies": {
+		"@cypress/webpack-preprocessor": "^5.5.0",
+		"webpack": "^5.16.0"
 	}
 }
