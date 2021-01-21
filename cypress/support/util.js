@@ -14,7 +14,6 @@ import config from '../../cypress.json'
  * @param {string} tab where the control is located.
  * @param {boolean} isInPopover
  * @return {*} generated cypress getter
- * test
  */
 export const getBaseControl = ( tab = 'style', isInPopover = false ) => {
 	const baseControlEl = ! isInPopover ? cy.get( `${ tab ? `.ugb-panel-${ tab }>` : `` }.components-panel__body.is-opened>.components-base-control` ) : cy.get( '.components-popover__content' ).find( '.components-base-control' )
