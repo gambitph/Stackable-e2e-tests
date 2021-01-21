@@ -5,7 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "cypress open",
-		"lint:js": "wp-scripts lint-js"
+		"lint": "npm run lint-js",
+		"lint-js": "wp-scripts lint-js"
 	},
 	"keywords": [],
 	"author": "",
@@ -28,7 +29,8 @@
 	},
 	"lint-staged": {
 		"*.js": [
-			"wp-scripts lint-js"
+			 "./node_modules/.bin/eslint .",
+			 "git add" 	
 		]
 	},
 	"husky": {
