@@ -15,6 +15,7 @@
 /**
  * @type {Cypress.PluginConfig}
  */
+const webpack = require( '@cypress/webpack-preprocessor' )
 
 module.exports = on => {
 	on( `task`, {
@@ -23,4 +24,9 @@ module.exports = on => {
 			return null
 		},
 	} )
+
+	on( `file:preprocessor`, webpack( {
+		webpackOptions: require( '../../webpack.conf.js' ),
+		watchOptions: {},
+	} ) )
 }
