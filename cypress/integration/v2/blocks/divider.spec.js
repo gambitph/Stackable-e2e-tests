@@ -1,9 +1,9 @@
 /**
- * Internal dependencies
+ * External dependencies
  */
 import {
 	assertBlockExist, blockErrorTest, switchLayouts,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Divider Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/divider', '.ugb-divider' ) )

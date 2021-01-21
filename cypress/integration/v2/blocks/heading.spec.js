@@ -2,13 +2,9 @@
 /**
  * External dependencies
  */
-
-/**
- * Internal dependencies
- */
 import {
 	assertBlockExist, blockErrorTest,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Advanced Heading Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/heading', '.ugb-heading' ) )

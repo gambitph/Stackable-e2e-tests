@@ -1,14 +1,9 @@
-
 /**
  * External dependencies
  */
-
-/**
- * Internal dependencies
- */
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Card Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/card', '.ugb-card' ) )

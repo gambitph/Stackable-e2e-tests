@@ -2,13 +2,9 @@
 /**
  * External dependencies
  */
-
-/**
- * Internal dependencies
- */
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Feature Grid Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/feature-grid', '.ugb-feature-grid' ) )

@@ -1,9 +1,9 @@
 /**
- * Internal dependencies
+ * External dependencies
  */
 import {
 	assertBlockExist, blockErrorTest,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Spacer Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/spacer', '.ugb-spacer' ) )

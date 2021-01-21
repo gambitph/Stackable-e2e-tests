@@ -2,13 +2,9 @@
 /**
  * External dependencies
  */
-
-/**
- * Internal dependencies
- */
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Number Box Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/number-box', '.ugb-number-box' ) )

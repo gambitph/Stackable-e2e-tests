@@ -1,9 +1,9 @@
 /**
- * Internal dependencies
+ * External dependencies
  */
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
-} from '../support/helpers'
+} from '~stackable-e2e/helpers'
 
 describe( 'Team Member Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/team-member', '.ugb-team-member' ) )
