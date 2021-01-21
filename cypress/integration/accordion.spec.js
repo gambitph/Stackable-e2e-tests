@@ -139,10 +139,10 @@ describe( 'Accordion Block', () => {
 			[ `Background Color #1` ]: '#f00069',
 			[ `Background Color #2` ]: '#000000',
 			[ `Adv. Gradient Color Settings` ]: {
-		  [ `Gradient Direction (degrees)` ]: '180deg',
-		  [ `Color 1 Location` ]: '11%',
-		  [ `Color 2 Location` ]: '80%',
-		  [ `Background Gradient Blend Mode` ]: 'hard-light',
+				[ `Gradient Direction (degrees)` ]: '180deg',
+				[ `Color 1 Location` ]: '11%',
+				[ `Color 2 Location` ]: '80%',
+				[ `Background Gradient Blend Mode` ]: 'hard-light',
 			},
 		} ).assertComputedStyle( {
 			'.ugb-accordion__heading:before': {
@@ -278,10 +278,10 @@ describe( 'Accordion Block', () => {
 			[ `Background Color #1` ]: '#f00069',
 			[ `Background Color #2` ]: '#000000',
 			[ `Adv. Gradient Color Settings` ]: {
-		  [ `Gradient Direction (degrees)` ]: '180deg',
-		  [ `Color 1 Location` ]: '11%',
-		  [ `Color 2 Location` ]: '80%',
-		  [ `Background Gradient Blend Mode` ]: 'multiply',
+				[ `Gradient Direction (degrees)` ]: '180deg',
+				[ `Color 1 Location` ]: '11%',
+				[ `Color 2 Location` ]: '80%',
+				[ `Background Gradient Blend Mode` ]: 'multiply',
 			},
 		}, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-accordion__heading:before': {
@@ -407,10 +407,10 @@ describe( 'Accordion Block', () => {
 			[ `Background Color #1` ]: '#f00069',
 			[ `Background Color #2` ]: '#000000',
 			[ `Adv. Gradient Color Settings` ]: {
-		  [ `Gradient Direction (degrees)` ]: '180deg',
-		  [ `Color 1 Location` ]: '15%',
-		  [ `Color 2 Location` ]: '60%',
-		  [ `Background Gradient Blend Mode` ]: 'exclusion',
+				[ `Gradient Direction (degrees)` ]: '180deg',
+				[ `Color 1 Location` ]: '15%',
+				[ `Color 2 Location` ]: '60%',
+				[ `Background Gradient Blend Mode` ]: 'exclusion',
 			},
 		}, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-accordion__heading:before': {
