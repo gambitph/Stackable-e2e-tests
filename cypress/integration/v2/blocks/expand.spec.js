@@ -175,7 +175,7 @@ describe( 'Expand Block', () => {
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 1.9,
-		}, { viewport: 'Tablet' } )
+		} )
 		cy.adjust( 'Size', 27, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-expand__title': {
 				[ `font-size` ]: '27px',
@@ -206,7 +206,7 @@ describe( 'Expand Block', () => {
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 2.1,
-		}, { viewport: 'Tablet' } )
+		} )
 		cy.adjust( 'Size', 20, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-expand__less-text p, .ugb-expand__more-text p': {
 				[ `font-size` ]: '20px',
@@ -236,7 +236,7 @@ describe( 'Expand Block', () => {
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 1.9,
-		}, { viewport: 'Tablet' } )
+		} )
 		cy.adjust( 'Size', 20, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
 				[ `font-size` ]: '20px',
@@ -302,7 +302,7 @@ describe( 'Expand Block', () => {
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 1.9,
-		}, { viewport: 'Mobile' } )
+		} )
 		cy.adjust( 'Size', 27, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-expand__title': {
 				[ `font-size` ]: '27px',
@@ -333,7 +333,7 @@ describe( 'Expand Block', () => {
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 2.1,
-		}, { viewport: 'Mobile' } )
+		} )
 		cy.adjust( 'Size', 20, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-expand__less-text p, .ugb-expand__more-text p': {
 				[ `font-size` ]: '20px',
@@ -363,7 +363,7 @@ describe( 'Expand Block', () => {
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 1.9,
-		}, { viewport: 'Mobile' } )
+		} )
 		cy.adjust( 'Size', 20, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
 				[ `font-size` ]: '20px',
