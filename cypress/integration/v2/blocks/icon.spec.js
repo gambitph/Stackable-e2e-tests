@@ -27,7 +27,7 @@ describe( 'Icon Block', () => {
 		// Test General options
 		cy.collapse( 'General' )
 		cy.adjust( 'Number of Icons / Columns', 4 )
-		cy.get( 'div.ugb-icon__content-wrapper' ).find( '.ugb-icon__item4' )
+		cy.get( '.ugb-icon__item4' ).should( 'exist' )
 
 		const aligns = [ 'left', 'center', 'right' ]
 		aligns.forEach( align => {
@@ -40,15 +40,13 @@ describe( 'Icon Block', () => {
 
 		// Test Icon options
 		cy.collapse( 'Icon' )
-		cy.adjust( 'Design', 'shaped' )
-		cy.adjust( 'Icon Color Type', 'single' )
 		cy.adjust( 'Icon Color', '#acacac' ).assertComputedStyle( {
 			'.ugb-icon-inner-svg': {
 				[ `color` ]: '#acacac',
 				[ `fill` ]: '#acacac',
 			},
 		} )
-		cy.adjust( 'Icon Color Type', 'gradient' )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Icon Color #1', '#f00069' )
 		cy.adjust( 'Icon Color #2', '#000000' )
 		cy.adjust( 'Gradient Direction (degrees)', 180 )
@@ -261,7 +259,6 @@ describe( 'Icon Block', () => {
 		cy.collapse( 'Block Background' )
 		cy.toggleStyle( 'Block Background' )
 		cy.adjust( 'No Paddings', true )
-		cy.adjust( 'Color Type', 'single' )
 		cy.adjust( 'Background Color', '#ffffff' )
 		cy.adjust( 'Background Color Opacity', 0.7 ).assertComputedStyle( {
 			'.ugb-icon': {
@@ -379,6 +376,392 @@ describe( 'Icon Block', () => {
 				[ `fill` ]: '#6d6d6d',
 				[ `transform` ]: 'matrix(-1.2, 0, 0, 1.03, 0, 0)',
 				[ `opacity` ]: '0.8',
+			},
+		} )
+	} )
+
+	it( 'should adjust tablet options inside style tab', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/icon' )
+		cy.openInspector( 'ugb/icon', 'Style' )
+		cy.changePreviewMode( 'Tablet' )
+
+		// Test General options
+		cy.collapse( 'General' )
+		cy.adjust( 'Number of Icons / Columns', 6 )
+		cy.get( '.ugb-icon__item6' ).should( 'exist' )
+
+		const aligns = [ 'left', 'center', 'right' ]
+		aligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
+				'.ugb-inner-block': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Icon options
+		cy.collapse( 'Icon' )
+		cy.adjust( 'Icon Size', 45, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon-inner-svg': {
+				[ `height` ]: '45px',
+				[ `width` ]: '45px',
+			},
+		} )
+		cy.adjust( 'Align', 'left', { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-start',
+			},
+		} )
+		cy.adjust( 'Align', 'center', { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'center',
+			},
+		} )
+		cy.adjust( 'Align', 'right', { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-end',
+			},
+		} )
+
+		// Test Title options
+		cy.collapse( 'Title' )
+		cy.toggleStyle( 'Title' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Monospace',
+			[ `Size` ]: 18,
+			[ `Weight` ]: '200',
+			[ `Transform` ]: 'lowercase',
+			[ `Line-Height` ]: 1.6,
+			[ `Letter Spacing` ]: 1.3,
+		}, { viewport: 'Tablet' } )
+		cy.adjust( 'Size', 22, { viewport: 'Tablet' } )
+
+		// Test Title Alignment
+		const titleAligns = [ 'left', 'center', 'right' ]
+		titleAligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
+				'.ugb-icon__title': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Effects option
+		cy.collapse( 'Effects' )
+		cy.adjust( 'Hover Effect', 'scale-more' )
+			.assertClassName( '.ugb-icon__item', 'ugb--hover-scale-more' )
+
+		// Test Block Title
+		cy.collapse( 'Block Title' )
+		cy.toggleStyle( 'Block Title' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Sans-Serif',
+			[ `Size` ]: 31,
+			[ `Weight` ]: '700',
+			[ `Transform` ]: 'uppercase',
+			[ `Line-Height` ]: 1.6,
+			[ `Letter Spacing` ]: 1.3,
+		}, { viewport: 'Tablet' } )
+		cy.adjust( 'Size', 46, { viewport: 'Tablet' } )
+		cy.adjust( 'Title Color', '#636363' )
+		cy.adjust( 'Max Width', 748, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-block-title': {
+				[ `font-size` ]: '46px',
+				[ `font-weight` ]: '700',
+				[ `text-transform` ]: 'uppercase',
+				[ `letter-spacing` ]: '1.3px',
+				[ `color` ]: '#636363',
+				[ `max-width` ]: '748px',
+			},
+		} )
+
+		// Test Block Title Alignment
+		const textAligns = [ 'left', 'center', 'right' ]
+		textAligns.forEach( align => {
+			cy.adjust( 'Text Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
+				'.ugb-block-title': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Block Description
+		cy.collapse( 'Block Description' )
+		cy.toggleStyle( 'Block Description' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Sans-Serif',
+			[ `Size` ]: 21,
+			[ `Weight` ]: '700',
+			[ `Transform` ]: 'uppercase',
+			[ `Line-Height` ]: 1.6,
+			[ `Letter Spacing` ]: 1.3,
+		}, { viewport: 'Tablet' } )
+		cy.adjust( 'Size', 36, { viewport: 'Tablet' } )
+		cy.adjust( 'Title Color', '#636363' )
+		cy.adjust( 'Max Width', 748, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-block-description': {
+				[ `font-size` ]: '36px',
+				[ `font-weight` ]: '700',
+				[ `text-transform` ]: 'uppercase',
+				[ `letter-spacing` ]: '1.3px',
+				[ `color` ]: '#636363',
+				[ `max-width` ]: '748px',
+			},
+		} )
+
+		// Test Block Description Alignment
+		const descAligns = [ 'left', 'center', 'right' ]
+		descAligns.forEach( align => {
+			cy.adjust( 'Text Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
+				'.ugb-block-description': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Spacing options
+		cy.collapse( 'Spacing' )
+		cy.adjust( 'Block Title', 25, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-block-title': {
+				[ `margin-bottom` ]: '25px',
+			},
+		} )
+		cy.adjust( 'Block Description', 35, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-block-description': {
+				[ `margin-bottom` ]: '35px',
+			},
+		} )
+		cy.adjust( 'Paddings', 20, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__content-wrapper': {
+				[ `padding-bottom` ]: '20px',
+				[ `padding-left` ]: '20px',
+				[ `padding-right` ]: '20px',
+				[ `padding-top` ]: '20px',
+			},
+		} )
+		cy.adjust( 'Icon', 24, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `margin-bottom` ]: '24px',
+			},
+		} )
+		cy.adjust( 'Title', 15, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__title': {
+				[ `margin-bottom` ]: '15px',
+			},
+		} )
+
+		// TODO: Add Background Image test
+
+		// Test Top Separator
+		cy.collapse( 'Top Separator' )
+		cy.toggleStyle( 'Top Separator' )
+		cy.adjust( 'Height', 191, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-top-separator .ugb-separator-wrapper': {
+				[ `height` ]: '191px',
+			},
+		} )
+
+		// Test Bottom Separator
+		cy.collapse( 'Bottom Separator' )
+		cy.toggleStyle( 'Bottom Separator' )
+		cy.adjust( 'Height', 150, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-bottom-separator .ugb-separator-wrapper': {
+				[ `height` ]: '150px',
+			},
+		} )
+	} )
+
+	it( 'should adjust mobile options inside style tab', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/icon' )
+		cy.openInspector( 'ugb/icon', 'Style' )
+		cy.changePreviewMode( 'Mobile' )
+
+		// Test General options
+		cy.collapse( 'General' )
+		cy.adjust( 'Number of Icons / Columns', 4 )
+		cy.get( '.ugb-icon__item4' ).should( 'exist' )
+
+		const aligns = [ 'left', 'center', 'right' ]
+		aligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
+				'.ugb-inner-block': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Icon options
+		cy.collapse( 'Icon' )
+		cy.adjust( 'Icon Size', 58, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon-inner-svg': {
+				[ `height` ]: '58px',
+				[ `width` ]: '58px',
+			},
+		} )
+		cy.adjust( 'Align', 'left', { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-start',
+			},
+		} )
+		cy.adjust( 'Align', 'center', { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'center',
+			},
+		} )
+		cy.adjust( 'Align', 'right', { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-end',
+			},
+		} )
+
+		// Test Title options
+		cy.collapse( 'Title' )
+		cy.toggleStyle( 'Title' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Monospace',
+			[ `Size` ]: 18,
+			[ `Weight` ]: '200',
+			[ `Transform` ]: 'lowercase',
+			[ `Line-Height` ]: 1.6,
+			[ `Letter Spacing` ]: 1.3,
+		}, { viewport: 'Mobile' } )
+		cy.adjust( 'Size', 22, { viewport: 'Mobile' } )
+
+		// Test Title Alignment
+		const titleAligns = [ 'left', 'center', 'right' ]
+		titleAligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
+				'.ugb-icon__title': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Effects option
+		cy.collapse( 'Effects' )
+		cy.adjust( 'Hover Effect', 'lift' )
+			.assertClassName( '.ugb-icon__item', 'ugb--hover-lift' )
+
+		// Test Block Title
+		cy.collapse( 'Block Title' )
+		cy.toggleStyle( 'Block Title' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Sans-Serif',
+			[ `Size` ]: 31,
+			[ `Weight` ]: '700',
+			[ `Transform` ]: 'uppercase',
+			[ `Line-Height` ]: 1.6,
+			[ `Letter Spacing` ]: 1.3,
+		}, { viewport: 'Mobile' } )
+		cy.adjust( 'Size', 46, { viewport: 'Mobile' } )
+		cy.adjust( 'Title Color', '#636363' )
+		cy.adjust( 'Max Width', 748, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-block-title': {
+				[ `font-size` ]: '46px',
+				[ `font-weight` ]: '700',
+				[ `text-transform` ]: 'uppercase',
+				[ `letter-spacing` ]: '1.3px',
+				[ `color` ]: '#636363',
+				[ `max-width` ]: '748px',
+			},
+		} )
+
+		// Test Block Title Alignment
+		const textAligns = [ 'left', 'center', 'right' ]
+		textAligns.forEach( align => {
+			cy.adjust( 'Text Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
+				'.ugb-block-title': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Block Description
+		cy.collapse( 'Block Description' )
+		cy.toggleStyle( 'Block Description' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Sans-Serif',
+			[ `Size` ]: 21,
+			[ `Weight` ]: '700',
+			[ `Transform` ]: 'uppercase',
+			[ `Line-Height` ]: 1.6,
+			[ `Letter Spacing` ]: 1.3,
+		}, { viewport: 'Mobile' } )
+		cy.adjust( 'Size', 36, { viewport: 'Mobile' } )
+		cy.adjust( 'Title Color', '#636363' )
+		cy.adjust( 'Max Width', 748, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-block-description': {
+				[ `font-size` ]: '36px',
+				[ `font-weight` ]: '700',
+				[ `text-transform` ]: 'uppercase',
+				[ `letter-spacing` ]: '1.3px',
+				[ `color` ]: '#636363',
+				[ `max-width` ]: '748px',
+			},
+		} )
+
+		// Test Block Description Alignment
+		const descAligns = [ 'left', 'center', 'right' ]
+		descAligns.forEach( align => {
+			cy.adjust( 'Text Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
+				'.ugb-block-description': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Spacing options
+		cy.collapse( 'Spacing' )
+		cy.adjust( 'Block Title', 25, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-block-title': {
+				[ `margin-bottom` ]: '25px',
+			},
+		} )
+		cy.adjust( 'Block Description', 35, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-block-description': {
+				[ `margin-bottom` ]: '35px',
+			},
+		} )
+		cy.adjust( 'Paddings', 20, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__content-wrapper': {
+				[ `padding-bottom` ]: '20px',
+				[ `padding-left` ]: '20px',
+				[ `padding-right` ]: '20px',
+				[ `padding-top` ]: '20px',
+			},
+		} )
+		cy.adjust( 'Icon', 24, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `margin-bottom` ]: '24px',
+			},
+		} )
+		cy.adjust( 'Title', 15, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__title': {
+				[ `margin-bottom` ]: '15px',
+			},
+		} )
+
+		// TODO: Add Background Image test
+
+		// Test Top Separator
+		cy.collapse( 'Top Separator' )
+		cy.toggleStyle( 'Top Separator' )
+		cy.adjust( 'Height', 191, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-top-separator .ugb-separator-wrapper': {
+				[ `height` ]: '191px',
+			},
+		} )
+
+		// Test Bottom Separator
+		cy.collapse( 'Bottom Separator' )
+		cy.toggleStyle( 'Bottom Separator' )
+		cy.adjust( 'Height', 150, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-bottom-separator .ugb-separator-wrapper': {
+				[ `height` ]: '150px',
 			},
 		} )
 	} )
