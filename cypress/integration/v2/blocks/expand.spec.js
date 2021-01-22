@@ -35,7 +35,10 @@ describe( 'Expand Block', () => {
 			[ `Size` ]: 50,
 			[ `Weight` ]: '100',
 			[ `Transform` ]: 'none',
-			[ `Line-Height` ]: 0.1,
+			[ `Line-Height` ]: {
+				value: 26,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.9,
 		} )
 		cy.adjust( 'Title Color', '#ff0000' )
@@ -46,6 +49,7 @@ describe( 'Expand Block', () => {
 				[ `text-transform` ]: 'none',
 				[ `letter-spacing` ]: '1.9px',
 				[ `color` ]: '#ff0000',
+				[ `line-height` ]: '26px',
 			},
 		} )
 		const titleAligns = [ 'left', 'center', 'right' ]
@@ -63,7 +67,10 @@ describe( 'Expand Block', () => {
 			[ `Font Family` ]: 'Serif',
 			[ `Size` ]: 50,
 			[ `Weight` ]: '100',
-			[ `Line-Height` ]: 1.8,
+			[ `Line-Height` ]: {
+				value: 18,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.9,
 		} )
 		cy.adjust( 'Size', 1.25, { unit: 'em' } )
@@ -75,6 +82,7 @@ describe( 'Expand Block', () => {
 				[ `font-weight` ]: '100',
 				[ `letter-spacing` ]: '1.9px',
 				[ `color` ]: '#ff0000',
+				[ `line-height` ]: '18px',
 			},
 		} )
 		const textAligns = [ 'left', 'center', 'right' ]
@@ -92,7 +100,10 @@ describe( 'Expand Block', () => {
 			[ `Font Family` ]: 'Sans-Serif',
 			[ `Size` ]: 18,
 			[ `Weight` ]: '100',
-			[ `Line-Height` ]: 1.7,
+			[ `Line-Height` ]: {
+				value: 30,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.9,
 		} )
 		cy.adjust( 'Size', 1.25, { unit: 'em' } )
@@ -104,6 +115,7 @@ describe( 'Expand Block', () => {
 				[ `font-weight` ]: '100',
 				[ `letter-spacing` ]: '1.9px',
 				[ `color` ]: '#ff6666',
+				[ `line-height` ]: '30px',
 			},
 		} )
 		const linkAligns = [ 'left', 'center', 'right' ]
@@ -157,7 +169,11 @@ describe( 'Expand Block', () => {
 			[ `Size` ]: 50,
 			[ `Weight` ]: '100',
 			[ `Transform` ]: 'none',
-			[ `Line-Height` ]: 1.1,
+			[ `Line-Height` ]: {
+				viewport: 'Tablet',
+				value: 26,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.9,
 		}, { viewport: 'Tablet' } )
 		cy.adjust( 'Size', 27, { viewport: 'Tablet' } ).assertComputedStyle( {
@@ -166,6 +182,7 @@ describe( 'Expand Block', () => {
 				[ `font-weight` ]: '100',
 				[ `text-transform` ]: 'none',
 				[ `letter-spacing` ]: '1.9px',
+				[ `line-height` ]: '26px',
 			},
 		} )
 		const titleAligns = [ 'left', 'center', 'right' ]
@@ -183,7 +200,11 @@ describe( 'Expand Block', () => {
 			[ `Font Family` ]: 'Monospace',
 			[ `Size` ]: 50,
 			[ `Weight` ]: '300',
-			[ `Line-Height` ]: 1.8,
+			[ `Line-Height` ]: {
+				viewport: 'Tablet',
+				value: 19,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 2.1,
 		}, { viewport: 'Tablet' } )
 		cy.adjust( 'Size', 20, { viewport: 'Tablet' } ).assertComputedStyle( {
@@ -191,6 +212,7 @@ describe( 'Expand Block', () => {
 				[ `font-size` ]: '20px',
 				[ `font-weight` ]: '300',
 				[ `letter-spacing` ]: '2.1px',
+				[ `line-height` ]: '19px',
 			},
 		} )
 		const textAligns = [ 'left', 'center', 'right' ]
@@ -208,7 +230,11 @@ describe( 'Expand Block', () => {
 			[ `Font Family` ]: 'Sans-Serif',
 			[ `Size` ]: 18,
 			[ `Weight` ]: '100',
-			[ `Line-Height` ]: 1.7,
+			[ `Line-Height` ]: {
+				viewport: 'Tablet',
+				value: 30,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.9,
 		}, { viewport: 'Tablet' } )
 		cy.adjust( 'Size', 20, { viewport: 'Tablet' } ).assertComputedStyle( {
@@ -216,6 +242,7 @@ describe( 'Expand Block', () => {
 				[ `font-size` ]: '20px',
 				[ `font-weight` ]: '100',
 				[ `letter-spacing` ]: '1.9px',
+				[ `line-height` ]: '30px',
 			},
 		} )
 		const linkAligns = [ 'left', 'center', 'right' ]
@@ -269,7 +296,11 @@ describe( 'Expand Block', () => {
 			[ `Size` ]: 50,
 			[ `Weight` ]: '100',
 			[ `Transform` ]: 'none',
-			[ `Line-Height` ]: 1.1,
+			[ `Line-Height` ]: {
+				viewport: 'Mobile',
+				value: 16,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.9,
 		}, { viewport: 'Mobile' } )
 		cy.adjust( 'Size', 27, { viewport: 'Mobile' } ).assertComputedStyle( {
@@ -278,6 +309,7 @@ describe( 'Expand Block', () => {
 				[ `font-weight` ]: '100',
 				[ `text-transform` ]: 'none',
 				[ `letter-spacing` ]: '1.9px',
+				[ `line-height` ]: '16px',
 			},
 		} )
 		const titleAligns = [ 'left', 'center', 'right' ]
@@ -295,7 +327,11 @@ describe( 'Expand Block', () => {
 			[ `Font Family` ]: 'Serif',
 			[ `Size` ]: 50,
 			[ `Weight` ]: '300',
-			[ `Line-Height` ]: 1.8,
+			[ `Line-Height` ]: {
+				viewport: 'Mobile',
+				value: 42,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 2.1,
 		}, { viewport: 'Mobile' } )
 		cy.adjust( 'Size', 20, { viewport: 'Mobile' } ).assertComputedStyle( {
@@ -303,6 +339,7 @@ describe( 'Expand Block', () => {
 				[ `font-size` ]: '20px',
 				[ `font-weight` ]: '300',
 				[ `letter-spacing` ]: '2.1px',
+				[ `line-height` ]: '42px',
 			},
 		} )
 		const textAligns = [ 'left', 'center', 'right' ]
@@ -320,7 +357,11 @@ describe( 'Expand Block', () => {
 			[ `Font Family` ]: 'Monospace',
 			[ `Size` ]: 18,
 			[ `Weight` ]: '100',
-			[ `Line-Height` ]: 1.7,
+			[ `Line-Height` ]: {
+				viewport: 'Mobile',
+				value: 17,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.9,
 		}, { viewport: 'Mobile' } )
 		cy.adjust( 'Size', 20, { viewport: 'Mobile' } ).assertComputedStyle( {
@@ -328,6 +369,7 @@ describe( 'Expand Block', () => {
 				[ `font-size` ]: '20px',
 				[ `font-weight` ]: '100',
 				[ `letter-spacing` ]: '1.9px',
+				[ `line-height` ]: '17px',
 			},
 		} )
 		const linkAligns = [ 'left', 'center', 'right' ]
