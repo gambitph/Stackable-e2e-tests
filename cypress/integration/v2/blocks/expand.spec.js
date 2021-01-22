@@ -245,4 +245,116 @@ describe( 'Expand Block', () => {
 			},
 		} )
 	} )
+
+	it( 'should adjust mobile options inside style tab', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/expand' )
+		cy.openInspector( 'ugb/expand', 'Style' )
+
+		// Test General options
+		const aligns = [ 'left', 'center', 'right' ]
+		aligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
+				'.ugb-inner-block': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Title options
+		cy.collapse( 'Title' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Serif',
+			[ `Size` ]: 50,
+			[ `Weight` ]: '100',
+			[ `Transform` ]: 'none',
+			[ `Line-Height` ]: 1.1,
+			[ `Letter Spacing` ]: 1.9,
+		}, { viewport: 'Mobile' } )
+		cy.adjust( 'Size', 27, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-expand__title': {
+				[ `font-size` ]: '27px',
+				[ `font-weight` ]: '100',
+				[ `text-transform` ]: 'none',
+				[ `letter-spacing` ]: '1.9px',
+			},
+		} )
+		const titleAligns = [ 'left', 'center', 'right' ]
+		titleAligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
+				'.ugb-expand__title': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Text options
+		cy.collapse( 'Text' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Serif',
+			[ `Size` ]: 50,
+			[ `Weight` ]: '300',
+			[ `Line-Height` ]: 1.8,
+			[ `Letter Spacing` ]: 2.1,
+		}, { viewport: 'Mobile' } )
+		cy.adjust( 'Size', 20, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-expand__less-text p, .ugb-expand__more-text p': {
+				[ `font-size` ]: '20px',
+				[ `font-weight` ]: '300',
+				[ `letter-spacing` ]: '2.1px',
+			},
+		} )
+		const textAligns = [ 'left', 'center', 'right' ]
+		textAligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
+				'.ugb-expand__less-text p, .ugb-expand__more-text p': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Link options
+		cy.collapse( 'Link' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Monospace',
+			[ `Size` ]: 18,
+			[ `Weight` ]: '100',
+			[ `Line-Height` ]: 1.7,
+			[ `Letter Spacing` ]: 1.9,
+		}, { viewport: 'Mobile' } )
+		cy.adjust( 'Size', 20, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
+				[ `font-size` ]: '20px',
+				[ `font-weight` ]: '100',
+				[ `letter-spacing` ]: '1.9px',
+			},
+		} )
+		const linkAligns = [ 'left', 'center', 'right' ]
+		linkAligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
+				'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
+					[ `text-align` ]: align,
+				},
+			} )
+		} )
+
+		// Test Spacing options
+		cy.collapse( 'Spacing' )
+		cy.adjust( 'Title', 24, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-expand__title': {
+				[ `margin-bottom` ]: '24px',
+			},
+		} )
+		cy.adjust( 'Text', 31, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-expand__less-text, .ugb-expand__more-text': {
+				[ `margin-bottom` ]: '31px',
+			},
+		} )
+		cy.adjust( 'Link', 37, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
+				[ `margin-bottom` ]: '37px',
+			},
+		} )
+	} )
 } )
