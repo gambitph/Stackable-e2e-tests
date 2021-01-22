@@ -29,7 +29,7 @@
 	},
 	"lint-staged": {
 		"*.js": [
-			 "./node_modules/eslint/bin/eslint ."
+			 "./node_modules/eslint/bin/eslint.js ."
 		]
 	},
 	"husky": {
