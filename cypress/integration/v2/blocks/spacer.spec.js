@@ -5,7 +5,6 @@ import {
 	assertBlockExist, blockErrorTest,
 } from '~stackable-e2e/helpers'
 
-console.log( 'test' )
 describe( 'Spacer Block', () => {
 	it( 'should show the block', assertBlockExist( 'ugb/spacer', '.ugb-spacer' ) )
 
