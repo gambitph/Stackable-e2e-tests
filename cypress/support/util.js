@@ -6,7 +6,7 @@ import { lowerCase } from 'lodash'
 /**
  * Internal dependencies
  */
-import config from '../../cypress.json'
+import config from 'root/cypress.json'
 
 /**
  * Function for getting the base control

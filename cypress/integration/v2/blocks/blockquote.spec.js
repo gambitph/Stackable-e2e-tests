@@ -39,7 +39,7 @@ describe( 'Blockquote Block', () => {
 		cy.addBlock( 'ugb/blockquote' )
 		cy.openInspector( 'ugb/blockquote', 'Style' )
 
-		//Test General Alignment
+		// Test General Alignment
 		cy.collapse( 'General' )
 		const aligns = [ 'left', 'center', 'right' ]
 		aligns.forEach( align => {
@@ -50,7 +50,7 @@ describe( 'Blockquote Block', () => {
 			} )
 		} )
 
-		//Test Spacing options
+		// Test Spacing options
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Paddings', 51 ).assertComputedStyle( {
 			'.ugb-blockquote__item': {
@@ -79,7 +79,7 @@ describe( 'Blockquote Block', () => {
 			},
 		} )
 
-		//Test Quotation Mark options
+		// Test Quotation Mark options
 		cy.collapse( 'Quotation Mark' )
 		cy.adjust( 'Icon', 'square' )
 		cy.adjust( 'Color', '#f00069' )
@@ -97,7 +97,7 @@ describe( 'Blockquote Block', () => {
 			},
 		} )
 
-		//Test Text options
+		// Test Text options
 		cy.collapse( 'Text' )
 		cy.adjust( 'Typography', {
 			[ `Font Family` ]: 'Serif',
@@ -120,7 +120,7 @@ describe( 'Blockquote Block', () => {
 			},
 		} )
 
-		//Test Text Alignment
+		// Test Text Alignment
 		const textAligns = [ 'left', 'center', 'right' ]
 		textAligns.forEach( align => {
 			cy.adjust( 'Align', align ).assertComputedStyle( {
@@ -130,7 +130,7 @@ describe( 'Blockquote Block', () => {
 			} )
 		} )
 
-		//Test Block Background options
+		// Test Block Background options
 		cy.collapse( 'Block Background' )
 		cy.toggleStyle( 'Block Background' )
 		cy.adjust( 'No Paddings', true )
@@ -155,9 +155,9 @@ describe( 'Blockquote Block', () => {
 				[ `mix-blend-mode` ]: 'hard-light',
 			},
 		} )
-		//Add Background Image test
+		// TODO: Add Background Image test
 
-		//Test Top Separator
+		// Test Top Separator
 		cy.collapse( 'Top Separator' )
 		cy.toggleStyle( 'Top Separator' )
 		cy.adjust( 'Design', 'wave-3' )
@@ -206,7 +206,7 @@ describe( 'Blockquote Block', () => {
 			},
 		} )
 
-		//Test Bottom Separator
+		// Test Bottom Separator
 		cy.collapse( 'Bottom Separator' )
 		cy.toggleStyle( 'Bottom Separator' )
 		cy.adjust( 'Design', 'slant-2' )
