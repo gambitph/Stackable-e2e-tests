@@ -817,7 +817,7 @@ export function adjustDesign( option = '' ) {
  * @param {Object} options
  */
 export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
-	const _assertComputedStyle = ( win, element, cssRule, expectedValue, pseudoEl, parentEl ) => {
+	const _assertComputedStyle = ( win, doc, element, cssRule, expectedValue, pseudoEl, parentEl, selector ) => {
 		let computedStyle = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )[ camelCase( cssRule ) ]
 
 		/**
@@ -836,11 +836,27 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		}
 
 		if ( typeof expectedValue === 'string' && expectedValue.match( /em/ ) ) {
-			// Determine the theme's default font size.
-			const fontSize = win.getComputedStyle( parentEl ).fontSize
-			const oneEm = parseInt( fontSize )
+			// Conditional `em` unit handling.
+			switch ( cssRule ) {
+				case 'line-height': {
+					const selectorEl = doc.querySelector( selector )
+					if ( selectorEl ) {
+						const fontSize = win.getComputedStyle( selectorEl ).fontSize
+						const oneEm = parseInt( fontSize )
 
-			expectedValue = `${ parseFloat( oneEm * parseFloat( expectedValue ) ) }px`
+						cy.log( `${ computedStyle }` )
+						expectedValue = `${ parseFloat( oneEm * parseFloat( expectedValue ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+					}
+					break
+				}
+				default: {
+					// Determine the theme's default font size.
+					const fontSize = win.getComputedStyle( parentEl ).fontSize
+					const oneEm = parseInt( fontSize )
+
+					expectedValue = `${ parseFloat( oneEm * parseFloat( expectedValue ) ) }px`
+				}
+			}
 		}
 
 		assert.equal( computedStyle, expectedValue, `'${ camelCase( cssRule ) }' expected to be ${ expectedValue }. Found '${ computedStyle }'.` )
@@ -858,7 +874,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 					.get( `.is-selected${ ` ${ selector[ 0 ] }` }` )
 					.then( $block => {
 						keys( cssObject[ _selector ] ).forEach( cssRule => {
-							_assertComputedStyle( win, $block[ 0 ], cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ) )
+							_assertComputedStyle( win, doc, $block[ 0 ], cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ), _selector )
 						} )
 					} )
 			} )
@@ -872,7 +888,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 				const willAssertElement = doc.querySelector( `${ parsedClassList }${ parsedClassList.match( selector[ 0 ] ) ? '' : ` ${ selector[ 0 ] }` }` )
 				if ( willAssertElement ) {
 					keys( cssObject[ _selector ] ).forEach( cssRule => {
-						_assertComputedStyle( win, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ) )
+						_assertComputedStyle( win, doc, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ), _selector )
 					} )
 				}
 			} )

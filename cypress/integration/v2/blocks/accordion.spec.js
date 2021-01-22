@@ -6,7 +6,7 @@ import { range } from 'lodash'
 import { blocks } from '~stackable-e2e/config'
 import { getAddresses } from '~stackable-e2e/util'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns,
 } from '~stackable-e2e/helpers'
 
 describe( 'Accordion Block', () => {
@@ -106,14 +106,7 @@ describe( 'Accordion Block', () => {
 		} )
 
 		// Test General Alignment
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-inner-block' )
 
 		cy.collapse( 'Container' )
 
@@ -216,14 +209,7 @@ describe( 'Accordion Block', () => {
 				},
 			} )
 
-		const titleAligns = [ 'left', 'center', 'right' ]
-		titleAligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-accordion__title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-accordion__title' )
 
 		// Test Arrow settings
 		cy.collapse( 'Arrow' )
@@ -247,14 +233,7 @@ describe( 'Accordion Block', () => {
 
 		// Test General Alignment
 		cy.collapse( 'General' )
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
 
 		cy.changePreviewMode( 'Tablet' )
 
@@ -344,14 +323,8 @@ describe( 'Accordion Block', () => {
 				[ `color` ]: '#ffffff',
 			},
 		} )
-		const titleAligns = [ 'left', 'center', 'right' ]
-		titleAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-accordion__title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+
+		assertAligns( 'Align', '.ugb-accordion__title', { viewport: 'Tablet' } )
 
 		cy.changePreviewMode( 'Tablet' )
 
@@ -376,14 +349,7 @@ describe( 'Accordion Block', () => {
 
 		// Test General Alignment
 		cy.collapse( 'General' )
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
 
 		cy.changePreviewMode( 'Mobile' )
 		cy.collapse( 'Container' )
@@ -473,14 +439,7 @@ describe( 'Accordion Block', () => {
 				[ `color` ]: '#ffffff',
 			},
 		} )
-		const titleAligns = [ 'left', 'center', 'right' ]
-		titleAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-accordion__title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-accordion__title', { viewport: 'Mobile' } )
 
 		cy.changePreviewMode( 'Mobile' )
 
