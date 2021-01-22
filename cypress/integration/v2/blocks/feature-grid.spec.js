@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 describe( 'Feature Grid Block', () => {
@@ -18,6 +18,7 @@ describe( 'Feature Grid Block', () => {
 		'Large Mid',
 		'Zigzag',
 	] ) )
+
 	it( 'should switch design', switchDesigns( 'ugb/feature-grid', [
 		'Angled Feature Grid',
 		'Arch Feature Grid',
@@ -52,4 +53,19 @@ describe( 'Feature Grid Block', () => {
 		'Upland Feature Grid',
 		'Yule Feature Grid',
 	] ) )
+
+	it( 'should adjust options inside advanced tab', assertAdvancedTab( 'ugb/feature-grid',
+		{},
+		// Desktop Test.
+		() => {
+
+		},
+		// Tablet Test.
+		() => {
+
+		},
+		// Mobile Test.
+		() => {
+
+		} ) )
 } )

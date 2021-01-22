@@ -493,12 +493,14 @@ function fourRangeControl( name, value, options = {} ) {
 		} )
 
 		value.forEach( ( entry, index ) => {
-			getActiveTab( tab => {
-				selector( tab )
-					.find( 'input.components-input-control__input' )
-					.eq( index )
-					.type( `{selectall}${ entry }`, { force: true } )
-			} )
+			if ( entry !== undefined ) {
+				getActiveTab( tab => {
+					selector( tab )
+						.find( 'input.components-input-control__input' )
+						.eq( index )
+						.type( `{selectall}${ entry }`, { force: true } )
+				} )
+			}
 		} )
 	}
 }
