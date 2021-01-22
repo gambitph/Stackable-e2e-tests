@@ -57,14 +57,13 @@ export function addBlock( blockname = 'ugb/accordion' ) {
 export function selectBlock( subject, selector ) {
 	if ( selector && typeof selector === 'number' ) {
 		// Select a specific block based on nth position (base zero).
-		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).eq( selector ).click( { force: true } )
+		return cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).eq( selector ).click( { force: true } )
 	} else if ( selector && typeof selector === 'string' ) {
 		// Select a selector based on text input inside
-		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).contains( containsRegExp( selector ) ).click( { force: true } )
-	} else {
-		// Otherwise, just select the last matched block.
-		cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).last().click( { force: true } )
+		return cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).contains( containsRegExp( selector ) ).click( { force: true } )
 	}
+	// Otherwise, just select the last matched block.
+	return cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).last().click( { force: true } )
 }
 
 /**

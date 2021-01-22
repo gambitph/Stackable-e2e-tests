@@ -138,3 +138,21 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 		} )
 	} )
 }
+
+/*
+* Helper function for generating text align assertion commands.
+*
+* @param {string} name
+* @param {string} selector
+* @param {Object} options
+*/
+export const assertAligns = ( name, selector, options = {} ) => {
+	const aligns = [ 'left', 'center', 'right' ]
+	aligns.forEach( align => {
+		cy.adjust( name, align, options ).assertComputedStyle( {
+			[ selector ]: {
+				[ `text-align` ]: align,
+			},
+		} )
+	} )
+}
