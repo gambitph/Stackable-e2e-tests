@@ -7,11 +7,7 @@ Cypress.on( `window:before:load`, win => {
 	} )
 } )
 
-// Import commands.js using ES2015 syntax:
 import './commands/index'
-
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
 
 // Use Jest assertions
 import 'cypress-jest-adapter'
