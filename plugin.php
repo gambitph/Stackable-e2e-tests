@@ -89,6 +89,9 @@ if ( isset( $_GET['setup'] ) ) {
 			wp_delete_post( $pages->ID );
 		}
 
+		// Login as admin.
+		wp_login( 'admin', 'admin' );
+
 		die();
 	});
 }
