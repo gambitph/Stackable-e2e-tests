@@ -19,7 +19,6 @@ export function setupWP( args = {} ) {
 		setup: true,
 	} )
 	cy.visit( '/?' + params.toString() )
-	loginAdmin()
 }
 
 /**
