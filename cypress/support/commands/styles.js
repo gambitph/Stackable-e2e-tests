@@ -4,6 +4,7 @@
 import {
 	kebabCase, keys, camelCase, isEmpty,
 } from 'lodash'
+import config from 'root/cypress.json'
 
 /**
  * Internal dependencies
@@ -493,12 +494,14 @@ function fourRangeControl( name, value, options = {} ) {
 		} )
 
 		value.forEach( ( entry, index ) => {
-			getActiveTab( tab => {
-				selector( tab )
-					.find( 'input.components-input-control__input' )
-					.eq( index )
-					.type( `{selectall}${ entry }`, { force: true } )
-			} )
+			if ( entry !== undefined ) {
+				getActiveTab( tab => {
+					selector( tab )
+						.find( 'input.components-input-control__input' )
+						.eq( index )
+						.type( `{selectall}${ entry }`, { force: true } )
+				} )
+			}
 		} )
 	}
 }
@@ -835,17 +838,25 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 			computedStyle = `${ parseInt( computedStyle ) }px`
 		}
 
+		if ( typeof expectedValue === 'string' && expectedValue.match( /vh/ ) ) {
+			expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * config.viewportHeight ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+		}
+
 		if ( typeof expectedValue === 'string' && expectedValue.match( /em/ ) ) {
 			// Conditional `em` unit handling.
 			switch ( cssRule ) {
-				case 'line-height': {
+				case 'line-height':
+				case 'padding-top':
+				case 'padding-left':
+				case 'padding-right':
+				case 'padding-bottom':
+				{
 					const selectorEl = doc.querySelector( selector )
 					if ( selectorEl ) {
 						const fontSize = win.getComputedStyle( selectorEl ).fontSize
 						const oneEm = parseInt( fontSize )
 
-						cy.log( `${ computedStyle }` )
-						expectedValue = `${ parseFloat( oneEm * parseFloat( expectedValue ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+						expectedValue = `${ parseFloat( oneEm * parseInt( expectedValue ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
 					}
 					break
 				}
