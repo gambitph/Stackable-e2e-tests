@@ -131,7 +131,7 @@ export const changeUnit = ( unit = '', name = '', tab = 'style', isInPopover = f
  * @param {number} interval
  */
 export const waitLoader = ( selector = '', interval = 100 ) => {
-	cy.wait( 300, { log: false } )
+	cy.wait( 20, { log: false } )
 	let done = false
 
 	const update = () => {
