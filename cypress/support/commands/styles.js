@@ -224,7 +224,7 @@ function colorControl( name, value, options = {} ) {
 		cy
 			.get( '.components-popover__content' )
 			.find( 'input[type="text"]' )
-			.type( `{selectall}${ value }{enter}` )
+			.type( `{selectall}${ value }{enter}`, { force: true } )
 
 		// Declare the variable again
 		getActiveTab( tab => {
@@ -418,7 +418,7 @@ function suggestionControl( name, value, options = {} ) {
 			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
 			.find( 'input' )
-			.type( `{selectall}${ value }{enter}` )
+			.type( `{selectall}${ value }{enter}`, { force: true } )
 	} )
 }
 
@@ -439,7 +439,7 @@ function suggestionControlClear( name, options = {} ) {
 			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
 			.find( 'input' )
-			.type( `{selectall}{backspace}{enter}` )
+			.type( `{selectall}{backspace}{enter}`, { force: true } )
 	} )
 }
 
@@ -475,7 +475,7 @@ function fourRangeControl( name, value, options = {} ) {
 			changeUnit( unit, name, tab, isInPopover )
 			selector( tab )
 				.find( 'input.components-input-control__input' )
-				.type( `{selectall}${ value }` )
+				.type( `{selectall}${ value }`, { force: true } )
 		} )
 	} else if ( Array.isArray( value ) ) {
 		// Adjust the four control field.
@@ -600,7 +600,7 @@ function iconControl( name, value, options = {} ) {
 		cy
 			.get( 'input[placeholder="Type to search icon"]' )
 			.click( { force: true } )
-			.type( value )
+			.type( value, { force: true } )
 
 		// Wait until the loader disappears.
 		waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
@@ -618,7 +618,7 @@ function iconControl( name, value, options = {} ) {
 		cy
 			.get( 'input[placeholder="Type to search icon"]' )
 			.click( { force: true } )
-			.type( keyword )
+			.type( keyword, { force: true } )
 
 		// Wait until the loader disappears.
 		waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
@@ -822,6 +822,7 @@ export function adjustDesign( option = '' ) {
 export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	const _assertComputedStyle = ( win, doc, element, cssRule, expectedValue, pseudoEl, parentEl, selector ) => {
 		let computedStyle = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )[ camelCase( cssRule ) ]
+		cy.log( computedStyle )
 
 		/**
 		 * Section for overriding computed styles.

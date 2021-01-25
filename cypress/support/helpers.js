@@ -90,6 +90,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 	const {
 		assertFrontend = true,
 		assertBackend = true,
+		wait = false,
 	} = options
 	getActiveTab( tab => {
 		cy.document().then( doc => {
@@ -100,6 +101,9 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 				.invoke( 'attr', 'class' )
 				.then( classList => {
 					const parsedClassList = parseClassList( classList )
+					if ( wait ) {
+						cy.wait( wait )
+					}
 					cy.window().then( editorWin => {
 						cy.document().then( editorDoc => {
 							if ( assertBackend ) {
@@ -117,6 +121,10 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 								cy.visit( previewUrl )
 								if ( previewMode !== 'Desktop' ) {
 									cy.viewport( config[ `viewport${ previewMode }Width` ], config.viewportHeight )
+								}
+
+								if ( wait ) {
+									cy.wait( wait )
 								}
 
 								cy.window().then( frontendWin => {
