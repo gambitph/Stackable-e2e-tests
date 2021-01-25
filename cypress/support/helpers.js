@@ -183,8 +183,17 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		Mobile: mobileCallback,
 	}
 
+	const _collapse = ( collapseName = '' ) => {
+		cy.get( '.ugb-inspector-panel-controls', { log: false } )
+			.then( $panel => {
+				if ( $panel.text().includes( collapseName ) ) {
+					cy.collapse( collapseName )
+				}
+			} )
+	}
+
 	const _adjust = ( adjustName, value, options = {}, assertionFunc, args = [] ) => {
-		cy.get( '.ugb-toggle-panel-body.is-opened' )
+		cy.get( '.ugb-toggle-panel-body.is-opened', { log: false } )
 			.then( $panel => {
 				if ( $panel.text().includes( adjustName ) ) {
 					if ( args.length ) {
@@ -198,7 +207,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 
 	const _assertAdvancedTab = ( viewport = 'Desktop' ) => {
 		cy.openInspector( name, 'Advanced' )
-		cy.collapse( 'General' )
+		_collapse( 'General' )
 
 		 //Test Block HTML Tag
 		const tags = [ 'div', 'blockquote', 'section', 'article', 'aside', 'main', 'header', 'footer', 'nav', 'address', 'hgroup' ]
@@ -223,7 +232,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 			},
 		} ] )
 
-		cy.collapse( 'Block Spacing' )
+		_collapse( 'Block Spacing' )
 
 		// Test Min. Block Height.
 		_adjust( 'Min. Block Height', 850, { viewport }, 'assertComputedStyle', [ {
@@ -319,7 +328,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 			_adjust( 'Block Paddings', paddings, { unit, viewport }, 'assertComputedStyle', [ { [ BLOCK_SELECTOR ]: paddingAsserts } ] )
 		} )
 
-		cy.collapse( 'Column / Container Spacing' )
+		_collapse( 'Column / Container Spacing' )
 
 		// Test Column Gap.
 		_adjust( 'Column Gap', 24, { viewport }, 'assertComputedStyle', [ {
@@ -367,7 +376,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 			_assertAdvancedTab( preview )
 		} )
 
-		cy.collapse( 'Responsive' )
+		_collapse( 'Responsive' )
 
 		previewMode.forEach( preview => {
 			cy.changePreviewMode( preview )

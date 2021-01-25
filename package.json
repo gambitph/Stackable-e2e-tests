@@ -6,7 +6,8 @@
 	"scripts": {
 		"test": "cypress open",
 		"lint": "npm run lint-js",
-		"lint-js": "wp-scripts lint-js"
+		"lint-js": "wp-scripts lint-js",
+		"headless": "cypress run --headless --browser chrome"
 	},
 	"keywords": [],
 	"author": "",
