@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, assertAligns,
 } from '~stackable-e2e/helpers'
 
 describe( 'Advanced Heading Block', () => {
@@ -20,14 +20,7 @@ describe( 'Advanced Heading Block', () => {
 		// Test General Alignment
 
 		cy.collapse( 'General' )
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-inner-block' )
 
 		// Test Title Options
 
@@ -39,7 +32,10 @@ describe( 'Advanced Heading Block', () => {
 			[ `Size` ]: 60,
 			[ `Weight` ]: '600',
 			[ `Transform` ]: 'uppercase',
-			[ `Line-Height` ]: 1.6,
+			[ `Line-Height` ]: {
+				value: 26,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 2.4,
 		} )
 		cy.adjust( 'Size', 1.75, { unit: 'em' } )
@@ -51,19 +47,13 @@ describe( 'Advanced Heading Block', () => {
 					[ `text-transform` ]: 'uppercase',
 					[ `letter-spacing` ]: '2.4px',
 					[ `color` ]: '#f00069',
+					[ `line-height` ]: '26px',
 				},
 			} )
 
 		// Test Title Alignment
 
-		const titleAligns = [ 'left', 'center', 'right' ]
-		titleAligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-heading__title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-heading__title' )
 
 		// Test Subtitle options
 
@@ -73,7 +63,10 @@ describe( 'Advanced Heading Block', () => {
 			[ `Size` ]: 30,
 			[ `Weight` ]: '200',
 			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 1.6,
+			[ `Line-Height` ]: {
+				value: 22,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.3,
 		} )
 		cy.adjust( 'Size', 1.25, { unit: 'em' } )
@@ -87,19 +80,13 @@ describe( 'Advanced Heading Block', () => {
 					[ `text-transform` ]: 'lowercase',
 					[ `letter-spacing` ]: '1.3px',
 					[ `color` ]: '#000000',
+					[ `line-height` ]: '22px',
 				},
 			} )
 
 		// Test Subtitle Alignment
 
-		const subtitleAligns = [ 'left', 'center', 'right' ]
-		subtitleAligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-heading__subtitle': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-heading__subtitle' )
 
 		// Test Top Line options
 
@@ -187,63 +174,63 @@ describe( 'Advanced Heading Block', () => {
 		cy.newPage()
 		cy.addBlock( 'ugb/heading' )
 		cy.openInspector( 'ugb/heading', 'Style' )
-		cy.changePreviewMode( 'Tablet' )
 
 		// Test General Alignment
 
 		cy.collapse( 'General' )
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
-
-		cy.changePreviewMode( 'Tablet' )
+		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
 
 		// Test Title Size
 
 		cy.collapse( 'Title' )
+		cy.adjust( 'Typography', {
+			[ `Size` ]: {
+				viewport: 'Tablet',
+				value: 30,
+				unit: 'px',
+			},
+			[ `Line-Height` ]: {
+				viewport: 'Tablet',
+				value: 26,
+				unit: 'px',
+			},
+		} )
 		cy.adjust( 'Size', 38, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-heading__title': {
 				[ `font-size` ]: '38px',
+				[ `line-height` ]: '26px',
 			},
 		} )
 
 		// Test Title Alignment
 
-		const titleAligns = [ 'left', 'center', 'right' ]
-		titleAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-heading__title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
-
-		cy.changePreviewMode( 'Tablet' )
+		assertAligns( 'Align', '.ugb-heading__title', { viewport: 'Tablet' } )
 
 		// Test Subtitle Size
 
 		cy.collapse( 'Subtitle' )
-		cy.adjust( 'Size', 26, { viewport: 'Tablet' } ).assertComputedStyle( {
+		cy.adjust( 'Typography', {
+			[ `Size` ]: {
+				viewport: 'Tablet',
+				value: 30,
+				unit: 'px',
+			},
+			[ `Line-Height` ]: {
+				viewport: 'Tablet',
+				value: 22,
+				unit: 'px',
+			},
+		} )
+		cy.adjust( 'Size', 28, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-heading__subtitle': {
-				[ `font-size` ]: '26px',
+				[ `font-size` ]: '28px',
+				[ `line-height` ]: '22px',
 			},
 		} )
 
 		// Test Subtitle Alignment
 
-		const subtitleAligns = [ 'left', 'center', 'right' ]
-		subtitleAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-heading__subtitle': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-heading__subtitle', { viewport: 'Tablet' } )
 
 		// Test Top Line Alignment
 
@@ -305,63 +292,63 @@ describe( 'Advanced Heading Block', () => {
 		cy.newPage()
 		cy.addBlock( 'ugb/heading' )
 		cy.openInspector( 'ugb/heading', 'Style' )
-		cy.changePreviewMode( 'Mobile' )
 
 		// Test General Alignment
 
 		cy.collapse( 'General' )
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
-
-		cy.changePreviewMode( 'Mobile' )
+		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
 
 		// Test Title Size
 
 		cy.collapse( 'Title' )
+		cy.adjust( 'Typography', {
+			[ `Size` ]: {
+				viewport: 'Mobile',
+				value: 30,
+				unit: 'px',
+			},
+			[ `Line-Height` ]: {
+				viewport: 'Mobile',
+				value: 20,
+				unit: 'px',
+			},
+		} )
 		cy.adjust( 'Size', 38, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-heading__title': {
 				[ `font-size` ]: '38px',
+				[ `line-height` ]: '20px',
 			},
 		} )
 
 		// Test Title Alignment
 
-		const titleAligns = [ 'left', 'center', 'right' ]
-		titleAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-heading__title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
-
-		cy.changePreviewMode( 'Mobile' )
+		assertAligns( 'Align', '.ugb-heading__title', { viewport: 'Mobile' } )
 
 		// Test Subtitle Size
 
 		cy.collapse( 'Subtitle' )
+		cy.adjust( 'Typography', {
+			[ `Size` ]: {
+				viewport: 'Mobile',
+				value: 29,
+				unit: 'px',
+			},
+			[ `Line-Height` ]: {
+				viewport: 'Mobile',
+				value: 18,
+				unit: 'px',
+			},
+		} )
 		cy.adjust( 'Size', 26, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-heading__subtitle': {
 				[ `font-size` ]: '26px',
+				[ `line-height` ]: '18px',
 			},
 		} )
 
 		// Test Subtitle Alignment
 
-		const subtitleAligns = [ 'left', 'center', 'right' ]
-		subtitleAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-heading__subtitle': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-heading__subtitle', { viewport: 'Mobile' } )
 
 		// Test Top Line Alignment
 
