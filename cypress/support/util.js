@@ -16,7 +16,7 @@ import config from 'root/cypress.json'
  * @return {*} generated cypress getter
  */
 export const getBaseControl = ( tab = 'style', isInPopover = false ) => {
-	const baseControlEl = ! isInPopover ? cy.get( `${ tab ? `.ugb-panel-${ tab }>` : `` }.components-panel__body.is-opened>.components-base-control` ) : cy.get( '.components-popover__content' ).find( '.components-base-control' )
+	const baseControlEl = ! isInPopover ? cy.get( `${ tab ? `.ugb-panel-${ tab }>` : `` }.components-panel__body.is-opened>.components-base-control`, { log: false } ) : cy.get( '.components-popover__content', { log: false } ).find( '.components-base-control', { log: false } )
 	return baseControlEl
 }
 
@@ -42,7 +42,7 @@ export const getActiveTab = ( callbackFunc = () => {} ) => {
 			callbackFunc( '' )
 		} else {
 			cy
-				.get( '.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active' )
+				.get( '.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active', { log: false } )
 				.invoke( 'attr', 'aria-label' )
 				.then( ariaLabel => {
 					// Get the active tab.
@@ -66,32 +66,32 @@ export const getActiveTab = ( callbackFunc = () => {} ) => {
 export const changeResponsiveMode = ( viewport = 'Desktop', name = '', tab = 'style', isInPopover = false, customRegExp = '' ) => {
 	getBaseControl( tab, isInPopover )
 		.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
-		.parent()
+		.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
+		.parent( { log: false } )
 		.then( $baseControl => {
-			if ( $baseControl.find( '.ugb-base-control-multi-label__responsive button[aria-label="Desktop"]' ).length ) {
-				if ( ! $baseControl.find( `button[aria-label="${ viewport }"]` ).length ) {
+			if ( $baseControl.find( '.ugb-base-control-multi-label__responsive button[aria-label="Desktop"]', { log: false } ).length ) {
+				if ( ! $baseControl.find( `button[aria-label="${ viewport }"]`, { log: false } ).length ) {
 					getBaseControl( tab, isInPopover )
 						.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
-						.parentsUntil( `.components-panel__body>.components-base-control` )
-						.parent()
-						.find( `button[aria-label="Desktop"]` )
+						.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
+						.parent( { log: false } )
+						.find( `button[aria-label="Desktop"]`, { log: false } )
 						.click( { force: true } )
 				}
 
 				getBaseControl( tab, isInPopover )
 					.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
-					.parentsUntil( `.components-panel__body>.components-base-control` )
-					.parent()
+					.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
+					.parent( { log: false } )
 					.find( `button[aria-label="Desktop"]` )
-					.trigger( 'mouseover', { force: true } )
+					.trigger( 'mouseover', { force: true, log: false } )
 
 				getBaseControl( tab, isInPopover )
 					.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
-					.parentsUntil( `.components-panel__body>.components-base-control` )
-					.parent()
+					.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
+					.parent( { log: false } )
 					.find( `button[aria-label="${ viewport }"]` )
-					.click( { force: true } )
+					.click( { force: true, log: false } )
 			}
 		} )
 }
@@ -108,17 +108,17 @@ export const changeUnit = ( unit = '', name = '', tab = 'style', isInPopover = f
 	if ( unit ) {
 		getBaseControl( tab, isInPopover )
 			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
+			.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
+			.parent( { log: false } )
 			.then( $baseControl => {
-				if ( $baseControl.find( '.ugb-base-control-multi-label__units' ).length ) {
+				if ( $baseControl.find( '.ugb-base-control-multi-label__units', { log: false } ).length ) {
 					getBaseControl( tab, isInPopover )
 						.contains( containsRegExp( name ) )
-						.parentsUntil( `.components-panel__body>.components-base-control` )
-						.parent()
-						.find( `button` )
+						.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
+						.parent( { log: false } )
+						.find( `button`, { log: false } )
 						.contains( containsRegExp( unit ) )
-						.click( { force: true } )
+						.click( { force: true, log: false } )
 				}
 			} )
 	}
@@ -131,7 +131,7 @@ export const changeUnit = ( unit = '', name = '', tab = 'style', isInPopover = f
  * @param {number} interval
  */
 export const waitLoader = ( selector = '', interval = 100 ) => {
-	cy.wait( 300, { log: false } )
+	cy.wait( 20, { log: false } )
 	let done = false
 
 	const update = () => {
@@ -196,7 +196,7 @@ export const getAddresses = ( callback = () => {} ) => {
  * @param {Function} callback
  */
 export const getPreviewMode = ( callback = () => {} ) => {
-	cy.window().then( win => {
+	cy.window( { log: false } ).then( win => {
 		const previewMode =	win.wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType ? win.wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType() : 'Desktop'
 		callback( previewMode )
 	} )
