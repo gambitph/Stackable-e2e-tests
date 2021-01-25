@@ -105,7 +105,7 @@ describe( 'Accordion Block', () => {
 			},
 		} )
 
-	 // Test General Alignment
+	    // Test General Alignment
 		assertAligns( 'Align', '.ugb-inner-block' )
 
 		cy.collapse( 'Container' )
