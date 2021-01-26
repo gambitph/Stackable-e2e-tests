@@ -33,6 +33,7 @@ describe( 'Blockquote Block', () => {
 		'Seren Blockquote',
 		'Yule Blockquote',
 	] ) )
+
 	it( 'should adjust desktop options in style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -301,7 +302,7 @@ describe( 'Blockquote Block', () => {
 		cy.collapse( 'Top Separator' )
 		cy.toggleStyle( 'Top Separator' )
 		cy.adjust( 'Height', 247, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-top-separator': {
+			'.ugb-top-separator>.ugb-separator-wrapper': {
 				[ `height` ]: '247px',
 			},
 		} )
@@ -309,7 +310,7 @@ describe( 'Blockquote Block', () => {
 		cy.collapse( 'Bottom Separator' )
 		cy.toggleStyle( 'Bottom Separator' )
 		cy.adjust( 'Height', 157, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-bottom-separator': {
+			'.ugb-bottom-separator>.ugb-separator-wrapper': {
 				[ `height` ]: '157px',
 			},
 		} )
@@ -370,7 +371,7 @@ describe( 'Blockquote Block', () => {
 		cy.collapse( 'Top Separator' )
 		cy.toggleStyle( 'Top Separator' )
 		cy.adjust( 'Height', 247, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-top-separator': {
+			'.ugb-top-separator>.ugb-separator-wrapper': {
 				[ `height` ]: '247px',
 			},
 		} )
@@ -378,7 +379,7 @@ describe( 'Blockquote Block', () => {
 		cy.collapse( 'Bottom Separator' )
 		cy.toggleStyle( 'Bottom Separator' )
 		cy.adjust( 'Height', 157, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-bottom-separator': {
+			'.ugb-bottom-separator>.ugb-separator-wrapper': {
 				[ `height` ]: '157px',
 			},
 		} )
