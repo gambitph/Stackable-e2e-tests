@@ -71,9 +71,25 @@ describe( 'Icon Block', () => {
 				[ `opacity` ]: '0.9',
 			},
 		} )
+		cy.adjust( 'Align', 'left' ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-start',
+			},
+		} )
+		cy.adjust( 'Align', 'center' ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'center',
+			},
+		} )
+		cy.adjust( 'Align', 'right' ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-end',
+			},
+		} )
 
 		// Test Title options
 		cy.collapse( 'Title' )
+		cy.toggleStyle( 'Title' )
 		cy.adjust( 'Title on Top', true )
 		cy.adjust( 'Title HTML Tag', 'h4' )
 			.assertHtmlTag( '.ugb-icon__title', 'h4' )
@@ -370,6 +386,21 @@ describe( 'Icon Block', () => {
 				[ `width` ]: '45px',
 			},
 		} )
+		cy.adjust( 'Align', 'left', { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-start',
+			},
+		} )
+		cy.adjust( 'Align', 'center', { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'center',
+			},
+		} )
+		cy.adjust( 'Align', 'right', { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-end',
+			},
+		} )
 
 		// Test Title options
 		cy.collapse( 'Title' )
@@ -502,7 +533,7 @@ describe( 'Icon Block', () => {
 		cy.collapse( 'Top Separator' )
 		cy.toggleStyle( 'Top Separator' )
 		cy.adjust( 'Height', 191, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-top-separator .ugb-separator-wrapper': {
+			'.ugb-top-separator>.ugb-separator-wrapper': {
 				[ `height` ]: '191px',
 			},
 		} )
@@ -511,7 +542,7 @@ describe( 'Icon Block', () => {
 		cy.collapse( 'Bottom Separator' )
 		cy.toggleStyle( 'Bottom Separator' )
 		cy.adjust( 'Height', 150, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-bottom-separator .ugb-separator-wrapper': {
+			'.ugb-bottom-separator>.ugb-separator-wrapper': {
 				[ `height` ]: '150px',
 			},
 		} )
@@ -536,6 +567,21 @@ describe( 'Icon Block', () => {
 			'.ugb-icon-inner-svg': {
 				[ `height` ]: '58px',
 				[ `width` ]: '58px',
+			},
+		} )
+		cy.adjust( 'Align', 'left', { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-start',
+			},
+		} )
+		cy.adjust( 'Align', 'center', { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'center',
+			},
+		} )
+		cy.adjust( 'Align', 'right', { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-end',
 			},
 		} )
 
@@ -670,7 +716,7 @@ describe( 'Icon Block', () => {
 		cy.collapse( 'Top Separator' )
 		cy.toggleStyle( 'Top Separator' )
 		cy.adjust( 'Height', 191, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-top-separator .ugb-separator-wrapper': {
+			'.ugb-top-separator>.ugb-separator-wrapper': {
 				[ `height` ]: '191px',
 			},
 		} )
@@ -679,7 +725,7 @@ describe( 'Icon Block', () => {
 		cy.collapse( 'Bottom Separator' )
 		cy.toggleStyle( 'Bottom Separator' )
 		cy.adjust( 'Height', 150, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-bottom-separator .ugb-separator-wrapper': {
+			'.ugb-bottom-separator>.ugb-separator-wrapper': {
 				[ `height` ]: '150px',
 			},
 		} )
