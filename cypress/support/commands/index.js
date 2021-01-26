@@ -24,6 +24,12 @@ Cypress.Commands.add( 'assertPluginError', assertPluginError )
 Cypress.Commands.add( 'appendBlock', appendBlock )
 
 /**
+ * Overwrite existing Cypress Commands.
+ */
+Cypress.Commands.overwrite( 'visit', visit )
+Cypress.Commands.overwrite( 'reload', reload )
+
+/**
  * Command for clicking the block inserter button
  */
 export function toggleBlockInserterButton() {
@@ -262,4 +268,31 @@ export function appendBlock( blockName = 'ugb/accordion', parentSelector ) {
 		.click( { force: true } )
 
 	cy.deleteBlock( blockName )
+}
+
+/**
+ * Overwrite Cypress visit function and add
+ * assertion to block errors.
+ *
+ * @param {Function} originalFn
+ * @param {string} url
+ * @param {Object} options
+ */
+export function visit( originalFn, url, options ) {
+	originalFn( url, options )
+	if ( url.match( /action=edit/ ) ) {
+	// Make sure that all blocks are valid.
+		cy.get( '.wp-block.has-warning' ).should( 'not.exist' )
+	}
+}
+
+/**
+ * Overwrite Cypress reload function and
+ * add assertion to block errors.
+ *
+ * @param {Function} originalFn
+ */
+export function reload( originalFn ) {
+	originalFn()
+	cy.get( '.wp-block.has-warning' ).should( 'not.exist' )
 }
