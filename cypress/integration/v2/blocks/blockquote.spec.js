@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns,
 } from '~stackable-e2e/helpers'
 
 describe( 'Blockquote Block', () => {
@@ -41,14 +41,7 @@ describe( 'Blockquote Block', () => {
 
 		// Test General Alignment
 		cy.collapse( 'General' )
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-inner-block' )
 
 		// Test Spacing options
 		cy.collapse( 'Spacing' )
@@ -104,7 +97,10 @@ describe( 'Blockquote Block', () => {
 			[ `Size` ]: 18,
 			[ `Weight` ]: '200',
 			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 1.6,
+			[ `Line-Height` ]: {
+				value: 26,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.3,
 		} )
 		cy.adjust( 'Size', 1.25, { unit: 'em' } )
@@ -117,18 +113,12 @@ describe( 'Blockquote Block', () => {
 				[ `text-transform` ]: 'lowercase',
 				[ `letter-spacing` ]: '1.3px',
 				[ `color` ]: '#ffffff',
+				[ `line-height` ]: '26px',
 			},
 		} )
 
 		// Test Text Alignment
-		const textAligns = [ 'left', 'center', 'right' ]
-		textAligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-blockquote__item': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-blockquote__item' )
 
 		// Test Block Background options
 		cy.collapse( 'Block Background' )
@@ -261,17 +251,9 @@ describe( 'Blockquote Block', () => {
 		cy.newPage()
 		cy.addBlock( 'ugb/blockquote' )
 		cy.openInspector( 'ugb/blockquote', 'Style' )
-		cy.changePreviewMode( 'Tablet' )
 
 		cy.collapse( 'General' )
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
 
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Paddings', 28, { viewport: 'Tablet' } ).assertComputedStyle( {
@@ -296,19 +278,25 @@ describe( 'Blockquote Block', () => {
 		} )
 
 		cy.collapse( 'Text' )
+		cy.adjust( 'Typography', {
+			[ `Size` ]: {
+				viewport: 'Tablet',
+				value: 30,
+				unit: 'px',
+			},
+			[ `Line-Height` ]: {
+				viewport: 'Tablet',
+				value: 29,
+				unit: 'px',
+			},
+		} )
 		cy.adjust( 'Size', 22, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-blockquote__text': {
 				[ `font-size` ]: '22px',
+				[ `line-height` ]: '29px',
 			},
 		} )
-		const textAligns = [ 'left', 'center', 'right' ]
-		textAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-blockquote__item': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-blockquote__item', { viewport: 'Tablet' } )
 
 		cy.collapse( 'Top Separator' )
 		cy.toggleStyle( 'Top Separator' )
@@ -332,17 +320,9 @@ describe( 'Blockquote Block', () => {
 		cy.newPage()
 		cy.addBlock( 'ugb/blockquote' )
 		cy.openInspector( 'ugb/blockquote', 'Style' )
-		cy.changePreviewMode( 'Mobile' )
 
 		cy.collapse( 'General' )
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
 
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Paddings', 28, { viewport: 'Mobile' } ).assertComputedStyle( {
@@ -367,19 +347,25 @@ describe( 'Blockquote Block', () => {
 		} )
 
 		cy.collapse( 'Text' )
+		cy.adjust( 'Typography', {
+			[ `Size` ]: {
+				viewport: 'Mobile',
+				value: 30,
+				unit: 'px',
+			},
+			[ `Line-Height` ]: {
+				viewport: 'Mobile',
+				value: 36,
+				unit: 'px',
+			},
+		} )
 		cy.adjust( 'Size', 22, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-blockquote__text': {
 				[ `font-size` ]: '22px',
+				[ `line-height` ]: '36px',
 			},
 		} )
-		const textAligns = [ 'left', 'center', 'right' ]
-		textAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-blockquote__item': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-blockquote__item', { viewport: 'Mobile' } )
 
 		cy.collapse( 'Top Separator' )
 		cy.toggleStyle( 'Top Separator' )

@@ -802,14 +802,16 @@ export function adjustLayout( option = '' ) {
 export function adjustDesign( option = '' ) {
 	cy
 		.get( '.ugb-design-library-items' )
-		.find( '.ugb-design-library-item' )
+	waitLoader( '.ugb-design-library-search__spinner>span.components-spinner' )
+
+	cy
+		.get( '.ugb-design-library-item' )
 		.contains( containsRegExp( option ) )
 		.parentsUntil( '.ugb-design-library-item' )
 		.parent()
 		.find( 'button' )
 		.click( { force: true } )
-
-	waitLoader( '.ugb-design-library-item>span.components-spinner' )
+	waitLoader( '.ugb-design-library-item span.components-spinner' )
 }
 
 /**
