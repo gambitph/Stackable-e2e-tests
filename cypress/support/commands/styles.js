@@ -670,6 +670,48 @@ export function adjust( name, value, options = {} ) {
 	// Handle custom style options without label
 	const customLabels = {
 		[ `Color Type` ]: 'Single|Gradient',
+		[ `Icon Color Type` ]: 'Single|Gradient|Multicolor',
+	}
+
+	const _adjust = classNames => {
+		const parsedClassNames = classNames.split( ' ' )
+
+		/**
+		 * These are the list of selectors
+		 * and their corresponding commands.
+		 */
+		const commandsBasedOnClassName = {
+				 'components-toggle-control': 'toggleControl',
+				 'ugb-advanced-range-control': 'rangeControl',
+				 'ugb-advanced-toolbar-control': 'toolbarControl',
+				 'editor-color-palette-control': 'colorControl',
+				 'ugb-button-icon-control': 'popoverControl',
+				 'ugb-advanced-autosuggest-control': 'suggestionControl',
+				 'ugb-four-range-control': 'fourRangeControl',
+				 'ugb-design-separator-control': 'designControl',
+				 'ugb-icon-control': 'iconControl',
+				 'ugb-columns-width-control': 'columnControl',
+
+				 // Custom selectors.
+				 'ugb--help-tip-background-color-type': 'toolbarControl',
+		}
+
+		const executeCommand = key => {
+			if ( parsedClassNames.includes( key ) ) {
+				AdjustCommands[ commandsBasedOnClassName[ key ] ]( name, value, options, customLabels[ name ] )
+				return true
+			}
+			return false
+		}
+
+		if ( ! keys( commandsBasedOnClassName ).map( executeCommand ).some( value => value ) ) {
+			// Handle event for dropdowns since they don't have selectors.
+			return selector()
+				.find( 'select' )
+				.then( () => {
+					return AdjustCommands.dropdownControl( name, value, options )
+				} )
+		}
 	}
 
 	const selector = () => {
@@ -693,44 +735,15 @@ export function adjust( name, value, options = {} ) {
 	 selector()
 		.invoke( 'attr', 'class' )
 		.then( classNames => {
-			const parsedClassNames = classNames.split( ' ' )
-
-			/**
-			 * These are the list of selectors
-			 * and their corresponding commands.
-			 */
-			const commandsBasedOnClassName = {
-				 'components-toggle-control': 'toggleControl',
-				 'ugb-advanced-range-control': 'rangeControl',
-				 'ugb-advanced-toolbar-control': 'toolbarControl',
-				 'editor-color-palette-control': 'colorControl',
-				 'ugb-button-icon-control': 'popoverControl',
-				 'ugb-advanced-autosuggest-control': 'suggestionControl',
-				 'ugb-four-range-control': 'fourRangeControl',
-				 'ugb-design-separator-control': 'designControl',
-				 'ugb-icon-control': 'iconControl',
-				 'ugb-columns-width-control': 'columnControl',
-
-				 // Custom selectors.
-				 'ugb--help-tip-background-color-type': 'toolbarControl',
-			}
-
-			const executeCommand = key => {
-				if ( parsedClassNames.includes( key ) ) {
-					AdjustCommands[ commandsBasedOnClassName[ key ] ]( name, value, options, customLabels[ name ] )
-					return true
+			cy.document( { log: false } ).then( doc => {
+				const nestedBaseControl = doc.querySelector( `${ classNames.split( ' ' ).map( c => `.${ c }` ).join( '' ) } .components-base-control` )
+				if ( nestedBaseControl ) {
+					// Handle nested base controls.
+					const classes = Array.from( nestedBaseControl.classList )
+					return _adjust( classes.join( ' ' ) )
 				}
-				return false
-			}
-
-			if ( ! keys( commandsBasedOnClassName ).map( executeCommand ).some( value => value ) ) {
-				// Handle event for dropdowns since they don't have selectors.
-				return selector()
-					.find( 'select' )
-					.then( () => {
-						return AdjustCommands.dropdownControl( name, value, options )
-					} )
-			}
+				return _adjust( classNames )
+			} )
 		} )
 
 	// Always return the selected block which will be used in functions that require chained wp-block elements.
