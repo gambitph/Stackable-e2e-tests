@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, assertAligns,
 } from '~stackable-e2e/helpers'
 
 describe( 'Expand Block', () => {
@@ -17,14 +17,7 @@ describe( 'Expand Block', () => {
 		cy.openInspector( 'ugb/expand', 'Style' )
 
 		// Test General options
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-inner-block' )
 
 		// Test Title options
 		cy.collapse( 'Title' )
@@ -36,7 +29,7 @@ describe( 'Expand Block', () => {
 			[ `Weight` ]: '100',
 			[ `Transform` ]: 'none',
 			[ `Line-Height` ]: {
-				value: 26,
+				value: 39,
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 1.9,
@@ -49,17 +42,10 @@ describe( 'Expand Block', () => {
 				[ `text-transform` ]: 'none',
 				[ `letter-spacing` ]: '1.9px',
 				[ `color` ]: '#ff0000',
-				[ `line-height` ]: '26px',
+				[ `line-height` ]: '39px',
 			},
 		} )
-		const titleAligns = [ 'left', 'center', 'right' ]
-		titleAligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-expand__title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-expand__title' )
 
 		// Test Text options
 		cy.collapse( 'Text' )
@@ -68,7 +54,7 @@ describe( 'Expand Block', () => {
 			[ `Size` ]: 50,
 			[ `Weight` ]: '100',
 			[ `Line-Height` ]: {
-				value: 18,
+				value: 31,
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 1.9,
@@ -82,17 +68,10 @@ describe( 'Expand Block', () => {
 				[ `font-weight` ]: '100',
 				[ `letter-spacing` ]: '1.9px',
 				[ `color` ]: '#ff0000',
-				[ `line-height` ]: '18px',
+				[ `line-height` ]: '31px',
 			},
 		} )
-		const textAligns = [ 'left', 'center', 'right' ]
-		textAligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-expand__less-text p, .ugb-expand__more-text p': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-expand__less-text p, .ugb-expand__more-text p' )
 
 		// Test Link options
 		cy.collapse( 'Link' )
@@ -101,7 +80,7 @@ describe( 'Expand Block', () => {
 			[ `Size` ]: 18,
 			[ `Weight` ]: '100',
 			[ `Line-Height` ]: {
-				value: 30,
+				value: 28,
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 1.9,
@@ -115,17 +94,10 @@ describe( 'Expand Block', () => {
 				[ `font-weight` ]: '100',
 				[ `letter-spacing` ]: '1.9px',
 				[ `color` ]: '#ff6666',
-				[ `line-height` ]: '30px',
+				[ `line-height` ]: '28px',
 			},
 		} )
-		const linkAligns = [ 'left', 'center', 'right' ]
-		linkAligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text' )
 
 		// Test Spacing options
 		cy.collapse( 'Spacing' )
@@ -153,14 +125,7 @@ describe( 'Expand Block', () => {
 		cy.openInspector( 'ugb/expand', 'Style' )
 
 		// Test General options
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
 
 		// Test Title options
 		cy.collapse( 'Title' )
@@ -171,7 +136,7 @@ describe( 'Expand Block', () => {
 			[ `Transform` ]: 'none',
 			[ `Line-Height` ]: {
 				viewport: 'Tablet',
-				value: 26,
+				value: 34,
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 1.9,
@@ -182,17 +147,10 @@ describe( 'Expand Block', () => {
 				[ `font-weight` ]: '100',
 				[ `text-transform` ]: 'none',
 				[ `letter-spacing` ]: '1.9px',
-				[ `line-height` ]: '26px',
+				[ `line-height` ]: '34px',
 			},
 		} )
-		const titleAligns = [ 'left', 'center', 'right' ]
-		titleAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-expand__title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-expand__title', { viewport: 'Tablet' } )
 
 		// Test Text options
 		cy.collapse( 'Text' )
@@ -202,7 +160,7 @@ describe( 'Expand Block', () => {
 			[ `Weight` ]: '300',
 			[ `Line-Height` ]: {
 				viewport: 'Tablet',
-				value: 19,
+				value: 41,
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 2.1,
@@ -212,17 +170,10 @@ describe( 'Expand Block', () => {
 				[ `font-size` ]: '20px',
 				[ `font-weight` ]: '300',
 				[ `letter-spacing` ]: '2.1px',
-				[ `line-height` ]: '19px',
+				[ `line-height` ]: '41px',
 			},
 		} )
-		const textAligns = [ 'left', 'center', 'right' ]
-		textAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-expand__less-text p, .ugb-expand__more-text p': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-expand__less-text p, .ugb-expand__more-text p', { viewport: 'Tablet' } )
 
 		// Test Link options
 		cy.collapse( 'Link' )
@@ -232,7 +183,7 @@ describe( 'Expand Block', () => {
 			[ `Weight` ]: '100',
 			[ `Line-Height` ]: {
 				viewport: 'Tablet',
-				value: 30,
+				value: 34,
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 1.9,
@@ -242,17 +193,10 @@ describe( 'Expand Block', () => {
 				[ `font-size` ]: '20px',
 				[ `font-weight` ]: '100',
 				[ `letter-spacing` ]: '1.9px',
-				[ `line-height` ]: '30px',
+				[ `line-height` ]: '34px',
 			},
 		} )
-		const linkAligns = [ 'left', 'center', 'right' ]
-		linkAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text', { viewport: 'Tablet' } )
 
 		// Test Spacing options
 		cy.collapse( 'Spacing' )
@@ -280,14 +224,7 @@ describe( 'Expand Block', () => {
 		cy.openInspector( 'ugb/expand', 'Style' )
 
 		// Test General options
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
 
 		// Test Title options
 		cy.collapse( 'Title' )
@@ -298,7 +235,7 @@ describe( 'Expand Block', () => {
 			[ `Transform` ]: 'none',
 			[ `Line-Height` ]: {
 				viewport: 'Mobile',
-				value: 16,
+				value: 34,
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 1.9,
@@ -309,17 +246,10 @@ describe( 'Expand Block', () => {
 				[ `font-weight` ]: '100',
 				[ `text-transform` ]: 'none',
 				[ `letter-spacing` ]: '1.9px',
-				[ `line-height` ]: '16px',
+				[ `line-height` ]: '34px',
 			},
 		} )
-		const titleAligns = [ 'left', 'center', 'right' ]
-		titleAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-expand__title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-expand__title', { viewport: 'Mobile' } )
 
 		// Test Text options
 		cy.collapse( 'Text' )
@@ -329,7 +259,7 @@ describe( 'Expand Block', () => {
 			[ `Weight` ]: '300',
 			[ `Line-Height` ]: {
 				viewport: 'Mobile',
-				value: 42,
+				value: 41,
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 2.1,
@@ -339,17 +269,10 @@ describe( 'Expand Block', () => {
 				[ `font-size` ]: '20px',
 				[ `font-weight` ]: '300',
 				[ `letter-spacing` ]: '2.1px',
-				[ `line-height` ]: '42px',
+				[ `line-height` ]: '41px',
 			},
 		} )
-		const textAligns = [ 'left', 'center', 'right' ]
-		textAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-expand__less-text p, .ugb-expand__more-text p': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-expand__less-text p, .ugb-expand__more-text p', { viewport: 'Mobile' } )
 
 		// Test Link options
 		cy.collapse( 'Link' )
@@ -359,7 +282,7 @@ describe( 'Expand Block', () => {
 			[ `Weight` ]: '100',
 			[ `Line-Height` ]: {
 				viewport: 'Mobile',
-				value: 17,
+				value: 28,
 				unit: 'px',
 			},
 			[ `Letter Spacing` ]: 1.9,
@@ -369,17 +292,10 @@ describe( 'Expand Block', () => {
 				[ `font-size` ]: '20px',
 				[ `font-weight` ]: '100',
 				[ `letter-spacing` ]: '1.9px',
-				[ `line-height` ]: '17px',
+				[ `line-height` ]: '28px',
 			},
 		} )
-		const linkAligns = [ 'left', 'center', 'right' ]
-		linkAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Align', '.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text', { viewport: 'Mobile' } )
 
 		// Test Spacing options
 		cy.collapse( 'Spacing' )
