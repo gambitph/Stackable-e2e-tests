@@ -7,6 +7,7 @@ Cypress.Commands.add( 'hideAnyGutenbergTip', hideAnyGutenbergTip )
 Cypress.Commands.add( 'newPage', newPage )
 Cypress.Commands.add( 'deactivatePlugin', deactivatePlugin )
 Cypress.Commands.add( 'activatePlugin', activatePlugin )
+Cypress.Commands.add( 'waitFA', waitFA )
 
 /**
  * Command for running the initial setup for the test.
@@ -80,4 +81,33 @@ export function activatePlugin( slug ) {
 	} )
 	cy.visit( `/?activate-plugin=${ slug }` )
 	cy.visit( `/wp-admin/` )
+}
+
+/**
+ * Command for waiting FontAwesome to register inside window.
+ */
+export function waitFA() {
+	cy.wait( 20, { log: false } )
+	let done = false
+
+	const setDone = toggle => done = toggle
+
+	const update = () => {
+		cy.window().then( win => {
+			setDone( win.FontAwesome )
+			return check()
+		} )
+	}
+
+	const check = () => {
+		if ( done ) {
+			return done
+		}
+
+		cy.wait( 300, { log: false } ).then( () => {
+			update()
+		} )
+	}
+
+	return check()
 }

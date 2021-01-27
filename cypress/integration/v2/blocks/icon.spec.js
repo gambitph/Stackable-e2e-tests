@@ -7,6 +7,18 @@ import {
 } from '~stackable-e2e/helpers'
 
 describe( 'Icon Block', () => {
+	it( 'test', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/icon' )
+		cy.openInspector( 'ugb/icon', 'Style' )
+		cy.collapse( 'Block Background' )
+		cy.toggleStyle( 'Block Background' )
+		cy.adjust( 'Color Type', 'gradient' )
+		cy.adjust( 'Adv. Gradient Color Settings', {
+			[ `Background Gradient Blend Mode` ]: 'mutiply',
+		} )
+	} )
 	it( 'should show the block', assertBlockExist( 'ugb/icon', '.ugb-icon' ) )
 
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/icon' ) )
@@ -22,11 +34,17 @@ describe( 'Icon Block', () => {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'ugb/icon' )
+		cy.waitFA()
+
 		cy.openInspector( 'ugb/icon', 'Style' )
 
 		// Test General options
 		cy.collapse( 'General' )
 		cy.adjust( 'Number of Icons / Columns', 4 )
+		cy.changeIcon( 'ugb/icon', undefined, 1, 'info' )
+		cy.changeIcon( 'ugb/icon', undefined, 2, 'info' )
+		cy.changeIcon( 'ugb/icon', undefined, 3, 'info' )
+		cy.changeIcon( 'ugb/icon', undefined, 4, 'info' )
 		cy.get( '.ugb-icon__item4' ).should( 'exist' )
 
 		assertAligns( 'Align', '.ugb-inner-block' )
@@ -215,11 +233,11 @@ describe( 'Icon Block', () => {
 
 		// Test Spacing options
 		cy.collapse( 'Spacing' )
-		cy.adjust( 'Block Title', 30 ).assertComputedStyle( {
-			'.ugb-block-title': {
-				[ `margin-bottom` ]: '30px',
-			},
-		} )
+		//cy.adjust( 'Block Title', 30 ).assertComputedStyle( {
+		//'.ugb-block-title': {
+		//[ `margin-bottom` ]: '30px',
+		//},
+		//} )
 		cy.adjust( 'Block Description', 22 ).assertComputedStyle( {
 			'.ugb-block-description': {
 				[ `margin-bottom` ]: '22px',
@@ -373,11 +391,18 @@ describe( 'Icon Block', () => {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'ugb/icon' )
+		cy.waitFA()
 		cy.openInspector( 'ugb/icon', 'Style' )
 
 		// Test General options
 		cy.collapse( 'General' )
 		cy.adjust( 'Number of Icons / Columns', 6 )
+		cy.changeIcon( 'ugb/icon', undefined, 1, 'info' )
+		cy.changeIcon( 'ugb/icon', undefined, 2, 'info' )
+		cy.changeIcon( 'ugb/icon', undefined, 3, 'info' )
+		cy.changeIcon( 'ugb/icon', undefined, 4, 'info' )
+		cy.changeIcon( 'ugb/icon', undefined, 5, 'info' )
+		cy.changeIcon( 'ugb/icon', undefined, 6, 'info' )
 		cy.get( '.ugb-icon__item6' ).should( 'exist' )
 
 		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
@@ -502,11 +527,11 @@ describe( 'Icon Block', () => {
 
 		// Test Spacing options
 		cy.collapse( 'Spacing' )
-		cy.adjust( 'Block Title', 25, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-block-title': {
-				[ `margin-bottom` ]: '25px',
-			},
-		} )
+		//cy.adjust( 'Block Title', 25, { viewport: 'Tablet' } ).assertComputedStyle( {
+		//'.ugb-block-title': {
+		//[ `margin-bottom` ]: '25px',
+		//},
+		//} )
 		cy.adjust( 'Block Description', 35, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-block-description': {
 				[ `margin-bottom` ]: '35px',
@@ -556,11 +581,16 @@ describe( 'Icon Block', () => {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'ugb/icon' )
+		cy.waitFA()
 		cy.openInspector( 'ugb/icon', 'Style' )
 
 		// Test General options
 		cy.collapse( 'General' )
 		cy.adjust( 'Number of Icons / Columns', 4 )
+		cy.changeIcon( 'ugb/icon', undefined, 1, 'info' )
+		cy.changeIcon( 'ugb/icon', undefined, 2, 'info' )
+		cy.changeIcon( 'ugb/icon', undefined, 3, 'info' )
+		cy.changeIcon( 'ugb/icon', undefined, 4, 'info' )
 		cy.get( '.ugb-icon__item4' ).should( 'exist' )
 
 		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
@@ -685,11 +715,11 @@ describe( 'Icon Block', () => {
 
 		// Test Spacing options
 		cy.collapse( 'Spacing' )
-		cy.adjust( 'Block Title', 25, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-block-title': {
-				[ `margin-bottom` ]: '25px',
-			},
-		} )
+		//cy.adjust( 'Block Title', 25, { viewport: 'Mobile' } ).assertComputedStyle( {
+		//'.ugb-block-title': {
+		//[ `margin-bottom` ]: '25px',
+		//},
+		//} )
 		cy.adjust( 'Block Description', 35, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-block-description': {
 				[ `margin-bottom` ]: '35px',

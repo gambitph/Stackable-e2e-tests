@@ -732,6 +732,12 @@ export function adjust( name, value, options = {} ) {
 			.parent()
 	}
 
+	selector()
+		.then( block => {
+			const classNames = Array.from( block[ 0 ].classList ).join( ' ' )
+			cy.log( block.find( '.components-base-control' ).length, classNames )
+		} )
+
 	 selector()
 		.invoke( 'attr', 'class' )
 		.then( classNames => {

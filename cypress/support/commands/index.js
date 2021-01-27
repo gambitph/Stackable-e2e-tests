@@ -199,13 +199,13 @@ export function publish() {
 /**
  * Command for changing the icon in icon block.
  *
+ * @param {string} subject
  * @param {string} selector
  * @param {number} index
  * @param {string} keyword
  * @param {string} icon
  */
-export function changeIcon( selector, index = 1, keyword = '', icon ) {
-	selectBlock( 'ugb/icon', selector )
+export function changeIcon( subject, selector, index = 1, keyword = '', icon ) {
 	cy
 		.get( '.block-editor-block-list__block.is-selected' )
 		.find( '.ugb-svg-icon-placeholder__button' )
@@ -218,6 +218,7 @@ export function changeIcon( selector, index = 1, keyword = '', icon ) {
 		.type( keyword )
 
 	// Wait until the loader disappears.
+	cy.wait( 1000 )
 	waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
 
 	if ( icon ) {
