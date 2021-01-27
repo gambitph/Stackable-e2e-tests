@@ -98,7 +98,7 @@ export function collapse( name = 'General', toggle = true ) {
 			} else {
 				getActiveTab( tab => {
 					cy
-						.get( `.ugb-panel-${ tab }>.components-panel__body` )
+						.get( `.ugb-panel-${ tab }>.components-panel__body .components-panel__body-title` )
 						.contains( containsRegExp( name ) )
 						.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
 						.parent()
@@ -108,7 +108,7 @@ export function collapse( name = 'General', toggle = true ) {
 							// Open the accordion if aria-expanded is false.
 							if ( ariaExpanded !== toggle.toString() ) {
 								cy
-									.get( `.ugb-panel-${ tab }>.components-panel__body` )
+									.get( `.ugb-panel-${ tab }>.components-panel__body .components-panel__body-title` )
 									.contains( containsRegExp( name ) )
 									.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
 									.parent()

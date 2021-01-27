@@ -2,6 +2,7 @@ import './styles'
 import './global-settings'
 import './setup'
 import './inspector'
+import './attributes'
 
 /**
  * Internal dependencies
@@ -263,3 +264,4 @@ export function appendBlock( blockName = 'ugb/accordion', parentSelector ) {
 
 	cy.deleteBlock( blockName )
 }
+

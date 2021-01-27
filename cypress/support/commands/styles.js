@@ -224,7 +224,7 @@ function colorControl( name, value, options = {} ) {
 		cy
 			.get( '.components-popover__content' )
 			.find( 'input[type="text"]' )
-			.type( `{selectall}${ value }{enter}` )
+			.type( `{selectall}${ value }{enter}`, { force: true } )
 
 		// Declare the variable again
 		getActiveTab( tab => {
@@ -418,7 +418,7 @@ function suggestionControl( name, value, options = {} ) {
 			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
 			.find( 'input' )
-			.type( `{selectall}${ value }{enter}` )
+			.type( `{selectall}${ value }{enter}`, { force: true } )
 	} )
 }
 
@@ -439,7 +439,7 @@ function suggestionControlClear( name, options = {} ) {
 			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
 			.find( 'input' )
-			.type( `{selectall}{backspace}{enter}` )
+			.type( `{selectall}{backspace}{enter}`, { force: true } )
 	} )
 }
 
@@ -475,7 +475,7 @@ function fourRangeControl( name, value, options = {} ) {
 			changeUnit( unit, name, tab, isInPopover )
 			selector( tab )
 				.find( 'input.components-input-control__input' )
-				.type( `{selectall}${ value }` )
+				.type( `{selectall}${ value }`, { force: true } )
 		} )
 	} else if ( Array.isArray( value ) ) {
 		// Adjust the four control field.
@@ -600,7 +600,7 @@ function iconControl( name, value, options = {} ) {
 		cy
 			.get( 'input[placeholder="Type to search icon"]' )
 			.click( { force: true } )
-			.type( value )
+			.type( value, { force: true } )
 
 		// Wait until the loader disappears.
 		waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
@@ -618,7 +618,7 @@ function iconControl( name, value, options = {} ) {
 		cy
 			.get( 'input[placeholder="Type to search icon"]' )
 			.click( { force: true } )
-			.type( keyword )
+			.type( keyword, { force: true } )
 
 		// Wait until the loader disappears.
 		waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
@@ -670,6 +670,48 @@ export function adjust( name, value, options = {} ) {
 	// Handle custom style options without label
 	const customLabels = {
 		[ `Color Type` ]: 'Single|Gradient',
+		[ `Icon Color Type` ]: 'Single|Gradient|Multicolor',
+	}
+
+	const _adjust = classNames => {
+		const parsedClassNames = classNames.split( ' ' )
+
+		/**
+		 * These are the list of selectors
+		 * and their corresponding commands.
+		 */
+		const commandsBasedOnClassName = {
+				 'components-toggle-control': 'toggleControl',
+				 'ugb-advanced-range-control': 'rangeControl',
+				 'ugb-advanced-toolbar-control': 'toolbarControl',
+				 'editor-color-palette-control': 'colorControl',
+				 'ugb-button-icon-control': 'popoverControl',
+				 'ugb-advanced-autosuggest-control': 'suggestionControl',
+				 'ugb-four-range-control': 'fourRangeControl',
+				 'ugb-design-separator-control': 'designControl',
+				 'ugb-icon-control': 'iconControl',
+				 'ugb-columns-width-control': 'columnControl',
+
+				 // Custom selectors.
+				 'ugb--help-tip-background-color-type': 'toolbarControl',
+		}
+
+		const executeCommand = key => {
+			if ( parsedClassNames.includes( key ) ) {
+				AdjustCommands[ commandsBasedOnClassName[ key ] ]( name, value, options, customLabels[ name ] )
+				return true
+			}
+			return false
+		}
+
+		if ( ! keys( commandsBasedOnClassName ).map( executeCommand ).some( value => value ) ) {
+			// Handle event for dropdowns since they don't have selectors.
+			return selector()
+				.find( 'select' )
+				.then( () => {
+					return AdjustCommands.dropdownControl( name, value, options )
+				} )
+		}
 	}
 
 	const selector = () => {
@@ -693,44 +735,15 @@ export function adjust( name, value, options = {} ) {
 	 selector()
 		.invoke( 'attr', 'class' )
 		.then( classNames => {
-			const parsedClassNames = classNames.split( ' ' )
-
-			/**
-			 * These are the list of selectors
-			 * and their corresponding commands.
-			 */
-			const commandsBasedOnClassName = {
-				 'components-toggle-control': 'toggleControl',
-				 'ugb-advanced-range-control': 'rangeControl',
-				 'ugb-advanced-toolbar-control': 'toolbarControl',
-				 'editor-color-palette-control': 'colorControl',
-				 'ugb-button-icon-control': 'popoverControl',
-				 'ugb-advanced-autosuggest-control': 'suggestionControl',
-				 'ugb-four-range-control': 'fourRangeControl',
-				 'ugb-design-separator-control': 'designControl',
-				 'ugb-icon-control': 'iconControl',
-				 'ugb-columns-width-control': 'columnControl',
-
-				 // Custom selectors.
-				 'ugb--help-tip-background-color-type': 'toolbarControl',
-			}
-
-			const executeCommand = key => {
-				if ( parsedClassNames.includes( key ) ) {
-					AdjustCommands[ commandsBasedOnClassName[ key ] ]( name, value, options, customLabels[ name ] )
-					return true
+			cy.document( { log: false } ).then( doc => {
+				const nestedBaseControl = doc.querySelector( `${ classNames.split( ' ' ).map( c => `.${ c }` ).join( '' ) } .components-base-control.ugb-advanced-toolbar-control` )
+				if ( nestedBaseControl ) {
+					// Handle nested base controls.
+					const classes = Array.from( nestedBaseControl.classList )
+					return _adjust( classes.join( ' ' ) )
 				}
-				return false
-			}
-
-			if ( ! keys( commandsBasedOnClassName ).map( executeCommand ).some( value => value ) ) {
-				// Handle event for dropdowns since they don't have selectors.
-				return selector()
-					.find( 'select' )
-					.then( () => {
-						return AdjustCommands.dropdownControl( name, value, options )
-					} )
-			}
+				return _adjust( classNames )
+			} )
 		} )
 
 	// Always return the selected block which will be used in functions that require chained wp-block elements.
@@ -802,14 +815,16 @@ export function adjustLayout( option = '' ) {
 export function adjustDesign( option = '' ) {
 	cy
 		.get( '.ugb-design-library-items' )
-		.find( '.ugb-design-library-item' )
+	waitLoader( '.ugb-design-library-search__spinner>span.components-spinner' )
+
+	cy
+		.get( '.ugb-design-library-item' )
 		.contains( containsRegExp( option ) )
 		.parentsUntil( '.ugb-design-library-item' )
 		.parent()
 		.find( 'button' )
 		.click( { force: true } )
-
-	waitLoader( '.ugb-design-library-item>span.components-spinner' )
+	waitLoader( '.ugb-design-library-item span.components-spinner' )
 }
 
 /**
@@ -822,6 +837,7 @@ export function adjustDesign( option = '' ) {
 export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	const _assertComputedStyle = ( win, doc, element, cssRule, expectedValue, pseudoEl, parentEl, selector ) => {
 		let computedStyle = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )[ camelCase( cssRule ) ]
+		cy.log( computedStyle )
 
 		/**
 		 * Section for overriding computed styles.
