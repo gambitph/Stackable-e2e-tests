@@ -40,6 +40,7 @@ export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-
 	cy.newPage()
 	cy.addBlock( blockName )
 	cy.get( selector ).should( 'exist' )
+	cy.publish()
 }
 
 /**
