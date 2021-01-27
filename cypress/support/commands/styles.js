@@ -736,7 +736,7 @@ export function adjust( name, value, options = {} ) {
 		.invoke( 'attr', 'class' )
 		.then( classNames => {
 			cy.document( { log: false } ).then( doc => {
-				const nestedBaseControl = doc.querySelector( `${ classNames.split( ' ' ).map( c => `.${ c }` ).join( '' ) } .components-base-control` )
+				const nestedBaseControl = doc.querySelector( `${ classNames.split( ' ' ).map( c => `.${ c }` ).join( '' ) } .components-base-control.ugb-advanced-toolbar-control` )
 				if ( nestedBaseControl ) {
 					// Handle nested base controls.
 					const classes = Array.from( nestedBaseControl.classList )

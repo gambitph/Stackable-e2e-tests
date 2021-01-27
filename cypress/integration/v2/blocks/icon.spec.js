@@ -31,6 +31,37 @@ describe( 'Icon Block', () => {
 
 		assertAligns( 'Align', '.ugb-inner-block' )
 
+		// Test Title options
+		cy.collapse( 'Title' )
+		cy.toggleStyle( 'Title' )
+		cy.adjust( 'Title on Top', true )
+		cy.adjust( 'Title HTML Tag', 'h4' )
+			.assertHtmlTag( '.ugb-icon__title', 'h4' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Serif',
+			[ `Size` ]: 18,
+			[ `Weight` ]: '200',
+			[ `Transform` ]: 'lowercase',
+			[ `Line-Height` ]: {
+				value: 26,
+				unit: 'px',
+			},
+			[ `Letter Spacing` ]: 1.3,
+		} )
+		cy.adjust( 'Size', 25 )
+		cy.adjust( 'Title Color', '#636363' ).assertComputedStyle( {
+			'.ugb-icon__title': {
+				[ `font-size` ]: '25px',
+				[ `font-weight` ]: '200',
+				[ `text-transform` ]: 'lowercase',
+				[ `letter-spacing` ]: '1.3px',
+				[ `color` ]: '#636363',
+				[ `line-height` ]: '26px',
+			},
+		} )
+		// Test Title Alignment
+		assertAligns( 'Align', '.ugb-icon__title' )
+
 		// Test Icon options
 		cy.collapse( 'Icon' )
 		cy.adjust( 'Icon Color', '#acacac' ).assertComputedStyle( {
@@ -39,13 +70,13 @@ describe( 'Icon Block', () => {
 				[ `fill` ]: '#acacac',
 			},
 		} )
-		cy.adjust( 'Color Type', 'gradient' )
+		cy.adjust( 'Icon Color Type', 'gradient' )
 		cy.adjust( 'Icon Color #1', '#f00069' )
 		cy.adjust( 'Icon Color #2', '#000000' )
 		cy.adjust( 'Gradient Direction (degrees)', 180 )
 		cy.adjust( 'Icon Size', 59 ).assertComputedStyle( {
 			'.ugb-icon-inner-svg': {
-				[ `fill` ]: 'url(#grad-f00069-000000-180)',
+				[ `fill` ]: 'url("#grad-f00069-000000-180")',
 				[ `height` ]: '59px',
 				[ `width` ]: '59px',
 			},
@@ -86,37 +117,6 @@ describe( 'Icon Block', () => {
 				[ `align-self` ]: 'flex-end',
 			},
 		} )
-
-		// Test Title options
-		cy.collapse( 'Title' )
-		cy.toggleStyle( 'Title' )
-		cy.adjust( 'Title on Top', true )
-		cy.adjust( 'Title HTML Tag', 'h4' )
-			.assertHtmlTag( '.ugb-icon__title', 'h4' )
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Serif',
-			[ `Size` ]: 18,
-			[ `Weight` ]: '200',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: {
-				value: 26,
-				unit: 'px',
-			},
-			[ `Letter Spacing` ]: 1.3,
-		} )
-		cy.adjust( 'Size', 25 )
-		cy.adjust( 'Title Color', '#636363' ).assertComputedStyle( {
-			'.ugb-icon__title': {
-				[ `font-size` ]: '25px',
-				[ `font-weight` ]: '200',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '1.3px',
-				[ `color` ]: '#636363',
-				[ `line-height` ]: '26px',
-			},
-		} )
-		// Test Title Alignment
-		assertAligns( 'Align', '.ugb-icon__title' )
 
 		// Test Effects option
 		cy.collapse( 'Effects' )
@@ -378,30 +378,6 @@ describe( 'Icon Block', () => {
 
 		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
 
-		// Test Icon options
-		cy.collapse( 'Icon' )
-		cy.adjust( 'Icon Size', 45, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-icon-inner-svg': {
-				[ `height` ]: '45px',
-				[ `width` ]: '45px',
-			},
-		} )
-		cy.adjust( 'Align', 'left', { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-icon__icon': {
-				[ `align-self` ]: 'flex-start',
-			},
-		} )
-		cy.adjust( 'Align', 'center', { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-icon__icon': {
-				[ `align-self` ]: 'center',
-			},
-		} )
-		cy.adjust( 'Align', 'right', { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-icon__icon': {
-				[ `align-self` ]: 'flex-end',
-			},
-		} )
-
 		// Test Title options
 		cy.collapse( 'Title' )
 		cy.toggleStyle( 'Title' )
@@ -426,6 +402,30 @@ describe( 'Icon Block', () => {
 
 		// Test Title Alignment
 		assertAligns( 'Align', '.ugb-icon__title', { viewport: 'Tablet' } )
+
+		// Test Icon options
+		cy.collapse( 'Icon' )
+		cy.adjust( 'Icon Size', 45, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon-inner-svg': {
+				[ `height` ]: '45px',
+				[ `width` ]: '45px',
+			},
+		} )
+		cy.adjust( 'Align', 'left', { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-start',
+			},
+		} )
+		cy.adjust( 'Align', 'center', { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'center',
+			},
+		} )
+		cy.adjust( 'Align', 'right', { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-end',
+			},
+		} )
 
 		// Test Effects option
 		cy.collapse( 'Effects' )
@@ -561,30 +561,6 @@ describe( 'Icon Block', () => {
 
 		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
 
-		// Test Icon options
-		cy.collapse( 'Icon' )
-		cy.adjust( 'Icon Size', 58, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-icon-inner-svg': {
-				[ `height` ]: '58px',
-				[ `width` ]: '58px',
-			},
-		} )
-		cy.adjust( 'Align', 'left', { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-icon__icon': {
-				[ `align-self` ]: 'flex-start',
-			},
-		} )
-		cy.adjust( 'Align', 'center', { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-icon__icon': {
-				[ `align-self` ]: 'center',
-			},
-		} )
-		cy.adjust( 'Align', 'right', { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-icon__icon': {
-				[ `align-self` ]: 'flex-end',
-			},
-		} )
-
 		// Test Title options
 		cy.collapse( 'Title' )
 		cy.toggleStyle( 'Title' )
@@ -609,6 +585,30 @@ describe( 'Icon Block', () => {
 
 		// Test Title Alignment
 		assertAligns( 'Align', '.ugb-icon__title', { viewport: 'Mobile' } )
+
+		// Test Icon options
+		cy.collapse( 'Icon' )
+		cy.adjust( 'Icon Size', 58, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon-inner-svg': {
+				[ `height` ]: '58px',
+				[ `width` ]: '58px',
+			},
+		} )
+		cy.adjust( 'Align', 'left', { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-start',
+			},
+		} )
+		cy.adjust( 'Align', 'center', { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'center',
+			},
+		} )
+		cy.adjust( 'Align', 'right', { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__icon': {
+				[ `align-self` ]: 'flex-end',
+			},
+		} )
 
 		// Test Effects option
 		cy.collapse( 'Effects' )
