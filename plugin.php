@@ -55,9 +55,9 @@ if ( isset( $_GET['setup'] ) ) {
 
 		update_option( 'active_plugins', $plugins_activated );
 
-		$user_id = 1;
-		$user = get_user_by( 'id', $user_id );
+		$user = get_user_by( 'login', 'admin' );
 		if( $user ) {
+			$user_id = $user->ID;
 			wp_set_current_user( $user_id, $user->user_login );
 			wp_set_auth_cookie( $user_id );
 			do_action( 'wp_login', $user->user_login, $user );
@@ -88,9 +88,6 @@ if ( isset( $_GET['setup'] ) ) {
 		forEach( $all_pages as $pages ){
 			wp_delete_post( $pages->ID );
 		}
-
-		// Login as admin.
-		wp_login( 'admin', 'admin' );
 
 		die();
 	});

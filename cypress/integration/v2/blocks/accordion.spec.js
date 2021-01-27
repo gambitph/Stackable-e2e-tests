@@ -105,7 +105,7 @@ describe( 'Accordion Block', () => {
 			},
 		} )
 
-		// Test General Alignment
+	    // Test General Alignment
 		assertAligns( 'Align', '.ugb-inner-block' )
 
 		cy.collapse( 'Container' )
@@ -177,12 +177,19 @@ describe( 'Accordion Block', () => {
 		} )
 
 		// Test Title spacing
-		cy.adjust( 'Title', 63 )
 		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', `Accordion 1` )
+		cy.document().then( doc => {
+			if ( ! doc.querySelector( '.ugb-accordion--open' ) ) {
+				cy.get( '.ugb-accordion__heading' ).click( { force: true } )
+			}
+		} )
+		cy.adjust( 'Title', 63 )
 			.assertComputedStyle( {
 				'.ugb-accordion__heading': {
 					[ `margin-bottom` ]: '63px',
 				},
+			}, {
+				wait: 1000,
 			} )
 
 		// Test Title options
@@ -234,6 +241,7 @@ describe( 'Accordion Block', () => {
 		// Test General Alignment
 		cy.collapse( 'General' )
 		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
+		cy.adjust( 'Open at the start', true )
 
 		cy.changePreviewMode( 'Tablet' )
 
@@ -270,7 +278,7 @@ describe( 'Accordion Block', () => {
 		cy.adjust( 'Border Width', 4, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-accordion__heading': {
 				[ `border-radius` ]: '26px',
-				[ `background-color` ]: 'rgba(0, 0, 0, 0.5)',
+				[ `background-color` ]: '#f00069',
 				[ `border-top-width` ]: '4px',
 				[ `border-right-width` ]: '4px',
 				[ `border-bottom-width` ]: '4px',
@@ -299,6 +307,8 @@ describe( 'Accordion Block', () => {
 				[ `padding-bottom` ]: '31px',
 				[ `padding-left` ]: '31px',
 			},
+		}, {
+			wait: 1000,
 		} )
 
 		cy.changePreviewMode( 'Tablet' )
@@ -350,6 +360,7 @@ describe( 'Accordion Block', () => {
 		// Test General Alignment
 		cy.collapse( 'General' )
 		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
+		cy.adjust( 'Open at the start', true )
 
 		cy.changePreviewMode( 'Mobile' )
 		cy.collapse( 'Container' )
@@ -386,7 +397,7 @@ describe( 'Accordion Block', () => {
 		cy.adjust( 'Border Width', 5, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-accordion__heading': {
 				[ `border-radius` ]: '50px',
-				[ `background-color` ]: 'rgba(0, 0, 0, 0.5)',
+				[ `background-color` ]: '#f00069',
 				[ `border-top-width` ]: '5px',
 				[ `border-right-width` ]: '5px',
 				[ `border-bottom-width` ]: '5px',
@@ -415,6 +426,8 @@ describe( 'Accordion Block', () => {
 				[ `padding-bottom` ]: '31px',
 				[ `padding-left` ]: '31px',
 			},
+		}, {
+			wait: 1000,
 		} )
 
 		cy.changePreviewMode( 'Mobile' )

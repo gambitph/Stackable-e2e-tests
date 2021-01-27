@@ -3,7 +3,10 @@ Cypress.on( `window:before:load`, win => {
 		// log to Terminal
 		cy.now( `task`, `error`, msg )
 		// log to Command Log & fail the test
-		throw new Error( msg )
+		if ( typeof msg === 'string' && msg.match( /stackable|ugb/ ) ) {
+			// Only trigger test fail when the error is stackable related.
+			throw new Error( msg )
+		}
 	} )
 } )
 

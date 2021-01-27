@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns,
+	assertBlockExist, blockErrorTest, switchDesigns, assertAligns,
 } from '~stackable-e2e/helpers'
 
 describe( 'Icon Block', () => {
@@ -29,14 +29,38 @@ describe( 'Icon Block', () => {
 		cy.adjust( 'Number of Icons / Columns', 4 )
 		cy.get( '.ugb-icon__item4' ).should( 'exist' )
 
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
+		assertAligns( 'Align', '.ugb-inner-block' )
+
+		// Test Title options
+		cy.collapse( 'Title' )
+		cy.toggleStyle( 'Title' )
+		cy.adjust( 'Title on Top', true )
+		cy.adjust( 'Title HTML Tag', 'h4' )
+			.assertHtmlTag( '.ugb-icon__title', 'h4' )
+		cy.adjust( 'Typography', {
+			[ `Font Family` ]: 'Serif',
+			[ `Size` ]: 18,
+			[ `Weight` ]: '200',
+			[ `Transform` ]: 'lowercase',
+			[ `Line-Height` ]: {
+				value: 26,
+				unit: 'px',
+			},
+			[ `Letter Spacing` ]: 1.3,
 		} )
+		cy.adjust( 'Size', 25 )
+		cy.adjust( 'Title Color', '#636363' ).assertComputedStyle( {
+			'.ugb-icon__title': {
+				[ `font-size` ]: '25px',
+				[ `font-weight` ]: '200',
+				[ `text-transform` ]: 'lowercase',
+				[ `letter-spacing` ]: '1.3px',
+				[ `color` ]: '#636363',
+				[ `line-height` ]: '26px',
+			},
+		} )
+		// Test Title Alignment
+		assertAligns( 'Align', '.ugb-icon__title' )
 
 		// Test Icon options
 		cy.collapse( 'Icon' )
@@ -46,13 +70,13 @@ describe( 'Icon Block', () => {
 				[ `fill` ]: '#acacac',
 			},
 		} )
-		cy.adjust( 'Color Type', 'gradient' )
+		cy.adjust( 'Icon Color Type', 'gradient' )
 		cy.adjust( 'Icon Color #1', '#f00069' )
 		cy.adjust( 'Icon Color #2', '#000000' )
 		cy.adjust( 'Gradient Direction (degrees)', 180 )
 		cy.adjust( 'Icon Size', 59 ).assertComputedStyle( {
 			'.ugb-icon-inner-svg': {
-				[ `fill` ]: 'url(#grad-f00069-000000-180)',
+				[ `fill` ]: 'url("#grad-f00069-000000-180")',
 				[ `height` ]: '59px',
 				[ `width` ]: '59px',
 			},
@@ -94,39 +118,6 @@ describe( 'Icon Block', () => {
 			},
 		} )
 
-		// Test Title options
-		cy.collapse( 'Title' )
-		cy.adjust( 'Title on Top', true )
-		cy.adjust( 'Title HTML Tag', 'h4' )
-			.assertHtmlTag( '.ugb-icon__title', 'h4' )
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Serif',
-			[ `Size` ]: 18,
-			[ `Weight` ]: '200',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 1.6,
-			[ `Letter Spacing` ]: 1.3,
-		} )
-		cy.adjust( 'Size', 25 )
-		cy.adjust( 'Title Color', '#636363' ).assertComputedStyle( {
-			'.ugb-icon__title': {
-				[ `font-size` ]: '25px',
-				[ `font-weight` ]: '200',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '1.3px',
-				[ `color` ]: '#636363',
-			},
-		} )
-		// Test Title Alignment
-		const titleAligns = [ 'left', 'center', 'right' ]
-		titleAligns.forEach( align => {
-			cy.adjust( 'Align', align ).assertComputedStyle( {
-				'.ugb-icon__title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
-
 		// Test Effects option
 		cy.collapse( 'Effects' )
 		cy.adjust( 'Hover Effect', 'lift-more' )
@@ -142,7 +133,10 @@ describe( 'Icon Block', () => {
 			[ `Size` ]: 31,
 			[ `Weight` ]: '700',
 			[ `Transform` ]: 'uppercase',
-			[ `Line-Height` ]: 1.6,
+			[ `Line-Height` ]: {
+				value: 46,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.3,
 		} )
 		cy.adjust( 'Size', 46 )
@@ -155,6 +149,7 @@ describe( 'Icon Block', () => {
 				[ `letter-spacing` ]: '1.3px',
 				[ `color` ]: '#636363',
 				[ `max-width` ]: '748px',
+				[ `line-height` ]: '46px',
 			},
 		} )
 		cy.adjust( 'Horizontal Align', 'flex-start' ).assertComputedStyle( {
@@ -170,14 +165,7 @@ describe( 'Icon Block', () => {
 		} )
 
 		// Test Block Title Alignment
-		const textAligns = [ 'left', 'center', 'right' ]
-		textAligns.forEach( align => {
-			cy.adjust( 'Text Align', align ).assertComputedStyle( {
-				'.ugb-block-title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Text Align', '.ugb-block-title' )
 
 		// Test Block Description
 		cy.collapse( 'Block Description' )
@@ -187,7 +175,10 @@ describe( 'Icon Block', () => {
 			[ `Size` ]: 25,
 			[ `Weight` ]: '300',
 			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 1.6,
+			[ `Line-Height` ]: {
+				value: 36,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.3,
 		} )
 		cy.adjust( 'Size', 31 )
@@ -200,6 +191,7 @@ describe( 'Icon Block', () => {
 				[ `letter-spacing` ]: '1.3px',
 				[ `color` ]: '#636363',
 				[ `max-width` ]: '734px',
+				[ `line-height` ]: '36px',
 			},
 		} )
 		cy.adjust( 'Horizontal Align', 'flex-start' ).assertComputedStyle( {
@@ -215,14 +207,7 @@ describe( 'Icon Block', () => {
 		} )
 
 		// Test Block Description Alignment
-		const descAligns = [ 'left', 'center', 'right' ]
-		descAligns.forEach( align => {
-			cy.adjust( 'Text Align', align ).assertComputedStyle( {
-				'.ugb-block-description': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Text Align', '.ugb-block-description' )
 
 		// Test Spacing options
 		cy.collapse( 'Spacing' )
@@ -385,21 +370,38 @@ describe( 'Icon Block', () => {
 		cy.newPage()
 		cy.addBlock( 'ugb/icon' )
 		cy.openInspector( 'ugb/icon', 'Style' )
-		cy.changePreviewMode( 'Tablet' )
 
 		// Test General options
 		cy.collapse( 'General' )
 		cy.adjust( 'Number of Icons / Columns', 6 )
 		cy.get( '.ugb-icon__item6' ).should( 'exist' )
 
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
+		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
+
+		// Test Title options
+		cy.collapse( 'Title' )
+		cy.toggleStyle( 'Title' )
+		cy.adjust( 'Typography', {
+			[ `Size` ]: {
+				viewport: 'Tablet',
+				value: 30,
+				unit: 'px',
+			},
+			[ `Line-Height` ]: {
+				viewport: 'Tablet',
+				value: 22,
+				unit: 'px',
+			},
 		} )
+		cy.adjust( 'Size', 28, { viewport: 'Tablet' } ).assertComputedStyle( {
+			'.ugb-icon__title': {
+				[ `font-size` ]: '28px',
+				[ `line-height` ]: '22px',
+			},
+		} )
+
+		// Test Title Alignment
+		assertAligns( 'Align', '.ugb-icon__title', { viewport: 'Tablet' } )
 
 		// Test Icon options
 		cy.collapse( 'Icon' )
@@ -425,29 +427,6 @@ describe( 'Icon Block', () => {
 			},
 		} )
 
-		// Test Title options
-		cy.collapse( 'Title' )
-		cy.toggleStyle( 'Title' )
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Monospace',
-			[ `Size` ]: 18,
-			[ `Weight` ]: '200',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 1.6,
-			[ `Letter Spacing` ]: 1.3,
-		}, { viewport: 'Tablet' } )
-		cy.adjust( 'Size', 22, { viewport: 'Tablet' } )
-
-		// Test Title Alignment
-		const titleAligns = [ 'left', 'center', 'right' ]
-		titleAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-icon__title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
-
 		// Test Effects option
 		cy.collapse( 'Effects' )
 		cy.adjust( 'Hover Effect', 'scale-more' )
@@ -461,9 +440,13 @@ describe( 'Icon Block', () => {
 			[ `Size` ]: 31,
 			[ `Weight` ]: '700',
 			[ `Transform` ]: 'uppercase',
-			[ `Line-Height` ]: 1.6,
+			[ `Line-Height` ]: {
+				viewport: 'Tablet',
+				value: 42,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.3,
-		}, { viewport: 'Tablet' } )
+		} )
 		cy.adjust( 'Size', 46, { viewport: 'Tablet' } )
 		cy.adjust( 'Title Color', '#636363' )
 		cy.adjust( 'Max Width', 748, { viewport: 'Tablet' } ).assertComputedStyle( {
@@ -474,18 +457,12 @@ describe( 'Icon Block', () => {
 				[ `letter-spacing` ]: '1.3px',
 				[ `color` ]: '#636363',
 				[ `max-width` ]: '748px',
+				[ `line-height` ]: '42px',
 			},
 		} )
 
 		// Test Block Title Alignment
-		const textAligns = [ 'left', 'center', 'right' ]
-		textAligns.forEach( align => {
-			cy.adjust( 'Text Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-block-title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Text Align', '.ugb-block-title', { viewport: 'Tablet' } )
 
 		// Test Block Description
 		cy.collapse( 'Block Description' )
@@ -495,11 +472,15 @@ describe( 'Icon Block', () => {
 			[ `Size` ]: 21,
 			[ `Weight` ]: '700',
 			[ `Transform` ]: 'uppercase',
-			[ `Line-Height` ]: 1.6,
+			[ `Line-Height` ]: {
+				viewport: 'Tablet',
+				value: 38,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.3,
-		}, { viewport: 'Tablet' } )
+		} )
 		cy.adjust( 'Size', 36, { viewport: 'Tablet' } )
-		cy.adjust( 'Title Color', '#636363' )
+		cy.adjust( 'Description Color', '#636363' )
 		cy.adjust( 'Max Width', 748, { viewport: 'Tablet' } ).assertComputedStyle( {
 			'.ugb-block-description': {
 				[ `font-size` ]: '36px',
@@ -508,18 +489,12 @@ describe( 'Icon Block', () => {
 				[ `letter-spacing` ]: '1.3px',
 				[ `color` ]: '#636363',
 				[ `max-width` ]: '748px',
+				[ `line-height` ]: '38px',
 			},
 		} )
 
 		// Test Block Description Alignment
-		const descAligns = [ 'left', 'center', 'right' ]
-		descAligns.forEach( align => {
-			cy.adjust( 'Text Align', align, { viewport: 'Tablet' } ).assertComputedStyle( {
-				'.ugb-block-description': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Text Align', '.ugb-block-description', { viewport: 'Tablet' } )
 
 		// Test Spacing options
 		cy.collapse( 'Spacing' )
@@ -558,7 +533,7 @@ describe( 'Icon Block', () => {
 		cy.collapse( 'Top Separator' )
 		cy.toggleStyle( 'Top Separator' )
 		cy.adjust( 'Height', 191, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-top-separator .ugb-separator-wrapper': {
+			'.ugb-top-separator>.ugb-separator-wrapper': {
 				[ `height` ]: '191px',
 			},
 		} )
@@ -567,7 +542,7 @@ describe( 'Icon Block', () => {
 		cy.collapse( 'Bottom Separator' )
 		cy.toggleStyle( 'Bottom Separator' )
 		cy.adjust( 'Height', 150, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-bottom-separator .ugb-separator-wrapper': {
+			'.ugb-bottom-separator>.ugb-separator-wrapper': {
 				[ `height` ]: '150px',
 			},
 		} )
@@ -578,21 +553,38 @@ describe( 'Icon Block', () => {
 		cy.newPage()
 		cy.addBlock( 'ugb/icon' )
 		cy.openInspector( 'ugb/icon', 'Style' )
-		cy.changePreviewMode( 'Mobile' )
 
 		// Test General options
 		cy.collapse( 'General' )
 		cy.adjust( 'Number of Icons / Columns', 4 )
 		cy.get( '.ugb-icon__item4' ).should( 'exist' )
 
-		const aligns = [ 'left', 'center', 'right' ]
-		aligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-inner-block': {
-					[ `text-align` ]: align,
-				},
-			} )
+		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
+
+		// Test Title options
+		cy.collapse( 'Title' )
+		cy.toggleStyle( 'Title' )
+		cy.adjust( 'Typography', {
+			[ `Size` ]: {
+				viewport: 'Mobile',
+				value: 30,
+				unit: 'px',
+			},
+			[ `Line-Height` ]: {
+				viewport: 'Mobile',
+				value: 22,
+				unit: 'px',
+			},
 		} )
+		cy.adjust( 'Size', 28, { viewport: 'Mobile' } ).assertComputedStyle( {
+			'.ugb-icon__title': {
+				[ `font-size` ]: '28px',
+				[ `line-height` ]: '22px',
+			},
+		} )
+
+		// Test Title Alignment
+		assertAligns( 'Align', '.ugb-icon__title', { viewport: 'Mobile' } )
 
 		// Test Icon options
 		cy.collapse( 'Icon' )
@@ -618,29 +610,6 @@ describe( 'Icon Block', () => {
 			},
 		} )
 
-		// Test Title options
-		cy.collapse( 'Title' )
-		cy.toggleStyle( 'Title' )
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Monospace',
-			[ `Size` ]: 18,
-			[ `Weight` ]: '200',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 1.6,
-			[ `Letter Spacing` ]: 1.3,
-		}, { viewport: 'Mobile' } )
-		cy.adjust( 'Size', 22, { viewport: 'Mobile' } )
-
-		// Test Title Alignment
-		const titleAligns = [ 'left', 'center', 'right' ]
-		titleAligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-icon__title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
-
 		// Test Effects option
 		cy.collapse( 'Effects' )
 		cy.adjust( 'Hover Effect', 'lift' )
@@ -654,9 +623,13 @@ describe( 'Icon Block', () => {
 			[ `Size` ]: 31,
 			[ `Weight` ]: '700',
 			[ `Transform` ]: 'uppercase',
-			[ `Line-Height` ]: 1.6,
+			[ `Line-Height` ]: {
+				viewport: 'Mobile',
+				value: 42,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.3,
-		}, { viewport: 'Mobile' } )
+		} )
 		cy.adjust( 'Size', 46, { viewport: 'Mobile' } )
 		cy.adjust( 'Title Color', '#636363' )
 		cy.adjust( 'Max Width', 748, { viewport: 'Mobile' } ).assertComputedStyle( {
@@ -667,18 +640,12 @@ describe( 'Icon Block', () => {
 				[ `letter-spacing` ]: '1.3px',
 				[ `color` ]: '#636363',
 				[ `max-width` ]: '748px',
+				[ `line-height` ]: '42px',
 			},
 		} )
 
 		// Test Block Title Alignment
-		const textAligns = [ 'left', 'center', 'right' ]
-		textAligns.forEach( align => {
-			cy.adjust( 'Text Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-block-title': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Text Align', '.ugb-block-title', { viewport: 'Mobile' } )
 
 		// Test Block Description
 		cy.collapse( 'Block Description' )
@@ -688,11 +655,15 @@ describe( 'Icon Block', () => {
 			[ `Size` ]: 21,
 			[ `Weight` ]: '700',
 			[ `Transform` ]: 'uppercase',
-			[ `Line-Height` ]: 1.6,
+			[ `Line-Height` ]: {
+				viewport: 'Mobile',
+				value: 38,
+				unit: 'px',
+			},
 			[ `Letter Spacing` ]: 1.3,
-		}, { viewport: 'Mobile' } )
+		} )
 		cy.adjust( 'Size', 36, { viewport: 'Mobile' } )
-		cy.adjust( 'Title Color', '#636363' )
+		cy.adjust( 'Description Color', '#636363' )
 		cy.adjust( 'Max Width', 748, { viewport: 'Mobile' } ).assertComputedStyle( {
 			'.ugb-block-description': {
 				[ `font-size` ]: '36px',
@@ -701,18 +672,12 @@ describe( 'Icon Block', () => {
 				[ `letter-spacing` ]: '1.3px',
 				[ `color` ]: '#636363',
 				[ `max-width` ]: '748px',
+				[ `line-height` ]: '38px',
 			},
 		} )
 
 		// Test Block Description Alignment
-		const descAligns = [ 'left', 'center', 'right' ]
-		descAligns.forEach( align => {
-			cy.adjust( 'Text Align', align, { viewport: 'Mobile' } ).assertComputedStyle( {
-				'.ugb-block-description': {
-					[ `text-align` ]: align,
-				},
-			} )
-		} )
+		assertAligns( 'Text Align', '.ugb-block-description', { viewport: 'Mobile' } )
 
 		// Test Spacing options
 		cy.collapse( 'Spacing' )
@@ -751,7 +716,7 @@ describe( 'Icon Block', () => {
 		cy.collapse( 'Top Separator' )
 		cy.toggleStyle( 'Top Separator' )
 		cy.adjust( 'Height', 191, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-top-separator .ugb-separator-wrapper': {
+			'.ugb-top-separator>.ugb-separator-wrapper': {
 				[ `height` ]: '191px',
 			},
 		} )
@@ -760,7 +725,7 @@ describe( 'Icon Block', () => {
 		cy.collapse( 'Bottom Separator' )
 		cy.toggleStyle( 'Bottom Separator' )
 		cy.adjust( 'Height', 150, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-bottom-separator .ugb-separator-wrapper': {
+			'.ugb-bottom-separator>.ugb-separator-wrapper': {
 				[ `height` ]: '150px',
 			},
 		} )
