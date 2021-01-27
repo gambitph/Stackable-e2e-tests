@@ -742,9 +742,20 @@ export function adjust( name, value, options = {} ) {
 		.invoke( 'attr', 'class' )
 		.then( classNames => {
 			cy.document( { log: false } ).then( doc => {
-				const nestedBaseControl = doc.querySelector( `${ classNames.split( ' ' ).map( c => `.${ c }` ).join( '' ) } .components-base-control.ugb-advanced-toolbar-control` )
+				// Handle nested base controls.
+				const withNestedBaseControl = [
+					'ugb-advanced-toolbar-control',
+				]
+
+				let nestedBaseControl = null
+
+				withNestedBaseControl.forEach( className => {
+					if ( ! nestedBaseControl ) {
+						nestedBaseControl = doc.querySelector( `${ classNames.split( ' ' ).map( c => `.${ c }` ).join( '' ) } .components-base-control.${ className }` )
+					}
+				} )
+
 				if ( nestedBaseControl ) {
-					// Handle nested base controls.
 					const classes = Array.from( nestedBaseControl.classList )
 					return _adjust( classes.join( ' ' ) )
 				}
