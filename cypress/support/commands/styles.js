@@ -379,6 +379,8 @@ function popoverControlReset( name ) {
 function dropdownControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		viewport = 'Desktop',
+		unit = '',
 	} = options
 
 	// Compatibility for default values
@@ -391,6 +393,8 @@ function dropdownControl( name, value, options = {} ) {
 	}
 
 	getActiveTab( tab => {
+		changeResponsiveMode( viewport, name, tab, isInPopover )
+		changeUnit( unit, name, tab, isInPopover )
 		getBaseControl( tab, isInPopover )
 			.contains( containsRegExp( name ) )
 			.parentsUntil( `.components-panel__body>.components-base-control` )
