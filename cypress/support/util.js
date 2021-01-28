@@ -2,10 +2,6 @@
  * External dependencies
  */
 import { lowerCase } from 'lodash'
-
-/**
- * Internal dependencies
- */
 import config from 'root/cypress.json'
 
 /**
@@ -130,13 +126,16 @@ export const changeUnit = ( unit = '', name = '', tab = 'style', isInPopover = f
  * @param {string} selector
  * @param {number} interval
  */
+
 export const waitLoader = ( selector = '', interval = 100 ) => {
 	cy.wait( 20, { log: false } )
 	let done = false
 
+	const setDone = toggle => done = toggle
+
 	const update = () => {
-		done = ! Cypress.$( selector ).length
-		check()
+		setDone( ! Cypress.$( selector ).length )
+		return check()
 	}
 
 	const check = () => {

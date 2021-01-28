@@ -732,29 +732,28 @@ export function adjust( name, value, options = {} ) {
 			.parent()
 	}
 
-	 selector()
-		.invoke( 'attr', 'class' )
-		.then( classNames => {
-			cy.document( { log: false } ).then( doc => {
-				// Handle nested base controls.
-				const withNestedBaseControl = [
-					'ugb-advanced-toolbar-control',
-				]
+	selector()
+		.then( block => {
+			const classNames = Array.from( block[ 0 ].classList ).join( ' ' )
+			// Handle nested base controls.
+			const withNestedBaseControl = [
+				'ugb-advanced-toolbar-control',
+			]
 
-				let nestedBaseControl = null
+			let nestedBaseControl = null
 
-				withNestedBaseControl.forEach( className => {
-					if ( ! nestedBaseControl ) {
-						nestedBaseControl = doc.querySelector( `${ classNames.split( ' ' ).map( c => `.${ c }` ).join( '' ) } .components-base-control.${ className }` )
-					}
-				} )
-
-				if ( nestedBaseControl ) {
-					const classes = Array.from( nestedBaseControl.classList )
-					return _adjust( classes.join( ' ' ) )
+			withNestedBaseControl.forEach( className => {
+				if ( ! nestedBaseControl ) {
+					nestedBaseControl = block.find( `.components-base-control.${ className }` ).length ? block.find( `.components-base-control.${ className }` ) : false
 				}
-				return _adjust( classNames )
 			} )
+
+			if ( nestedBaseControl ) {
+				const classes = Array.from( nestedBaseControl[ 0 ].classList )
+				return _adjust( classes.join( ' ' ) )
+			}
+
+			return _adjust( classNames )
 		} )
 
 	// Always return the selected block which will be used in functions that require chained wp-block elements.
