@@ -18,7 +18,9 @@ import {
 /**
  * Export Block Module assertions.
  */
-export { assertBlockTitleDescription } from './modules'
+export {
+	assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+} from './modules'
 
 /*
 * Export Advanced Tab assertions.
