@@ -969,14 +969,24 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 		} ) => {
 			const willAssertElement = doc.querySelector( `${ parsedClassList }${ parsedClassList.match( customSelector ) ? '' : ` ${ customSelector }` }` )
 			if ( willAssertElement ) {
-				cy
-					.get( parsedClassList )
-					.find( customSelector )
-					.invoke( 'attr', 'class' )
-					.then( $classNames => {
-						const parsedClassNames = $classNames.split( ' ' )
-						assert.isTrue( parsedClassNames.includes( expectedValue ), `${ expectedValue } must be present in block` )
-					} )
+				if ( parsedClassList.includes( customSelector ) ) {
+					cy
+						.get( parsedClassList )
+						.invoke( 'attr', 'class' )
+						.then( $classNames => {
+							const parsedClassNames = $classNames.split( ' ' )
+							assert.isTrue( parsedClassNames.includes( expectedValue ), `${ expectedValue } must be present in block` )
+						} )
+				} else {
+					cy
+						.get( parsedClassList )
+						.find( customSelector )
+						.invoke( 'attr', 'class' )
+						.then( $classNames => {
+							const parsedClassNames = $classNames.split( ' ' )
+							assert.isTrue( parsedClassNames.includes( expectedValue ), `${ expectedValue } must be present in block` )
+						} )
+				}
 			}
 		},
 		options
