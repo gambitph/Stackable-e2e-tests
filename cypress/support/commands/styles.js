@@ -969,24 +969,13 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 		} ) => {
 			const willAssertElement = doc.querySelector( `${ parsedClassList }${ parsedClassList.match( customSelector ) ? '' : ` ${ customSelector }` }` )
 			if ( willAssertElement ) {
-				if ( parsedClassList.includes( customSelector ) ) {
-					cy
-						.get( parsedClassList )
-						.invoke( 'attr', 'class' )
-						.then( $classNames => {
-							const parsedClassNames = $classNames.split( ' ' )
-							assert.isTrue( parsedClassNames.includes( expectedValue ), `${ expectedValue } must be present in block` )
-						} )
-				} else {
-					cy
-						.get( parsedClassList )
-						.find( customSelector )
-						.invoke( 'attr', 'class' )
-						.then( $classNames => {
-							const parsedClassNames = $classNames.split( ' ' )
-							assert.isTrue( parsedClassNames.includes( expectedValue ), `${ expectedValue } must be present in block` )
-						} )
-				}
+				( parsedClassList.includes( customSelector )
+					? 					cy.get( parsedClassList ).invoke( 'attr', 'class' )
+					: 					cy.get( parsedClassList ).find( customSelector ).invoke( 'attr', 'class' )
+				).then( $classNames => {
+					const parsedClassNames = $classNames.split( ' ' )
+					assert.isTrue( parsedClassNames.includes( expectedValue ), `${ expectedValue } must be present in block` )
+				} )
 			}
 		},
 		options
@@ -1015,11 +1004,7 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 			cy
 				.get( parsedClassList )
 				.then( $block => {
-					if ( parsedClassList.match( customSelector ) ) {
-						assert.isTrue( ! isEmpty( Cypress.$( `${ expectedValue }${ parsedClassList }` ) ), `${ customSelector } must have HTML tag '${ expectedValue }'` )
-					} else {
-						assert.isTrue( ! isEmpty( $block.find( `${ expectedValue }${ customSelector }` ) ), `${ customSelector } must have HTML tag '${ expectedValue }'` )
-					}
+					assert.isTrue( ! isEmpty( parsedClassList.match( customSelector ) ? Cypress.$( `${ expectedValue }${ parsedClassList }` ) : $block.find( `${ expectedValue }${ customSelector }` ) ), `${ customSelector } must have HTML tag '${ expectedValue }'` )
 				} )
 		},
 		options
