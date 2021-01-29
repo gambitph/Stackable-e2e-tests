@@ -77,12 +77,6 @@ describe( 'Separator Block', () => {
 				[ `height` ]: '40em',
 			},
 		} )
-		cy.resetStyle( 'Padding Top' )
-		cy.adjust( 'Padding Top', 61, { unit: '%' } ).assertComputedStyle( {
-			'.ugb-separator__top-pad': {
-				[ `height` ]: '61%',
-			},
-		} )
 		cy.adjust( 'Padding Bottom', 111, { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator__bottom-pad': {
 				[ `height` ]: '111px',
@@ -94,37 +88,69 @@ describe( 'Separator Block', () => {
 				[ `height` ]: '36em',
 			},
 		} )
-		cy.resetStyle( 'Padding Bottom' )
-		cy.adjust( 'Padding Bottom', 67, { unit: '%' } ).assertComputedStyle( {
-			'.ugb-separator__bottom-pad': {
-				[ `height` ]: '67%',
-			},
-		} )
 
 		/**
 		 *	Test Margins
-		 *	Separator top & bottom margins have -15px values in desktop
-		 *	15 is subtracted on assertion
+		 *	Separator top & bottom margins have:
+		 *	-15 on backend, -1 on frontend
 		 */
 		cy.adjust( 'Margin Top', 20, { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
 				[ `margin-top` ]: '5px',
 			},
+		}, {
+			assertFrontend: false,
 		} )
-		cy.adjust( 'Margin Top', 30, { unit: '%' } ).assertComputedStyle( {
+		cy.adjust( 'Margin Top', 20, { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-top` ]: '15%',
+				[ `margin-top` ]: '19px',
 			},
+		}, {
+			assertBackend: false,
 		} )
+		cy.adjust( 'Margin Top', 20, { unit: '%' } ).assertComputedStyle( {
+			'.ugb-separator': {
+				[ `margin-top` ]: '5%',
+			},
+		}, {
+			assertFrontend: false,
+		} )
+		cy.adjust( 'Margin Top', 20, { unit: '%' } ).assertComputedStyle( {
+			'.ugb-separator': {
+				[ `margin-top` ]: '19%',
+			},
+		}, {
+			assertBackend: false,
+		} )
+
+		// Test Margin Bottom
 		cy.adjust( 'Margin Bottom', 35, { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
 				[ `margin-bottom` ]: '20px',
 			},
+		}, {
+			assertFrontend: false,
+		} )
+		cy.adjust( 'Margin Bottom', 35, { unit: 'px' } ).assertComputedStyle( {
+			'.ugb-separator': {
+				[ `margin-bottom` ]: '34px',
+			},
+		}, {
+			assertBackend: false,
 		} )
 		cy.adjust( 'Margin Bottom', 40, { unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
 				[ `margin-bottom` ]: '25%',
 			},
+		}, {
+			assertFrontend: false,
+		} )
+		cy.adjust( 'Margin Bottom', 40, { unit: '%' } ).assertComputedStyle( {
+			'.ugb-separator': {
+				[ `margin-bottom` ]: '39%',
+			},
+		}, {
+			assertBackend: false,
 		} )
 
 		// Test Layer 2
@@ -190,12 +216,6 @@ describe( 'Separator Block', () => {
 				[ `height` ]: '40em',
 			},
 		} )
-		cy.resetStyle( 'Padding Top' )
-		cy.adjust( 'Padding Top', 61, { viewport: 'Tablet', unit: '%' } ).assertComputedStyle( {
-			'.ugb-separator__top-pad': {
-				[ `height` ]: '61%',
-			},
-		} )
 		cy.adjust( 'Padding Bottom', 111, { viewport: 'Tablet', unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator__bottom-pad': {
 				[ `height` ]: '111px',
@@ -207,36 +227,32 @@ describe( 'Separator Block', () => {
 				[ `height` ]: '36em',
 			},
 		} )
-		cy.resetStyle( 'Padding Bottom' )
-		cy.adjust( 'Padding Bottom', 67, { viewport: 'Tablet', unit: '%' } ).assertComputedStyle( {
-			'.ugb-separator__bottom-pad': {
-				[ `height` ]: '67%',
-			},
-		} )
 
 		/**
 		 *	Test Margins
-		 *	Separator top & bottom margins have -1px values in tablet
-		 *	1 is subtracted on assertion
+		 *	Separator top & bottom margins have:
+		 *	-1 on backend, -1 on frontend
 		 */
-		cy.adjust( 'Margin Top', 15, { viewport: 'Tablet', unit: 'px' } ).assertComputedStyle( {
+		cy.adjust( 'Margin Top', 20, { viewport: 'Tablet', unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-top` ]: '14px',
+				[ `margin-top` ]: '19px',
 			},
 		} )
-		cy.adjust( 'Margin Top', 39, { viewport: 'Tablet', unit: '%' } ).assertComputedStyle( {
+		cy.adjust( 'Margin Top', 25, { viewport: 'Tablet', unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-top` ]: '38%',
+				[ `margin-top` ]: '24%',
 			},
 		} )
-		cy.adjust( 'Margin Bottom', 12, { viewport: 'Tablet', unit: 'px' } ).assertComputedStyle( {
+
+		// Test Margin Bottom
+		cy.adjust( 'Margin Bottom', 35, { viewport: 'Tablet', unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-bottom` ]: '11px',
+				[ `margin-bottom` ]: '34px',
 			},
 		} )
-		cy.adjust( 'Margin Bottom', 5, { viewport: 'Tablet', unit: '%' } ).assertComputedStyle( {
+		cy.adjust( 'Margin Bottom', 40, { viewport: 'Tablet', unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-bottom` ]: '4%',
+				[ `margin-bottom` ]: '39%',
 			},
 		} )
 	} )
@@ -271,12 +287,6 @@ describe( 'Separator Block', () => {
 				[ `height` ]: '40em',
 			},
 		} )
-		cy.resetStyle( 'Padding Top' )
-		cy.adjust( 'Padding Top', 61, { viewport: 'Mobile', unit: '%' } ).assertComputedStyle( {
-			'.ugb-separator__top-pad': {
-				[ `height` ]: '61%',
-			},
-		} )
 		cy.adjust( 'Padding Bottom', 111, { viewport: 'Mobile', unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator__bottom-pad': {
 				[ `height` ]: '111px',
@@ -288,36 +298,32 @@ describe( 'Separator Block', () => {
 				[ `height` ]: '36em',
 			},
 		} )
-		cy.resetStyle( 'Padding Bottom' )
-		cy.adjust( 'Padding Bottom', 67, { viewport: 'Mobile', unit: '%' } ).assertComputedStyle( {
-			'.ugb-separator__bottom-pad': {
-				[ `height` ]: '67%',
-			},
-		} )
 
 		/**
 		 *	Test Margins
-		 *	Separator top & bottom margins have -1px values in mobile
-		 *	1 is subtracted on assertion
+		 *	Separator top & bottom margins have:
+		 *	-1 on backend, -1 on frontend
 		 */
-		cy.adjust( 'Margin Top', 15, { viewport: 'Mobile', unit: 'px' } ).assertComputedStyle( {
+		cy.adjust( 'Margin Top', 20, { viewport: 'Mobile', unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-top` ]: '14px',
+				[ `margin-top` ]: '19px',
 			},
 		} )
-		cy.adjust( 'Margin Top', 39, { viewport: 'Mobile', unit: '%' } ).assertComputedStyle( {
+		cy.adjust( 'Margin Top', 25, { viewport: 'Mobile', unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-top` ]: '38%',
+				[ `margin-top` ]: '24%',
 			},
 		} )
-		cy.adjust( 'Margin Bottom', 12, { viewport: 'Mobile', unit: 'px' } ).assertComputedStyle( {
+
+		// Test Margin Bottom
+		cy.adjust( 'Margin Bottom', 35, { viewport: 'Mobile', unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-bottom` ]: '11px',
+				[ `margin-bottom` ]: '34px',
 			},
 		} )
-		cy.adjust( 'Margin Bottom', 5, { viewport: 'Mobile', unit: '%' } ).assertComputedStyle( {
+		cy.adjust( 'Margin Bottom', 40, { viewport: 'Mobile', unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-bottom` ]: '4%',
+				[ `margin-bottom` ]: '39%',
 			},
 		} )
 	} )
