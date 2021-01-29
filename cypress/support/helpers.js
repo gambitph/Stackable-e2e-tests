@@ -108,7 +108,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 	getActiveTab( tab => {
 		cy.document().then( doc => {
 			const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
-			const blockSelector = Array.from( subject[ 0 ].classList ).includes( 'wp-block' ) ? '.ugb-main-block' : '.wp-block > div'
+			const blockSelector = Array.from( subject[ 0 ].classList ).includes( 'wp-block' ) ? '.ugb-main-block' : '.wp-block > *'
 			cy
 				.get( subject )
 				.find( blockSelector )
