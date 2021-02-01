@@ -266,7 +266,7 @@ export const assertBlockBackground = ( selector, options = {} ) => {
 				[ `Color 2 Location` ]: '80%',
 				[ `Background Gradient Blend Mode` ]: 'multiply',
 			} ).assertComputedStyle( {
-				[ selector + ':before' ]: {
+				[ `${ selector }:before` ]: {
 					[ `background-image` ]: 'linear-gradient(#6d6d6d 11%, #cd2653 80%)',
 					[ `mix-blend-mode` ]: 'multiply',
 				},
