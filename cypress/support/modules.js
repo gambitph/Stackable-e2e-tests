@@ -237,9 +237,10 @@ export const assertBlockTitleDescription = ( options = {} ) => {
 /**
  * Assertion function for Block Background.
  *
+ * @param {string} selector
  * @param {Object} options
  */
-export const assertBlockBackground = ( options = {} ) => {
+export const assertBlockBackground = ( selector, options = {} ) => {
 	const {
 		viewport = 'Desktop',
 	} = options
@@ -252,7 +253,7 @@ export const assertBlockBackground = ( options = {} ) => {
 			cy.adjust( 'No Paddings', true )
 			cy.adjust( 'Background Color', '#ffffff' )
 			cy.adjust( 'Background Color Opacity', 0.7 ).assertComputedStyle( {
-				'.ugb-icon': {
+				[ selector ]: {
 					[ `background-color` ]: 'rgba(255, 255, 255, 0.7)',
 				},
 			} )
@@ -265,7 +266,7 @@ export const assertBlockBackground = ( options = {} ) => {
 				[ `Color 2 Location` ]: '80%',
 				[ `Background Gradient Blend Mode` ]: 'multiply',
 			} ).assertComputedStyle( {
-				'.ugb-icon:before': {
+				[ selector + ':before' ]: {
 					[ `background-image` ]: 'linear-gradient(#6d6d6d 11%, #cd2653 80%)',
 					[ `mix-blend-mode` ]: 'multiply',
 				},
