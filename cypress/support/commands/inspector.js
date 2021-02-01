@@ -53,24 +53,6 @@ export function openInspector( subject, tab, selector ) {
 }
 
 /**
- * Command for scrolling the sidebar panel to
- * a specific selector.
- *
- * @param {string} selector
- */
-export function scrollSidebarToView( selector ) {
-	cy.document().then( doc => {
-		const selectedEl = doc.querySelector( selector )
-		if ( selectedEl ) {
-			const { y } = selectedEl.getBoundingClientRect()
-			if ( y ) {
-				cy.get( '.interface-complementary-area' ).scrollTo( 0, y )
-			}
-		}
-	} )
-}
-
-/**
  * Command for collapsing an accordion.
  *
  * @param {string} name
@@ -135,7 +117,6 @@ export function toggleStyle( name = 'Block Title', enabled = true ) {
 		if ( el ) {
 			// Click the checkbox if necessary. Otherwise, don't check the checkbox.
 			if ( ( enabled && ! Array.from( el.classList ).includes( 'is-checked' ) ) || ( ! enabled && Array.from( el.classList ).includes( 'is-checked' ) ) ) {
-				scrollSidebarToView( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle>input` )
 				cy.get( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle>input` ).click( { force: true } )
 			}
 		}

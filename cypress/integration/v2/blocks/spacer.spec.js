@@ -24,9 +24,9 @@ describe( 'Spacer Block', () => {
 			},
 		} )
 		cy.resetStyle( 'Height' )
-		cy.adjust( 'Height', 23, { unit: 'vh' } ).assertComputedStyle( {
+		cy.adjust( 'Height', 30, { unit: 'vh' } ).assertComputedStyle( {
 			'.ugb-spacer': {
-				[ `height` ]: '23vh',
+				[ `height` ]: '30vh',
 			},
 		} )
 
@@ -116,9 +116,9 @@ describe( 'Spacer Block', () => {
 			},
 		} )
 		cy.resetStyle( 'Height' )
-		cy.adjust( 'Height', 23, { viewport: 'Tablet', unit: 'vh' } ).assertComputedStyle( {
+		cy.adjust( 'Height', 30, { viewport: 'Tablet', unit: 'vh' } ).assertComputedStyle( {
 			'.ugb-spacer': {
-				[ `height` ]: '23vh',
+				[ `height` ]: '30vh',
 			},
 		} )
 
@@ -168,9 +168,9 @@ describe( 'Spacer Block', () => {
 			},
 		} )
 		cy.resetStyle( 'Height' )
-		cy.adjust( 'Height', 23, { viewport: 'Mobile', unit: 'vh' } ).assertComputedStyle( {
+		cy.adjust( 'Height', 30, { viewport: 'Mobile', unit: 'vh' } ).assertComputedStyle( {
 			'.ugb-spacer': {
-				[ `height` ]: '23vh',
+				[ `height` ]: '30vh',
 			},
 		} )
 

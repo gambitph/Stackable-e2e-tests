@@ -106,23 +106,16 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
  * @param {string} mode
  */
 export function changePreviewMode( mode = 'Desktop' ) {
-	cy
-		.get( 'button' )
-		.contains( containsRegExp( 'Preview' ) )
-		.invoke( 'attr', 'aria-expanded' )
-		.then( $ariaExpanded => {
-			if ( $ariaExpanded === 'false' ) {
-				cy
-					.get( 'button' )
-					.contains( containsRegExp( 'Preview' ) )
-					.click( { force: true } )
+	cy.window( { log: false } ).then( win => {
+		const { __experimentalSetPreviewDeviceType } = win.wp.data.dispatch( 'core/edit-post' )
+		const { __experimentalGetPreviewDeviceType } = win.wp.data.select( 'core/edit-post' )
+		if ( __experimentalSetPreviewDeviceType && __experimentalGetPreviewDeviceType ) {
+			if ( __experimentalGetPreviewDeviceType() !== mode ) {
+				__experimentalSetPreviewDeviceType( mode )
+				cy.wait( 100 )
 			}
-
-			cy
-				.get( 'button.block-editor-post-preview__button-resize' )
-				.contains( containsRegExp( mode ) )
-				.click( { force: true } )
-		} )
+		}
+	} )
 }
 
 /**
@@ -135,24 +128,6 @@ export function deleteBlock( subject, selector ) {
 	selectBlock( subject, selector )
 	cy.get( 'button[aria-label="More options"]' ).first().click( { force: true } )
 	cy.get( 'button' ).contains( 'Remove block' ).click( { force: true } )
-}
-
-/**
- * Command for scrolling the editor panel to
- * a specific selector.
- *
- * @param {string} selector
- */
-export function scrollEditorToView( selector ) {
-	cy.document().then( doc => {
-		const selectedEl = doc.querySelector( selector )
-		if ( selectedEl ) {
-			const { y } = selectedEl.getBoundingClientRect()
-			if ( y ) {
-				cy.get( '.interface-interface-skeleton__content' ).scrollTo( 0, y )
-			}
-		}
-	} )
 }
 
 /**

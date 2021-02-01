@@ -13,7 +13,6 @@ import {
 	getBaseControl,
 	containsRegExp,
 	getActiveTab,
-	changeResponsiveMode,
 	changeUnit,
 	waitLoader,
 	rgbToHex,
@@ -101,7 +100,7 @@ function rangeControl( name, value, options = {} ) {
 	} = options
 
 	getActiveTab( tab => {
-		changeResponsiveMode( viewport, name, tab, isInPopover )
+		cy.changePreviewMode( viewport )
 		changeUnit( unit, name, tab, isInPopover )
 		getBaseControl( tab, isInPopover )
 			.contains( containsRegExp( name ) )
@@ -126,7 +125,7 @@ function rangeControlReset( name, options = {} ) {
 	} = options
 
 	getActiveTab( tab => {
-		changeResponsiveMode( viewport, name, tab, isInPopover )
+		cy.changePreviewMode( viewport )
 		changeUnit( unit, name, tab, isInPopover )
 		getBaseControl( tab, isInPopover )
 			.contains( containsRegExp( name ) )
@@ -162,7 +161,7 @@ function toolbarControl( name, value, options = {}, customRegExp = '' ) {
 	}
 
 	getActiveTab( tab => {
-		changeResponsiveMode( viewport, name, tab, isInPopover, customRegExp )
+		cy.changePreviewMode( viewport )
 		getBaseControl( tab, isInPopover )
 			.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
 			.parentsUntil( `.components-panel__body>.components-base-control` )
@@ -393,7 +392,7 @@ function dropdownControl( name, value, options = {} ) {
 	}
 
 	getActiveTab( tab => {
-		changeResponsiveMode( viewport, name, tab, isInPopover )
+		cy.changePreviewMode( viewport )
 		changeUnit( unit, name, tab, isInPopover )
 		getBaseControl( tab, isInPopover )
 			.contains( containsRegExp( name ) )
@@ -475,7 +474,7 @@ function fourRangeControl( name, value, options = {} ) {
 	if ( typeof value === 'number' ) {
 		// Adjust the single control field.
 		getActiveTab( tab => {
-			changeResponsiveMode( viewport, name, tab, isInPopover )
+			cy.changePreviewMode( viewport )
 			changeUnit( unit, name, tab, isInPopover )
 			selector( tab )
 				.find( 'input.components-input-control__input' )
@@ -484,7 +483,7 @@ function fourRangeControl( name, value, options = {} ) {
 	} else if ( Array.isArray( value ) ) {
 		// Adjust the four control field.
 		getActiveTab( tab => {
-			changeResponsiveMode( viewport, name, tab, isInPopover )
+			cy.changePreviewMode( viewport )
 			changeUnit( unit, name, tab, isInPopover )
 			selector( tab )
 				.find( 'button.ugb-four-range-control__lock' )
@@ -534,7 +533,7 @@ function fourRangeControlReset( name, options = {} ) {
 	} )
 
 	getActiveTab( tab => {
-		changeResponsiveMode( viewport, name, tab, isInPopover )
+		cy.changePreviewMode( viewport )
 		selector( tab, isInPopover )
 			.find( 'button.ugb-four-range-control__lock' )
 			.invoke( 'attr', 'class' )

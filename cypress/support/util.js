@@ -51,48 +51,6 @@ export const getActiveTab = ( callbackFunc = () => {} ) => {
 }
 
 /**
- * Function for changing the responsive mode.
- *
- * @param {string} viewport desired viewport
- * @param {string} name selector name
- * @param {string} tab current active tab
- * @param {boolean} isInPopover if the control is in popover
- * @param {string} customRegExp sometimes selector requires custom regexpressions
- */
-export const changeResponsiveMode = ( viewport = 'Desktop', name = '', tab = 'style', isInPopover = false, customRegExp = '' ) => {
-	getBaseControl( tab, isInPopover )
-		.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
-		.parent( { log: false } )
-		.then( $baseControl => {
-			if ( $baseControl.find( '.ugb-base-control-multi-label__responsive button[aria-label="Desktop"]', { log: false } ).length ) {
-				if ( ! $baseControl.find( `button[aria-label="${ viewport }"]`, { log: false } ).length ) {
-					getBaseControl( tab, isInPopover )
-						.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
-						.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
-						.parent( { log: false } )
-						.find( `button[aria-label="Desktop"]`, { log: false } )
-						.click( { force: true } )
-				}
-
-				getBaseControl( tab, isInPopover )
-					.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
-					.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
-					.parent( { log: false } )
-					.find( `button[aria-label="Desktop"]` )
-					.trigger( 'mouseover', { force: true, log: false } )
-
-				getBaseControl( tab, isInPopover )
-					.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
-					.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
-					.parent( { log: false } )
-					.find( `button[aria-label="${ viewport }"]` )
-					.click( { force: true, log: false } )
-			}
-		} )
-}
-
-/**
  * Function for changing the unit in control.
  *
  * @param {string} unit desired unit
