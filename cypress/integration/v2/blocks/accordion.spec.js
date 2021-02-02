@@ -6,14 +6,29 @@ import { range } from 'lodash'
 import { blocks } from '~stackable-e2e/config'
 import { getAddresses } from '~stackable-e2e/util'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Accordion Block', () => {
+describe( 'Accordion Block', registerTests( [
+	blockExist,
+	blockError,
+	innerBlocks,
+	switchLayout,
+	switchDesign,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/accordion', '.ugb-accordion' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/accordion' ) )
+}
 
+function innerBlocks() {
 	it( 'should allow adding inner blocks inside accordion', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -27,18 +42,26 @@ describe( 'Accordion Block', () => {
 			.filter( blockName => blockName !== 'ugb/accordion' )
 			.forEach( blockName => cy.appendBlock( blockName ) )
 	} )
+}
+
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/accordion', [
 		'Basic',
 		'Plain',
 		'Line Colored',
 		'Colored',
 	] ) )
+}
+
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/accordion', [
 		'Dim Accordion',
 		'Elevate Accordion',
 		'Lounge Accordion',
 	] ) )
+}
 
+function desktopStyle() {
 	it( 'should adjust desktop options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -230,7 +253,9 @@ describe( 'Accordion Block', () => {
 				},
 			} )
 	} )
+}
 
+function tabletStyle() {
 	it( 'should adjust tablet options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -349,7 +374,9 @@ describe( 'Accordion Block', () => {
 			},
 		} )
 	} )
+}
 
+function mobileStyle() {
 	it( 'should adjust mobile options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -467,4 +494,5 @@ describe( 'Accordion Block', () => {
 			},
 		} )
 	} )
-} )
+}
+

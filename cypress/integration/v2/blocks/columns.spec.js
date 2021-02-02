@@ -4,15 +4,27 @@
 import { range } from 'lodash'
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertBlockExist, blockErrorTest, switchLayouts,
+	assertBlockExist, blockErrorTest, switchLayouts, registerTests,
 } from '~stackable-e2e/helpers'
 import config from 'root/cypress.json'
 
-describe( 'Advanced Columns and Grid Block', () => {
+describe( 'Advanced Columns and Grid Block', registerTests( [
+	blockExist,
+	blockError,
+	innerBlocks,
+	switchLayout,
+	desktopStyle,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/columns', '.ugb-columns' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/columns' ) )
+}
 
+function innerBlocks() {
 	it( 'should allow adding inner blocks inside Advanced Columns and Grid', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -22,7 +34,9 @@ describe( 'Advanced Columns and Grid Block', () => {
 			.filter( blockName => blockName !== 'ugb/columns' )
 			.forEach( blockName => cy.appendBlock( blockName ) )
 	} )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/columns', [
 		'Grid',
 		'Plain',
@@ -30,7 +44,9 @@ describe( 'Advanced Columns and Grid Block', () => {
 		'Uneven 2',
 		'Tiled',
 	] ) )
+}
 
+function desktopStyle() {
 	it( 'should adjust desktop options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -100,34 +116,5 @@ describe( 'Advanced Columns and Grid Block', () => {
 			[ `Letter Spacing` ]: 7.1,
 		} )
 	} )
+}
 
-	it( 'should adjust tablet options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/columns' )
-	} )
-
-	it( 'should adjust mobile options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/columns' )
-	} )
-
-	it( 'should adjust desktop options inside advanced tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/columns' )
-	} )
-
-	it( 'should adjust tablet options inside advanced tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/columns' )
-	} )
-
-	it( 'should adjust mobile options inside advanced tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/columns' )
-	} )
-} )

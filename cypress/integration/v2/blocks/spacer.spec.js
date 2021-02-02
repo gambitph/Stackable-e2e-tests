@@ -2,14 +2,26 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertSeparators,
+	assertBlockExist, blockErrorTest, assertSeparators, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Spacer Block', () => {
+describe( 'Spacer Block', registerTests( [
+	blockExist,
+	blockError,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/spacer', '.ugb-spacer' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/spacer' ) )
+}
 
+function desktopStyle() {
 	it( 'should adjust desktop options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -101,7 +113,9 @@ describe( 'Spacer Block', () => {
 		// Test Top and Bottom Separator
 		assertSeparators( { viewport: 'Desktop' } )
 	} )
+}
 
+function tabletStyle() {
 	it( 'should adjust tablet options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -153,7 +167,9 @@ describe( 'Spacer Block', () => {
 		// Test Top and Bottom Separator
 		assertSeparators( { viewport: 'Tablet' } )
 	} )
+}
 
+function mobileStyle() {
 	it( 'should adjust mobile options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -205,4 +221,5 @@ describe( 'Spacer Block', () => {
 		// Test Top and Bottom Separator
 		assertSeparators( { viewport: 'Mobile' } )
 	} )
-} )
+}
+

@@ -2,14 +2,25 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Call To Action Block', () => {
+describe( 'Call To Action Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	switchDesign,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/cta', '.ugb-cta' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/cta' ) )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/cta', [
 		'Basic',
 		'Plain',
@@ -18,6 +29,9 @@ describe( 'Call To Action Block', () => {
 		'Horizontal 3',
 		'Split Centered',
 	] ) )
+}
+
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/cta', [
 		'Angled Call to Action 1',
 		'Angled Call to Action 2',
@@ -60,4 +74,5 @@ describe( 'Call To Action Block', () => {
 		'Upland Call to Action',
 		'Yule Call to Action',
 	] ) )
-} )
+}
+

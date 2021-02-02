@@ -3,21 +3,36 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Icon Block', () => {
+describe( 'Icon Block', registerTests( [
+	blockExist,
+	blockError,
+	switchDesign,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/icon', '.ugb-icon' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/icon' ) )
+}
 
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/icon', [
 		'Cary Icon',
 		'Elevate Icon',
 		'Hue Icon',
 		'Lume Icon',
 	] ) )
+}
 
+function desktopStyle() {
 	it( 'should adjust desktop options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -173,7 +188,9 @@ describe( 'Icon Block', () => {
 		// Test Top and Bottom Separator
 		assertSeparators( { viewport: 'Desktop' } )
 	} )
+}
 
+function tabletStyle() {
 	it( 'should adjust tablet options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -295,7 +312,9 @@ describe( 'Icon Block', () => {
 		// Test Top and Bottom Separator
 		assertSeparators( { viewport: 'Tablet' } )
 	} )
+}
 
+function mobileStyle() {
 	it( 'should adjust mobile options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -413,4 +432,5 @@ describe( 'Icon Block', () => {
 		// Test Top and Bottom Separator.
 		assertSeparators( { viewport: 'Mobile' } )
 	} )
-} )
+}
+

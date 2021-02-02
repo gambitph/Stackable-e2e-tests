@@ -2,20 +2,36 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, switchDesigns, assertAligns, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchLayouts, switchDesigns, assertAligns, assertBlockBackground, assertSeparators, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Advanced Text Block', () => {
+describe( 'Advanced Text Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	switchDesign,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/text', '.ugb-text' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/text' ) )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/text', [
 		'Plain',
 		'Side Title 1',
 		'Side Title 2',
 	] ) )
+}
 
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/text', [
 		'Angled Advanced Text',
 		'Aspire Advanced Text',
@@ -35,7 +51,9 @@ describe( 'Advanced Text Block', () => {
 		'Proact Advanced Text 2',
 		'Seren Advanced Text',
 	] ) )
+}
 
+function desktopStyle() {
 	it( 'should adjust desktop options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -204,7 +222,9 @@ describe( 'Advanced Text Block', () => {
 		// Test Top and Bottom Separator
 		assertSeparators( { viewport: 'Desktop' } )
 	} )
+}
 
+function tabletStyle() {
 	it( 'should adjust tablet options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -333,7 +353,9 @@ describe( 'Advanced Text Block', () => {
 		// Test Top and Bottom Separator
 		assertSeparators( { viewport: 'Tablet' } )
 	} )
+}
 
+function mobileStyle() {
 	it( 'should adjust mobile options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -462,4 +484,5 @@ describe( 'Advanced Text Block', () => {
 		// Test Top and Bottom Separator
 		assertSeparators( { viewport: 'Mobile' } )
 	} )
-} )
+}
+

@@ -2,13 +2,25 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Team Member Block', () => {
-	it( 'should show the block', assertBlockExist( 'ugb/team-member', '.ugb-team-member' ) )
+describe( 'Team Member Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	switchDesign,
+] ) )
 
+function blockExist() {
+	it( 'should show the block', assertBlockExist( 'ugb/team-member', '.ugb-team-member' ) )
+}
+
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/team-member' ) )
+}
+
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/team-member', [
 		'Basic',
 		'Plain',
@@ -17,7 +29,9 @@ describe( 'Team Member Block', () => {
 		'Overlay Simple',
 		'Half',
 	] ) )
+}
 
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/team-member', [
 		'Capital Team Member',
 		'Cary Team Member 1',
@@ -36,4 +50,5 @@ describe( 'Team Member Block', () => {
 		'Seren Team Member 2',
 		'Upland Team Member',
 	] ) )
-} )
+}
+

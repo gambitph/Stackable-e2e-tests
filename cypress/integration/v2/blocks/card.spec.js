@@ -2,14 +2,25 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Card Block', () => {
+describe( 'Card Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	switchDesign,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/card', '.ugb-card' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/card' ) )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/card', [
 		'Basic',
 		'Plain',
@@ -17,6 +28,9 @@ describe( 'Card Block', () => {
 		'Full',
 		'Faded',
 	] ) )
+}
+
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/card', [
 		'Angled Card',
 		'Arch Card',
@@ -42,4 +56,5 @@ describe( 'Card Block', () => {
 		'Speck Card',
 		'Yule Card',
 	] ) )
-} )
+}
+

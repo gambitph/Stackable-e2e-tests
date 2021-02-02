@@ -3,14 +3,26 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertAligns,
+	assertBlockExist, blockErrorTest, assertAligns, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Advanced Heading Block', () => {
+describe( 'Advanced Heading Block', registerTests( [
+	blockExist,
+	blockError,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/heading', '.ugb-heading' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/heading' ) )
+}
 
+function desktopStyle() {
 	it( 'should adjust desktop options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -168,7 +180,9 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 	} )
+}
 
+function tabletStyle() {
 	it( 'should adjust tablet options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -286,7 +300,9 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 	} )
+}
 
+function mobileStyle() {
 	it( 'should adjust mobile options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -404,4 +420,5 @@ describe( 'Advanced Heading Block', () => {
 			},
 		} )
 	} )
-} )
+}
+

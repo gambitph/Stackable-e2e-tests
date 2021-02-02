@@ -184,3 +184,10 @@ export const assertAligns = ( name, selector, options = {} ) => {
 	} )
 }
 
+/**
+ * Helper function for registering tests.
+ *
+ * @param {Array} testsList
+ */
+export const registerTests = ( testsList = [] ) => () => testsList.forEach( test => typeof test === 'function' && test() )
+

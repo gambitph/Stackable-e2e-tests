@@ -2,14 +2,25 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Feature Block', () => {
+describe( 'Feature Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	switchDesign,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/feature', '.ugb-feature' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/feature' ) )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/feature', [
 		'Basic',
 		'Plain',
@@ -44,7 +55,9 @@ describe( 'Feature Block', () => {
 			value: 'overlap-bg4',
 		},
 	] ) )
+}
 
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/feature', [
 		'Angled Feature',
 		'Arch Feature',
@@ -75,4 +88,5 @@ describe( 'Feature Block', () => {
 		'Speck Feature',
 		'Upland Feature',
 	] ) )
-} )
+}
+
