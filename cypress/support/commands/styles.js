@@ -862,9 +862,19 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 
 		if ( typeof expectedValue === 'string' && expectedValue.match( /%/ ) ) {
 			// Convert % to px
-			const elWidth = parseInt( win.getComputedStyle( element.parentElement ).width )
-			expectedValue = `${ parseInt( ( elWidth / 100 ) * parseInt( expectedValue ) ) }px`
-			computedStyle = `${ parseInt( computedStyle ) }px`
+			switch ( cssRule ) {
+				case 'height': {
+					const elHeight = parseInt( win.getComputedStyle( element.parentElement ).height )
+					expectedValue = `${ parseInt( ( elHeight / 100 ) * parseInt( expectedValue ) ) }px`
+					computedStyle = `${ parseInt( computedStyle ) }px`
+					break
+				}
+				default: {
+					const elWidth = parseInt( win.getComputedStyle( element.parentElement ).width )
+					expectedValue = `${ parseInt( ( elWidth / 100 ) * parseInt( expectedValue ) ) }px`
+					computedStyle = `${ parseInt( computedStyle ) }px`
+				}
+			}
 		}
 
 		if ( typeof expectedValue === 'string' && expectedValue.match( /vh/ ) ) {
