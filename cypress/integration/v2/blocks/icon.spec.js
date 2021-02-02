@@ -290,7 +290,7 @@ describe( 'Icon Block', () => {
 		} )
 
 		// Test Block Background
-		assertBlockBackground( { viewport: 'Tablet' } )
+		assertBlockBackground( '.ugb-icon', { viewport: 'Tablet' } )
 
 		// Test Top and Bottom Separator
 		assertSeparators( { viewport: 'Tablet' } )
