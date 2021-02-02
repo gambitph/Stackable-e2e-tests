@@ -1,9 +1,4 @@
 /**
- * External dependencies
- */
-import { kebabCase } from 'lodash'
-
-/**
  * Internal dependencies
  */
 import { selectBlock } from './index'
@@ -111,14 +106,20 @@ export function collapse( name = 'General', toggle = true ) {
  * @param {boolean} enabled
  */
 export function toggleStyle( name = 'Block Title', enabled = true ) {
-	cy.document().then( doc => {
-		const kebabCaseName = kebabCase( name )
-		const el = doc.querySelector( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle` )
-		if ( el ) {
-			// Click the checkbox if necessary. Otherwise, don't check the checkbox.
-			if ( ( enabled && ! Array.from( el.classList ).includes( 'is-checked' ) ) || ( ! enabled && Array.from( el.classList ).includes( 'is-checked' ) ) ) {
-				cy.get( `.ugb-panel--${ kebabCaseName }>h2>button>span>.ugb-toggle-panel-form-toggle>input` ).click( { force: true } )
+	const selector = () => 	cy
+		.get( '.components-panel__body' )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( '.components-panel__body' )
+		.parent()
+		.find( '.components-form-toggle' )
+
+	selector()
+		.invoke( 'attr', 'class' )
+		.then( classNames => {
+			if ( classNames.match( /is-checked/ ) !== enabled ) {
+				selector()
+					.find( 'input' )
+					.click( { force: true } )
 			}
-		}
-	} )
+		} )
 }
