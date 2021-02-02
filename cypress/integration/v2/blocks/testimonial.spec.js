@@ -2,14 +2,25 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Testimonial Block', () => {
+describe( 'Testimonial Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	switchDesign,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/testimonial', '.ugb-testimonial' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/testimonial' ) )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/testimonial', [
 		'Basic',
 		'Plain',
@@ -21,7 +32,9 @@ describe( 'Testimonial Block', () => {
 		'Vertical',
 		'Vertical Inverse',
 	] ) )
+}
 
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/testimonial', [
 		'Arch Testimonial',
 		'Chic Testimonial',
@@ -40,4 +53,5 @@ describe( 'Testimonial Block', () => {
 		'Upland Testimonial',
 		'Yule Testimonial',
 	] ) )
-} )
+}
+

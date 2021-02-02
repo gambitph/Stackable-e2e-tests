@@ -2,14 +2,25 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Image Box Block', () => {
+describe( 'Image Box Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	switchDesign,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/image-box', '.ugb-image-box' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/image-box' ) )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/image-box', [
 		'Basic',
 		'Plain',
@@ -18,7 +29,9 @@ describe( 'Image Box Block', () => {
 		'Fade',
 		'Line',
 	] ) )
+}
 
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/image-box', [
 		'Aspire Image Box',
 		'Aurora Image Box',
@@ -41,4 +54,5 @@ describe( 'Image Box Block', () => {
 		'Upland Image Box 1',
 		'Upland Image Box 2',
 	] ) )
-} )
+}
+

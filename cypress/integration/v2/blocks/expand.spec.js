@@ -2,14 +2,26 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertAligns,
+	assertBlockExist, blockErrorTest, assertAligns, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Expand Block', () => {
+describe( 'Expand Block', registerTests( [
+	blockExist,
+	blockError,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/expand', '.ugb-expand' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/expand' ) )
+}
 
+function desktopStyle() {
 	it( 'should adjust desktop options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -117,7 +129,9 @@ describe( 'Expand Block', () => {
 			},
 		} )
 	} )
+}
 
+function tabletStyle() {
 	it( 'should adjust tablet options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -216,7 +230,9 @@ describe( 'Expand Block', () => {
 			},
 		} )
 	} )
+}
 
+function mobileStyle() {
 	it( 'should adjust mobile options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -315,4 +331,5 @@ describe( 'Expand Block', () => {
 			},
 		} )
 	} )
-} )
+}
+

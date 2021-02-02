@@ -2,14 +2,28 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Blockquote Block', () => {
+describe( 'Blockquote Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	switchDesign,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/blockquote', '.ugb-blockquote' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/blockquote' ) )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/blockquote', [
 		'Basic',
 		'Plain',
@@ -17,6 +31,9 @@ describe( 'Blockquote Block', () => {
 		'Huge',
 		'Highlight',
 	] ) )
+}
+
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/blockquote', [
 		'Cary Blockquote',
 		'Chic Blockquote',
@@ -33,7 +50,9 @@ describe( 'Blockquote Block', () => {
 		'Seren Blockquote',
 		'Yule Blockquote',
 	] ) )
+}
 
+function desktopStyle() {
 	it( 'should adjust desktop options in style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -246,7 +265,9 @@ describe( 'Blockquote Block', () => {
 			},
 		} )
 	} )
+}
 
+function tabletStyle() {
 	it( 'should adjust tablet options in style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -315,7 +336,9 @@ describe( 'Blockquote Block', () => {
 			},
 		} )
 	} )
+}
 
+function mobileStyle() {
 	it( 'should adjust mobile options in style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -384,4 +407,4 @@ describe( 'Blockquote Block', () => {
 			},
 		} )
 	} )
-} )
+}

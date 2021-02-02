@@ -3,14 +3,25 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Number Box Block', () => {
+describe( 'Number Box Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	switchDesign,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/number-box', '.ugb-number-box' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/number-box' ) )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/number-box', [
 		'Basic',
 		'Plain',
@@ -21,6 +32,9 @@ describe( 'Number Box Block', () => {
 		},
 		'Faded',
 	] ) )
+}
+
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/number-box', [
 		'Angled Number Box',
 		'Aurora Number Box',
@@ -35,4 +49,5 @@ describe( 'Number Box Block', () => {
 		'Propel Number Box',
 		'Speck Number Box',
 	] ) )
-} )
+}
+

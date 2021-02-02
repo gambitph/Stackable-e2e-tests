@@ -2,21 +2,36 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, assertAligns,
+	assertBlockExist, blockErrorTest, switchLayouts, assertAligns, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Divider Block', () => {
+describe( 'Divider Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/divider', '.ugb-divider' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/divider' ) )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/divider', [
 		'Basic',
 		'Bar',
 		'Dots',
 		'Asterisks',
 	] ) )
+}
 
+function desktopStyle() {
 	it( 'should adjust desktop options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -44,7 +59,9 @@ describe( 'Divider Block', () => {
 		// Test General Alignment
 		assertAligns( 'Align', '.ugb-inner-block' )
 	} )
+}
 
+function tabletStyle() {
 	it( 'should adjust tablet options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -54,7 +71,9 @@ describe( 'Divider Block', () => {
 		cy.collapse( 'General' )
 		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
 	} )
+}
 
+function mobileStyle() {
 	it( 'should adjust mobile options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -64,4 +83,5 @@ describe( 'Divider Block', () => {
 		cy.collapse( 'General' )
 		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
 	} )
-} )
+}
+

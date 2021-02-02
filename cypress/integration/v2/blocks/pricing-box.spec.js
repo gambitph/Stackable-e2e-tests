@@ -2,13 +2,25 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Pricing Box Block', () => {
-	it( 'should show the block', assertBlockExist( 'ugb/pricing-box', '.ugb-pricing-box' ) )
+describe( 'Pricing Box Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	switchDesign,
+] ) )
 
+function blockExist() {
+	it( 'should show the block', assertBlockExist( 'ugb/pricing-box', '.ugb-pricing-box' ) )
+}
+
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/pricing-box' ) )
+}
+
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/pricing-box', [
 		'Basic',
 		'Plain',
@@ -16,7 +28,9 @@ describe( 'Pricing Box Block', () => {
 		'Colored',
 		'Sectioned',
 	] ) )
+}
 
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/pricing-box', [
 		'Aurora Pricing Box',
 		'Bean Pricing Box',
@@ -37,4 +51,5 @@ describe( 'Pricing Box Block', () => {
 		'Upland Pricing Box',
 		'Yule Pricing Box',
 	] ) )
-} )
+}
+

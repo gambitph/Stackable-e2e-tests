@@ -2,14 +2,25 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Button Block', () => {
+describe( 'Button Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	switchDesign,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/button', '.ugb-button' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/button' ) )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/button', [
 		'Basic',
 		'Spread',
@@ -19,7 +30,9 @@ describe( 'Button Block', () => {
 		'Grouped 1',
 		'Grouped 2',
 	] ) )
+}
 
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/button', [
 		'Chic Button',
 		'Decora Button',
@@ -28,4 +41,5 @@ describe( 'Button Block', () => {
 		'Heights Button',
 		'Lume Button',
 	] ) )
-} )
+}
+

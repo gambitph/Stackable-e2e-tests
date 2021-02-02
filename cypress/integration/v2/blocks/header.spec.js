@@ -2,14 +2,25 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Header', () => {
+describe( 'Header', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	switchDesign,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/header', '.ugb-header' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/header' ) )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/header', [
 		'Basic',
 		'Plain',
@@ -19,7 +30,9 @@ describe( 'Header', () => {
 		'Half',
 		'Huge',
 	] ) )
+}
 
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/header', [
 		'Angled Header',
 		'Arch Header 1',
@@ -55,4 +68,5 @@ describe( 'Header', () => {
 		'Upland Header',
 		'Yule Header',
 	] ) )
-} )
+}
+

@@ -2,14 +2,24 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns,
+	assertBlockExist, blockErrorTest, switchDesigns, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Icon List Block', () => {
+describe( 'Icon List Block', registerTests( [
+	blockExist,
+	blockError,
+	switchDesign,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/icon-list', '.ugb-icon-list' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/icon-list' ) )
+}
 
+function switchDesign() {
 	it( 'should switch design', switchDesigns( 'ugb/icon-list', [
 		'Angled Icon List',
 		'Arch Icon List',
@@ -35,4 +45,5 @@ describe( 'Icon List Block', () => {
 		'Speck Icon List',
 		'Yule Icon List',
 	] ) )
-} )
+}
+

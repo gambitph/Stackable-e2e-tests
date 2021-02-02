@@ -2,14 +2,27 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchLayouts,
+	assertBlockExist, blockErrorTest, switchLayouts, registerTests,
 } from '~stackable-e2e/helpers'
 
-describe( 'Separator Block', () => {
+describe( 'Separator Block', registerTests( [
+	blockExist,
+	blockError,
+	switchLayout,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
+] ) )
+
+function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/separator', '.ugb-separator' ) )
+}
 
+function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/separator' ) )
+}
 
+function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/separator', [
 		'Wave 1',
 		'Wave 2',
@@ -24,7 +37,9 @@ describe( 'Separator Block', () => {
 		'Rounded 2',
 		'Rounded 3',
 	] ) )
+}
 
+function desktopStyle() {
 	it( 'should adjust desktop options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -185,7 +200,9 @@ describe( 'Separator Block', () => {
 			},
 		} )
 	} )
+}
 
+function tabletStyle() {
 	it( 'should adjust tablet options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -256,7 +273,9 @@ describe( 'Separator Block', () => {
 			},
 		} )
 	} )
+}
 
+function mobileStyle() {
 	it( 'should adjust mobile options inside style tab', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -327,4 +346,5 @@ describe( 'Separator Block', () => {
 			},
 		} )
 	} )
-} )
+}
+
