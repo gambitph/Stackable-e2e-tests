@@ -269,6 +269,7 @@ function desktopStyle() {
 		cy.adjust( 'Gradient Direction (degrees)', 138 )
 		cy.adjust( 'Text Color', '#ffa03b' )
 		cy.adjust( 'Hover Effect', 'scale' )
+			.assertClassName( '.ugb-button1', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
 			[ `Button Color #1` ]: '#bd8b8b',
@@ -283,6 +284,7 @@ function desktopStyle() {
 			[ `Letter Spacing` ]: 2.9,
 		} )
 		cy.adjust( 'Button Size', 'large' )
+			.assertClassName( '.ugb-button1', 'ugb-button--size-large' )
 		cy.adjust( 'Border Radius', 40 )
 		cy.adjust( 'Vertical Padding', 15 )
 		cy.adjust( 'Horizontal Padding', 43 )
@@ -336,6 +338,7 @@ function desktopStyle() {
 		cy.adjust( 'Gradient Direction (degrees)', 138 )
 		cy.adjust( 'Text Color', '#ffa03b' )
 		cy.adjust( 'Hover Effect', 'scale' )
+			.assertClassName( '.ugb-button1', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
 			[ `Button Color #1` ]: '#bd8b8b',
@@ -350,6 +353,7 @@ function desktopStyle() {
 			[ `Letter Spacing` ]: 2.9,
 		} )
 		cy.adjust( 'Button Size', 'large' )
+			.assertClassName( '.ugb-button1', 'ugb-button--size-large' )
 		cy.adjust( 'Border Radius', 40 )
 		cy.adjust( 'Vertical Padding', 15 )
 		cy.adjust( 'Horizontal Padding', 43 )
