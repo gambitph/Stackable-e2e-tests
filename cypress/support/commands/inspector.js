@@ -111,7 +111,7 @@ export function toggleStyle( name = 'Block Title', enabled = true ) {
 		.contains( containsRegExp( name ) )
 		.parentsUntil( '.components-panel__body' )
 		.parent()
-		.find( '.components-form-toggle' )
+		.find( '.components-form-toggle.ugb-toggle-panel-form-toggle' )
 
 	selector()
 		.invoke( 'attr', 'class' )
