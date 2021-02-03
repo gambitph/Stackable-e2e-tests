@@ -71,6 +71,7 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 		cy.publish()
 		cy.reload()
 	} )
+	cy.publish()
 }
 
 /**
@@ -89,6 +90,7 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 		cy.publish()
 		cy.reload()
 	} )
+	cy.publish()
 }
 
 /**
