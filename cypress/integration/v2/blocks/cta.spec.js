@@ -144,7 +144,7 @@ function desktopStyle() {
 			},
 		} ).assertComputedStyle( {
 			'.ugb-cta__item:before': {
-				[ `background-image` ]: 'linear-gradient(#000000 30%, #ff0000 83%)',
+				[ `background-image` ]: 'linear-gradient(160deg, #000000 30%, #ff0000 83%)',
 				[ `mix-blend-mode` ]: 'difference',
 			},
 		} )
@@ -328,7 +328,7 @@ function desktopStyle() {
 		cy.adjust( 'Adv. Icon Settings', {
 			[ `Icon Size` ]: 18,
 			[ `Icon Position` ]: 'right',
-			[ `Icon Spacing` ]: 28,
+			[ `Icon Spacing` ]: 29,
 		} ).assertComputedStyle( {
 			'.ugb-button svg': {
 				[ `width` ]: '18px',
@@ -344,7 +344,7 @@ function desktopStyle() {
 			.assertClassName( '.ugb-cta__item', 'ugb--hover-lift' )
 
 		// Test Block Background
-		assertBlockBackground( { viewport: 'Desktop' } )
+		assertBlockBackground( '.ugb-cta', { viewport: 'Desktop' } )
 
 		// Test Top and Bottom Separator
 		assertSeparators( { viewport: 'Desktop' } )
@@ -388,12 +388,12 @@ function responsiveAssert( mode ) {
 			} )
 
 			cy.collapse( 'Spacing' )
-			cy.adjust( 'Paddings', 42, { viewport: mode } ).assertComputedStyle( {
+			cy.adjust( 'Paddings', 30, { viewport: mode, unit: 'px' } ).assertComputedStyle( {
 				'.ugb-cta__item': {
-					[ `padding-top` ]: '42px',
-					[ `padding-bottom` ]: '42px',
-					[ `padding-right` ]: '42px',
-					[ `padding-left` ]: '42px',
+					[ `padding-top` ]: '30px',
+					[ `padding-bottom` ]: '30px',
+					[ `padding-right` ]: '30px',
+					[ `padding-left` ]: '30px',
 				},
 			} )
 			cy.resetStyle( 'Paddings' )
@@ -473,7 +473,7 @@ function responsiveAssert( mode ) {
 			cy.collapse( 'Button' )
 			assertAligns( 'Align', '.ugb-button-container', { viewport: mode } )
 
-			assertBlockBackground( { viewport: mode } )
+			assertBlockBackground( '.ugb-cta', { viewport: mode } )
 
 			assertSeparators( { viewport: mode } )
 		} )
