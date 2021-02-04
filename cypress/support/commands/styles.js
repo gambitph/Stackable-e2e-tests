@@ -674,6 +674,7 @@ export function adjust( name, value, options = {} ) {
 	const customLabels = {
 		[ `Color Type` ]: 'Single|Gradient',
 		[ `Icon Color Type` ]: 'Single|Gradient|Multicolor',
+		[ `Button Color Type` ]: 'Single|Gradient',
 	}
 
 	const _adjust = classNames => {
@@ -850,61 +851,68 @@ export function adjustDesign( option = '' ) {
 export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	const _assertComputedStyle = ( win, doc, element, cssRule, expectedValue, pseudoEl, parentEl, selector ) => {
 		let computedStyle = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )[ camelCase( cssRule ) ]
-		cy.log( computedStyle )
 
 		/**
 		 * Section for overriding computed styles.
 		 */
 		if ( typeof computedStyle === 'string' && computedStyle.match( /rgb\(/ ) ) {
 			// Force rgb computed style to be hex.
-			computedStyle = computedStyle.replace( /rgb\(([0-9]*), ([0-9]*), ([0-9]*)\)/g, val => rgbToHex( val ) )
+			if ( ! expectedValue.match( /rgb\(/ ) ) {
+				computedStyle = computedStyle.replace( /rgb\(([0-9]*), ([0-9]*), ([0-9]*)\)/g, val => rgbToHex( val ) )
+			}
 		}
 
-		if ( typeof expectedValue === 'string' && expectedValue.match( /%/ ) ) {
+		if ( typeof expectedValue === 'string' && expectedValue.match( /^[^%]+%$/ ) ) {
 			// Convert % to px
-			switch ( cssRule ) {
-				case 'height': {
-					const elHeight = parseInt( win.getComputedStyle( element.parentElement ).height )
-					expectedValue = `${ parseInt( ( elHeight / 100 ) * parseInt( expectedValue ) ) }px`
-					computedStyle = `${ parseInt( computedStyle ) }px`
-					break
-				}
-				default: {
-					const elWidth = parseInt( win.getComputedStyle( element.parentElement ).width )
-					expectedValue = `${ parseInt( ( elWidth / 100 ) * parseInt( expectedValue ) ) }px`
-					computedStyle = `${ parseInt( computedStyle ) }px`
+			if ( ! computedStyle.match( /^[^%]+%$/ ) ) {
+				switch ( cssRule ) {
+					case 'height': {
+						const elHeight = parseInt( win.getComputedStyle( element.parentElement ).height )
+						expectedValue = `${ parseInt( ( elHeight / 100 ) * parseInt( expectedValue ) ) }px`
+						computedStyle = `${ parseInt( computedStyle ) }px`
+						break
+					}
+					default: {
+						const elWidth = parseInt( win.getComputedStyle( element.parentElement ).width )
+						expectedValue = `${ parseInt( ( elWidth / 100 ) * parseInt( expectedValue ) ) }px`
+						computedStyle = `${ parseInt( computedStyle ) }px`
+					}
 				}
 			}
 		}
 
-		if ( typeof expectedValue === 'string' && expectedValue.match( /vh/ ) ) {
-			expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * config.viewportHeight ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+		if ( typeof expectedValue === 'string' && expectedValue.match( /vh$/ ) ) {
+			if ( ! computedStyle.match( /vh$/ ) ) {
+				expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * config.viewportHeight ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+			}
 		}
 
-		if ( typeof expectedValue === 'string' && expectedValue.match( /em/ ) ) {
+		if ( typeof expectedValue === 'string' && expectedValue.match( /em$/ ) ) {
 			// Conditional `em` unit handling.
-			switch ( cssRule ) {
-				case 'line-height':
-				case 'padding-top':
-				case 'padding-left':
-				case 'padding-right':
-				case 'padding-bottom':
-				{
-					const selectorEl = doc.querySelector( selector )
-					if ( selectorEl ) {
-						const fontSize = win.getComputedStyle( selectorEl ).fontSize
+			if ( ! computedStyle.match( /em$/ ) ) {
+				switch ( cssRule ) {
+					case 'line-height':
+					case 'padding-top':
+					case 'padding-left':
+					case 'padding-right':
+					case 'padding-bottom':
+					{
+						const selectorEl = doc.querySelector( selector )
+						if ( selectorEl ) {
+							const fontSize = win.getComputedStyle( selectorEl ).fontSize
+							const oneEm = parseInt( fontSize )
+
+							expectedValue = `${ parseFloat( oneEm * parseInt( expectedValue ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+						}
+						break
+					}
+					default: {
+					// Determine the theme's default font size.
+						const fontSize = win.getComputedStyle( parentEl ).fontSize
 						const oneEm = parseInt( fontSize )
 
-						expectedValue = `${ parseFloat( oneEm * parseInt( expectedValue ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+						expectedValue = `${ parseFloat( oneEm * parseFloat( expectedValue ) ) }px`
 					}
-					break
-				}
-				default: {
-					// Determine the theme's default font size.
-					const fontSize = win.getComputedStyle( parentEl ).fontSize
-					const oneEm = parseInt( fontSize )
-
-					expectedValue = `${ parseFloat( oneEm * parseFloat( expectedValue ) ) }px`
 				}
 			}
 		}
