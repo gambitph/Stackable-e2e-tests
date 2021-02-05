@@ -2,8 +2,14 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertSeparators, registerTests,
+	lowerCase,
+} from 'lodash'
+
+import {
+	assertBlockExist, blockErrorTest, assertSeparators, registerTests, responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
+
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 
 describe( 'Spacer Block', registerTests( [
 	blockExist,
@@ -21,27 +27,26 @@ function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/spacer' ) )
 }
 
-function desktopStyle() {
-	it( 'should adjust desktop options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/spacer' )
-		cy.openInspector( 'ugb/spacer', 'Style' )
+function styleTab( viewport, desktopOnly ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/spacer' )
+	cy.openInspector( 'ugb/spacer', 'Style' )
 
-		// Test General options
-		cy.collapse( 'General' )
-		cy.adjust( 'Height', 142 ).assertComputedStyle( {
-			'.ugb-spacer': {
-				[ `height` ]: '142px',
-			},
-		} )
-		cy.resetStyle( 'Height' )
-		cy.adjust( 'Height', 30, { unit: 'vh' } ).assertComputedStyle( {
-			'.ugb-spacer': {
-				[ `height` ]: '30vh',
-			},
-		} )
+	cy.collapse( 'General' )
+	cy.adjust( 'Height', 142, { viewport, unit: 'px' } ).assertComputedStyle( {
+		'.ugb-spacer': {
+			[ `height` ]: '142px',
+		},
+	} )
+	cy.resetStyle( 'Height' )
+	cy.adjust( 'Height', 30, { viewport, unit: 'vh' } ).assertComputedStyle( {
+		'.ugb-spacer': {
+			[ `height` ]: '30vh',
+		},
+	} )
 
+	desktopOnly( () => {
 		cy.adjust( 'Color Type', 'single' )
 		cy.adjust( 'Background Color', '#000000' )
 		cy.adjust( 'Background Color Opacity', 0.6 ).assertComputedStyle( {
@@ -82,144 +87,58 @@ function desktopStyle() {
 			},
 		} )
 		cy.adjust( 'Adv. Background Image Settings', {
-			[ `Image Position` ]: 'center center',
-			[ `Image Repeat` ]: 'repeat-x',
-			[ `Image Size` ]: 'custom',
-			[ `Custom Size` ]: {
-				value: 19,
-				unit: '%',
-			},
 			[ `Image Blend Mode` ]: 'exclusion',
 		} ).assertComputedStyle( {
 			'.ugb-spacer--inner': {
 				[ `background-blend-mode` ]: 'exclusion',
 			},
 		} )
-
-		cy.resetStyle( 'Adv. Background Image Settings' )
-		cy.adjust( 'Adv. Background Image Settings', {
-			[ `Image Size` ]: 'custom',
-			[ `Custom Size` ]: {
-				value: 241,
-				unit: 'px',
-			},
-		} ).assertComputedStyle( {
-			'.ugb-spacer--inner': {
-				[ `background-size` ]: '241px',
-			},
-		} )
-		// Add Custom Size Test unit: vw
-
-		// Test Top and Bottom Separator
-		assertSeparators( { viewport: 'Desktop' } )
 	} )
-}
 
-function tabletStyle() {
-	it( 'should adjust tablet options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/spacer' )
-		cy.openInspector( 'ugb/spacer', 'Style' )
+	const mobileTabletViewports = [ 'Tablet', 'Mobile' ]
+	cy.setBlockAttribute( { [ `${ mobileTabletViewports.some( _viewport => _viewport === viewport ) ? `${ lowerCase( viewport ) }` : '' }BackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg' } )
 
-		// Test General options
-		cy.collapse( 'General' )
-		cy.adjust( 'Height', 194, { viewport: 'Tablet', unit: 'px' } ).assertComputedStyle( {
-			'.ugb-spacer': {
-				[ `height` ]: '194px',
-			},
-		} )
-		cy.resetStyle( 'Height' )
-		cy.adjust( 'Height', 30, { viewport: 'Tablet', unit: 'vh' } ).assertComputedStyle( {
-			'.ugb-spacer': {
-				[ `height` ]: '30vh',
-			},
-		} )
-
-		cy.setBlockAttribute( {
-			[ `tabletBackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
-		} )
-
-		cy.adjust( 'Adv. Background Image Settings', {
-			[ `Image Position` ]: {
-				viewport: 'Tablet',
-				value: 'top left',
-			},
-			[ `Image Repeat` ]: {
-				viewport: 'Tablet',
-				value: 'no-repeat',
-			},
-			[ `Image Size` ]: {
-				viewport: 'Tablet',
-				value: 'custom',
-			},
-			[ `Custom Size` ]: {
-				viewport: 'Tablet',
-				value: 806,
-				unit: 'px',
-			},
-		} ).assertComputedStyle( {
-			'.ugb-spacer--inner': {
-				[ `background-size` ]: '806px',
-			},
-		} )
-
-		// Test Top and Bottom Separator
-		assertSeparators( { viewport: 'Tablet' } )
+	// Test Custom size px unit
+	cy.adjust( 'Adv. Background Image Settings', {
+		[ `Image Position` ]: {
+			viewport,
+			value: 'top left',
+		},
+		[ `Image Repeat` ]: {
+			viewport,
+			value: 'no-repeat',
+		},
+		[ `Image Size` ]: {
+			viewport,
+			value: 'custom',
+		},
+		[ `Custom Size` ]: {
+			viewport,
+			value: 806,
+			unit: 'px',
+		},
+	} ).assertComputedStyle( {
+		'.ugb-spacer--inner': {
+			[ `background-size` ]: '806px',
+		},
 	} )
-}
-
-function mobileStyle() {
-	it( 'should adjust mobile options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/spacer' )
-		cy.openInspector( 'ugb/spacer', 'Style' )
-
-		// Test General options
-		cy.collapse( 'General' )
-		cy.adjust( 'Height', 194, { viewport: 'Mobile', unit: 'px' } ).assertComputedStyle( {
-			'.ugb-spacer': {
-				[ `height` ]: '194px',
-			},
-		} )
-		cy.resetStyle( 'Height' )
-		cy.adjust( 'Height', 30, { viewport: 'Mobile', unit: 'vh' } ).assertComputedStyle( {
-			'.ugb-spacer': {
-				[ `height` ]: '30vh',
-			},
-		} )
-
-		cy.setBlockAttribute( {
-			[ `mobileBackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
-		} )
-
-		cy.adjust( 'Adv. Background Image Settings', {
-			[ `Image Position` ]: {
-				viewport: 'Mobile',
-				value: 'top left',
-			},
-			[ `Image Repeat` ]: {
-				viewport: 'Mobile',
-				value: 'no-repeat',
-			},
-			[ `Image Size` ]: {
-				viewport: 'Mobile',
-				value: 'custom',
-			},
-			[ `Custom Size` ]: {
-				viewport: 'Mobile',
-				value: 806,
-				unit: 'px',
-			},
-		} ).assertComputedStyle( {
-			'.ugb-spacer--inner': {
-				[ `background-size` ]: '806px',
-			},
-		} )
-
-		// Test Top and Bottom Separator
-		assertSeparators( { viewport: 'Mobile' } )
+	// Test Custom size % unit
+	cy.adjust( 'Adv. Background Image Settings', {
+		[ `Image Size` ]: {
+			viewport,
+			value: 'custom',
+		},
+		[ `Custom Size` ]: {
+			viewport,
+			value: 13,
+			unit: '%',
+		},
+	} ).assertComputedStyle( {
+		'.ugb-spacer--inner': {
+			[ `background-size` ]: '13%',
+		},
 	} )
-}
+	// TODO: Custom Size vw unit assert
 
+	assertSeparators( { viewport } )
+}
