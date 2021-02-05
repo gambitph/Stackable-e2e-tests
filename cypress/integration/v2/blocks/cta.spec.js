@@ -352,7 +352,9 @@ function styleTab( viewport, desktopOnly ) {
 			.assertClassName( '.ugb-button', 'ugb--hover-effect-lift' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
-			[ `Button Color` ]: '#ffffff',
+			[ `Button Color #1` ]: '#ffffff',
+			[ `Button Color #2` ]: '#ff0000',
+			[ `Gradient Direction (degrees)` ]: 72,
 			[ `Text Color` ]: '#000000',
 		} )
 		cy.adjust( 'Typography', {
