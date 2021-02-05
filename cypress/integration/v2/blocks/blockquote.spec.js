@@ -66,14 +66,14 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Spacing options
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', 51, { viewport, unit: 'px' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', 25, { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-blockquote__item': {
-			[ `padding-top` ]: '51px',
-			[ `padding-bottom` ]: '51px',
-			[ `padding-right` ]: '51px',
-			[ `padding-left` ]: '51px',
+			[ `padding-top` ]: '25px',
+			[ `padding-bottom` ]: '25px',
+			[ `padding-right` ]: '25px',
+			[ `padding-left` ]: '25px',
 		},
-	} )
+	}, { wait: 300 } )
 	cy.resetStyle( 'Paddings' )
 	cy.adjust( 'Paddings', 3, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-blockquote__item': {
@@ -82,7 +82,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `padding-right` ]: '3em',
 			[ `padding-left` ]: '3em',
 		},
-	} )
+	}, { wait: 300 } )
 	cy.resetStyle( 'Paddings' )
 	cy.adjust( 'Paddings', 17, { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-blockquote__item': {
@@ -91,7 +91,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `padding-right` ]: '17%',
 			[ `padding-left` ]: '17%',
 		},
-	} )
+	}, { wait: 300 } )
 
 	// Test Quotation Mark options
 	cy.collapse( 'Quotation Mark' )
@@ -159,12 +159,12 @@ function styleTab( viewport, desktopOnly ) {
 	cy.adjust( 'Typography', {
 		[ `Line-Height` ]: {
 			viewport,
-			value: 2.5,
+			value: 2,
 			unit: 'em',
 		},
 	} ).assertComputedStyle( {
 		'.ugb-blockquote__text': {
-			[ `line-height` ]: '2.5em',
+			[ `line-height` ]: '2em',
 		},
 	} )
 	assertAligns( 'Align', '.ugb-blockquote__item', { viewport } )
