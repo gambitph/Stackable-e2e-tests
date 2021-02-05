@@ -22,18 +22,14 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/blog-posts', [
-		'Basic',
-		'List',
-		'Portfolio',
-		{
-			value: 'portfolio2',
-		},
-		'Vertical Card',
-		'Horizontal Card',
-		{
-			value: 'vertical-card2',
-		},
-		'Image Card',
+		{ value: 'Basic', selector: '.ugb-blog-posts--design-basic' },
+		{ value: 'List', selector: '.ugb-blog-posts--design-list' },
+		{ value: 'Portfolio', selector: '.ugb-blog-posts--design-portfolio' },
+		{ value: 'portfolio2', selector: '.ugb-blog-posts--design-portfolio2' },
+		{ value: 'Vertical Card', selector: '.ugb-blog-posts--design-vertical-card' },
+		{ value: 'Horizontal Card', selector: '.ugb-blog-posts--design-horizontal-card' },
+		{ value: 'vertical-card2', selector: '.ugb-blog-posts--design-vertical-card2' },
+		{ value: 'Image Card', selector: '.ugb-blog-posts--design-image-card' },
 	] ) )
 }
 
