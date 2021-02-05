@@ -37,6 +37,10 @@ module.exports = ( on, config ) => {
 		watchOptions: {},
 	} ) )
 
+	if ( config.env.DEBUG === 'false' ) {
+		config.env.CYPRESS_NO_COMMAND_LOG = 1
+	}
+
 	if ( ! FORCE_INCLUDE_ALL ) {
 		const includeV2TestFiles = INCLUDE_V2_TEST_FILES.length && path.join( config.integrationFolder, 'v2', '**', `!(?(${ INCLUDE_V2_TEST_FILES.join( '|' ) })).spec.js` )
 		const includeV3TestFiles = INCLUDE_V3_TEST_FILES.length && path.join( config.integrationFolder, 'v3', '**', `!(?(${ INCLUDE_V3_TEST_FILES.join( '|' ) })).spec.js` )
