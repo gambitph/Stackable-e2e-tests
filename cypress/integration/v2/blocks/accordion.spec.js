@@ -6,8 +6,10 @@ import { range } from 'lodash'
 import { blocks } from '~stackable-e2e/config'
 import { getAddresses } from '~stackable-e2e/util'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
+
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 
 describe( 'Accordion Block', registerTests( [
 	blockExist,
@@ -61,12 +63,12 @@ function switchDesign() {
 	] ) )
 }
 
-function desktopStyle() {
-	it( 'should adjust desktop options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
+function styleTab( viewport, desktopOnly ) {
+	cy.setupWP()
+	cy.newPage()
 
-		// Test 'Close adjacent on open' feature
+	// Test 'Close adjacent on open' feature
+	desktopOnly( () => {
 		range( 1, 4 ).forEach( idx => {
 			cy.addBlock( 'ugb/accordion' )
 			cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', `Accordion ${ idx }`, idx - 1 )
@@ -127,13 +129,20 @@ function desktopStyle() {
 				[ `flex-direction` ]: 'row-reverse',
 			},
 		} )
+		cy.deleteBlock( 'ugb/accordion', 'Accordion 1' )
+	} )
+	cy.addBlock( 'ugb/accordion' )
 
-	    // Test General Alignment
-		assertAligns( 'Align', '.ugb-inner-block' )
+	// Test General Alignment
+	cy.openInspector( 'ugb/accordion', 'Style' )
+	cy.collapse( 'General' )
+	cy.adjust( 'Open at the start', true )
+	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
-		cy.collapse( 'Container' )
+	cy.collapse( 'Container' )
 
-		// Test Single Background Color
+	// Test Single Background Color
+	desktopOnly( () => {
 		cy.adjust( 'Background', {
 			[ `Color Type` ]: 'single',
 			[ `Background Color` ]: '#000000',
@@ -143,9 +152,13 @@ function desktopStyle() {
 				[ `background-color` ]: 'rgba(0, 0, 0, 0.5)',
 			},
 		} )
+	} )
+	cy.setBlockAttribute( {
+		[ `container${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
+	} )
 
-		// Test Gradient Background Color
-		cy.collapse( 'Container' )
+	// Test Gradient Background Color
+	desktopOnly( () => {
 		cy.adjust( 'Background', {
 			[ `Color Type` ]: 'gradient',
 			[ `Background Color #1` ]: '#f00069',
@@ -156,21 +169,63 @@ function desktopStyle() {
 				[ `Color 2 Location` ]: '80%',
 				[ `Background Gradient Blend Mode` ]: 'hard-light',
 			},
+			[ `Background Media Tint Strength` ]: 6,
+			[ `Fixed Background` ]: true,
+			[ `Adv. Background Image Settings` ]: {
+				[ `Image Blend Mode` ]: 'hue',
+			},
 		} ).assertComputedStyle( {
 			'.ugb-accordion__heading:before': {
 				[ `background-image` ]: 'linear-gradient(#f00069 11%, #000000 80%)',
 				[ `mix-blend-mode` ]: 'hard-light',
+				[ `opacity` ]: '0.6',
+			},
+			'.ugb-accordion__heading': {
+				[ `background-blend-mode` ]: 'hue',
+				[ `background-attachment` ]: 'fixed',
 			},
 		} )
+	} )
 
-		// Test Border Radius
+	cy.adjust( 'Background', {
+		[ `Adv. Background Image Settings` ]: {
+			[ `Image Position` ]: {
+				viewport,
+				value: 'center center',
+			},
+			[ `Image Repeat` ]: {
+				viewport,
+				value: 'repeat-x',
+			},
+			[ `Image Size` ]: {
+				viewport,
+				value: 'custom',
+			},
+			[ `Custom Size` ]: {
+				viewport,
+				value: 19,
+				unit: '%',
+			},
+		},
+	} ).assertComputedStyle( {
+		'.ugb-accordion__heading': {
+			[ `background-position` ]: '50% 50%',
+			[ `background-repeat` ]: 'repeat-x',
+			[ `background-size` ]: '19%',
+		},
+	} )
+
+	// Test Border Radius
+	desktopOnly( () => {
 		cy.adjust( 'Border Radius', 30 ).assertComputedStyle( {
 			'.ugb-accordion__heading': {
 				[ `border-radius` ]: '30px',
 			},
 		} )
+	} )
 
-		// Test Border Options
+	// Test Border Options
+	desktopOnly( () => {
 		cy.adjust( 'Borders', 'solid' )
 		cy.adjust( 'Border Width', 3 )
 		cy.adjust( 'Border Color', '#f1f1f1' ).assertComputedStyle( {
@@ -183,13 +238,17 @@ function desktopStyle() {
 				[ `border-right-width` ]: '3px',
 			},
 		} )
+	} )
 
-		// Test Shadow / Outline
+	// Test Shadow / Outline
+	desktopOnly( () => {
 		cy.adjust( 'Shadow / Outline', 9 )
 			.assertClassName( '.ugb-accordion__heading', 'ugb--shadow-9' )
+	} )
 
-		cy.collapse( 'Spacing' )
-		// Test Padding options
+	cy.collapse( 'Spacing' )
+	// Test Padding options
+	desktopOnly( () => {
 		cy.adjust( 'Padding', 46 ).assertComputedStyle( {
 			'.ugb-accordion__heading': {
 				[ `padding-top` ]: '46px',
@@ -198,50 +257,84 @@ function desktopStyle() {
 				[ `padding-left` ]: '46px',
 			},
 		} )
+	} )
 
-		// Test Title spacing
-		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', `Accordion 1` )
-		cy.document().then( doc => {
-			if ( ! doc.querySelector( '.ugb-accordion--open' ) ) {
-				cy.get( '.ugb-accordion__heading' ).click( { force: true } )
-			}
+	// Test Title spacing
+	cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', `Accordion 1` )
+	cy.document().then( doc => {
+		if ( ! doc.querySelector( '.ugb-accordion--open' ) ) {
+			cy.get( '.ugb-accordion__heading' ).click( { force: true } )
+		}
+	} )
+	cy.adjust( 'Title', 63, { viewport } )
+		.assertComputedStyle( {
+			'.ugb-accordion__heading': {
+				[ `margin-bottom` ]: '63px',
+			},
+		}, {
+			wait: 1000,
 		} )
-		cy.adjust( 'Title', 63 )
-			.assertComputedStyle( {
-				'.ugb-accordion__heading': {
-					[ `margin-bottom` ]: '63px',
-				},
-			}, {
-				wait: 1000,
-			} )
 
-		// Test Title options
-		cy.collapse( 'Title' )
+	// Test Title options
+	cy.collapse( 'Title' )
+	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h3' )
 			.assertHtmlTag( '.ugb-accordion__title', 'h3' )
 		cy.adjust( 'Typography', {
 			[ `Font Family` ]: 'Serif',
-			[ `Size` ]: 60,
 			[ `Weight` ]: '600',
 			[ `Transform` ]: 'uppercase',
-			[ `Line-Height` ]: 1.6,
 			[ `Letter Spacing` ]: 2.4,
 		} )
-		cy.adjust( 'Size', 1.75, { unit: 'em' } )
 		cy.adjust( 'Title Color', '#f00069' )
 			.assertComputedStyle( {
 				'.ugb-accordion__title': {
-					[ `font-size` ]: '1.75em',
 					[ `font-weight` ]: '600',
 					[ `text-transform` ]: 'uppercase',
 					[ `letter-spacing` ]: '2.4px',
 					[ `color` ]: '#f00069',
 				},
 			} )
+	} )
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			value: 60,
+			unit: 'px',
+		},
+		[ `Line-Height` ]: {
+			viewport,
+			value: 3,
+			unit: 'em',
+		},
+	} ).assertComputedStyle( {
+		'.ugb-accordion__title': {
+			[ `font-size` ]: '60px',
+			[ `line-height` ]: '3em',
+		},
+	} )
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			value: 3,
+			unit: 'em',
+		},
+		[ `Line-Height` ]: {
+			viewport,
+			value: 23,
+			unit: 'px',
+		},
+	} ).assertComputedStyle( {
+		'.ugb-accordion__title': {
+			[ `line-height` ]: '23px',
+			[ `font-size` ]: '3em',
+		},
+	} )
 
-		assertAligns( 'Align', '.ugb-accordion__title' )
+	assertAligns( 'Align', '.ugb-accordion__title', { viewport } )
 
-		// Test Arrow settings
+	// Test Arrow settings
+	desktopOnly( () => {
 		cy.collapse( 'Arrow' )
 		cy.adjust( 'Size', 31 )
 		cy.adjust( 'Color', '#333333' )
@@ -254,245 +347,3 @@ function desktopStyle() {
 			} )
 	} )
 }
-
-function tabletStyle() {
-	it( 'should adjust tablet options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/accordion' )
-		cy.openInspector( 'ugb/accordion', 'Style' )
-		cy.changePreviewMode( 'Tablet' )
-
-		// Test General Alignment
-		cy.collapse( 'General' )
-		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
-		cy.adjust( 'Open at the start', true )
-
-		cy.changePreviewMode( 'Tablet' )
-
-		// Test Container options
-		cy.collapse( 'Container' )
-		cy.adjust( 'Background', {
-			[ `Color Type` ]: 'single',
-			[ `Background Color` ]: '#ffffff',
-			[ `Background Color Opacity` ]: '0.5',
-		}, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-accordion__heading': {
-				[ `background-color` ]: 'rgba(255, 255, 255, 0.5)',
-			},
-		} )
-		cy.adjust( 'Background', {
-			[ `Color Type` ]: 'gradient',
-			[ `Background Color #1` ]: '#f00069',
-			[ `Background Color #2` ]: '#000000',
-			[ `Adv. Gradient Color Settings` ]: {
-				[ `Gradient Direction (degrees)` ]: '180deg',
-				[ `Color 1 Location` ]: '11%',
-				[ `Color 2 Location` ]: '80%',
-				[ `Background Gradient Blend Mode` ]: 'multiply',
-			},
-		}, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-accordion__heading:before': {
-				[ `background-image` ]: 'linear-gradient(#f00069 11%, #000000 80%)',
-				[ `mix-blend-mode` ]: 'multiply',
-			},
-		} )
-		cy.adjust( 'Border Radius', 26, { viewport: 'Tablet' } )
-		cy.adjust( 'Borders', 'dashed', { viewport: 'Tablet' } )
-		cy.adjust( 'Border Color', '#333333', { viewport: 'Tablet' } )
-		cy.adjust( 'Border Width', 4, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-accordion__heading': {
-				[ `border-radius` ]: '26px',
-				[ `background-color` ]: '#f00069',
-				[ `border-top-width` ]: '4px',
-				[ `border-right-width` ]: '4px',
-				[ `border-bottom-width` ]: '4px',
-				[ `border-left-width` ]: '4px',
-				[ `border-top-style` ]: 'dashed',
-				[ `border-right-style` ]: 'dashed',
-				[ `border-bottom-style` ]: 'dashed',
-				[ `border-left-style` ]: 'dashed',
-				[ `border-color` ]: '#333333',
-			},
-		} )
-
-		// TODO: Background Image / Video
-
-		cy.changePreviewMode( 'Tablet' )
-
-		// Test Spacing options
-		cy.collapse( 'Spacing' )
-		cy.adjust( 'Padding', 31, { viewport: 'Tablet' } )
-		cy.get( 'div.ugb-accordion__heading' ).click( { force: true } )
-		cy.adjust( 'Title', 20, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-accordion__heading': {
-				[ `margin-bottom` ]: '20px',
-				[ `padding-top` ]: '31px',
-				[ `padding-right` ]: '31px',
-				[ `padding-bottom` ]: '31px',
-				[ `padding-left` ]: '31px',
-			},
-		}, {
-			wait: 1000,
-		} )
-
-		cy.changePreviewMode( 'Tablet' )
-
-		// Test Title options
-		cy.collapse( 'Title' )
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Serif',
-			[ `Size` ]: 60,
-			[ `Weight` ]: '600',
-			[ `Transform` ]: 'capitalize',
-			[ `Line-Height` ]: 1.6,
-			[ `Letter Spacing` ]: 2.4,
-		}, { viewport: 'Tablet' } )
-		cy.adjust( 'Title Color', '#ffffff', { viewport: 'Tablet' } )
-		cy.adjust( 'Size', 29, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-accordion__title': {
-				[ `font-size` ]: '29px',
-				[ `font-weight` ]: '600',
-				[ `text-transform` ]: 'capitalize',
-				[ `letter-spacing` ]: '2.4px',
-				[ `color` ]: '#ffffff',
-			},
-		} )
-
-		assertAligns( 'Align', '.ugb-accordion__title', { viewport: 'Tablet' } )
-
-		cy.changePreviewMode( 'Tablet' )
-
-		// Test Arrow options
-		cy.collapse( 'Arrow' )
-		cy.adjust( 'Size', 30, { viewport: 'Tablet' } )
-		cy.adjust( 'Color', '#ff0000', { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-accordion__arrow': {
-				[ `fill` ]: '#ff0000',
-				[ `height` ]: '30px',
-				[ `width` ]: '30px',
-			},
-		} )
-	} )
-}
-
-function mobileStyle() {
-	it( 'should adjust mobile options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/accordion' )
-		cy.openInspector( 'ugb/accordion', 'Style' )
-		cy.changePreviewMode( 'Mobile' )
-
-		// Test General Alignment
-		cy.collapse( 'General' )
-		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
-		cy.adjust( 'Open at the start', true )
-
-		cy.changePreviewMode( 'Mobile' )
-		cy.collapse( 'Container' )
-
-		// Test Container options
-		cy.adjust( 'Background', {
-			[ `Color Type` ]: 'single',
-			[ `Background Color` ]: '#ffffff',
-			[ `Background Color Opacity` ]: '0.5',
-		}, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-accordion__heading': {
-				[ `background-color` ]: 'rgba(255, 255, 255, 0.5)',
-			},
-		} )
-		cy.adjust( 'Background', {
-			[ `Color Type` ]: 'gradient',
-			[ `Background Color #1` ]: '#f00069',
-			[ `Background Color #2` ]: '#000000',
-			[ `Adv. Gradient Color Settings` ]: {
-				[ `Gradient Direction (degrees)` ]: '180deg',
-				[ `Color 1 Location` ]: '15%',
-				[ `Color 2 Location` ]: '60%',
-				[ `Background Gradient Blend Mode` ]: 'exclusion',
-			},
-		}, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-accordion__heading:before': {
-				[ `background-image` ]: 'linear-gradient(#f00069 15%, #000000 60%)',
-				[ `mix-blend-mode` ]: 'exclusion',
-			},
-		} )
-		cy.adjust( 'Border Radius', 50, { viewport: 'Mobile' } )
-		cy.adjust( 'Borders', 'dotted', { viewport: 'Mobile' } )
-		cy.adjust( 'Border Color', '#333333', { viewport: 'Mobile' } )
-		cy.adjust( 'Border Width', 5, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-accordion__heading': {
-				[ `border-radius` ]: '50px',
-				[ `background-color` ]: '#f00069',
-				[ `border-top-width` ]: '5px',
-				[ `border-right-width` ]: '5px',
-				[ `border-bottom-width` ]: '5px',
-				[ `border-left-width` ]: '5px',
-				[ `border-top-style` ]: 'dotted',
-				[ `border-right-style` ]: 'dotted',
-				[ `border-bottom-style` ]: 'dotted',
-				[ `border-left-style` ]: 'dotted',
-				[ `border-color` ]: '#333333',
-			},
-		} )
-
-		// TODO: Background Image / Video
-
-		cy.changePreviewMode( 'Mobile' )
-
-		// Test Spacing options
-		cy.collapse( 'Spacing' )
-		cy.adjust( 'Padding', 31, { viewport: 'Mobile' } )
-		cy.get( 'div.ugb-accordion__heading' ).click( { force: true } )
-		cy.adjust( 'Title', 20, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-accordion__heading': {
-				[ `margin-bottom` ]: '20px',
-				[ `padding-top` ]: '31px',
-				[ `padding-right` ]: '31px',
-				[ `padding-bottom` ]: '31px',
-				[ `padding-left` ]: '31px',
-			},
-		}, {
-			wait: 1000,
-		} )
-
-		cy.changePreviewMode( 'Mobile' )
-
-		// Test Title options
-		cy.collapse( 'Title' )
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Serif',
-			[ `Size` ]: 60,
-			[ `Weight` ]: '600',
-			[ `Transform` ]: 'capitalize',
-			[ `Line-Height` ]: 1.6,
-			[ `Letter Spacing` ]: 2.4,
-		}, { viewport: 'Mobile' } )
-		cy.adjust( 'Title Color', '#ffffff', { viewport: 'Mobile' } )
-		cy.adjust( 'Size', 29, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-accordion__title': {
-				[ `font-size` ]: '29px',
-				[ `font-weight` ]: '600',
-				[ `text-transform` ]: 'capitalize',
-				[ `letter-spacing` ]: '2.4px',
-				[ `color` ]: '#ffffff',
-			},
-		} )
-		assertAligns( 'Align', '.ugb-accordion__title', { viewport: 'Mobile' } )
-
-		cy.changePreviewMode( 'Mobile' )
-
-		// Test Arrow options
-		cy.collapse( 'Arrow' )
-		cy.adjust( 'Size', 30, { viewport: 'Mobile' } )
-		cy.adjust( 'Color', '#ff0000', { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-accordion__arrow': {
-				[ `fill` ]: '#ff0000',
-				[ `height` ]: '30px',
-				[ `width` ]: '30px',
-			},
-		} )
-	} )
-}
-
