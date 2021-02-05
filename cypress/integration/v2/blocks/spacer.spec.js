@@ -122,6 +122,18 @@ function styleTab( viewport, desktopOnly ) {
 			[ `background-size` ]: '806px',
 		},
 	} )
+	// Test Custom size vw unit
+	cy.adjust( 'Adv. Background Image Settings', {
+		[ `Image Size` ]: {
+			viewport,
+			value: 'custom',
+		},
+		[ `Custom Size` ]: {
+			viewport,
+			value: 42,
+			unit: 'vw',
+		},
+	} )
 	// Test Custom size % unit
 	cy.adjust( 'Adv. Background Image Settings', {
 		[ `Image Size` ]: {
@@ -138,7 +150,6 @@ function styleTab( viewport, desktopOnly ) {
 			[ `background-size` ]: '13%',
 		},
 	} )
-	// TODO: Custom Size vw unit assert
 
 	assertSeparators( { viewport } )
 }
