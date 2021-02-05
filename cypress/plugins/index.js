@@ -12,14 +12,14 @@ const FORCE_INCLUDE_ALL = false
 const INCLUDE_V2_TEST_FILES = [
 	// Blocks
 	'accordion',
-	'heading',
 	'blockqoute',
-	'text',
 	'cta',
-	'header',
-	'icon-list',
 	'divider',
+	'header',
+	'heading',
+	'icon-list',
 	'spacer',
+	'text',
 ]
 
 const INCLUDE_V3_TEST_FILES = []
