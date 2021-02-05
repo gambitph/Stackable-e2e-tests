@@ -2,8 +2,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, assertBlockBackground, assertSeparators, responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
+
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 
 describe( 'Header', registerTests( [
 	blockExist,
@@ -73,23 +75,25 @@ function switchDesign() {
 	] ) )
 }
 
-function desktopStyle() {
-	it( 'should adjust desktop options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/header' )
+function styleTab( viewport, desktopOnly ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/header' )
 
-		cy.openInspector( 'ugb/header', 'Style' )
+	cy.openInspector( 'ugb/header', 'Style' )
 
-		cy.collapse( 'General' )
+	cy.collapse( 'General' )
+	desktopOnly( () => {
 		cy.adjust( 'Full Height', true )
 			.assertClassName( '.ugb-header__item', 'ugb--full-height' )
-		assertAligns( 'Align', '.ugb-inner-block' )
+	} )
+	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
-		cy.collapse( 'Container' )
-		cy.setBlockAttribute( {
-			[ `columnBackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
-		} )
+	cy.collapse( 'Container' )
+	cy.setBlockAttribute( {
+		[ `column${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
+	} )
+	desktopOnly( () => {
 		cy.adjust( 'Background', {
 			[ `Color Type` ]: 'gradient',
 			[ `Background Color #1` ]: '#ff5c5c',
@@ -103,13 +107,6 @@ function desktopStyle() {
 			[ `Background Media Tint Strength` ]: 6,
 			[ `Fixed Background` ]: true,
 			[ `Adv. Background Image Settings` ]: {
-				[ `Image Position` ]: 'center center',
-				[ `Image Repeat` ]: 'repeat-x',
-				[ `Image Size` ]: 'custom',
-				[ `Custom Size` ]: {
-					value: 19,
-					unit: '%',
-				},
 				[ `Image Blend Mode` ]: 'exclusion',
 			},
 		} ).assertComputedStyle( {
@@ -121,13 +118,39 @@ function desktopStyle() {
 			'.ugb-header__item': {
 				[ `background-color` ]: '#ff5c5c',
 				[ `background-attachment` ]: 'fixed',
-				[ `background-position` ]: '50% 50%',
-				[ `background-repeat` ]: 'repeat-x',
-				[ `background-size` ]: '19%',
 				[ `background-blend-mode` ]: 'exclusion',
 			},
 		} )
+	} )
+	cy.adjust( 'Background', {
+		[ `Adv. Background Image Settings` ]: {
+			[ `Image Position` ]: {
+				viewport,
+				value: 'center center',
+			},
+			[ `Image Repeat` ]: {
+				viewport,
+				value: 'repeat-x',
+			},
+			[ `Image Size` ]: {
+				viewport,
+				value: 'custom',
+			},
+			[ `Custom Size` ]: {
+				viewport,
+				value: 19,
+				unit: '%',
+			},
+		},
+	} ).assertComputedStyle( {
+		'.ugb-header__item': {
+			[ `background-position` ]: '50% 50%',
+			[ `background-repeat` ]: 'repeat-x',
+			[ `background-size` ]: '19%',
+		},
+	} )
 
+	desktopOnly( () => {
 		cy.adjust( 'Borders', 'solid' )
 		cy.adjust( 'Border Width', 4 )
 		cy.adjust( 'Border Color', '#a12222' )
@@ -144,8 +167,10 @@ function desktopStyle() {
 		} )
 		cy.adjust( 'Shadow / Outline', 7 )
 			.assertClassName( '.ugb-header__item', 'ugb--shadow-7' )
+	} )
 
-		cy.collapse( 'Spacing' )
+	cy.collapse( 'Spacing' )
+	desktopOnly( () => {
 		cy.adjust( 'Paddings', [ 166, 268, 87, 181 ], { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-header__item': {
 				[ `padding-top` ]: '166px',
@@ -172,23 +197,55 @@ function desktopStyle() {
 				[ `padding-left` ]: '21%',
 			},
 		} )
+	} )
 
-		cy.adjust( 'Title', 42 )
-		cy.adjust( 'Subtitle', 21 )
-		cy.adjust( 'Button', 43 ).assertComputedStyle( {
-			'.ugb-header__title': {
-				[ `margin-bottom` ]: '42px',
-			},
-			'.ugb-header__subtitle': {
-				[ `margin-bottom` ]: '21px',
-			},
-			'.ugb-button-container': {
-				[ `margin-bottom` ]: '43px',
+	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
+	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
+		cy.adjust( 'Paddings', [ 24, 12, 13, 8 ], { unit: 'px', viewport } ).assertComputedStyle( {
+			'.ugb-header__item': {
+				[ `padding-top` ]: '24px',
+				[ `padding-bottom` ]: '12px',
+				[ `padding-right` ]: '13px',
+				[ `padding-left` ]: '8px',
 			},
 		} )
 
-		cy.collapse( 'Title' )
-		cy.toggleStyle( 'Title' )
+		cy.adjust( 'Paddings', [ 12, 4, 10, 3 ], { unit: 'em', viewport } ).assertComputedStyle( {
+			'.ugb-header__item': {
+				[ `padding-top` ]: '12em',
+				[ `padding-bottom` ]: '4em',
+				[ `padding-right` ]: '10em',
+				[ `padding-left` ]: '3em',
+			},
+		} )
+
+		cy.adjust( 'Paddings', [ 24, 12, 12, 21 ], { unit: '%', viewport } ).assertComputedStyle( {
+			'.ugb-header__item': {
+				[ `padding-top` ]: '24%',
+				[ `padding-bottom` ]: '12%',
+				[ `padding-right` ]: '12%',
+				[ `padding-left` ]: '21%',
+			},
+		} )
+	}
+
+	cy.adjust( 'Title', 42, { viewport } )
+	cy.adjust( 'Subtitle', 21, { viewport } )
+	cy.adjust( 'Button', 43, { viewport } ).assertComputedStyle( {
+		'.ugb-header__title': {
+			[ `margin-bottom` ]: '42px',
+		},
+		'.ugb-header__subtitle': {
+			[ `margin-bottom` ]: '21px',
+		},
+		'.ugb-button-container': {
+			[ `margin-bottom` ]: '43px',
+		},
+	} )
+
+	cy.collapse( 'Title' )
+	cy.toggleStyle( 'Title' )
+	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h4' )
 			.assertHtmlTag( '.ugb-header__title', 'h4' )
 		cy.adjust( 'Typography', {
@@ -199,34 +256,54 @@ function desktopStyle() {
 			[ `Letter Spacing` ]: 2.9,
 		} ).assertComputedStyle( {
 			'.ugb-header__title': {
-				[ `font-size` ]: '50px',
 				[ `font-weight` ]: '700',
 				[ `text-transform` ]: 'lowercase',
 				[ `letter-spacing` ]: '2.9px',
-				[ `line-height` ]: '4em',
 			},
 		} )
+	} )
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			value: 50,
+		},
+		[ `Line-Height` ]: {
+			viewport,
+			value: 4,
+		},
+	} ).assertComputedStyle( {
+		'.ugb-header__title': {
+			[ `font-size` ]: '50px',
+			[ `line-height` ]: '4em',
+		},
+	} )
 
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				unit: 'em',
-				value: 7,
-			},
-			[ `Line-Height` ]: {
-				unit: 'px',
-				value: 24,
-			},
-		} )
-		cy.adjust( 'Title Color', '#742f2f' ).assertComputedStyle( {
-			'.ugb-header__title': {
-				[ `font-size` ]: '7em',
-				[ `line-height` ]: '24px',
-			},
-		}, { wait: 300 } )
-		assertAligns( 'Align', '.ugb-header__title' )
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			unit: 'em',
+			value: 7,
+		},
+		[ `Line-Height` ]: {
+			viewport,
+			unit: 'px',
+			value: 24,
+		},
+	} )
 
-		cy.collapse( 'Subtitle' )
-		cy.toggleStyle( 'Subtitle' )
+	cy.adjust( 'Title Color', '#742f2f' ).assertComputedStyle( {
+		'.ugb-header__title': {
+			[ `font-size` ]: '7em',
+			[ `line-height` ]: '24px',
+			[ `color` ]: '#742f2f',
+		},
+	}, { wait: 300 } )
+
+	assertAligns( 'Align', '.ugb-header__title', { viewport } )
+
+	cy.collapse( 'Subtitle' )
+	cy.toggleStyle( 'Subtitle' )
+	desktopOnly( () => {
 		cy.adjust( 'Typography', {
 			[ `Size` ]: 50,
 			[ `Weight` ]: '700',
@@ -235,34 +312,54 @@ function desktopStyle() {
 			[ `Letter Spacing` ]: 2.9,
 		} ).assertComputedStyle( {
 			'.ugb-header__subtitle': {
-				[ `font-size` ]: '50px',
 				[ `font-weight` ]: '700',
 				[ `text-transform` ]: 'lowercase',
 				[ `letter-spacing` ]: '2.9px',
-				[ `line-height` ]: '4em',
 			},
 		} )
+	} )
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			value: 50,
+		},
+		[ `Line-Height` ]: {
+			viewport,
+			value: 4,
+		},
+	} ).assertComputedStyle( {
+		'.ugb-header__subtitle': {
+			[ `font-size` ]: '50px',
+			[ `line-height` ]: '4em',
+		},
+	} )
 
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				unit: 'em',
-				value: 7,
-			},
-			[ `Line-Height` ]: {
-				unit: 'px',
-				value: 24,
-			},
-		} )
-		cy.adjust( 'Subtitle Color', '#742f2f' ).assertComputedStyle( {
-			'.ugb-header__subtitle': {
-				[ `font-size` ]: '7em',
-				[ `line-height` ]: '24px',
-			},
-		}, { wait: 300 } )
-		assertAligns( 'Align', '.ugb-header__subtitle' )
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			unit: 'em',
+			value: 7,
+		},
+		[ `Line-Height` ]: {
+			viewport,
+			unit: 'px',
+			value: 24,
+		},
+	} )
 
-		cy.collapse( 'Button #1' )
-		cy.toggleStyle( 'Button #1' )
+	cy.adjust( 'Subtitle Color', '#742f2f' ).assertComputedStyle( {
+		'.ugb-header__subtitle': {
+			[ `font-size` ]: '7em',
+			[ `line-height` ]: '24px',
+			[ `color` ]: '#742f2f',
+		},
+	}, { wait: 300 } )
+
+	assertAligns( 'Align', '.ugb-header__subtitle', { viewport } )
+
+	cy.collapse( 'Button #1' )
+	cy.toggleStyle( 'Button #1' )
+	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
 		cy.adjust( 'Button Color #2', '#4e59d4' )
@@ -329,16 +426,43 @@ function desktopStyle() {
 				[ `margin-right` ]: '25px',
 			},
 		} )
+	} )
 
-		cy.collapse( 'Button #2' )
-		cy.toggleStyle( 'Button #2' )
+	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
+		cy.adjust( 'Typography', {
+			[ `Size` ]: {
+				viewport,
+				value: 50,
+			},
+		} ).assertComputedStyle( {
+			'.ugb-button1 .ugb-button--inner': {
+				[ `font-size` ]: '50px',
+			},
+		}, { wait: 300 } )
+
+		cy.adjust( 'Typography', {
+			[ `Size` ]: {
+				viewport,
+				unit: 'em',
+				value: 7,
+			},
+		} ).assertComputedStyle( {
+			'.ugb-button1 .ugb-button--inner': {
+				[ `font-size` ]: '7em',
+			},
+		}, { wait: 300 } )
+	}
+
+	cy.collapse( 'Button #2' )
+	cy.toggleStyle( 'Button #2' )
+	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
 		cy.adjust( 'Button Color #2', '#4e59d4' )
 		cy.adjust( 'Gradient Direction (degrees)', 138 )
 		cy.adjust( 'Text Color', '#ffa03b' )
 		cy.adjust( 'Hover Effect', 'scale' )
-			.assertClassName( '.ugb-button1', 'ugb--hover-effect-scale' )
+			.assertClassName( '.ugb-button2', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
 			[ `Button Color #1` ]: '#bd8b8b',
@@ -353,7 +477,7 @@ function desktopStyle() {
 			[ `Letter Spacing` ]: 2.9,
 		} )
 		cy.adjust( 'Button Size', 'large' )
-			.assertClassName( '.ugb-button1', 'ugb-button--size-large' )
+			.assertClassName( '.ugb-button2', 'ugb-button--size-large' )
 		cy.adjust( 'Border Radius', 40 )
 		cy.adjust( 'Vertical Padding', 15 )
 		cy.adjust( 'Horizontal Padding', 43 )
@@ -398,217 +522,12 @@ function desktopStyle() {
 				[ `margin-right` ]: '25px',
 			},
 		} )
-		cy.adjust( 'Align', 'left', { viewport: 'Desktop' } ).assertComputedStyle( {
-			'.ugb-header__buttons': {
-				[ `justify-content` ]: 'flex-start',
-			},
-		} )
-		cy.adjust( 'Align', 'center', { viewport: 'Desktop' } ).assertComputedStyle( {
-			'.ugb-header__buttons': {
-				[ `justify-content` ]: 'center',
-			},
-		} )
-		cy.adjust( 'Align', 'right', { viewport: 'Desktop' } ).assertComputedStyle( {
-			'.ugb-header__buttons': {
-				[ `justify-content` ]: 'flex-end',
-			},
-		} )
-
-		assertBlockBackground( '.ugb-header', { viewport: 'Desktop' } )
-		assertSeparators( { viewport: 'Desktop' } )
 	} )
-}
 
-function tabletStyle() {
-	it( 'should adjust tablet options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/header' )
-
-		cy.openInspector( 'ugb/header', 'Style' )
-
-		cy.collapse( 'General' )
-		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
-
-		cy.collapse( 'Container' )
-		cy.setBlockAttribute( {
-			[ `columnTabletBackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
-		} )
-		cy.adjust( 'Background', {
-			[ `Adv. Background Image Settings` ]: {
-				[ `Image Position` ]: {
-					viewport: 'Tablet',
-					value: 'center center',
-				},
-				[ `Image Repeat` ]: {
-					viewport: 'Tablet',
-					value: 'repeat-x',
-				},
-				[ `Image Size` ]: {
-					viewport: 'Tablet',
-					value: 'custom',
-				},
-				[ `Custom Size` ]: {
-					viewport: 'Tablet',
-					value: 19,
-					unit: '%',
-				},
-			},
-		} ).assertComputedStyle( {
-			'.ugb-header__item': {
-				[ `background-position` ]: '50% 50%',
-				[ `background-repeat` ]: 'repeat-x',
-				[ `background-size` ]: '19%',
-			},
-		} )
-
-		cy.collapse( 'Spacing' )
-
-		cy.adjust( 'Paddings', [ 10, 12, 13, 8 ], { unit: 'px', viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-header__item': {
-				[ `padding-top` ]: '10px',
-				[ `padding-bottom` ]: '12px',
-				[ `padding-right` ]: '13px',
-				[ `padding-left` ]: '8px',
-			},
-		} )
-
-		cy.adjust( 'Paddings', [ 12, 4, 10, 3 ], { unit: 'em', viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-header__item': {
-				[ `padding-top` ]: '12em',
-				[ `padding-bottom` ]: '4em',
-				[ `padding-right` ]: '10em',
-				[ `padding-left` ]: '3em',
-			},
-		} )
-
-		cy.adjust( 'Paddings', [ 24, 12, 12, 21 ], { unit: '%', viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-header__item': {
-				[ `padding-top` ]: '24%',
-				[ `padding-bottom` ]: '12%',
-				[ `padding-right` ]: '12%',
-				[ `padding-left` ]: '21%',
-			},
-		} )
-
-		cy.adjust( 'Title', 42, { viewport: 'Tablet' } )
-		cy.adjust( 'Subtitle', 21, { viewport: 'Tablet' } )
-		cy.adjust( 'Button', 43, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-header__title': {
-				[ `margin-bottom` ]: '42px',
-			},
-			'.ugb-header__subtitle': {
-				[ `margin-bottom` ]: '21px',
-			},
-			'.ugb-button-container': {
-				[ `margin-bottom` ]: '43px',
-			},
-		} )
-
-		cy.collapse( 'Title' )
-		cy.toggleStyle( 'Title' )
+	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
 		cy.adjust( 'Typography', {
 			[ `Size` ]: {
-				viewport: 'Tablet',
-				value: 50,
-			},
-			[ `Line-Height` ]: {
-				viewport: 'Tablet',
-				value: 4,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-header__title': {
-				[ `font-size` ]: '50px',
-				[ `line-height` ]: '4em',
-			},
-		} )
-
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Tablet',
-				unit: 'em',
-				value: 7,
-			},
-			[ `Line-Height` ]: {
-				viewport: 'Tablet',
-				unit: 'px',
-				value: 24,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-header__title': {
-				[ `font-size` ]: '7em',
-				[ `line-height` ]: '24px',
-			},
-		}, { wait: 300 } )
-		assertAligns( 'Align', '.ugb-header__title', { viewport: 'Tablet' } )
-
-		cy.collapse( 'Subtitle' )
-		cy.toggleStyle( 'Subtitle' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Tablet',
-				value: 50,
-			},
-			[ `Line-Height` ]: {
-				viewport: 'Tablet',
-				value: 4,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-header__subtitle': {
-				[ `font-size` ]: '50px',
-				[ `line-height` ]: '4em',
-			},
-		} )
-
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Tablet',
-				unit: 'em',
-				value: 7,
-			},
-			[ `Line-Height` ]: {
-				viewport: 'Tablet',
-				unit: 'px',
-				value: 24,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-header__subtitle': {
-				[ `font-size` ]: '7em',
-				[ `line-height` ]: '24px',
-			},
-		}, { wait: 300 } )
-		assertAligns( 'Align', '.ugb-header__subtitle', { viewport: 'Tablet' } )
-
-		cy.collapse( 'Button #1' )
-		cy.toggleStyle( 'Button #1' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Tablet',
-				value: 50,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button1 .ugb-button--inner': {
-				[ `font-size` ]: '50px',
-			},
-		}, { wait: 300 } )
-
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Tablet',
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button1 .ugb-button--inner': {
-				[ `font-size` ]: '7em',
-			},
-		}, { wait: 300 } )
-
-		cy.collapse( 'Button #2' )
-		cy.toggleStyle( 'Button #2' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Tablet',
+				viewport,
 				value: 50,
 			},
 		} ).assertComputedStyle( {
@@ -616,9 +535,10 @@ function tabletStyle() {
 				[ `font-size` ]: '50px',
 			},
 		}, { wait: 300 } )
+
 		cy.adjust( 'Typography', {
 			[ `Size` ]: {
-				viewport: 'Tablet',
+				viewport,
 				unit: 'em',
 				value: 7,
 			},
@@ -627,253 +547,24 @@ function tabletStyle() {
 				[ `font-size` ]: '7em',
 			},
 		}, { wait: 300 } )
-		cy.adjust( 'Align', 'left', { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-header__buttons': {
-				[ `justify-content` ]: 'flex-start',
-			},
-		} )
-		cy.adjust( 'Align', 'center', { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-header__buttons': {
-				[ `justify-content` ]: 'center',
-			},
-		} )
-		cy.adjust( 'Align', 'right', { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-header__buttons': {
-				[ `justify-content` ]: 'flex-end',
-			},
-		} )
+	}
 
-		assertBlockBackground( '.ugb-header', { viewport: 'Tablet' } )
-		assertSeparators( { viewport: 'Tablet' } )
+	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
+		'.ugb-header__buttons': {
+			[ `justify-content` ]: 'flex-start',
+		},
 	} )
-}
-
-function mobileStyle() {
-	it( 'should adjust mobile options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/header' )
-
-		cy.openInspector( 'ugb/header', 'Style' )
-
-		cy.collapse( 'General' )
-		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
-
-		cy.collapse( 'Container' )
-		cy.setBlockAttribute( {
-			[ `columnMobileBackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
-		} )
-		cy.adjust( 'Background', {
-			[ `Adv. Background Image Settings` ]: {
-				[ `Image Position` ]: {
-					viewport: 'Mobile',
-					value: 'center center',
-				},
-				[ `Image Repeat` ]: {
-					viewport: 'Mobile',
-					value: 'repeat-x',
-				},
-				[ `Image Size` ]: {
-					viewport: 'Mobile',
-					value: 'custom',
-				},
-				[ `Custom Size` ]: {
-					viewport: 'Mobile',
-					value: 19,
-					unit: '%',
-				},
-			},
-		} ).assertComputedStyle( {
-			'.ugb-header__item': {
-				[ `background-position` ]: '50% 50%',
-				[ `background-repeat` ]: 'repeat-x',
-				[ `background-size` ]: '19%',
-			},
-		} )
-
-		cy.collapse( 'Spacing' )
-
-		cy.adjust( 'Paddings', [ 24, 12, 13, 8 ], { unit: 'px', viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-header__item': {
-				[ `padding-top` ]: '24px',
-				[ `padding-bottom` ]: '12px',
-				[ `padding-right` ]: '13px',
-				[ `padding-left` ]: '8px',
-			},
-		} )
-
-		cy.adjust( 'Paddings', [ 12, 4, 10, 3 ], { unit: 'em', viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-header__item': {
-				[ `padding-top` ]: '12em',
-				[ `padding-bottom` ]: '4em',
-				[ `padding-right` ]: '10em',
-				[ `padding-left` ]: '3em',
-			},
-		} )
-
-		cy.adjust( 'Paddings', [ 24, 12, 12, 21 ], { unit: '%', viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-header__item': {
-				[ `padding-top` ]: '24%',
-				[ `padding-bottom` ]: '12%',
-				[ `padding-right` ]: '12%',
-				[ `padding-left` ]: '21%',
-			},
-		} )
-
-		cy.adjust( 'Title', 42, { viewport: 'Mobile' } )
-		cy.adjust( 'Subtitle', 21, { viewport: 'Mobile' } )
-		cy.adjust( 'Button', 43, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-header__title': {
-				[ `margin-bottom` ]: '42px',
-			},
-			'.ugb-header__subtitle': {
-				[ `margin-bottom` ]: '21px',
-			},
-			'.ugb-button-container': {
-				[ `margin-bottom` ]: '43px',
-			},
-		} )
-
-		cy.collapse( 'Title' )
-		cy.toggleStyle( 'Title' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Mobile',
-				value: 50,
-			},
-			[ `Line-Height` ]: {
-				viewport: 'Mobile',
-				value: 4,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-header__title': {
-				[ `font-size` ]: '50px',
-				[ `line-height` ]: '4em',
-			},
-		} )
-
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Mobile',
-				unit: 'em',
-				value: 7,
-			},
-			[ `Line-Height` ]: {
-				viewport: 'Mobile',
-				unit: 'px',
-				value: 24,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-header__title': {
-				[ `font-size` ]: '7em',
-				[ `line-height` ]: '24px',
-			},
-		}, { wait: 300 } )
-		assertAligns( 'Align', '.ugb-header__title', { viewport: 'Mobile' } )
-
-		cy.collapse( 'Subtitle' )
-		cy.toggleStyle( 'Subtitle' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Mobile',
-				value: 50,
-			},
-			[ `Line-Height` ]: {
-				viewport: 'Mobile',
-				value: 4,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-header__subtitle': {
-				[ `font-size` ]: '50px',
-				[ `line-height` ]: '4em',
-			},
-		} )
-
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Mobile',
-				unit: 'em',
-				value: 7,
-			},
-			[ `Line-Height` ]: {
-				viewport: 'Mobile',
-				unit: 'px',
-				value: 24,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-header__subtitle': {
-				[ `font-size` ]: '7em',
-				[ `line-height` ]: '24px',
-			},
-		}, { wait: 300 } )
-		assertAligns( 'Align', '.ugb-header__subtitle', { viewport: 'Mobile' } )
-
-		cy.collapse( 'Button #1' )
-		cy.toggleStyle( 'Button #1' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Mobile',
-				value: 50,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button1 .ugb-button--inner': {
-				[ `font-size` ]: '50px',
-			},
-		}, { wait: 300 } )
-
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Mobile',
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button1 .ugb-button--inner': {
-				[ `font-size` ]: '7em',
-			},
-		}, { wait: 300 } )
-
-		cy.collapse( 'Button #2' )
-		cy.toggleStyle( 'Button #2' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Mobile',
-				value: 50,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button2 .ugb-button--inner': {
-				[ `font-size` ]: '50px',
-			},
-		}, { wait: 300 } )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Mobile',
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button2 .ugb-button--inner': {
-				[ `font-size` ]: '7em',
-			},
-		} )
-		cy.adjust( 'Align', 'left', { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-header__buttons': {
-				[ `justify-content` ]: 'flex-start',
-			},
-		} )
-		cy.adjust( 'Align', 'center', { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-header__buttons': {
-				[ `justify-content` ]: 'center',
-			},
-		} )
-		cy.adjust( 'Align', 'right', { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-header__buttons': {
-				[ `justify-content` ]: 'flex-end',
-			},
-		} )
-
-		assertBlockBackground( '.ugb-header', { viewport: 'Mobile' } )
-		assertSeparators( { viewport: 'Mobile' } )
+	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
+		'.ugb-header__buttons': {
+			[ `justify-content` ]: 'center',
+		},
 	} )
-}
+	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
+		'.ugb-header__buttons': {
+			[ `justify-content` ]: 'flex-end',
+		},
+	} )
 
+	assertBlockBackground( '.ugb-header', { viewport } )
+	assertSeparators( { viewport } )
+}
