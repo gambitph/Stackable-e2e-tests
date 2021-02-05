@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys, camelCase, isEmpty,
+	kebabCase, keys, camelCase, isEmpty, first,
 } from 'lodash'
 import config from 'root/cypress.json'
 
@@ -849,7 +849,7 @@ export function adjustDesign( option = '' ) {
  * @param {Object} options
  */
 export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
-	const _assertComputedStyle = ( win, doc, element, cssRule, expectedValue, pseudoEl, parentEl, selector ) => {
+	const _assertComputedStyle = ( win, doc, element, cssRule, expectedValue, pseudoEl, parentEl ) => {
 		let computedStyle = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )[ camelCase( cssRule ) ]
 
 		/**
@@ -897,13 +897,10 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 					case 'padding-right':
 					case 'padding-bottom':
 					{
-						const selectorEl = doc.querySelector( selector )
-						if ( selectorEl ) {
-							const fontSize = win.getComputedStyle( selectorEl ).fontSize
-							const oneEm = parseInt( fontSize )
+						const fontSize = win.getComputedStyle( element ).fontSize
+						const oneEm = parseInt( fontSize )
 
-							expectedValue = `${ parseFloat( oneEm * parseInt( expectedValue ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
-						}
+						expectedValue = `${ parseFloat( oneEm * parseInt( expectedValue ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
 						break
 					}
 					default: {
@@ -929,10 +926,10 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 			keys( cssObject ).forEach( _selector => {
 				const selector = _selector.split( ':' )
 				cy
-					.get( `.is-selected${ ` ${ selector[ 0 ] }` }` )
+					.get( `.is-selected${ ` ${ first( selector ) }` }` )
 					.then( $block => {
 						keys( cssObject[ _selector ] ).forEach( cssRule => {
-							_assertComputedStyle( win, doc, $block[ 0 ], cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ), _selector )
+							_assertComputedStyle( win, doc, first( $block ), cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ) )
 						} )
 					} )
 			} )
@@ -943,10 +940,17 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		} ) => {
 			keys( cssObject ).forEach( _selector => {
 				const selector = _selector.split( ':' )
-				const willAssertElement = doc.querySelector( `${ parsedClassList }${ parsedClassList.match( selector[ 0 ] ) ? '' : ` ${ selector[ 0 ] }` }` )
+				const selectorWithSpace = first( selector ).split( ' ' )
+				const [ , ...restOfTheSelectors ] = [ ...selectorWithSpace ]
+
+				const documentSelector = `${ parsedClassList }${ first( selectorWithSpace ).match( /\./ )
+					?	( parsedClassList.match( first( selectorWithSpace ) ) ? ` ${ restOfTheSelectors.join( ' ' ) }` : ` ${ first( selector ) }` )
+					: ` ${ first( selector ) }` }`.trim()
+
+				const willAssertElement = doc.querySelector( documentSelector )
 				if ( willAssertElement ) {
 					keys( cssObject[ _selector ] ).forEach( cssRule => {
-						_assertComputedStyle( win, doc, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ), _selector )
+						_assertComputedStyle( win, doc, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ) )
 					} )
 				}
 			} )
