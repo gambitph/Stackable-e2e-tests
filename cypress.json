@@ -4,5 +4,6 @@
 	"viewportMobileWidth": 360,
 	"viewportWidth": 1200,
 	"viewportHeight": 660,
-	"defaultCommandTimeout": 5000
+	"defaultCommandTimeout": 5000,
+	"numTestsKeptInMemory": 5
 }
