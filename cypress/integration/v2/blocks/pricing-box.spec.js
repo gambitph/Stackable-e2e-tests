@@ -22,11 +22,11 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/pricing-box', [
-		'Basic',
-		'Plain',
-		'Compact',
-		'Colored',
-		'Sectioned',
+		{ value: 'Basic', selector: '.ugb-pricing-box--design-basic' },
+		{ value: 'Plain', selector: '.ugb-pricing-box--design-plain' },
+		{ value: 'Compact', selector: '.ugb-pricing-box--design-compact' },
+		{ value: 'Colored', selector: '.ugb-pricing-box--design-colored' },
+		{ value: 'Sectioned', selector: '.ugb-pricing-box--design-sectioned' },
 	] ) )
 }
 

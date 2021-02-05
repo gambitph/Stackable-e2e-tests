@@ -22,11 +22,11 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/card', [
-		'Basic',
-		'Plain',
-		'Horizontal',
-		'Full',
-		'Faded',
+		{ value: 'Basic', selector: '.ugb-card--design-basic' },
+		{ value: 'Plain', selector: '.ugb-card--design-plain' },
+		{ value: 'Horizontal', selector: '.ugb-card--design-horizontal' },
+		{ value: 'Full', selector: '.ugb-card--design-full' },
+		{ value: 'Faded', selector: '.ugb-card--design-faded' },
 	] ) )
 }
 
