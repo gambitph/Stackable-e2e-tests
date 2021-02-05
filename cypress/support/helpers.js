@@ -70,6 +70,7 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 		cy.adjustDesign( design )
 		cy.publish()
 		cy.reload()
+		cy.assertBlockError()
 	} )
 	cy.publish()
 }
@@ -86,9 +87,29 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 	cy.addBlock( blockName )
 	layouts.forEach( layout => {
 		cy.openInspector( blockName, 'Layout' )
-		cy.adjustLayout( layout )
-		cy.publish()
-		cy.reload()
+		if ( typeof layout === 'string' ) {
+			cy.adjustLayout( layout )
+			cy.publish()
+			cy.reload()
+			cy.assertBlockError()
+		}
+		if ( typeof layout === 'object' && ! Array.isArray( layout ) ) {
+			const { selector, value } = layout
+			cy.adjustLayout( value )
+			cy.publish()
+			if ( selector ) {
+				getAddresses( ( { currUrl, previewUrl } ) => {
+					cy.get( selector ).should( 'exist' )
+					cy.visit( previewUrl )
+					cy.get( selector ).should( 'exist' )
+					cy.visit( currUrl )
+					cy.assertBlockError()
+				} )
+			} else {
+				cy.reload()
+				cy.assertBlockError()
+			}
+		}
 	} )
 	cy.publish()
 }

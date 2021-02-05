@@ -24,13 +24,11 @@ function blockError() {
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/number-box', [
 		'Basic',
-		'Plain',
-		'Background',
-		'Heading',
-		{
-			value: 'heading2',
-		},
-		'Faded',
+		{ value: 'Plain', selector: '.ugb-number-box--design-plain' },
+		{ value: 'Background', selector: '.ugb-number-box--design-background' },
+		{ value: 'Heading', selector: '.ugb-number-box--design-heading' },
+		{ value: 'heading2', selector: '.ugb-number-box--design-heading2' },
+		{ value: 'Faded', selector: '.ugb-number-box--design-faded' },
 	] ) )
 }
 

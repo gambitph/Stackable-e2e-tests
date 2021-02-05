@@ -25,11 +25,11 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/blockquote', [
-		'Basic',
-		'Plain',
-		'Centered Quote',
-		'Huge',
-		'Highlight',
+		{ value: 'Basic', selector: '.ugb-blockquote--design-basic' },
+		{ value: 'Plain', selector: '.ugb-blockquote--design-plain' },
+		{ value: 'Centered Quote', selector: '.ugb-blockquote--design-centered-quote' },
+		{ value: 'Huge', selector: '.ugb-blockquote--design-huge' },
+		{ value: 'Highlight', selector: '.ugb-blockquote--design-highlight' },
 	] ) )
 }
 

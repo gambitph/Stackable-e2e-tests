@@ -24,10 +24,10 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/divider', [
-		'Basic',
-		'Bar',
-		'Dots',
-		'Asterisks',
+		{ value: 'Basic', selector: '.ugb-divider--design-basic' },
+		{ value: 'Bar', selector: '.ugb-divider--design-bar' },
+		{ value: 'Dots', selector: '.ugb-divider--design-dots' },
+		{ value: 'Asterisks', selector: '.ugb-divider--design-asterisks' },
 	] ) )
 }
 
