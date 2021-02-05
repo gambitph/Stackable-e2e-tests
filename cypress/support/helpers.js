@@ -162,6 +162,8 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 
 								if ( wait ) {
 									cy.wait( wait )
+								} else {
+									cy.wait( 300 )
 								}
 
 								cy.window().then( frontendWin => {
