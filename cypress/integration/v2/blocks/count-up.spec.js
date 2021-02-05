@@ -23,10 +23,10 @@ function blockError() {
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/count-up', [
 		'Plain',
-		'Plain 2',
-		'Side',
-		'Abstract',
-		'Boxed',
+		{ value: 'Plain 2', selector: '.ugb-countup--design-plain-2' },
+		{ value: 'Side', selector: '.ugb-countup--design-side' },
+		{ value: 'Abstract', selector: '.ugb-countup--design-abstract' },
+		{ value: 'Boxed', selector: '.ugb-countup--design-boxed' },
 	] ) )
 }
 

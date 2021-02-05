@@ -22,15 +22,13 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/testimonial', [
-		'Basic',
-		'Plain',
-		{
-			value: 'basic2',
-		},
-		'Bubble',
-		'Background',
-		'Vertical',
-		'Vertical Inverse',
+		{ value: 'Basic', selector: '.ugb-testimonial--design-basic' },
+		{ value: 'Plain', selector: '.ugb-testimonial--design-plain' },
+		{ value: 'basic2', selector: '.ugb-testimonial--design-basic2' },
+		{ value: 'Bubble', selector: '.ugb-testimonial--design-bubble' },
+		{ value: 'Background', selector: '.ugb-testimonial--design-background' },
+		{ value: 'Vertical', selector: '.ugb-testimonial--design-vertical' },
+		{ value: 'Vertical Inverse', selector: '.ugb-testimonial--design-vertical-inverse' },
 	] ) )
 }
 

@@ -25,13 +25,13 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/header', [
-		'Basic',
-		'Plain',
-		'Half Overlay',
-		'Center Overlay',
-		'Side Overlay',
-		'Half',
-		'Huge',
+		{ value: 'Basic', selector: '.ugb-header--design-basic' },
+		{ value: 'Plain', selector: '.ugb-header--design-plain' },
+		{ value: 'Half Overlay', selector: '.ugb-header--design-half-overlay' },
+		{ value: 'Center Overlay', selector: '.ugb-header--design-center-overlay' },
+		{ value: 'Side Overlay', selector: '.ugb-header--design-side-overlay' },
+		{ value: 'Half', selector: '.ugb-header--design-half' },
+		{ value: 'Huge', selector: '.ugb-header--design-huge' },
 	] ) )
 }
 

@@ -12,11 +12,11 @@ describe( 'Feature Grid Block', () => {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/feature-grid' ) )
 
 	it( 'should switch layout', switchLayouts( 'ugb/feature-grid', [
-		'Basic',
-		'Plain',
-		'Horizontal',
-		'Large Mid',
-		'Zigzag',
+		{ value: 'Basic', selector: '.ugb-feature-grid--design-basic' },
+		{ value: 'Plain', selector: '.ugb-feature-grid--design-plain' },
+		{ value: 'Horizontal', selector: '.ugb-feature-grid--design-horizontal' },
+		{ value: 'Large Mid', selector: '.ugb-feature-grid--design-large-mid' },
+		{ value: 'Zigzag', selector: '.ugb-feature-grid--design-zigzag' },
 	] ) )
 
 	it( 'should switch design', switchDesigns( 'ugb/feature-grid', [

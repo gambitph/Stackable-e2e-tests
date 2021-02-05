@@ -24,18 +24,18 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/separator', [
-		'Wave 1',
-		'Wave 2',
-		'Wave 3',
-		'Wave 4',
-		'Slant 1',
-		'Slant 2',
-		'Curve 1',
-		'Curve 2',
-		'Curve 3',
-		'Rounded 1',
-		'Rounded 2',
-		'Rounded 3',
+		{ value: 'Wave 1', selector: '.ugb-separator--design-wave-1' },
+		{ value: 'Wave 2', selector: '.ugb-separator--design-wave-2' },
+		{ value: 'Wave 3', selector: '.ugb-separator--design-wave-3' },
+		{ value: 'Wave 4', selector: '.ugb-separator--design-wave-4' },
+		{ value: 'Slant 1', selector: '.ugb-separator--design-slant-1' },
+		{ value: 'Slant 2', selector: '.ugb-separator--design-slant-2' },
+		{ value: 'Curve 1', selector: '.ugb-separator--design-curve-1' },
+		{ value: 'Curve 2', selector: '.ugb-separator--design-curve-2' },
+		{ value: 'Curve 3', selector: '.ugb-separator--design-curve-3' },
+		{ value: 'Rounded 1', selector: '.ugb-separator--design-rounded-1' },
+		{ value: 'Rounded 2', selector: '.ugb-separator--design-rounded-2' },
+		{ value: 'Rounded 3', selector: '.ugb-separator--design-rounded-3' },
 	] ) )
 }
 

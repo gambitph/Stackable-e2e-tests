@@ -49,9 +49,9 @@ function innerBlocks() {
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/accordion', [
 		'Basic',
-		'Plain',
-		'Line Colored',
-		'Colored',
+		{ value: 'Plain', selector: '.ugb-accordion--design-plain' },
+		{ value: 'Line Colored', selector: '.ugb-accordion--design-line-colored' },
+		{ value: 'Colored', selector: '.ugb-accordion--design-colored' },
 	] ) )
 }
 

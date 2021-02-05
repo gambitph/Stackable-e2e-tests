@@ -70,6 +70,7 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 		cy.adjustDesign( design )
 		cy.publish()
 		cy.reload()
+		cy.assertBlockError()
 	} )
 	cy.publish()
 }
@@ -86,9 +87,29 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 	cy.addBlock( blockName )
 	layouts.forEach( layout => {
 		cy.openInspector( blockName, 'Layout' )
-		cy.adjustLayout( layout )
-		cy.publish()
-		cy.reload()
+		if ( typeof layout === 'string' ) {
+			cy.adjustLayout( layout )
+			cy.publish()
+			cy.reload()
+			cy.assertBlockError()
+		}
+		if ( typeof layout === 'object' && ! Array.isArray( layout ) ) {
+			const { selector, value } = layout
+			cy.adjustLayout( value )
+			cy.publish()
+			if ( selector ) {
+				getAddresses( ( { currUrl, previewUrl } ) => {
+					cy.get( selector ).should( 'exist' )
+					cy.visit( previewUrl )
+					cy.get( selector ).should( 'exist' )
+					cy.visit( currUrl )
+					cy.assertBlockError()
+				} )
+			} else {
+				cy.reload()
+				cy.assertBlockError()
+			}
+		}
 	} )
 	cy.publish()
 }
@@ -197,9 +218,13 @@ export const registerTests = ( testsList = [] ) => () => testsList.forEach( test
  * Helper function for creating responsive assertions.
  *
  * @param {Function} callback
- * @param {string} tab
+ * @param {Object} options
  */
-export const responsiveAssertHelper = ( callback = () => {}, tab = 'Style' ) => {
+export const responsiveAssertHelper = ( callback = () => {}, options = {} ) => {
+	const {
+		tab = 'Style',
+		disableItAssertion = false,
+	} = options
 	const viewports = [ 'Desktop', 'Tablet', 'Mobile' ]
 
 	const generateAssertDesktopOnlyFunction = viewport => ( desktopCallback = () => {} ) => {
@@ -210,6 +235,9 @@ export const responsiveAssertHelper = ( callback = () => {}, tab = 'Style' ) => 
 
 	const responsiveAssertFunctions = viewports.map( viewport => {
 		const assertDesktopOnlyFunction = generateAssertDesktopOnlyFunction( viewport )
+		if ( disableItAssertion ) {
+			return () => callback( viewport, assertDesktopOnlyFunction )
+		}
 		return () => {
 			it( `should adjust ${ lowerCase( viewport ) } options inside ${ lowerCase( tab ) } tab`, () => {
 				callback( viewport, assertDesktopOnlyFunction )
