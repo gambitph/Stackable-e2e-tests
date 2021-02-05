@@ -812,13 +812,17 @@ export function resetStyle( name, options = {} ) {
 /**
  * Command for changing the layout of the block.
  *
- * @param {string} option
+ * @param {string} value
  */
-export function adjustLayout( option = '' ) {
-	cy
-		.get( '.ugb-design-control-wrapper' )
-		.find( `input[value="${ typeof option === 'object' ? option.value : kebabCase( option ) }"]` )
-		.click( { force: true } )
+export function adjustLayout( value = '' ) {
+	const _char = ( value || '' ).charAt( 0 )
+	// If string value starts with a lowercase character, assign its value. Otherwise, force kebab casing.
+	if ( _char ) {
+		cy
+			.get( '.ugb-design-control-wrapper' )
+			.find( `input[value="${ _char === _char.toLowerCase() ? value : kebabCase( value ) }"]` )
+			.click( { force: true } )
+	}
 }
 
 /**

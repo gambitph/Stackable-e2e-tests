@@ -22,11 +22,11 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/notification', [
-		'Basic',
-		'Plain',
-		'Bordered',
-		'Outlined',
-		'Large Icon',
+		{ value: 'Basic', selector: '.ugb-notification--design-basic' },
+		{ value: 'Plain', selector: '.ugb-notification--design-plain' },
+		{ value: 'Bordered', selector: '.ugb-notification--design-bordered' },
+		{ value: 'Outlined', selector: '.ugb-notification--design-outlined' },
+		{ value: 'Large Icon', selector: '.ugb-notification--design-large-icon' },
 	] ) )
 }
 

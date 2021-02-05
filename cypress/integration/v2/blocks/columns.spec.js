@@ -38,11 +38,11 @@ function innerBlocks() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/columns', [
-		'Grid',
-		'Plain',
-		'Uneven',
-		'Uneven 2',
-		'Tiled',
+		{ value: 'Grid', selector: '.ugb-columns--design-grid' },
+		{ value: 'Plain', selector: '.ugb-columns--design-plain' },
+		{ value: 'Uneven', selector: '.ugb-columns--design-uneven' },
+		{ value: 'Uneven 2', selector: '.ugb-columns--design-uneven-2' },
+		{ value: 'Tiled', selector: '.ugb-columns--design-tiled' },
 	] ) )
 }
 

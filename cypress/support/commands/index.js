@@ -23,6 +23,7 @@ Cypress.Commands.add( 'publish', publish )
 Cypress.Commands.add( 'changeIcon', changeIcon )
 Cypress.Commands.add( 'assertPluginError', assertPluginError )
 Cypress.Commands.add( 'appendBlock', appendBlock )
+Cypress.Commands.add( 'assertBlockError', assertBlockError )
 
 /**
  * Command for clicking the block inserter button
@@ -241,3 +242,9 @@ export function appendBlock( blockName = 'ugb/accordion', parentSelector ) {
 	cy.deleteBlock( blockName )
 }
 
+/**
+ * Command for asserting block error.
+ */
+export function assertBlockError() {
+	cy.get( '.block-editor-warning' ).should( 'not.exist' )
+}

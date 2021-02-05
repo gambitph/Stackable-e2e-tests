@@ -35,15 +35,11 @@ function innerBlocks() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/container', [
-		'Basic',
-		'Plain',
-		'Image',
-		{
-			value: 'image2',
-		},
-		{
-			value: 'image3',
-		},
+		{ value: 'Basic', selector: '.ugb-container--design-basic' },
+		{ value: 'Plain', selector: '.ugb-container--design-plain' },
+		{ value: 'Image', selector: '.ugb-container--design-image' },
+		{ value: 'image2', selector: '.ugb-container--design-image2' },
+		{ value: 'image3', selector: '.ugb-container--design-image3' },
 	] ) )
 }
 
