@@ -65,7 +65,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `Background Gradient Blend Mode` ]: 'hue',
 		} ).assertComputedStyle( {
 			'.ugb-spacer--inner:before': {
-				[ `background-image` ]: 'linear-gradient(#ff5c5c 28%, #7bff5a 75%)',
+				[ `background-image` ]: 'linear-gradient(160deg, #ff5c5c 28%, #7bff5a 75%)',
 				[ `mix-blend-mode` ]: 'hue',
 			},
 		} )
