@@ -2,8 +2,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertBlockBackground, assertSeparators,
 } from '~stackable-e2e/helpers'
+
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 
 describe( 'Blockquote Block', registerTests( [
 	blockExist,
@@ -52,359 +54,123 @@ function switchDesign() {
 	] ) )
 }
 
-function desktopStyle() {
-	it( 'should adjust desktop options in style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/blockquote' )
-		cy.openInspector( 'ugb/blockquote', 'Style' )
+function styleTab( viewport, desktopOnly ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/blockquote' )
+	cy.openInspector( 'ugb/blockquote', 'Style' )
 
-		// Test General Alignment
-		cy.collapse( 'General' )
-		assertAligns( 'Align', '.ugb-inner-block' )
+	// Test General Alignment
+	cy.collapse( 'General' )
+	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
-		// Test Spacing options
-		cy.collapse( 'Spacing' )
-		cy.adjust( 'Paddings', 51 ).assertComputedStyle( {
-			'.ugb-blockquote__item': {
-				[ `padding-top` ]: '51px',
-				[ `padding-bottom` ]: '51px',
-				[ `padding-right` ]: '51px',
-				[ `padding-left` ]: '51px',
-			},
-		} )
-		cy.resetStyle( 'Paddings' )
-		cy.adjust( 'Paddings', 3, { unit: 'em' } ).assertComputedStyle( {
-			'.ugb-blockquote__item': {
-				[ `padding-top` ]: '3em',
-				[ `padding-bottom` ]: '3em',
-				[ `padding-right` ]: '3em',
-				[ `padding-left` ]: '3em',
-			},
-		} )
-		cy.resetStyle( 'Paddings' )
-		cy.adjust( 'Paddings', 17, { unit: '%' } ).assertComputedStyle( {
-			'.ugb-blockquote__item': {
-				[ `padding-top` ]: '17%',
-				[ `padding-bottom` ]: '17%',
-				[ `padding-right` ]: '17%',
-				[ `padding-left` ]: '17%',
-			},
-		} )
+	// Test Spacing options
+	cy.collapse( 'Spacing' )
+	cy.adjust( 'Paddings', 51, { viewport, unit: 'px' } ).assertComputedStyle( {
+		'.ugb-blockquote__item': {
+			[ `padding-top` ]: '51px',
+			[ `padding-bottom` ]: '51px',
+			[ `padding-right` ]: '51px',
+			[ `padding-left` ]: '51px',
+		},
+	} )
+	cy.resetStyle( 'Paddings' )
+	cy.adjust( 'Paddings', 3, { viewport, unit: 'em' } ).assertComputedStyle( {
+		'.ugb-blockquote__item': {
+			[ `padding-top` ]: '3em',
+			[ `padding-bottom` ]: '3em',
+			[ `padding-right` ]: '3em',
+			[ `padding-left` ]: '3em',
+		},
+	} )
+	cy.resetStyle( 'Paddings' )
+	cy.adjust( 'Paddings', 17, { viewport, unit: '%' } ).assertComputedStyle( {
+		'.ugb-blockquote__item': {
+			[ `padding-top` ]: '17%',
+			[ `padding-bottom` ]: '17%',
+			[ `padding-right` ]: '17%',
+			[ `padding-left` ]: '17%',
+		},
+	} )
 
-		// Test Quotation Mark options
-		cy.collapse( 'Quotation Mark' )
+	// Test Quotation Mark options
+	cy.collapse( 'Quotation Mark' )
+
+	desktopOnly( () => {
 		cy.adjust( 'Icon', 'square' )
 		cy.adjust( 'Color', '#f00069' )
-		cy.adjust( 'Size', 104 )
-		cy.adjust( 'Opacity', 0.7 )
-		cy.adjust( 'Horizontal Position', 65 )
-		cy.adjust( 'Vertical Position', 31 ).assertComputedStyle( {
+		cy.adjust( 'Opacity', 0.7 ).assertComputedStyle( {
 			'.ugb-blockquote__quote': {
 				[ `fill` ]: '#f00069',
-				[ `height` ]: '104px',
-				[ `width` ]: '104px',
 				[ `opacity` ]: '0.7',
-				[ `left` ]: '65px',
-				[ `top` ]: '31px',
 			},
 		} )
+	} )
 
-		// Test Text options
-		cy.collapse( 'Text' )
+	cy.adjust( 'Size', 93, { viewport } )
+	cy.adjust( 'Horizontal Position', 76, { viewport } )
+	cy.adjust( 'Vertical Position', 59, { viewport } ).assertComputedStyle( {
+		'.ugb-blockquote__quote': {
+			[ `width` ]: '93px',
+			[ `height` ]: '93px',
+			[ `left` ]: '76px',
+			[ `top` ]: '59px',
+		},
+	} )
+
+	// Test Text options
+	cy.collapse( 'Text' )
+
+	desktopOnly( () => {
 		cy.adjust( 'Typography', {
 			[ `Font Family` ]: 'Serif',
-			[ `Size` ]: 18,
 			[ `Weight` ]: '200',
 			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: {
-				value: 26,
-				unit: 'px',
-			},
 			[ `Letter Spacing` ]: 1.3,
 		} )
-		cy.adjust( 'Size', 1.25, { unit: 'em' } )
-		cy.resetStyle( 'Size' )
-		cy.adjust( 'Size', 1.75, { unit: 'em' } )
 		cy.adjust( 'Text Color', '#ffffff' ).assertComputedStyle( {
 			'.ugb-blockquote__text': {
-				[ `font-size` ]: '1.75em',
 				[ `font-weight` ]: '200',
 				[ `text-transform` ]: 'lowercase',
 				[ `letter-spacing` ]: '1.3px',
 				[ `color` ]: '#ffffff',
-				[ `line-height` ]: '26px',
-			},
-		} )
-
-		// Test Text Alignment
-		assertAligns( 'Align', '.ugb-blockquote__item' )
-
-		// Test Block Background options
-		cy.collapse( 'Block Background' )
-		cy.toggleStyle( 'Block Background' )
-		cy.adjust( 'No Paddings', true )
-		cy.adjust( 'Color Type', 'single' )
-		cy.adjust( 'Background Color', '#ffffff' )
-		cy.adjust( 'Background Color Opacity', 0.7 ).assertComputedStyle( {
-			'.ugb-blockquote': {
-				[ `background-color` ]: 'rgba(255, 255, 255, 0.7)',
-			},
-		} )
-		cy.adjust( 'Color Type', 'gradient' )
-		cy.adjust( 'Background Color #1', '#6d6d6d' )
-		cy.adjust( 'Background Color #2', '#cd2653' )
-		cy.adjust( 'Adv. Gradient Color Settings', {
-			[ `Gradient Direction (degrees)` ]: '180deg',
-			[ `Color 1 Location` ]: '11%',
-			[ `Color 2 Location` ]: '80%',
-			[ `Background Gradient Blend Mode` ]: 'hard-light',
-		} ).assertComputedStyle( {
-			'.ugb-blockquote:before': {
-				[ `background-image` ]: 'linear-gradient(#6d6d6d 11%, #cd2653 80%)',
-				[ `mix-blend-mode` ]: 'hard-light',
-			},
-		} )
-		// TODO: Add Background Image test
-
-		// Test Top Separator
-		cy.collapse( 'Top Separator' )
-		cy.toggleStyle( 'Top Separator' )
-		cy.adjust( 'Design', 'wave-3' )
-		cy.adjust( 'Color', '#000000' )
-		cy.adjust( 'Height', 237 )
-		cy.adjust( 'Width', 1.7 ).assertComputedStyle( {
-			'.ugb-top-separator svg': {
-				[ `fill` ]: '#000000',
-			},
-		} )
-		cy.adjust( 'Flip Horizontally', true )
-		cy.adjust( 'Flip Vertically', true )
-		cy.adjust( 'Shadow', false )
-		cy.adjust( 'Bring to Front', true ).assertComputedStyle( {
-			'.ugb-top-separator': {
-				'z-index': '6',
-			},
-		} )
-		cy.adjust( 'Separator Layer 2', {
-			[ `Color` ]: '#ffffff',
-			[ `Layer Height` ]: '1.16',
-			[ `Layer Width` ]: '1.9',
-			[ `Flip Horizontally` ]: true,
-			[ `Opacity` ]: '0.3',
-			[ `Mix Blend Mode` ]: 'exclusion',
-		} ).assertComputedStyle( {
-			'.ugb-top-separator .ugb-separator__layer-2': {
-				[ `fill` ]: '#ffffff',
-				[ `transform` ]: 'matrix(-1.9, 0, 0, 1.16, 0, 0)',
-				[ `opacity` ]: '0.3',
-				[ `mix-blend-mode` ]: 'exclusion',
-			},
-		} )
-
-		cy.adjust( 'Separator Layer 3', {
-			[ `Color` ]: '#6d6d6d',
-			[ `Layer Height` ]: '1.03',
-			[ `Layer Width` ]: '1.2',
-			[ `Flip Horizontally` ]: true,
-			[ `Opacity` ]: '0.8',
-		} ).assertComputedStyle( {
-			'.ugb-top-separator .ugb-separator__layer-3': {
-				[ `fill` ]: '#6d6d6d',
-				[ `transform` ]: 'matrix(-1.2, 0, 0, 1.03, 0, 0)',
-				[ `opacity` ]: '0.8',
-			},
-		} )
-
-		// Test Bottom Separator
-		cy.collapse( 'Bottom Separator' )
-		cy.toggleStyle( 'Bottom Separator' )
-		cy.adjust( 'Design', 'slant-2' )
-		cy.adjust( 'Color', '#f00069' )
-		cy.adjust( 'Height', 237 )
-		cy.adjust( 'Width', 1.7 ).assertComputedStyle( {
-			'.ugb-bottom-separator svg': {
-				[ `fill` ]: '#f00069',
-			},
-		} )
-		cy.adjust( 'Flip Horizontally', true )
-		cy.adjust( 'Flip Vertically', true )
-		cy.adjust( 'Shadow', false )
-		cy.adjust( 'Bring to Front', true ).assertComputedStyle( {
-			'.ugb-bottom-separator': {
-				'z-index': '6',
-			},
-		} )
-		cy.adjust( 'Separator Layer 2', {
-			[ `Color` ]: '#ffffff',
-			[ `Layer Height` ]: '1.16',
-			[ `Layer Width` ]: '1.9',
-			[ `Flip Horizontally` ]: true,
-			[ `Opacity` ]: '0.3',
-			[ `Mix Blend Mode` ]: 'exclusion',
-		} ).assertComputedStyle( {
-			'.ugb-bottom-separator .ugb-separator__layer-2': {
-				[ `fill` ]: '#ffffff',
-				[ `transform` ]: 'matrix(-1.9, 0, 0, 1.16, 0, 0)',
-				[ `opacity` ]: '0.3',
-				[ `mix-blend-mode` ]: 'exclusion',
-			},
-		} )
-
-		cy.adjust( 'Separator Layer 3', {
-			[ `Color` ]: '#6d6d6d',
-			[ `Layer Height` ]: '1.03',
-			[ `Layer Width` ]: '1.2',
-			[ `Flip Horizontally` ]: true,
-			[ `Opacity` ]: '0.8',
-		} ).assertComputedStyle( {
-			'.ugb-bottom-separator .ugb-separator__layer-3': {
-				[ `fill` ]: '#6d6d6d',
-				[ `transform` ]: 'matrix(-1.2, 0, 0, 1.03, 0, 0)',
-				[ `opacity` ]: '0.8',
 			},
 		} )
 	} )
-}
 
-function tabletStyle() {
-	it( 'should adjust tablet options in style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/blockquote' )
-		cy.openInspector( 'ugb/blockquote', 'Style' )
-
-		cy.collapse( 'General' )
-		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
-
-		cy.collapse( 'Spacing' )
-		cy.adjust( 'Paddings', 28, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-blockquote__item': {
-				[ `padding-top` ]: '28px',
-				[ `padding-bottom` ]: '28px',
-				[ `padding-right` ]: '28px',
-				[ `padding-left` ]: '28px',
-			},
-		} )
-
-		cy.collapse( 'Quotation Mark' )
-		cy.adjust( 'Size', 93, { viewport: 'Tablet' } )
-		cy.adjust( 'Horizontal Position', 76, { viewport: 'Tablet' } )
-		cy.adjust( 'Vertical Position', 59, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-blockquote__quote': {
-				[ `width` ]: '93px',
-				[ `height` ]: '93px',
-				[ `left` ]: '76px',
-				[ `top` ]: '59px',
-			},
-		} )
-
-		cy.collapse( 'Text' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Tablet',
-				value: 30,
-				unit: 'px',
-			},
-			[ `Line-Height` ]: {
-				viewport: 'Tablet',
-				value: 29,
-				unit: 'px',
-			},
-		} )
-		cy.adjust( 'Size', 22, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-blockquote__text': {
-				[ `font-size` ]: '22px',
-				[ `line-height` ]: '29px',
-			},
-		} )
-		assertAligns( 'Align', '.ugb-blockquote__item', { viewport: 'Tablet' } )
-
-		cy.collapse( 'Top Separator' )
-		cy.toggleStyle( 'Top Separator' )
-		cy.adjust( 'Height', 247, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-top-separator>.ugb-separator-wrapper': {
-				[ `height` ]: '247px',
-			},
-		} )
-
-		cy.collapse( 'Bottom Separator' )
-		cy.toggleStyle( 'Bottom Separator' )
-		cy.adjust( 'Height', 157, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-bottom-separator>.ugb-separator-wrapper': {
-				[ `height` ]: '157px',
-			},
-		} )
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			value: 30,
+			unit: 'px',
+		},
+		[ `Line-Height` ]: {
+			viewport,
+			value: 29,
+			unit: 'px',
+		},
 	} )
-}
-
-function mobileStyle() {
-	it( 'should adjust mobile options in style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/blockquote' )
-		cy.openInspector( 'ugb/blockquote', 'Style' )
-
-		cy.collapse( 'General' )
-		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
-
-		cy.collapse( 'Spacing' )
-		cy.adjust( 'Paddings', 28, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-blockquote__item': {
-				[ `padding-top` ]: '28px',
-				[ `padding-bottom` ]: '28px',
-				[ `padding-right` ]: '28px',
-				[ `padding-left` ]: '28px',
-			},
-		} )
-
-		cy.collapse( 'Quotation Mark' )
-		cy.adjust( 'Size', 93, { viewport: 'Mobile' } )
-		cy.adjust( 'Horizontal Position', 76, { viewport: 'Mobile' } )
-		cy.adjust( 'Vertical Position', 59, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-blockquote__quote': {
-				[ `width` ]: '93px',
-				[ `height` ]: '93px',
-				[ `left` ]: '76px',
-				[ `top` ]: '59px',
-			},
-		} )
-
-		cy.collapse( 'Text' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: {
-				viewport: 'Mobile',
-				value: 30,
-				unit: 'px',
-			},
-			[ `Line-Height` ]: {
-				viewport: 'Mobile',
-				value: 36,
-				unit: 'px',
-			},
-		} )
-		cy.adjust( 'Size', 22, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-blockquote__text': {
-				[ `font-size` ]: '22px',
-				[ `line-height` ]: '36px',
-			},
-		} )
-		assertAligns( 'Align', '.ugb-blockquote__item', { viewport: 'Mobile' } )
-
-		cy.collapse( 'Top Separator' )
-		cy.toggleStyle( 'Top Separator' )
-		cy.adjust( 'Height', 247, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-top-separator>.ugb-separator-wrapper': {
-				[ `height` ]: '247px',
-			},
-		} )
-
-		cy.collapse( 'Bottom Separator' )
-		cy.toggleStyle( 'Bottom Separator' )
-		cy.adjust( 'Height', 157, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-bottom-separator>.ugb-separator-wrapper': {
-				[ `height` ]: '157px',
-			},
-		} )
+	cy.adjust( 'Size', 1.9, { viewport, unit: 'em' } ).assertComputedStyle( {
+		'.ugb-blockquote__text': {
+			[ `font-size` ]: '1.9em',
+			[ `line-height` ]: '29px',
+		},
 	} )
+	cy.adjust( 'Typography', {
+		[ `Line-Height` ]: {
+			viewport,
+			value: 2.5,
+			unit: 'em',
+		},
+	} ).assertComputedStyle( {
+		'.ugb-blockquote__text': {
+			[ `line-height` ]: '2.5em',
+		},
+	} )
+	assertAligns( 'Align', '.ugb-blockquote__item', { viewport } )
+
+	assertBlockBackground( '.ugb-blockquote', { viewport } )
+
+	assertSeparators( { viewport } )
 }
+
