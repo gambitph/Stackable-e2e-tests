@@ -1,30 +1,3 @@
-import './styles'
-import './global-settings'
-import './setup'
-import './inspector'
-import './attributes'
-
-/**
- * Internal dependencies
- */
-import {
-	containsRegExp, waitLoader,
-} from '../util'
-import { last, first } from 'lodash'
-
-/**
- * Register functions to Cypress Commands.
- */
-Cypress.Commands.add( 'addBlock', addBlock )
-Cypress.Commands.add( 'selectBlock', selectBlock )
-Cypress.Commands.add( 'typeBlock', typeBlock )
-Cypress.Commands.add( 'changePreviewMode', changePreviewMode )
-Cypress.Commands.add( 'deleteBlock', deleteBlock )
-Cypress.Commands.add( 'publish', publish )
-Cypress.Commands.add( 'changeIcon', changeIcon )
-Cypress.Commands.add( 'assertPluginError', assertPluginError )
-Cypress.Commands.add( 'appendBlock', appendBlock )
-Cypress.Commands.add( 'assertBlockError', assertBlockError )
 
 /**
  * Overwrite Cypress Commands
@@ -45,6 +18,34 @@ Cypress.Commands.overwrite( 'first', modifyLogFunc() )
 Cypress.Commands.overwrite( 'wait', modifyLogFunc() )
 Cypress.Commands.overwrite( 'contains', modifyLogFunc() )
 Cypress.Commands.overwrite( 'last', modifyLogFunc() )
+
+/**
+ * Register functions to Cypress Commands.
+ */
+Cypress.Commands.add( 'addBlock', addBlock )
+Cypress.Commands.add( 'selectBlock', selectBlock )
+Cypress.Commands.add( 'typeBlock', typeBlock )
+Cypress.Commands.add( 'changePreviewMode', changePreviewMode )
+Cypress.Commands.add( 'deleteBlock', deleteBlock )
+Cypress.Commands.add( 'publish', publish )
+Cypress.Commands.add( 'changeIcon', changeIcon )
+Cypress.Commands.add( 'assertPluginError', assertPluginError )
+Cypress.Commands.add( 'appendBlock', appendBlock )
+Cypress.Commands.add( 'assertBlockError', assertBlockError )
+
+import './styles'
+import './global-settings'
+import './setup'
+import './inspector'
+import './attributes'
+
+/**
+ * Internal dependencies
+ */
+import {
+	containsRegExp, waitLoader,
+} from '../util'
+import { last, first } from 'lodash'
 
 /**
  * Function for overwriting log argument.
