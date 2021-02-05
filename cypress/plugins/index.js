@@ -25,13 +25,6 @@ const INCLUDE_V2_TEST_FILES = [
 const INCLUDE_V3_TEST_FILES = []
 
 module.exports = ( on, config ) => {
-	on( `task`, {
-		error( message ) {
-			console.error( message ) // eslint-disable-line no-console
-			return null
-		},
-	} )
-
 	on( `file:preprocessor`, webpack( {
 		webpackOptions: require( '../../webpack.conf.js' ),
 		watchOptions: {},
