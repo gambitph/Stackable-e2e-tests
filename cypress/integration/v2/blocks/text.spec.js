@@ -71,11 +71,11 @@ function desktopStyle() {
 		cy.toggleStyle( 'Column Rule' )
 		cy.adjust( 'Color', '#000000' )
 		cy.adjust( 'Width', 3 )
-		cy.adjust( 'Height', 86 ).assertComputedStyle( {
+		cy.adjust( 'Height', 48 ).assertComputedStyle( {
 			'.ugb-text__rule': {
 				[ `background-color` ]: '#000000',
 				[ `width` ]: '3px',
-				[ `height` ]: '86%',
+				[ `height` ]: '48%',
 			},
 		} )
 
