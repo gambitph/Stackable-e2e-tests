@@ -2,8 +2,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockBackground, assertSeparators,
 } from '~stackable-e2e/helpers'
+
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 
 describe( 'Call To Action Block', registerTests( [
 	blockExist,
@@ -11,8 +13,8 @@ describe( 'Call To Action Block', registerTests( [
 	switchLayout,
 	switchDesign,
 	desktopStyle,
-	responsiveAssert( 'Tablet' ),
-	responsiveAssert( 'Mobile' ),
+	tabletStyle,
+	mobileStyle,
 ] ) )
 
 function blockExist() {
@@ -79,19 +81,20 @@ function switchDesign() {
 	] ) )
 }
 
-function desktopStyle() {
-	it( 'should adjust desktop options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/cta' )
-		cy.openInspector( 'ugb/cta', 'Style' )
+function styleTab( viewport, desktopOnly ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/cta' )
+	cy.openInspector( 'ugb/cta', 'Style' )
 
-		// Test General options
-		cy.collapse( 'General' )
-		assertAligns( 'Align', '.ugb-inner-block' )
+	// Test General options
+	cy.collapse( 'General' )
+	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
-		// Test Container options
-		cy.collapse( 'Container' )
+	// Test Container options
+	cy.collapse( 'Container' )
+
+	desktopOnly( () => {
 		cy.adjust( 'Background', {
 			[ `Color Type` ]: 'single',
 			[ `Background Color` ]: '#000000',
@@ -111,7 +114,6 @@ function desktopStyle() {
 			'.ugb-cta__item': {
 				[ `background-image` ]: 'url("http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg")',
 				[ `background-attachment` ]: 'fixed',
-
 			},
 			'.ugb-cta__item:before': {
 				[ `opacity` ]: '0.7',
@@ -119,18 +121,43 @@ function desktopStyle() {
 		} )
 		cy.adjust( 'Background', {
 			[ `Adv. Background Image Settings` ]: {
-				[ `Image Position` ]: 'top right',
-				[ `Image Repeat` ]: 'no-repeat',
-				[ `Image Size` ]: 'cover',
 				[ `Image Blend Mode` ]: 'hue',
 			},
 		} ).assertComputedStyle( {
 			'.ugb-cta__item': {
-				[ `background-size` ]: 'cover',
 				[ `background-blend-mode` ]: 'hue',
 			},
 		} )
+	} )
 
+	if ( viewport === 'Tablet' || viewport === 'Mobile' ) {
+		cy.setBlockAttribute( {
+			[ `column${ viewport }BackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
+		} )
+	}
+
+	cy.adjust( 'Background', {
+		[ `Adv. Background Image Settings` ]: {
+			[ `Image Position` ]: {
+				viewport,
+				value: 'top left',
+			},
+			[ `Image Repeat` ]: {
+				viewport,
+				value: 'no-repeat',
+			},
+			[ `Image Size` ]: {
+				viewport,
+				value: 'cover',
+			},
+		},
+	} ).assertComputedStyle( {
+		'.ugb-cta__item': {
+			[ `background-size` ]: 'cover',
+		},
+	} )
+
+	desktopOnly( () => {
 		// Test Container Gradient
 		cy.adjust( 'Background', {
 			[ `Color Type` ]: 'gradient',
@@ -174,64 +201,62 @@ function desktopStyle() {
 		} )
 		cy.adjust( 'Shadow / Outline', 2 )
 			.assertClassName( '.ugb-cta__item', 'ugb--shadow-2' )
+	} )
 
-		// Test Spacing options
-		cy.collapse( 'Spacing' )
-		cy.adjust( 'Paddings', 48 ).assertComputedStyle( {
-			'.ugb-cta__item': {
-				[ `padding-top` ]: '48px',
-				[ `padding-bottom` ]: '48px',
-				[ `padding-right` ]: '48px',
-				[ `padding-left` ]: '48px',
-			},
-		} )
-		cy.resetStyle( 'Paddings' )
-		cy.adjust( 'Paddings', 7, { unit: 'em' } ).assertComputedStyle( {
-			'.ugb-cta__item': {
-				[ `padding-top` ]: '7em',
-				[ `padding-bottom` ]: '7em',
-				[ `padding-right` ]: '7em',
-				[ `padding-left` ]: '7em',
-			},
-		} )
-		cy.resetStyle( 'Paddings' )
-		cy.adjust( 'Paddings', 19, { unit: '%' } ).assertComputedStyle( {
-			'.ugb-cta__item': {
-				[ `padding-top` ]: '19%',
-				[ `padding-bottom` ]: '19%',
-				[ `padding-right` ]: '19%',
-				[ `padding-left` ]: '19%',
-			},
-		} )
-		cy.adjust( 'Title', 31 ).assertComputedStyle( {
-			'.ugb-cta__title': {
-				[ `margin-bottom` ]: '31px',
-			},
-		} )
-		cy.adjust( 'Description', 56 ).assertComputedStyle( {
-			'.ugb-cta__description': {
-				[ `margin-bottom` ]: '56px',
-			},
-		} )
-		cy.adjust( 'Button', 24 ).assertComputedStyle( {
-			'.ugb-button-container': {
-				[ `margin-bottom` ]: '24px',
-			},
-		} )
+	// Test Spacing options
+	cy.collapse( 'Spacing' )
+	cy.adjust( 'Paddings', 30, { viewport, unit: 'px' } ).assertComputedStyle( {
+		'.ugb-cta__item': {
+			[ `padding-top` ]: '30px',
+			[ `padding-bottom` ]: '30px',
+			[ `padding-right` ]: '30px',
+			[ `padding-left` ]: '30px',
+		},
+	} )
+	cy.resetStyle( 'Paddings' )
+	cy.adjust( 'Paddings', 4, { viewport, unit: 'em' } ).assertComputedStyle( {
+		'.ugb-cta__item': {
+			[ `padding-top` ]: '4em',
+			[ `padding-bottom` ]: '4em',
+			[ `padding-right` ]: '4em',
+			[ `padding-left` ]: '4em',
+		},
+	} )
+	cy.resetStyle( 'Paddings' )
+	cy.adjust( 'Paddings', 21, { viewport, unit: '%' } ).assertComputedStyle( {
+		'.ugb-cta__item': {
+			[ `padding-top` ]: '21%',
+			[ `padding-bottom` ]: '21%',
+			[ `padding-right` ]: '21%',
+			[ `padding-left` ]: '21%',
+		},
+	} )
+	cy.adjust( 'Title', 47, { viewport } ).assertComputedStyle( {
+		'.ugb-cta__title': {
+			[ `margin-bottom` ]: '47px',
+		},
+	} )
+	cy.adjust( 'Description', 28, { viewport } ).assertComputedStyle( {
+		'.ugb-cta__description': {
+			[ `margin-bottom` ]: '28px',
+		},
+	} )
+	cy.adjust( 'Button', 9, { viewport } ).assertComputedStyle( {
+		'.ugb-button-container': {
+			[ `margin-bottom` ]: '9px',
+		},
+	} )
 
-		// Test Title options
-		cy.collapse( 'Title' )
+	// Test Title options
+	cy.collapse( 'Title' )
+
+	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h5' )
 			.assertHtmlTag( '.ugb-cta__title', 'h5' )
 		cy.adjust( 'Typography', {
 			[ `Font Family` ]: 'Serif',
-			[ `Size` ]: 23,
 			[ `Weight` ]: '600',
 			[ `Transform` ]: 'uppercase',
-			[ `Line-Height` ]: {
-				value: 49,
-				unit: 'px',
-			},
 			[ `Letter Spacing` ]: 1.9,
 		} )
 		cy.adjust( 'Size', 1.75, { unit: 'em' } )
@@ -242,22 +267,37 @@ function desktopStyle() {
 				[ `text-transform` ]: 'uppercase',
 				[ `letter-spacing` ]: '1.9px',
 				[ `color` ]: '#333333',
-				[ `line-height` ]: '49px',
 			},
 		} )
-		assertAligns( 'Align', '.ugb-cta__title' )
+	} )
 
-		// Test Description options
-		cy.collapse( 'Description' )
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			value: 34,
+			unit: 'px',
+		},
+		[ `Line-Height` ]: {
+			viewport,
+			value: 24,
+			unit: 'px',
+		},
+	} ).assertComputedStyle( {
+		'.ugb-cta__title': {
+			[ `font-size` ]: '34px',
+			[ `line-height` ]: '24px',
+		},
+	} )
+	assertAligns( 'Align', '.ugb-cta__title', { viewport } )
+
+	// Test Description options
+	cy.collapse( 'Description' )
+
+	desktopOnly( () => {
 		cy.adjust( 'Typography', {
 			[ `Font Family` ]: 'Sans-Serif',
-			[ `Size` ]: 23,
 			[ `Weight` ]: '200',
 			[ `Transform` ]: 'capitalize',
-			[ `Line-Height` ]: {
-				value: 49,
-				unit: 'px',
-			},
 			[ `Letter Spacing` ]: 1.9,
 		} )
 		cy.adjust( 'Size', 1.3, { unit: 'em' } )
@@ -268,13 +308,33 @@ function desktopStyle() {
 				[ `text-transform` ]: 'capitalize',
 				[ `letter-spacing` ]: '1.9px',
 				[ `color` ]: '#333333',
-				[ `line-height` ]: '49px',
 			},
 		} )
-		assertAligns( 'Align', '.ugb-cta__description' )
+	} )
 
-		// Test Button options
-		cy.collapse( 'Button' )
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			value: 25,
+			unit: 'px',
+		},
+		[ `Line-Height` ]: {
+			viewport,
+			value: 21,
+			unit: 'px',
+		},
+	} ).assertComputedStyle( {
+		'.ugb-cta__description': {
+			[ `font-size` ]: '25px',
+			[ `line-height` ]: '21px',
+		},
+	} )
+	assertAligns( 'Align', '.ugb-cta__description', { viewport } )
+
+	// Test Button options
+	cy.collapse( 'Button' )
+
+	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'single' )
 		cy.adjust( 'Button Color', '#ff0000' )
 		cy.adjust( 'Text Color', '#ffffff' ).assertComputedStyle( {
@@ -336,147 +396,16 @@ function desktopStyle() {
 				[ `margin-left` ]: '29px',
 			},
 		} )
-		assertAligns( 'Align', '.ugb-button-container' )
+	} )
+	assertAligns( 'Align', '.ugb-button-container', { viewport } )
 
-		// Test Effects
+	desktopOnly( () => {
 		cy.collapse( 'Effects' )
 		cy.adjust( 'Hover Effect', 'lift' )
 			.assertClassName( '.ugb-cta__item', 'ugb--hover-lift' )
-
-		// Test Block Background
-		assertBlockBackground( '.ugb-cta', { viewport: 'Desktop' } )
-
-		// Test Top and Bottom Separator
-		assertSeparators( { viewport: 'Desktop' } )
 	} )
+
+	assertBlockBackground( '.ugb-cta', { viewport } )
+
+	assertSeparators( { viewport } )
 }
-
-function responsiveAssert( mode ) {
-	return () => {
-		it( `should adjust ${ mode } options inside style tab`, () => {
-			cy.setupWP()
-			cy.newPage()
-			cy.addBlock( 'ugb/cta' )
-			cy.openInspector( 'ugb/cta', 'Style' )
-
-			cy.collapse( 'General' )
-			assertAligns( 'Align', '.ugb-inner-block', { viewport: mode } )
-
-			cy.collapse( 'Container' )
-			cy.setBlockAttribute( {
-				[ `column${ mode }BackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
-			} )
-			cy.adjust( 'Background', {
-				[ `Adv. Background Image Settings` ]: {
-					[ `Image Position` ]: {
-						viewport: mode,
-						value: 'top left',
-					},
-					[ `Image Repeat` ]: {
-						viewport: mode,
-						value: 'no-repeat',
-					},
-					[ `Image Size` ]: {
-						viewport: mode,
-						value: 'cover',
-					},
-				},
-			} ).assertComputedStyle( {
-				'.ugb-cta__item': {
-					[ `background-size` ]: 'cover',
-				},
-			} )
-
-			cy.collapse( 'Spacing' )
-			cy.adjust( 'Paddings', 30, { viewport: mode, unit: 'px' } ).assertComputedStyle( {
-				'.ugb-cta__item': {
-					[ `padding-top` ]: '30px',
-					[ `padding-bottom` ]: '30px',
-					[ `padding-right` ]: '30px',
-					[ `padding-left` ]: '30px',
-				},
-			} )
-			cy.resetStyle( 'Paddings' )
-			cy.adjust( 'Paddings', 4, { viewport: mode, unit: 'em' } ).assertComputedStyle( {
-				'.ugb-cta__item': {
-					[ `padding-top` ]: '4em',
-					[ `padding-bottom` ]: '4em',
-					[ `padding-right` ]: '4em',
-					[ `padding-left` ]: '4em',
-				},
-			} )
-			cy.resetStyle( 'Paddings' )
-			cy.adjust( 'Paddings', 21, { viewport: mode, unit: '%' } ).assertComputedStyle( {
-				'.ugb-cta__item': {
-					[ `padding-top` ]: '21%',
-					[ `padding-bottom` ]: '21%',
-					[ `padding-right` ]: '21%',
-					[ `padding-left` ]: '21%',
-				},
-			} )
-			cy.adjust( 'Title', 47, { viewport: mode } ).assertComputedStyle( {
-				'.ugb-cta__title': {
-					[ `margin-bottom` ]: '47px',
-				},
-			} )
-			cy.adjust( 'Description', 28, { viewport: mode } ).assertComputedStyle( {
-				'.ugb-cta__description': {
-					[ `margin-bottom` ]: '28px',
-				},
-			} )
-			cy.adjust( 'Button', 9, { viewport: mode } ).assertComputedStyle( {
-				'.ugb-button-container': {
-					[ `margin-bottom` ]: '9px',
-				},
-			} )
-
-			cy.collapse( 'Title' )
-			cy.adjust( 'Typography', {
-				[ `Size` ]: {
-					viewport: mode,
-					value: 34,
-					unit: 'px',
-				},
-				[ `Line-Height` ]: {
-					viewport: mode,
-					value: 24,
-					unit: 'px',
-				},
-			} ).assertComputedStyle( {
-				'.ugb-cta__title': {
-					[ `font-size` ]: '34px',
-					[ `line-height` ]: '24px',
-				},
-			} )
-			assertAligns( 'Align', '.ugb-cta__title', { viewport: mode } )
-
-			cy.collapse( 'Description' )
-			cy.adjust( 'Typography', {
-				[ `Size` ]: {
-					viewport: mode,
-					value: 25,
-					unit: 'px',
-				},
-				[ `Line-Height` ]: {
-					viewport: mode,
-					value: 21,
-					unit: 'px',
-				},
-			} ).assertComputedStyle( {
-				'.ugb-cta__description': {
-					[ `font-size` ]: '25px',
-					[ `line-height` ]: '21px',
-				},
-			} )
-			assertAligns( 'Align', '.ugb-cta__description', { viewport: mode } )
-
-			cy.collapse( 'Button' )
-			assertAligns( 'Align', '.ugb-button-container', { viewport: mode } )
-
-			assertBlockBackground( '.ugb-cta', { viewport: mode } )
-
-			assertSeparators( { viewport: mode } )
-		} )
-	}
-}
-
