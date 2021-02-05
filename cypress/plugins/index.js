@@ -12,7 +12,7 @@ const FORCE_INCLUDE_ALL = false
 const INCLUDE_V2_TEST_FILES = [
 	// Blocks
 	'accordion',
-	'blockqoute',
+	'blockquote',
 	'cta',
 	'divider',
 	'header',
