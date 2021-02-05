@@ -5,5 +5,8 @@
 	"viewportWidth": 1200,
 	"viewportHeight": 660,
 	"defaultCommandTimeout": 5000,
-	"numTestsKeptInMemory": 5
+	"numTestsKeptInMemory": 5,
+	"env": {
+		"DEBUG": "false"
+	}
 }
