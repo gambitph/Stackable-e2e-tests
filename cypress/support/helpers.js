@@ -12,7 +12,7 @@ import { collapse, openSidebar } from './commands/inspector'
  * External dependencies
  */
 import {
-	startCase,
+	startCase, lowerCase,
 } from 'lodash'
 
 /**
@@ -193,3 +193,29 @@ export const assertAligns = ( name, selector, options = {} ) => {
  */
 export const registerTests = ( testsList = [] ) => () => testsList.forEach( test => typeof test === 'function' && test() )
 
+/**
+ * Helper function for creating responsive assertions.
+ *
+ * @param {Function} callback
+ * @param {string} tab
+ */
+export const responsiveAssertHelper = ( callback = () => {}, tab = 'Style' ) => {
+	const viewports = [ 'Desktop', 'Tablet', 'Mobile' ]
+
+	const generateAssertDesktopOnlyFunction = viewport => ( desktopCallback = () => {} ) => {
+		if ( typeof desktopCallback === 'function' && viewport === 'Desktop' ) {
+			desktopCallback()
+		}
+	}
+
+	const responsiveAssertFunctions = viewports.map( viewport => {
+		const assertDesktopOnlyFunction = generateAssertDesktopOnlyFunction( viewport )
+		return () => {
+			it( `should adjust ${ lowerCase( viewport ) } options inside ${ lowerCase( tab ) } tab`, () => {
+				callback( viewport, assertDesktopOnlyFunction )
+			} )
+		}
+	} )
+
+	return responsiveAssertFunctions
+}

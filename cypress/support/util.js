@@ -166,7 +166,12 @@ export const getPreviewMode = ( callback = () => {} ) => {
  * @param {Array} classList
  */
 export const parseClassList = ( classList = [] ) => {
-	const excludedClassNames = [ 'ugb-accordion--open' ]
+	const excludedClassNames = [
+		'ugb-accordion--open',
+		'ugb-icon-list__left-align',
+		'ugb-icon-list__center-align',
+		'ugb-icon-list__right-align',
+	]
 	const parsedClassList = classList.split( ' ' )
 		.filter( className => ! className.match( /ugb-(.......)$/ ) && ! excludedClassNames.includes( className ) )
 		.map( className => `.${ className }` )
