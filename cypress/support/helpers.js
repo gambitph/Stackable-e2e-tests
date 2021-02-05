@@ -96,9 +96,9 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 		if ( typeof layout === 'object' && ! Array.isArray( layout ) ) {
 			const { selector, value } = layout
 			cy.adjustLayout( value )
+			cy.publish()
 			if ( selector ) {
 				getAddresses( ( { currUrl, previewUrl } ) => {
-					cy.publish()
 					cy.get( selector ).should( 'exist' )
 					cy.visit( previewUrl )
 					cy.get( selector ).should( 'exist' )
@@ -106,7 +106,6 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 					cy.assertBlockError()
 				} )
 			} else {
-				cy.publish()
 				cy.reload()
 				cy.assertBlockError()
 			}
