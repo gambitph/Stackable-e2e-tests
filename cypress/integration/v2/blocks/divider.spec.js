@@ -2,8 +2,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, assertAligns, registerTests,
+	assertBlockExist, blockErrorTest, switchLayouts, assertAligns, registerTests, responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
+
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 
 describe( 'Divider Block', registerTests( [
 	blockExist,
@@ -31,15 +33,16 @@ function switchLayout() {
 	] ) )
 }
 
-function desktopStyle() {
-	it( 'should adjust desktop options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/divider' )
-		cy.openInspector( 'ugb/divider', 'Style' )
+function styleTab( viewport, desktopOnly ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/divider' )
+	cy.openInspector( 'ugb/divider', 'Style' )
 
-		// Test General options
-		cy.collapse( 'General' )
+	// Test General options
+	cy.collapse( 'General' )
+
+	desktopOnly( () => {
 		cy.adjust( 'Color', '#000000' )
 		cy.adjust( 'Height / Size', 9 )
 		cy.adjust( 'Width (%)', 68 ).assertComputedStyle( {
@@ -55,33 +58,7 @@ function desktopStyle() {
 				[ `margin-bottom` ]: '32px',
 			},
 		} )
-
-		// Test General Alignment
-		assertAligns( 'Align', '.ugb-inner-block' )
 	} )
+
+	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 }
-
-function tabletStyle() {
-	it( 'should adjust tablet options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/divider' )
-		cy.openInspector( 'ugb/divider', 'Style' )
-
-		cy.collapse( 'General' )
-		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Tablet' } )
-	} )
-}
-
-function mobileStyle() {
-	it( 'should adjust mobile options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/divider' )
-		cy.openInspector( 'ugb/divider', 'Style' )
-
-		cy.collapse( 'General' )
-		assertAligns( 'Align', '.ugb-inner-block', { viewport: 'Mobile' } )
-	} )
-}
-
