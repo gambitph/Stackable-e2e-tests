@@ -130,11 +130,8 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 	} )
 
-	if ( viewport === 'Tablet' || viewport === 'Mobile' ) {
-		cy.setBlockAttribute( {
-			[ `column${ viewport }BackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
-		} )
-	}
+	const mobileTabletViewports = [ 'Tablet', 'Mobile' ]
+	cy.setBlockAttribute( { [ `column${ mobileTabletViewports.some( _viewport => _viewport === viewport ) ? viewport : '' }BackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg' } )
 
 	cy.adjust( 'Background', {
 		[ `Adv. Background Image Settings` ]: {
@@ -259,10 +256,8 @@ function styleTab( viewport, desktopOnly ) {
 			[ `Transform` ]: 'uppercase',
 			[ `Letter Spacing` ]: 1.9,
 		} )
-		cy.adjust( 'Size', 1.75, { unit: 'em' } )
 		cy.adjust( 'Title Color', '#333333' ).assertComputedStyle( {
 			'.ugb-cta__title': {
-				[ `font-size` ]: '1.75em',
 				[ `font-weight` ]: '600',
 				[ `text-transform` ]: 'uppercase',
 				[ `letter-spacing` ]: '1.9px',
@@ -282,9 +277,10 @@ function styleTab( viewport, desktopOnly ) {
 			value: 24,
 			unit: 'px',
 		},
-	} ).assertComputedStyle( {
+	} )
+	cy.adjust( 'Size', 1.75, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-cta__title': {
-			[ `font-size` ]: '34px',
+			[ `font-size` ]: '1.75em',
 			[ `line-height` ]: '24px',
 		},
 	} )
@@ -300,10 +296,8 @@ function styleTab( viewport, desktopOnly ) {
 			[ `Transform` ]: 'capitalize',
 			[ `Letter Spacing` ]: 1.9,
 		} )
-		cy.adjust( 'Size', 1.3, { unit: 'em' } )
 		cy.adjust( 'Description Color', '#333333' ).assertComputedStyle( {
 			'.ugb-cta__description': {
-				[ `font-size` ]: '1.3em',
 				[ `font-weight` ]: '200',
 				[ `text-transform` ]: 'capitalize',
 				[ `letter-spacing` ]: '1.9px',
@@ -323,9 +317,10 @@ function styleTab( viewport, desktopOnly ) {
 			value: 21,
 			unit: 'px',
 		},
-	} ).assertComputedStyle( {
+	} )
+	cy.adjust( 'Size', 1.3, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-cta__description': {
-			[ `font-size` ]: '25px',
+			[ `font-size` ]: '1.3em',
 			[ `line-height` ]: '21px',
 		},
 	} )
@@ -345,6 +340,14 @@ function styleTab( viewport, desktopOnly ) {
 				[ `color` ]: '#ffffff',
 			},
 		} )
+		cy.adjust( 'Button Color Type', 'gradient' )
+		cy.adjust( 'Button Color #1', '#000000' )
+		cy.adjust( 'Button Color #2', '#ff0000' )
+		cy.adjust( 'Gradient Direction (degrees)', 130 ).assertComputedStyle( {
+			'.ugb-button': {
+				[ `background-image` ]: 'linear-gradient(130deg, #000000, #ff0000)',
+			},
+		} )
 		cy.adjust( 'Hover Effect', 'lift' )
 			.assertClassName( '.ugb-button', 'ugb--hover-effect-lift' )
 		cy.adjust( 'Hover Opacity', 0.6 )
@@ -354,13 +357,11 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 		cy.adjust( 'Typography', {
 			[ `Font Family` ]: 'Serif',
-			[ `Size` ]: 19,
 			[ `Weight` ]: '200',
 			[ `Transform` ]: 'lowercase',
 			[ `Letter Spacing` ]: 2,
 		} ).assertComputedStyle( {
 			'.ugb-button--inner': {
-				[ `font-size` ]: '19px',
 				[ `font-weight` ]: '200',
 				[ `text-transform` ]: 'lowercase',
 				[ `letter-spacing` ]: '2px',
@@ -396,6 +397,29 @@ function styleTab( viewport, desktopOnly ) {
 				[ `margin-left` ]: '29px',
 			},
 		} )
+	} )
+
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			value: 19,
+			unit: 'px',
+		},
+	} ).assertComputedStyle( {
+		'.ugb-button--inner': {
+			[ `font-size` ]: '19px',
+		},
+	} )
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			value: 1.2,
+			unit: 'em',
+		},
+	} ).assertComputedStyle( {
+		'.ugb-button--inner': {
+			[ `font-size` ]: '1.2em',
+		},
 	} )
 	assertAligns( 'Align', '.ugb-button-container', { viewport } )
 
