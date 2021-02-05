@@ -22,12 +22,12 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/team-member', [
-		'Basic',
-		'Plain',
-		'Horizontal',
-		'Overlay',
-		'Overlay Simple',
-		'Half',
+		{ value: 'Basic', selector: '.ugb-team-member--design-basic' },
+		{ value: 'Plain', selector: '.ugb-team-member--design-plain' },
+		{ value: 'Horizontal', selector: '.ugb-team-member--design-horizontal' },
+		{ value: 'Overlay', selector: '.ugb-team-member--design-overlay' },
+		{ value: 'Overlay Simple', selector: '.ugb-team-member--design-overlay-simple' },
+		{ value: 'Half', selector: '.ugb-team-member--design-half' },
 	] ) )
 }
 

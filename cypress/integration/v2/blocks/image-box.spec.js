@@ -22,12 +22,12 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/image-box', [
-		'Basic',
-		'Plain',
-		'Box',
-		'Captioned',
-		'Fade',
-		'Line',
+		{ value: 'Basic', selector: '.ugb-image-box--design-basic' },
+		{ value: 'Plain', selector: '.ugb-image-box--design-plain' },
+		{ value: 'Box', selector: '.ugb-image-box--design-box' },
+		{ value: 'Captioned', selector: '.ugb-image-box--design-captioned' },
+		{ value: 'Fade', selector: '.ugb-image-box--design-fade' },
+		{ value: 'Line', selector: '.ugb-image-box--design-line' },
 	] ) )
 }
 

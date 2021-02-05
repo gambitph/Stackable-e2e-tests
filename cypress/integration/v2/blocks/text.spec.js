@@ -25,9 +25,9 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/text', [
-		'Plain',
-		'Side Title 1',
-		'Side Title 2',
+		{ value: 'Plain', selector: '.ugb-text--design-plain' },
+		{ value: 'Side Title 1', selector: '.ugb-text--design-side-title-1' },
+		{ value: 'Side Title 2', selector: '.ugb-text--design-side-title-2' },
 	] ) )
 }
 

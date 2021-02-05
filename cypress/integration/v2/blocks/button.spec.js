@@ -23,12 +23,10 @@ function blockError() {
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/button', [
 		'Basic',
-		'Spread',
-		{
-			value: 'fullwidth',
-		},
-		'Grouped 1',
-		'Grouped 2',
+		{ value: 'Spread', selector: '.ugb-button--design-spread' },
+		{ value: 'fullwidth', selector: '.ugb-button--design-fullwidth' },
+		{ value: 'Grouped 1', selector: '.ugb-button--design-grouped-1' },
+		{ value: 'Grouped 2', selector: '.ugb-button--design-grouped-2' },
 	] ) )
 }
 

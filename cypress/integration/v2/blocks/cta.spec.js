@@ -23,11 +23,11 @@ function blockError() {
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/cta', [
 		'Basic',
-		'Plain',
-		'Horizontal',
-		'Horizontal 2',
-		'Horizontal 3',
-		'Split Centered',
+		{ value: 'Plain', selector: '.ugb-cta--design-plain' },
+		{ value: 'Horizontal', selector: '.ugb-cta--design-horizontal' },
+		{ value: 'Horizontal 2', selector: '.ugb-cta--design-horizontal-2' },
+		{ value: 'Horizontal 3', selector: '.ugb-cta--design-horizontal-3' },
+		{ value: 'Split Centered', selector: '.ugb-cta--design-split-centered' },
 	] ) )
 }
 

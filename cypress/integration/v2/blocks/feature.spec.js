@@ -22,37 +22,51 @@ function blockError() {
 
 function switchLayout() {
 	it( 'should switch layout', switchLayouts( 'ugb/feature', [
-		'Basic',
-		'Plain',
+		{ value: 'Basic', selector: '.ugb-feature--design-basic' },
+		{ value: 'Plain', selector: '.ugb-feature--design-plain' },
 		{
 			value: 'half',
+			selector: '.ugb-feature--design-half',
 		},
 		{
 			value: 'overlap',
+			selector: '.ugb-feature--design-overlap',
 		},
 		{
 			value: 'overlap2',
+			selector: '.ugb-feature--design-overlap2',
 		},
 		{
 			value: 'overlap3',
+			selector: '.ugb-feature--design-overlap3',
 		},
 		{
 			value: 'overlap4',
+			selector: '.ugb-feature--design-overlap4',
 		},
 		{
 			value: 'overlap5',
+			selector: '.ugb-feature--design-overlap5',
 		},
 		{
 			value: 'overlap-bg',
+			selector: '.ugb-feature--design-overlap-bg',
 		},
 		{
 			value: 'overlap-bg2',
+			selector: '.ugb-feature--design-overlap-bg2',
 		},
 		{
 			value: 'overlap-bg3',
+			selector: '.ugb-feature--design-overlap-bg3',
 		},
 		{
 			value: 'overlap-bg4',
+			selector: '.ugb-feature--design-overlap-bg4',
+		},
+		{
+			value: 'overlap-bg5',
+			selector: '.ugb-feature--design-overlap-bg5',
 		},
 	] ) )
 }
