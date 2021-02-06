@@ -138,19 +138,20 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 				.invoke( 'attr', 'class' )
 				.then( classList => {
 					const parsedClassList = parseClassList( classList )
-					if ( wait ) {
+
+					publish()
+
+					if ( ! wait || ( wait && wait < 300 ) ) {
+						cy.wait( 300 )
+					} else {
 						cy.wait( wait )
 					}
-					cy.window().then( editorWin => {
-						cy.document().then( editorDoc => {
-							publish()
-							if ( assertBackend ) {
-								editorCallback( {
-									parsedClassList, win: editorWin, doc: editorDoc,
-								} )
-							}
+
+					if ( assertBackend ) {
+						editorCallback( {
+							parsedClassList,
 						} )
-					} )
+					}
 
 					if ( assertFrontend ) {
 						getPreviewMode( previewMode => {
@@ -160,18 +161,14 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 									cy.viewport( config[ `viewport${ previewMode }Width` ], config.viewportHeight )
 								}
 
-								if ( wait ) {
-									cy.wait( wait )
-								} else {
+								if ( ! wait || ( wait && wait < 300 ) ) {
 									cy.wait( 300 )
+								} else {
+									cy.wait( wait )
 								}
 
-								cy.window().then( frontendWin => {
-									cy.document().then( frontendDoc => {
-										frontendCallback( {
-											parsedClassList, win: frontendWin, doc: frontendDoc,
-										} )
-									} )
+								frontendCallback( {
+									parsedClassList,
 								} )
 
 								if ( previewMode !== 'Desktop' ) {

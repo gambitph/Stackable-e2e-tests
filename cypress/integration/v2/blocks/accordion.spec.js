@@ -43,6 +43,8 @@ function innerBlocks() {
 		blocks
 			.filter( blockName => blockName !== 'ugb/accordion' )
 			.forEach( blockName => cy.appendBlock( blockName ) )
+
+		cy.publish()
 	} )
 }
 
