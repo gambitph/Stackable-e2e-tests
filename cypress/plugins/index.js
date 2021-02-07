@@ -16,9 +16,9 @@ module.exports = ( on, config ) => {
 		config.env.CYPRESS_NO_COMMAND_LOG = 1
 	}
 
-	if ( config.env.forceIncludeAllTests === 'false' ) {
-		const includeV2TestFiles = config.env.includedV2TestFiles.length && path.join( config.integrationFolder, 'v2', '**', `!(?(${ config.env.includedV2TestFiles.join( '|' ) })).spec.js` )
-		const includeV3TestFiles = config.env.includedV3TestFiles.length && path.join( config.integrationFolder, 'v3', '**', `!(?(${ config.env.includedV3TestFiles.join( '|' ) })).spec.js` )
+	if ( config.env.FORCE_INCLUDE_ALL_TESTS === 'false' ) {
+		const includeV2TestFiles = config.env.INCLUDED_V2_TEST_FILES.length && path.join( config.integrationFolder, 'v2', '**', `!(?(${ config.env.INCLUDED_V2_TEST_FILES.join( '|' ) })).spec.js` )
+		const includeV3TestFiles = config.env.INCLUDED_V3_TEST_FILES.length && path.join( config.integrationFolder, 'v3', '**', `!(?(${ config.env.INCLUDED_V3_TEST_FILES.join( '|' ) })).spec.js` )
 
 		const includeTestFiles = compact( [ includeV2TestFiles, includeV3TestFiles ] ) || []
 		config.ignoreTestFiles = includeTestFiles.length > 1

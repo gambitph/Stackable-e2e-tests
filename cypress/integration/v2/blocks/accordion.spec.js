@@ -156,7 +156,7 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 	} )
 	cy.setBlockAttribute( {
-		[ `container${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
+		[ `container${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
 	} )
 
 	// Test Gradient Background Color
