@@ -127,6 +127,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 		assertFrontend = true,
 		assertBackend = true,
 		wait = false,
+		viewportFrontend = false,
 	} = options
 	getActiveTab( tab => {
 		cy.document().then( doc => {
@@ -157,8 +158,10 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 						getPreviewMode( previewMode => {
 							getAddresses( ( { currUrl, previewUrl } ) => {
 								cy.visit( previewUrl )
-								if ( previewMode !== 'Desktop' ) {
-									cy.viewport( config[ `viewport${ previewMode }Width` ], config.viewportHeight )
+								if ( viewportFrontend && viewportFrontend !== 'Desktop' ) {
+									cy.viewport( config[ `viewport${ viewportFrontend }Width` ] || config.viewportWidth, config.viewportHeight )
+								} else if ( previewMode !== 'Desktop' ) {
+									cy.viewport( config[ `viewport${ previewMode }Width` ] || config.viewportWidth, config.viewportHeight )
 								}
 
 								if ( ! wait || ( wait && wait < 300 ) ) {
@@ -171,9 +174,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 									parsedClassList,
 								} )
 
-								if ( previewMode !== 'Desktop' ) {
-									cy.viewport( config.viewportWidth, config.viewportHeight )
-								}
+								cy.viewport( config.viewportWidth, config.viewportHeight )
 
 								cy.visit( currUrl )
 								cy.get( parsedClassList ).click( { force: true } )
