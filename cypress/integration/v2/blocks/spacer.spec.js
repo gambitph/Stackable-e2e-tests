@@ -133,6 +133,10 @@ function styleTab( viewport, desktopOnly ) {
 			value: 42,
 			unit: 'vw',
 		},
+	} ).assertComputedStyle( {
+		'.ugb-spacer--inner': {
+			[ `background-size` ]: '42vw',
+		},
 	} )
 	// Test Custom size % unit
 	cy.adjust( 'Adv. Background Image Settings', {

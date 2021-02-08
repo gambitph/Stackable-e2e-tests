@@ -900,6 +900,12 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 			}
 		}
 
+		if ( typeof expectedValue === 'string' && expectedValue.match( /vw$/ ) ) {
+			if ( ! computedStyle.match( /vw$/ ) ) {
+				expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * config.viewportWidth ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+			}
+		}
+
 		if ( typeof expectedValue === 'string' && expectedValue.match( /em$/ ) ) {
 			// Conditional `em` unit handling.
 			if ( ! computedStyle.match( /em$/ ) ) {
