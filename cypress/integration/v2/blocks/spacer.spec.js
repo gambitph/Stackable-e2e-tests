@@ -130,12 +130,12 @@ function styleTab( viewport, desktopOnly ) {
 		},
 		[ `Custom Size` ]: {
 			viewport,
-			value: 42,
+			value: 44,
 			unit: 'vw',
 		},
 	} ).assertComputedStyle( {
 		'.ugb-spacer--inner': {
-			[ `background-size` ]: '42vw',
+			[ `background-size` ]: '44vw',
 		},
 	} )
 	// Test Custom size % unit

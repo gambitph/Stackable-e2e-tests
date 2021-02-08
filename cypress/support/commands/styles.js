@@ -853,7 +853,7 @@ export function adjustDesign( option = '' ) {
  * @param {Object} options
  */
 export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
-	const _assertComputedStyle = ( win, doc, element, cssRule, expectedValue, pseudoEl, parentEl ) => {
+	const _assertComputedStyle = ( win, doc, element, cssRule, expectedValue, pseudoEl, parentEl, assertType, viewport = 'Desktop' ) => {
 		const removeAnimationStyles = [
 			'-webkit-transition: none !important',
 			'-moz-transition: none !important',
@@ -902,7 +902,17 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 
 		if ( typeof expectedValue === 'string' && expectedValue.match( /vw$/ ) ) {
 			if ( ! computedStyle.match( /vw$/ ) ) {
-				expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * config.viewportWidth ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+				if ( assertType === 'Backend' ) {
+					const visualEditorEl = doc.querySelector( '.edit-post-visual-editor' )
+					if ( visualEditorEl && viewport !== 'Desktop' ) {
+						const currEditorWidth = win.getComputedStyle( visualEditorEl ).width
+						expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * parseInt( currEditorWidth ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+					} else {
+						expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * parseInt( config.viewportWidth ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+					}
+				} else {
+					expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * parseInt( config[ `viewport${ viewport === 'Desktop' ? '' : viewport }Width` ] ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+				}
 			}
 		}
 
@@ -939,7 +949,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	assertFunction(
 		subject,
 		// Assertion in the editor.
-		() => {
+		( { viewport } ) => {
 			keys( cssObject ).forEach( _selector => {
 				const selector = _selector.split( ':' )
 
@@ -949,7 +959,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 							.get( `.is-selected${ ` ${ first( selector ) }` }` )
 							.then( $block => {
 								keys( cssObject[ _selector ] ).forEach( cssRule => {
-									_assertComputedStyle( win, doc, first( $block ), cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ) )
+									_assertComputedStyle( win, doc, first( $block ), cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ), 'Backend', viewport )
 								} )
 							} )
 					} )
@@ -958,7 +968,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		},
 		// Assertion in the frontend.
 		( {
-			parsedClassList,
+			parsedClassList, viewport,
 		} ) => {
 			keys( cssObject ).forEach( _selector => {
 				const selector = _selector.split( ':' )
@@ -974,7 +984,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 						const willAssertElement = doc.querySelector( documentSelector )
 						if ( willAssertElement ) {
 							keys( cssObject[ _selector ] ).forEach( cssRule => {
-								_assertComputedStyle( win, doc, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ) )
+								_assertComputedStyle( win, doc, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ), 'Frontend', viewport )
 							} )
 						}
 					} )
