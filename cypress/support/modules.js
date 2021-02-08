@@ -191,7 +191,7 @@ export const assertBlockBackground = ( selector, options = {} ) => {
 				},
 			} )
 		} )
-		cy.setBlockAttribute( { [ `blockBackground${ viewport === 'Desktop' ? `` : viewport }BackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg' } )
+		cy.setBlockAttribute( { [ `blockBackground${ viewport === 'Desktop' ? `` : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ) } )
 		desktopOnly( () => {
 			cy.adjust( 'No Paddings', true )
 			cy.adjust( 'Color Type', 'gradient' )

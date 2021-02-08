@@ -1,15 +1,23 @@
-import './styles'
-import './global-settings'
-import './setup'
-import './inspector'
-import './attributes'
 
 /**
- * Internal dependencies
+ * Overwrite Cypress Commands
  */
-import {
-	containsRegExp, waitLoader,
-} from '../util'
+Cypress.Commands.overwrite( 'get', modifyLogFunc() )
+Cypress.Commands.overwrite( 'click', modifyLogFunc() )
+Cypress.Commands.overwrite( 'type', modifyLogFunc() )
+Cypress.Commands.overwrite( 'visit', modifyLogFunc() )
+Cypress.Commands.overwrite( 'reload', modifyLogFunc() )
+Cypress.Commands.overwrite( 'document', modifyLogFunc() )
+Cypress.Commands.overwrite( 'window', modifyLogFunc() )
+Cypress.Commands.overwrite( 'trigger', modifyLogFunc() )
+Cypress.Commands.overwrite( 'parent', modifyLogFunc() )
+Cypress.Commands.overwrite( 'parentsUntil', modifyLogFunc() )
+Cypress.Commands.overwrite( 'invoke', modifyLogFunc( 'first' ) )
+Cypress.Commands.overwrite( 'eq', modifyLogFunc() )
+Cypress.Commands.overwrite( 'first', modifyLogFunc() )
+Cypress.Commands.overwrite( 'wait', modifyLogFunc() )
+Cypress.Commands.overwrite( 'contains', modifyLogFunc() )
+Cypress.Commands.overwrite( 'last', modifyLogFunc() )
 
 /**
  * Register functions to Cypress Commands.
@@ -24,6 +32,39 @@ Cypress.Commands.add( 'changeIcon', changeIcon )
 Cypress.Commands.add( 'assertPluginError', assertPluginError )
 Cypress.Commands.add( 'appendBlock', appendBlock )
 Cypress.Commands.add( 'assertBlockError', assertBlockError )
+
+import './styles'
+import './global-settings'
+import './setup'
+import './inspector'
+import './attributes'
+
+/**
+ * Internal dependencies
+ */
+import {
+	containsRegExp, waitLoader,
+} from '../util'
+import { last, first } from 'lodash'
+
+/**
+ * Function for overwriting log argument.
+ *
+ * @param {string} position
+ */
+function modifyLogFunc( position = 'last' ) {
+	return function( originalFn, ...args ) {
+		const firstOrLast = position === 'last' ? last : first
+		if ( typeof firstOrLast( args ) === 'object' && ! Array.isArray( firstOrLast( args ) ) ) {
+			const options = args[ position === 'last' ? 'pop' : 'shift' ]()
+			options.log = Cypress.env( 'DEBUG' ) === 'true'
+			return position === 'last' ? originalFn( ...args, options ) : originalFn( options, ...args )
+		}
+		return position === 'last'
+			? 			originalFn( ...args, { log: Cypress.env( 'DEBUG' ) === 'true' } )
+			: 			originalFn( { log: Cypress.env( 'DEBUG' ) === 'true' }, ...args )
+	}
+}
 
 /**
  * Command for clicking the block inserter button
