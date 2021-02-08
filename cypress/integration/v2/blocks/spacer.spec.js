@@ -71,7 +71,7 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 
 		cy.setBlockAttribute( {
-			[ `backgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
+			[ `backgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
 		} )
 		cy.adjust( 'Background Media Tint Strength', 6 ).assertComputedStyle( {
 			'.ugb-spacer--inner': {
@@ -96,7 +96,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	const mobileTabletViewports = [ 'Tablet', 'Mobile' ]
-	cy.setBlockAttribute( { [ `${ mobileTabletViewports.some( _viewport => _viewport === viewport ) ? `${ lowerCase( viewport ) }` : '' }BackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg' } )
+	cy.setBlockAttribute( { [ `${ mobileTabletViewports.some( _viewport => _viewport === viewport ) ? `${ lowerCase( viewport ) }` : '' }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ) } )
 
 	// Test Custom size px unit
 	cy.adjust( 'Adv. Background Image Settings', {
