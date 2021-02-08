@@ -11,6 +11,7 @@
 		"INCLUDED_V2_TEST_FILES": [
 			"accordion",
 			"blockquote",
+			"count-up",
 			"cta",
 			"divider",
 			"expand",
