@@ -59,7 +59,7 @@ if ( isset( $_GET['setup'] ) ) {
 		if( $user ) {
 			$user_id = $user->ID;
 			wp_set_current_user( $user_id, $user->user_login );
-			wp_set_auth_cookie( $user_id );
+			wp_set_auth_cookie( $user_id, true );
 			do_action( 'wp_login', $user->user_login, $user );
 		}
 
