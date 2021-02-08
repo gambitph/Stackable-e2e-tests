@@ -854,6 +854,15 @@ export function adjustDesign( option = '' ) {
  */
 export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	const _assertComputedStyle = ( win, doc, element, cssRule, expectedValue, pseudoEl, parentEl ) => {
+		const removeAnimationStyles = [
+			'-webkit-transition: none !important',
+			'-moz-transition: none !important',
+			'-o-transition: none !important',
+			'transition: none !important',
+			'transition-duration: 0s !important',
+		]
+		// Remove animations.
+		element.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
 		let computedStyle = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )[ camelCase( cssRule ) ]
 
 		/**
@@ -924,23 +933,26 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	assertFunction(
 		subject,
 		// Assertion in the editor.
-		( {
-			win, doc,
-		} ) => {
+		() => {
 			keys( cssObject ).forEach( _selector => {
 				const selector = _selector.split( ':' )
-				cy
-					.get( `.is-selected${ ` ${ first( selector ) }` }` )
-					.then( $block => {
-						keys( cssObject[ _selector ] ).forEach( cssRule => {
-							_assertComputedStyle( win, doc, first( $block ), cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ) )
-						} )
+
+				cy.window().then( win => {
+					cy.document().then( doc => {
+						cy
+							.get( `.is-selected${ ` ${ first( selector ) }` }` )
+							.then( $block => {
+								keys( cssObject[ _selector ] ).forEach( cssRule => {
+									_assertComputedStyle( win, doc, first( $block ), cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ) )
+								} )
+							} )
 					} )
+				} )
 			} )
 		},
 		// Assertion in the frontend.
 		( {
-			parsedClassList, win, doc,
+			parsedClassList,
 		} ) => {
 			keys( cssObject ).forEach( _selector => {
 				const selector = _selector.split( ':' )
@@ -951,12 +963,16 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 					?	( parsedClassList.match( first( selectorWithSpace ) ) ? ` ${ restOfTheSelectors.join( ' ' ) }` : ` ${ first( selector ) }` )
 					: ` ${ first( selector ) }` }`.trim()
 
-				const willAssertElement = doc.querySelector( documentSelector )
-				if ( willAssertElement ) {
-					keys( cssObject[ _selector ] ).forEach( cssRule => {
-						_assertComputedStyle( win, doc, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ) )
+				cy.window().then( win => {
+					cy.document().then( doc => {
+						const willAssertElement = doc.querySelector( documentSelector )
+						if ( willAssertElement ) {
+							keys( cssObject[ _selector ] ).forEach( cssRule => {
+								_assertComputedStyle( win, doc, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ) )
+							} )
+						}
 					} )
-				}
+				} )
 			} )
 		},
 		options )
@@ -990,18 +1006,20 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 		},
 		// Assertion in the frontend.
 		( {
-			parsedClassList, doc,
+			parsedClassList,
 		} ) => {
-			const willAssertElement = doc.querySelector( `${ parsedClassList }${ parsedClassList.match( customSelector ) ? '' : ` ${ customSelector }` }` )
-			if ( willAssertElement ) {
-				( parsedClassList.includes( customSelector )
-					? 					cy.get( parsedClassList ).invoke( 'attr', 'class' )
-					: 					cy.get( parsedClassList ).find( customSelector ).invoke( 'attr', 'class' )
-				).then( $classNames => {
-					const parsedClassNames = $classNames.split( ' ' )
-					assert.isTrue( parsedClassNames.includes( expectedValue ), `${ expectedValue } must be present in block` )
-				} )
-			}
+			cy.document().then( doc => {
+				const willAssertElement = doc.querySelector( `${ parsedClassList }${ parsedClassList.match( customSelector ) ? '' : ` ${ customSelector }` }` )
+				if ( willAssertElement ) {
+					( parsedClassList.includes( customSelector )
+						? 					cy.get( parsedClassList ).invoke( 'attr', 'class' )
+						: 					cy.get( parsedClassList ).find( customSelector ).invoke( 'attr', 'class' )
+					).then( $classNames => {
+						const parsedClassNames = $classNames.split( ' ' )
+						assert.isTrue( parsedClassNames.includes( expectedValue ), `${ expectedValue } must be present in block` )
+					} )
+				}
+			} )
 		},
 		options
 	)
