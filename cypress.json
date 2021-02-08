@@ -13,9 +13,11 @@
 			"blockquote",
 			"cta",
 			"divider",
+			"expand",
 			"header",
 			"heading",
 			"icon-list",
+			"separator",
 			"text"
 		],
 		"INCLUDED_V3_TEST_FILES": [],
