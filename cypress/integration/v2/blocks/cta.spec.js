@@ -105,14 +105,14 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 		cy.setBlockAttribute( {
-			[ `columnBackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
+			[ `columnBackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
 		} )
 		cy.adjust( 'Background', {
 			[ `Background Media Tint Strength` ]: 7,
 			[ `Fixed Background` ]: true,
 		} ).assertComputedStyle( {
 			'.ugb-cta__item': {
-				[ `background-image` ]: 'url("http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg")',
+				[ `background-image` ]: `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
 				[ `background-attachment` ]: 'fixed',
 			},
 			'.ugb-cta__item:before': {
@@ -131,7 +131,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	const mobileTabletViewports = [ 'Tablet', 'Mobile' ]
-	cy.setBlockAttribute( { [ `column${ mobileTabletViewports.some( _viewport => _viewport === viewport ) ? viewport : '' }BackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg' } )
+	cy.setBlockAttribute( { [ `column${ mobileTabletViewports.some( _viewport => _viewport === viewport ) ? viewport : '' }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ) } )
 
 	cy.adjust( 'Background', {
 		[ `Adv. Background Image Settings` ]: {

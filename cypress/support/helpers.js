@@ -127,6 +127,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 		assertFrontend = true,
 		assertBackend = true,
 		wait = false,
+		viewportFrontend = false,
 	} = options
 	getActiveTab( tab => {
 		cy.document().then( doc => {
@@ -138,43 +139,42 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 				.invoke( 'attr', 'class' )
 				.then( classList => {
 					const parsedClassList = parseClassList( classList )
-					if ( wait ) {
+
+					publish()
+
+					if ( ! wait || ( wait && wait < 300 ) ) {
+						cy.wait( 300 )
+					} else {
 						cy.wait( wait )
 					}
-					cy.window().then( editorWin => {
-						cy.document().then( editorDoc => {
-							publish()
-							if ( assertBackend ) {
-								editorCallback( {
-									parsedClassList, win: editorWin, doc: editorDoc,
-								} )
-							}
+
+					if ( assertBackend ) {
+						editorCallback( {
+							parsedClassList,
 						} )
-					} )
+					}
 
 					if ( assertFrontend ) {
 						getPreviewMode( previewMode => {
 							getAddresses( ( { currUrl, previewUrl } ) => {
 								cy.visit( previewUrl )
-								if ( previewMode !== 'Desktop' ) {
-									cy.viewport( config[ `viewport${ previewMode }Width` ], config.viewportHeight )
+								if ( viewportFrontend && viewportFrontend !== 'Desktop' ) {
+									cy.viewport( config[ `viewport${ viewportFrontend }Width` ] || config.viewportWidth, config.viewportHeight )
+								} else if ( previewMode !== 'Desktop' ) {
+									cy.viewport( config[ `viewport${ previewMode }Width` ] || config.viewportWidth, config.viewportHeight )
 								}
 
-								if ( wait ) {
+								if ( ! wait || ( wait && wait < 300 ) ) {
+									cy.wait( 300 )
+								} else {
 									cy.wait( wait )
 								}
 
-								cy.window().then( frontendWin => {
-									cy.document().then( frontendDoc => {
-										frontendCallback( {
-											parsedClassList, win: frontendWin, doc: frontendDoc,
-										} )
-									} )
+								frontendCallback( {
+									parsedClassList,
 								} )
 
-								if ( previewMode !== 'Desktop' ) {
-									cy.viewport( config.viewportWidth, config.viewportHeight )
-								}
+								cy.viewport( config.viewportWidth, config.viewportHeight )
 
 								cy.visit( currUrl )
 								cy.get( parsedClassList ).click( { force: true } )

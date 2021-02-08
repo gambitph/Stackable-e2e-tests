@@ -91,7 +91,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.collapse( 'Container' )
 	cy.setBlockAttribute( {
-		[ `column${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: 'http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg',
+		[ `column${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
 	} )
 	desktopOnly( () => {
 		cy.adjust( 'Background', {

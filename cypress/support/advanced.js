@@ -62,7 +62,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		cy.openInspector( name, 'Advanced' )
 		_collapse( 'General' )
 
-		 //Test Block HTML Tag
+		// Test Block HTML Tag
 		const tags = [ 'div', 'blockquote', 'section', 'article', 'aside', 'main', 'header', 'footer', 'nav', 'address', 'hgroup' ]
 		tags.forEach( tag => {
 			_adjust( 'Block HTML Tag', tag, { viewport }, 'assertHtmlTag', [
@@ -71,14 +71,14 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 			] )
 		} )
 
-		 //Test Opacity
+		// Test Opacity
 		_adjust( 'Opacity', 0.7, { viewport }, 'assertComputedStyle', [ {
 			[ MAIN_SELECTOR ]: {
 				[ `opacity` ]: '0.7',
 			},
 		} ] )
 
-		 //Test Z-index
+		// Test Z-index
 		_adjust( 'Z-index', 6, { viewport }, 'assertComputedStyle', [ {
 			[ MAIN_SELECTOR ]: {
 				[ `z-index` ]: '6',
@@ -153,7 +153,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		units.forEach( unit => {
 			const values = unit === 'em' ? [ 3, 2, 1, 2 ] : [ 12, 65, 34, 23 ]
 			if ( unit !== 'em' ) {
-				 // Test Block Margins.
+				// Test Block Margins.
 				const [ margins, marginAsserts ] = generateFourRangeControlAssertion(
 					enableMarginTop,
 					enableMarginRight,
@@ -167,7 +167,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 				_adjust( 'Block Margins', margins, { unit, viewport }, 'assertComputedStyle', [ { [ BLOCK_SELECTOR ]: marginAsserts } ] )
 			}
 
-			 // Test Block Paddings.
+			// Test Block Paddings.
 			const [ paddings, paddingAsserts ] = generateFourRangeControlAssertion(
 				enablePaddingTop,
 				enablePaddingRight,
@@ -232,13 +232,13 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		_collapse( 'Responsive' )
 
 		previewMode.forEach( preview => {
-			cy.changePreviewMode( preview )
 			_adjust( `Hide on ${ preview }`, true, {}, 'assertComputedStyle', [ {
 				[ MAIN_SELECTOR ]: {
 					[ `display` ]: 'none',
 				},
 			}, {
 				assertBackend: false,
+				viewportFrontend: preview,
 			} ] )
 		} )
 

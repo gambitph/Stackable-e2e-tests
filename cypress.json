@@ -4,5 +4,22 @@
 	"viewportMobileWidth": 360,
 	"viewportWidth": 1200,
 	"viewportHeight": 660,
-	"defaultCommandTimeout": 5000
+	"defaultCommandTimeout": 5000,
+	"numTestsKeptInMemory": 5,
+	"env": {
+		"DEBUG": "false",
+		"INCLUDED_V2_TEST_FILES": [
+			"accordion",
+			"blockquote",
+			"cta",
+			"divider",
+			"header",
+			"heading",
+			"icon-list",
+			"text"
+		],
+		"INCLUDED_V3_TEST_FILES": [],
+		"FORCE_INCLUDE_ALL_TESTS": "false",
+		"DUMMY_IMAGE_URL": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg"
+	}
 }
