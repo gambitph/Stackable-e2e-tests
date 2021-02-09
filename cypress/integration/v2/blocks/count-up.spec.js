@@ -126,12 +126,19 @@ function styleTab( viewport, desktopOnly ) {
 	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
 		'.ugb-countup__icon': {
 			[ `margin-left` ]: '0px',
+			[ `margin-right` ]: 'auto',
 		},
 	} )
-	cy.adjust( 'Align', 'center', { viewport } )
+	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
+		'.ugb-countup__icon': {
+			[ `margin-right` ]: 'auto',
+			[ `margin-left` ]: 'auto',
+		},
+	} )
 	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
 		'.ugb-countup__icon': {
 			[ `margin-right` ]: '0px',
+			[ `margin-left` ]: 'auto',
 		},
 	} )
 
