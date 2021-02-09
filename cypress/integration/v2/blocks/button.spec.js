@@ -77,6 +77,6 @@ function styleTab( viewport, desktopOnly ) {
 	cy.toggleStyle( 'Button #3' )
 	assertButton( '.ugb-button3', { viewport } )
 
-	assertBlockBackground( '.ugb-button', { viewport } )
+	assertBlockBackground( '.ugb-button-wrapper', { viewport } )
 	assertSeparators( { viewport } )
 }
