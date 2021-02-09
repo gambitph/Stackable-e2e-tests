@@ -66,6 +66,7 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 	cy.newPage()
 	cy.addBlock( blockName )
 	designs.forEach( design => {
+		cy.wait( 300 )
 		cy.openInspector( blockName, 'Layout' )
 		cy.adjustDesign( design )
 		cy.publish()
@@ -149,8 +150,10 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 					}
 
 					if ( assertBackend ) {
-						editorCallback( {
-							parsedClassList,
+						getPreviewMode( previewMode => {
+							editorCallback( {
+								parsedClassList, viewport: previewMode,
+							} )
 						} )
 					}
 
@@ -171,7 +174,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 								}
 
 								frontendCallback( {
-									parsedClassList,
+									parsedClassList, viewport: previewMode,
 								} )
 
 								cy.viewport( config.viewportWidth, config.viewportHeight )

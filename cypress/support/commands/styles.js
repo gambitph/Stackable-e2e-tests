@@ -52,6 +52,7 @@ Cypress.Commands.add( 'adjustDesign', adjustDesign )
 Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, assertComputedStyle )
 Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, assertClassName )
 Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, assertHtmlTag )
+Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, assertHtmlAttribute )
 
 /**
  * Command for enabling/disabling a toggle control.
@@ -189,7 +190,7 @@ function designControl( name, value, options = {} ) {
 			.contains( containsRegExp( name ) )
 			.parentsUntil( `.components-panel__body>.components-base-control` )
 			.parent()
-			.find( `input[value="${ kebabCase( value ) }"]` )
+			.find( `input[value="${ typeof value === 'object' ? value.value : kebabCase( value ) }"]` )
 			.click( { force: true } )
 	} )
 }
@@ -675,6 +676,7 @@ export function adjust( name, value, options = {} ) {
 		[ `Color Type` ]: 'Single|Gradient',
 		[ `Icon Color Type` ]: 'Single|Gradient|Multicolor',
 		[ `Button Color Type` ]: 'Single|Gradient',
+		[ `Shape` ]: typeof value === 'object' ? value.label : value,
 	}
 
 	const _adjust = classNames => {
@@ -685,24 +687,25 @@ export function adjust( name, value, options = {} ) {
 		 * and their corresponding commands.
 		 */
 		const commandsBasedOnClassName = {
-				 'components-toggle-control': 'toggleControl',
-				 'ugb-advanced-range-control': 'rangeControl',
-				 'ugb-advanced-toolbar-control': 'toolbarControl',
-				 'editor-color-palette-control': 'colorControl',
-				 'ugb-button-icon-control': 'popoverControl',
-				 'ugb-advanced-autosuggest-control': 'suggestionControl',
-				 'ugb-four-range-control': 'fourRangeControl',
-				 'ugb-design-separator-control': 'designControl',
-				 'ugb-icon-control': 'iconControl',
-				 'ugb-columns-width-control': 'columnControl',
+			'components-toggle-control': 'toggleControl',
+			'ugb-advanced-range-control': 'rangeControl',
+			'ugb-advanced-toolbar-control': 'toolbarControl',
+			'editor-color-palette-control': 'colorControl',
+			'ugb-button-icon-control': 'popoverControl',
+			'ugb-advanced-autosuggest-control': 'suggestionControl',
+			'ugb-four-range-control': 'fourRangeControl',
+			'ugb-design-separator-control': 'designControl',
+			'ugb-icon-control': 'iconControl',
+			'ugb-columns-width-control': 'columnControl',
+			'ugb-design-control': 'designControl',
 
-				 // Custom selectors.
-				 'ugb--help-tip-background-color-type': 'toolbarControl',
+			// Custom selectors.
+			'ugb--help-tip-background-color-type': 'toolbarControl',
 		}
 
 		const executeCommand = key => {
 			if ( parsedClassNames.includes( key ) ) {
-				AdjustCommands[ commandsBasedOnClassName[ key ] ]( name, value, options, customLabels[ name ] )
+				AdjustCommands[ commandsBasedOnClassName[ key ] ]( customLabels[ name ] || name, value, options, customLabels[ name ] )
 				return true
 			}
 			return false
@@ -742,6 +745,7 @@ export function adjust( name, value, options = {} ) {
 			// Handle nested base controls.
 			const withNestedBaseControl = [
 				'ugb-advanced-toolbar-control',
+				'ugb-design-control',
 			]
 
 			let nestedBaseControl = null
@@ -853,7 +857,7 @@ export function adjustDesign( option = '' ) {
  * @param {Object} options
  */
 export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
-	const _assertComputedStyle = ( win, doc, element, cssRule, expectedValue, pseudoEl, parentEl ) => {
+	const _assertComputedStyle = ( win, doc, element, cssRule, expectedValue, pseudoEl, parentEl, assertType, viewport = 'Desktop' ) => {
 		const removeAnimationStyles = [
 			'-webkit-transition: none !important',
 			'-moz-transition: none !important',
@@ -863,6 +867,8 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		]
 		// Remove animations.
 		element.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
+		element.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
+		parentEl.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
 		let computedStyle = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )[ camelCase( cssRule ) ]
 
 		/**
@@ -894,9 +900,50 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 			}
 		}
 
+		if ( typeof expectedValue === 'string' && expectedValue.match( /auto$/ ) ) {
+			if ( ! computedStyle.match( /auto$/ ) ) {
+				switch ( cssRule ) {
+					case 'margin-left':
+					case 'margin-right': {
+						const {
+							paddingLeft, paddingRight, width, borderLeftWidth, borderRightWidth,
+						} = win.getComputedStyle( element.parentElement )
+						// We're getting all variables which could affect auto assertions.
+						const parentWidthDifference = parseFloat( paddingLeft ) + parseFloat( paddingRight ) + parseFloat( borderLeftWidth ) + parseFloat( borderRightWidth )
+
+						const currWidth = parseFloat( win.getComputedStyle( element ).width )
+						const margin = parseFloat( win.getComputedStyle( element )[ cssRule === 'margin-left' ? `marginRight` : `marginLeft` ] )
+						const autoMargin = parseFloat( width ) - parseFloat( currWidth ) - parseFloat( margin ) - parentWidthDifference
+
+						// Round down to avoid parseFloat decimal inconsistencies.
+						expectedValue = `${ parseInt( autoMargin ) }px`
+						computedStyle = `${ parseInt( computedStyle ) }px`
+						break
+					}
+					default: break
+				}
+			}
+		}
+
 		if ( typeof expectedValue === 'string' && expectedValue.match( /vh$/ ) ) {
 			if ( ! computedStyle.match( /vh$/ ) ) {
 				expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * config.viewportHeight ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+			}
+		}
+
+		if ( typeof expectedValue === 'string' && expectedValue.match( /vw$/ ) ) {
+			if ( ! computedStyle.match( /vw$/ ) ) {
+				if ( assertType === 'Backend' ) {
+					const visualEditorEl = doc.querySelector( '.edit-post-visual-editor' )
+					if ( visualEditorEl && viewport !== 'Desktop' ) {
+						const currEditorWidth = win.getComputedStyle( visualEditorEl ).width
+						expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * parseInt( currEditorWidth ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+					} else {
+						expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * parseInt( config.viewportWidth ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+					}
+				} else {
+					expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * parseInt( config[ `viewport${ viewport === 'Desktop' ? '' : viewport }Width` ] ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
+				}
 			}
 		}
 
@@ -933,7 +980,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	assertFunction(
 		subject,
 		// Assertion in the editor.
-		() => {
+		( { viewport } ) => {
 			keys( cssObject ).forEach( _selector => {
 				const selector = _selector.split( ':' )
 
@@ -943,7 +990,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 							.get( `.is-selected${ ` ${ first( selector ) }` }` )
 							.then( $block => {
 								keys( cssObject[ _selector ] ).forEach( cssRule => {
-									_assertComputedStyle( win, doc, first( $block ), cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ) )
+									_assertComputedStyle( win, doc, first( $block ), cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ), 'Backend', viewport )
 								} )
 							} )
 					} )
@@ -952,7 +999,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		},
 		// Assertion in the frontend.
 		( {
-			parsedClassList,
+			parsedClassList, viewport,
 		} ) => {
 			keys( cssObject ).forEach( _selector => {
 				const selector = _selector.split( ':' )
@@ -968,7 +1015,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 						const willAssertElement = doc.querySelector( documentSelector )
 						if ( willAssertElement ) {
 							keys( cssObject[ _selector ] ).forEach( cssRule => {
-								_assertComputedStyle( win, doc, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ) )
+								_assertComputedStyle( win, doc, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ), 'Frontend', viewport )
 							} )
 						}
 					} )
@@ -1048,6 +1095,54 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 				.get( parsedClassList )
 				.then( $block => {
 					assert.isTrue( ! isEmpty( parsedClassList.match( customSelector ) ? Cypress.$( `${ expectedValue }${ parsedClassList }` ) : $block.find( `${ expectedValue }${ customSelector }` ) ), `${ customSelector } must have HTML tag '${ expectedValue }'` )
+				} )
+		},
+		options
+	)
+}
+
+/**
+ * Command for asserting the html attribute
+ *
+ * @param {*} subject
+ * @param {string} customSelector
+ * @param {string} attribute
+ * @param {*} expectedValue
+ * @param {Object} options
+ */
+export function assertHtmlAttribute( subject, customSelector = '', attribute = '', expectedValue = '', options = {} ) {
+	assertFunction(
+		subject,
+		() => {
+			cy
+				.get( subject )
+				.find( customSelector )
+				.invoke( 'attr', attribute )
+				.then( $attribute => {
+					if ( typeof expectedValue === 'string' ) {
+						assert.isTrue( $attribute === expectedValue, `${ customSelector } must have a ${ attribute } = "${ expectedValue }"` )
+					}
+					if ( expectedValue instanceof RegExp ) {
+						assert.isTrue( ( $attribute || '' ).match( expectedValue ), `${ customSelector } must have a ${ attribute } = "${ expectedValue }"` )
+					}
+				} )
+		},
+		( { parsedClassList } ) => {
+			cy
+				.get( parsedClassList )
+				.then( $block => {
+					if ( typeof expectedValue === 'string' ) {
+						assert.isTrue( ( parsedClassList.match( customSelector )
+							?	 Cypress.$( parsedClassList ).attr( attribute )
+							: $block.find( customSelector ).attr( attribute ) || '' ) === expectedValue
+						, `${ customSelector } must have a ${ attribute } = "${ expectedValue }"` )
+					}
+					if ( expectedValue instanceof RegExp ) {
+						assert.isTrue( ( parsedClassList.match( customSelector )
+							?	 Cypress.$( parsedClassList ).attr( attribute )
+							: $block.find( customSelector ).attr( attribute ) || '' ).match( expectedValue )
+						, `${ customSelector } must have a ${ attribute } = "${ expectedValue }"` )
+					}
 				} )
 		},
 		options

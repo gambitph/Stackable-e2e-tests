@@ -40,11 +40,18 @@ export function openSidebar( label = 'Settings' ) {
  */
 export function openInspector( subject, tab, selector ) {
 	selectBlock( subject, selector )
-	openSidebar( 'Settings' )
+	cy.document().then( doc => {
+		if ( ! doc.querySelector( '.is-selected' ) ) {
+			selectBlock( subject, selector )
+		}
 
-	cy
-		.get( `button[aria-label="${ tab } Tab"]` )
-		.click( { force: true } )
+		openSidebar( 'Settings' )
+
+		cy
+			.get( `button.edit-post-sidebar__panel-tab` )
+			.contains( containsRegExp( tab ) )
+			.click( { force: true } )
+	} )
 }
 
 /**

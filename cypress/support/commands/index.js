@@ -156,6 +156,9 @@ export function changePreviewMode( mode = 'Desktop' ) {
 				__experimentalSetPreviewDeviceType( mode )
 				cy.wait( 100 )
 			}
+		} else {
+			// Handle WP 5.4 preview mode.
+			// TODO: Handle WP 5.4 editor
 		}
 	} )
 }
