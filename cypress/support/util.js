@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { lowerCase } from 'lodash'
+import { lowerCase, keys } from 'lodash'
 import config from 'root/cypress.json'
 
 /**
@@ -33,9 +33,13 @@ export const containsRegExp = ( name = '' ) => new RegExp( `^${ name.replace( /[
  */
 export const getActiveTab = ( callbackFunc = () => {} ) => {
 	cy.document().then( doc => {
-		if ( doc.querySelector( '.ugb-global-settings__inspector' ) ) {
-			// Pass an empty string to callback function if the current sidebar opened is Global Settings.
-			callbackFunc( '' )
+		const sidebarPanels = {
+			'.ugb-global-settings__inspector': 'Stackable Global Settings',
+		}
+
+		let activePanel
+		if ( keys( sidebarPanels ).some( panel => doc.querySelector( panel ) && ( activePanel = panel ) ) ) {
+			callbackFunc( sidebarPanels[ activePanel ] )
 		} else {
 			cy
 				.get( '.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active', { log: false } )
@@ -59,17 +63,15 @@ export const getActiveTab = ( callbackFunc = () => {} ) => {
  * @param {boolean} isInPopover if the control is in popover
  */
 export const changeUnit = ( unit = '', name = '', tab = 'style', isInPopover = false ) => {
+	const selector = () => getBaseControl( tab, isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
+		.parent( { log: false } )
 	if ( unit ) {
-		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
-			.parent( { log: false } )
+		selector()
 			.then( $baseControl => {
 				if ( $baseControl.find( '.ugb-base-control-multi-label__units', { log: false } ).length ) {
-					getBaseControl( tab, isInPopover )
-						.contains( containsRegExp( name ) )
-						.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
-						.parent( { log: false } )
+					selector()
 						.find( `button`, { log: false } )
 						.contains( containsRegExp( unit ) )
 						.click( { force: true, log: false } )
@@ -154,7 +156,9 @@ export const getAddresses = ( callback = () => {} ) => {
  */
 export const getPreviewMode = ( callback = () => {} ) => {
 	cy.window( { log: false } ).then( win => {
-		const previewMode =	win.wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType ? win.wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType() : 'Desktop'
+		const previewMode =	win.wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType
+			? 			win.wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
+			: 'Desktop'
 		callback( previewMode )
 	} )
 }

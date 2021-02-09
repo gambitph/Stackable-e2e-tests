@@ -67,28 +67,16 @@ function modifyLogFunc( position = 'last' ) {
 }
 
 /**
- * Command for clicking the block inserter button
- */
-export function toggleBlockInserterButton() {
-	// Click the adder button located at the upper left part of the screen.
-	cy.get( '.edit-post-header-toolbar__inserter-toggle' ).click( { force: true } )
-}
-
-/**
  * Command for adding a specific block in the inserter button.
  *
  * @param {string} blockname
  */
 export function addBlock( blockname = 'ugb/accordion' ) {
-	toggleBlockInserterButton()
 	const [ plugin, block ] = blockname.split( '/' )
-	if ( plugin === 'core' ) {
-		// core blocks have different selector buttons.
-		cy.get( `.block-editor-block-types-list>.block-editor-block-types-list__list-item>.editor-block-list-item-${ block }:first` ).click( { force: true } )
-	} else {
-		cy.get( `.block-editor-block-types-list>.block-editor-block-types-list__list-item>.editor-block-list-item-${ plugin }-${ block }:first` ).click( { force: true } )
-	}
-	return cy.get( `[data-type="${ blockname }"]` ).last()
+	// Click the adder button located at the upper left part of the screen.
+	cy.get( '.edit-post-header-toolbar__inserter-toggle' ).click( { force: true } )
+	// core blocks have different selector buttons.
+	cy.get( `.block-editor-block-types-list>.block-editor-block-types-list__list-item>.editor-block-list-item-${ plugin !== 'core' ? `${ plugin }-` : '' }${ block }:first` ).click( { force: true } )
 }
 
 /**
@@ -98,15 +86,19 @@ export function addBlock( blockname = 'ugb/accordion' ) {
  * @param {string} selector
  */
 export function selectBlock( subject, selector ) {
-	if ( selector && typeof selector === 'number' ) {
-		// Select a specific block based on nth position (base zero).
-		return cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).eq( selector ).click( { force: true } )
-	} else if ( selector && typeof selector === 'string' ) {
-		// Select a selector based on text input inside
-		return cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).contains( containsRegExp( selector ) ).click( { force: true } )
+// Initialize chained command based on selector type.
+	if ( ! selector ) {
+		selector = undefined
 	}
-	// Otherwise, just select the last matched block.
-	return cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).last().click( { force: true } )
+
+	const chainedCommand = {
+		number: { func: 'eq', arg: [ selector ] },
+		string: { func: 'contains', arg: [ containsRegExp( selector ) ] },
+	}
+
+	return cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` )
+		[ ( chainedCommand[ typeof selector ] || {} ).func || 'last' ]( ...( ( chainedCommand[ typeof selector ] || {} ).arg || [] ) )
+		.click( { force: true } )
 }
 
 /**
@@ -118,25 +110,16 @@ export function selectBlock( subject, selector ) {
  * @param {string} customSelector
  */
 export function typeBlock( subject, contentSelector = '', content = '', customSelector = '' ) {
-	const block = selectBlock( subject, customSelector )
-	if ( contentSelector ) {
-		block
-			.find( contentSelector )
-			.click( { force: true } )
-			.type( `{selectall}${ content }`, { force: true } )
-			.then( $element => {
-				expect( $element ).to.contain( content )
-			} )
-	} else {
-		block
-			.click( { force: true } )
-			.type( `{selectall}${ content }`, { force: true } )
-			.then( $element => {
-				if ( content[ 0 ] !== '/' ) {
-					expect( $element ).to.contain( content )
-				}
-			} )
-	}
+	( contentSelector
+		? 		selectBlock( subject, customSelector ).find( contentSelector )
+		: 		selectBlock( subject, customSelector )
+	)
+		.click( { force: true } )
+		.type( `{selectall}${ content }`, { force: true } )
+		.then( $element => {
+			return expect( $element ).to.contain( content )
+		} )
+
 	if ( content[ 0 ] !== '/' ) {
 		selectBlock( subject, customSelector )
 	}
@@ -193,11 +176,8 @@ export function publish() {
 			cy
 				.get( '.interface-interface-skeleton__actions' )
 				.then( $actions => {
-					//
-					/**
-					 * Click the publish button in publish panel
-					 * when necessary.
-					 */
+					// Click the publish button in publish panel
+					// when necessary.
 					if ( $actions.find( '.editor-post-publish-panel' ).length ) {
 						cy
 							.get( '.editor-post-publish-panel' )
@@ -241,17 +221,10 @@ export function changeIcon( subject, selector, index = 1, keyword = '', icon ) {
 	cy.wait( 1000 )
 	waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
 
-	if ( icon ) {
-		cy
-			.get( `.ugb-icon-popover__iconlist>button.${ icon }` )
-			.first()
-			.click( { force: true } )
-	} else {
-		cy
-			.get( `.ugb-icon-popover__iconlist>button` )
-			.first()
-			.click( { force: true } )
-	}
+	cy
+		.get( `.ugb-icon-popover__iconlist>button${ icon ? `.${ icon }` : '' }` )
+		.first()
+		.click( { force: true } )
 }
 
 /**

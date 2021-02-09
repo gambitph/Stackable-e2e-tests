@@ -127,7 +127,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 	const {
 		assertFrontend = true,
 		assertBackend = true,
-		wait = false,
+		wait = 300,
 		viewportFrontend = false,
 	} = options
 	getActiveTab( tab => {
@@ -143,11 +143,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 
 					publish()
 
-					if ( ! wait || ( wait && wait < 300 ) ) {
-						cy.wait( 300 )
-					} else {
-						cy.wait( wait )
-					}
+					cy.wait( wait )
 
 					if ( assertBackend ) {
 						getPreviewMode( previewMode => {
@@ -167,11 +163,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 									cy.viewport( config[ `viewport${ previewMode }Width` ] || config.viewportWidth, config.viewportHeight )
 								}
 
-								if ( ! wait || ( wait && wait < 300 ) ) {
-									cy.wait( 300 )
-								} else {
-									cy.wait( wait )
-								}
+								cy.wait( wait )
 
 								frontendCallback( {
 									parsedClassList, viewport: previewMode,
