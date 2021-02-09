@@ -2,8 +2,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, registerTests,
+	assertBlockExist, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
+
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 
 describe( 'Separator Block', registerTests( [
 	blockExist,
@@ -39,13 +41,13 @@ function switchLayout() {
 	] ) )
 }
 
-function desktopStyle() {
-	it( 'should adjust desktop options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/separator' )
-		cy.openInspector( 'ugb/separator', 'Style' )
+function styleTab( viewport, desktopOnly ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/separator' )
+	cy.openInspector( 'ugb/separator', 'Style' )
 
+	desktopOnly( () => {
 		cy.collapse( 'Separator' )
 		cy.adjust( 'Separator Color', '#c99292' )
 		cy.adjust( 'Separator Width', 2.1 )
@@ -58,14 +60,18 @@ function desktopStyle() {
 
 		cy.adjust( 'Shadow', true )
 		cy.get( 'div.ugb-separator__svg-inner' ).find( '.ugb-separator__shadow' ).should( 'exist' )
+	} )
 
-		// Test General options
-		cy.collapse( 'General' )
-		cy.adjust( 'Height', 240 ).assertComputedStyle( {
-			'.ugb-separator__svg-wrapper': {
-				[ `height` ]: '240px',
-			},
-		} )
+	// Test General options
+	cy.collapse( 'General' )
+	cy.adjust( 'Height', 240, { viewport } ).assertComputedStyle( {
+		'.ugb-separator__svg-wrapper': {
+			[ `height` ]: '240px',
+		},
+	} )
+	cy.resetStyle( 'Height' )
+
+	desktopOnly( () => {
 		cy.adjust( 'Flip Vertically', true )
 			.assertClassName( '.ugb-separator', 'ugb-separator--flip-vertical' )
 		cy.adjust( 'Flip Horizontally', true )
@@ -76,10 +82,12 @@ function desktopStyle() {
 				[ `background-color` ]: '#733535',
 			},
 		} )
+	} )
 
-		// Test Spacing options
-		cy.collapse( 'Spacing' )
+	// Test Spacing options
+	cy.collapse( 'Spacing' )
 
+	desktopOnly( () => {
 		// Test Paddings
 		cy.adjust( 'Padding Top', 126, { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator__top-pad': {
@@ -167,8 +175,80 @@ function desktopStyle() {
 		}, {
 			assertBackend: false,
 		} )
+	} )
 
-		// Test Layer 2
+	if ( viewport !== 'Desktop' ) {
+		// Test Paddings
+		cy.adjust( 'Padding Top', 126, { viewport, unit: 'px' } ).assertComputedStyle( {
+			'.ugb-separator__top-pad': {
+				[ `height` ]: '126px',
+			},
+		}, {
+			wait: 500,
+		} )
+		cy.resetStyle( 'Padding Top' )
+		cy.adjust( 'Padding Top', 40, { viewport, unit: 'em' } ).assertComputedStyle( {
+			'.ugb-separator__top-pad': {
+				[ `height` ]: '40em',
+			},
+		}, {
+			wait: 500,
+		} )
+		cy.adjust( 'Padding Bottom', 111, { viewport, unit: 'px' } ).assertComputedStyle( {
+			'.ugb-separator__bottom-pad': {
+				[ `height` ]: '111px',
+			},
+		}, {
+			wait: 500,
+		} )
+		cy.resetStyle( 'Padding Bottom' )
+		cy.adjust( 'Padding Bottom', 36, { viewport, unit: 'em' } ).assertComputedStyle( {
+			'.ugb-separator__bottom-pad': {
+				[ `height` ]: '36em',
+			},
+		}, {
+			wait: 500,
+		} )
+
+		/**
+		 *	Test Margins
+		 *	Separator top & bottom margins have:
+		 *	-1 on backend, -1 on frontend
+		 */
+		cy.adjust( 'Margin Top', 20, { viewport, unit: 'px' } ).assertComputedStyle( {
+			'.ugb-separator': {
+				[ `margin-top` ]: '19px',
+			},
+		}, {
+			wait: 500,
+		} )
+		cy.adjust( 'Margin Top', 25, { viewport, unit: '%' } ).assertComputedStyle( {
+			'.ugb-separator': {
+				[ `margin-top` ]: '24%',
+			},
+		}, {
+			wait: 500,
+		} )
+
+		// Test Margin Bottom
+		cy.adjust( 'Margin Bottom', 35, { viewport, unit: 'px' } ).assertComputedStyle( {
+			'.ugb-separator': {
+				[ `margin-bottom` ]: '34px',
+			},
+		}, {
+			wait: 500,
+		} )
+		cy.adjust( 'Margin Bottom', 40, { viewport, unit: '%' } ).assertComputedStyle( {
+			'.ugb-separator': {
+				[ `margin-bottom` ]: '39%',
+			},
+		}, {
+			wait: 500,
+		} )
+	}
+
+	desktopOnly( () => {
+	// Test Layer 2
 		cy.collapse( 'Layer 2' )
 		cy.toggleStyle( 'Layer 2' )
 		cy.adjust( 'Layer Color', '#000000' )
@@ -201,150 +281,3 @@ function desktopStyle() {
 		} )
 	} )
 }
-
-function tabletStyle() {
-	it( 'should adjust tablet options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/separator' )
-		cy.openInspector( 'ugb/separator', 'Style' )
-
-		// Test General options
-		cy.collapse( 'General' )
-		cy.adjust( 'Height', 217, { viewport: 'Tablet' } ).assertComputedStyle( {
-			'.ugb-separator__svg-wrapper': {
-				[ `height` ]: '217px',
-			},
-		} )
-		cy.resetStyle( 'Height' )
-
-		// Test Spacing options
-		cy.collapse( 'Spacing' )
-
-		// Test Paddings
-		cy.adjust( 'Padding Top', 126, { viewport: 'Tablet', unit: 'px' } ).assertComputedStyle( {
-			'.ugb-separator__top-pad': {
-				[ `height` ]: '126px',
-			},
-		} )
-		cy.resetStyle( 'Padding Top' )
-		cy.adjust( 'Padding Top', 40, { viewport: 'Tablet', unit: 'em' } ).assertComputedStyle( {
-			'.ugb-separator__top-pad': {
-				[ `height` ]: '40em',
-			},
-		} )
-		cy.adjust( 'Padding Bottom', 111, { viewport: 'Tablet', unit: 'px' } ).assertComputedStyle( {
-			'.ugb-separator__bottom-pad': {
-				[ `height` ]: '111px',
-			},
-		} )
-		cy.resetStyle( 'Padding Bottom' )
-		cy.adjust( 'Padding Bottom', 36, { viewport: 'Tablet', unit: 'em' } ).assertComputedStyle( {
-			'.ugb-separator__bottom-pad': {
-				[ `height` ]: '36em',
-			},
-		} )
-
-		/**
-		 *	Test Margins
-		 *	Separator top & bottom margins have:
-		 *	-1 on backend, -1 on frontend
-		 */
-		cy.adjust( 'Margin Top', 20, { viewport: 'Tablet', unit: 'px' } ).assertComputedStyle( {
-			'.ugb-separator': {
-				[ `margin-top` ]: '19px',
-			},
-		} )
-		cy.adjust( 'Margin Top', 25, { viewport: 'Tablet', unit: '%' } ).assertComputedStyle( {
-			'.ugb-separator': {
-				[ `margin-top` ]: '24%',
-			},
-		} )
-
-		// Test Margin Bottom
-		cy.adjust( 'Margin Bottom', 35, { viewport: 'Tablet', unit: 'px' } ).assertComputedStyle( {
-			'.ugb-separator': {
-				[ `margin-bottom` ]: '34px',
-			},
-		} )
-		cy.adjust( 'Margin Bottom', 40, { viewport: 'Tablet', unit: '%' } ).assertComputedStyle( {
-			'.ugb-separator': {
-				[ `margin-bottom` ]: '39%',
-			},
-		} )
-	} )
-}
-
-function mobileStyle() {
-	it( 'should adjust mobile options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/separator' )
-		cy.openInspector( 'ugb/separator', 'Style' )
-
-		// Test General options
-		cy.collapse( 'General' )
-		cy.adjust( 'Height', 217, { viewport: 'Mobile' } ).assertComputedStyle( {
-			'.ugb-separator__svg-wrapper': {
-				[ `height` ]: '217px',
-			},
-		} )
-		cy.resetStyle( 'Height' )
-
-		// Test Spacing options
-		cy.collapse( 'Spacing' )
-
-		// Test Paddings
-		cy.adjust( 'Padding Top', 126, { viewport: 'Mobile', unit: 'px' } ).assertComputedStyle( {
-			'.ugb-separator__top-pad': {
-				[ `height` ]: '126px',
-			},
-		} )
-		cy.resetStyle( 'Padding Top' )
-		cy.adjust( 'Padding Top', 40, { viewport: 'Mobile', unit: 'em' } ).assertComputedStyle( {
-			'.ugb-separator__top-pad': {
-				[ `height` ]: '40em',
-			},
-		} )
-		cy.adjust( 'Padding Bottom', 111, { viewport: 'Mobile', unit: 'px' } ).assertComputedStyle( {
-			'.ugb-separator__bottom-pad': {
-				[ `height` ]: '111px',
-			},
-		} )
-		cy.resetStyle( 'Padding Bottom' )
-		cy.adjust( 'Padding Bottom', 36, { viewport: 'Mobile', unit: 'em' } ).assertComputedStyle( {
-			'.ugb-separator__bottom-pad': {
-				[ `height` ]: '36em',
-			},
-		} )
-
-		/**
-		 *	Test Margins
-		 *	Separator top & bottom margins have:
-		 *	-1 on backend, -1 on frontend
-		 */
-		cy.adjust( 'Margin Top', 20, { viewport: 'Mobile', unit: 'px' } ).assertComputedStyle( {
-			'.ugb-separator': {
-				[ `margin-top` ]: '19px',
-			},
-		} )
-		cy.adjust( 'Margin Top', 25, { viewport: 'Mobile', unit: '%' } ).assertComputedStyle( {
-			'.ugb-separator': {
-				[ `margin-top` ]: '24%',
-			},
-		} )
-
-		// Test Margin Bottom
-		cy.adjust( 'Margin Bottom', 35, { viewport: 'Mobile', unit: 'px' } ).assertComputedStyle( {
-			'.ugb-separator': {
-				[ `margin-bottom` ]: '34px',
-			},
-		} )
-		cy.adjust( 'Margin Bottom', 40, { viewport: 'Mobile', unit: '%' } ).assertComputedStyle( {
-			'.ugb-separator': {
-				[ `margin-bottom` ]: '39%',
-			},
-		} )
-	} )
-}
-
