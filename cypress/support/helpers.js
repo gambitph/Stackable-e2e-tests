@@ -19,7 +19,7 @@ import {
  * Export Block Module assertions.
  */
 export {
-	assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertButton,
+	assertBlockTitleDescription, assertBlockBackground, assertSeparators,
 } from './modules'
 
 /*
