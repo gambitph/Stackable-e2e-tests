@@ -7,7 +7,7 @@
 	"defaultCommandTimeout": 5000,
 	"numTestsKeptInMemory": 5,
 	"env": {
-		"DEBUG": "true",
+		"DEBUG": "false",
 		"INCLUDED_V2_TEST_FILES": [
 			"accordion",
 			"blockquote",
