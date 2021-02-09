@@ -18,6 +18,7 @@
 			"heading",
 			"icon-list",
 			"separator",
+			"spacer",
 			"text"
 		],
 		"INCLUDED_V3_TEST_FILES": [],

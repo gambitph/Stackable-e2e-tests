@@ -149,8 +149,10 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 					}
 
 					if ( assertBackend ) {
-						editorCallback( {
-							parsedClassList,
+						getPreviewMode( previewMode => {
+							editorCallback( {
+								parsedClassList, viewport: previewMode,
+							} )
 						} )
 					}
 
@@ -171,7 +173,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 								}
 
 								frontendCallback( {
-									parsedClassList,
+									parsedClassList, viewport: previewMode,
 								} )
 
 								cy.viewport( config.viewportWidth, config.viewportHeight )
