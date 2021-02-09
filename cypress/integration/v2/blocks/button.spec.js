@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertBlockBackground, assertSeparators,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -64,7 +64,30 @@ function styleTab( viewport, desktopOnly ) {
 			.assertClassName( '.ugb-button-wrapper', 'ugb-button--collapse-tablet' )
 	} )
 
-	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
+	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
+		'.ugb-block-content': {
+			[ `justify-content` ]: 'flex-start',
+		},
+		'.ugb-inner-block': {
+			[ `text-align` ]: 'left',
+		},
+	} )
+	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
+		'.ugb-block-content': {
+			[ `justify-content` ]: 'center',
+		},
+		'.ugb-inner-block': {
+			[ `text-align` ]: 'center',
+		},
+	} )
+	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
+		'.ugb-block-content': {
+			[ `justify-content` ]: 'flex-end',
+		},
+		'.ugb-inner-block': {
+			[ `text-align` ]: 'right',
+		},
+	} )
 
 	cy.collapse( 'Button #1' )
 	desktopOnly( () => {
