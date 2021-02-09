@@ -205,7 +205,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Stretch Shape Mask', true ).assertClassName( 'img.ugb-img--shape', 'ugb-image--shape-stretch' )
 
 		// We won't be able to assert image size for now since it requires server handling.
-		// `assertHtmlAttribute` command was introduced for the pupose of asserting html attribute values in a selected DOM Element.
+		// `assertHtmlAttribute` command was introduced for the purpose of asserting html attribute values in a selected DOM Element.
 	} )
 
 	cy.collapse( 'Title' )
