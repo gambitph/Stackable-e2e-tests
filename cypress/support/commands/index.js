@@ -96,9 +96,27 @@ export function selectBlock( subject, selector ) {
 		string: { func: 'contains', arg: [ containsRegExp( selector ) ] },
 	}
 
-	return cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` )
-		[ ( chainedCommand[ typeof selector ] || {} ).func || 'last' ]( ...( ( chainedCommand[ typeof selector ] || {} ).arg || [] ) )
-		.click( { force: true } )
+	const _selector = () => {
+		const initialSelector = cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` )
+			[ ( chainedCommand[ typeof selector ] || {} ).func || 'last' ]( ...( ( chainedCommand[ typeof selector ] || {} ).arg || [] ) )
+		if ( typeof selector === 'string' ) {
+			return initialSelector.parentsUntil( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).parent()
+		}
+		return initialSelector
+	}
+
+	_selector()
+		.invoke( 'attr', 'data-block' )
+		.then( dataBlock => {
+			cy.window().then( win => {
+				if ( dataBlock && win.wp.data.select( 'core/block-editor' ).getSelectedBlockClientId() !== dataBlock ) {
+					win.wp.data.dispatch( 'core/block-editor' ).selectBlock( dataBlock )
+					cy.wait( 100 )
+				}
+			} )
+		} )
+
+	return _selector()
 }
 
 /**

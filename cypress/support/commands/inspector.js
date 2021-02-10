@@ -25,6 +25,7 @@ export function openSidebar( label = 'Settings' ) {
 
 	cy.window().then( win => {
 		win.wp.data.dispatch( 'core/edit-post' ).openGeneralSidebar( sidebarNamespace[ label ] )
+		cy.wait( 100 )
 	} )
 }
 
@@ -37,8 +38,8 @@ export function openSidebar( label = 'Settings' ) {
  */
 export function openInspector( subject, tab, selector ) {
 	selectBlock( subject, selector )
-	openSidebar( 'Settings' )
 
+	openSidebar( 'Settings' )
 	cy
 		.get( `button.edit-post-sidebar__panel-tab` )
 		.contains( containsRegExp( tab ) )
