@@ -273,8 +273,6 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-accordion__heading': {
 				[ `margin-bottom` ]: '63px',
 			},
-		}, {
-			wait: 1000,
 		} )
 
 	// Test Title options

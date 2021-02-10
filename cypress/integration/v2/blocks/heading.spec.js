@@ -90,7 +90,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-heading__title', { viewport } )
 
@@ -148,7 +148,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-heading__subtitle', { viewport } )
 
