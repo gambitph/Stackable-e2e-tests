@@ -381,6 +381,59 @@ function styleTab( viewport, desktopOnly ) {
 		},
 	} )
 
+	cy.collapse( 'Spacing' )
+
+	cy.adjust( 'Paddings', 24, { viewport, unit: 'px' } ).assertComputedStyle( {
+		'.ugb-feature-grid__item': {
+			[ `padding-top` ]: '24px',
+			[ `padding-bottom` ]: '24px',
+			[ `padding-left` ]: '24px',
+			[ `padding-right` ]: '24px',
+		},
+	} )
+
+	cy.adjust( 'Paddings', 4, { viewport, unit: 'em' } ).assertComputedStyle( {
+		'.ugb-feature-grid__item': {
+			[ `padding-top` ]: '4em',
+			[ `padding-bottom` ]: '4em',
+			[ `padding-left` ]: '4em',
+			[ `padding-right` ]: '4em',
+		},
+	} )
+
+	cy.adjust( 'Paddings', 12, { viewport, unit: '%' } ).assertComputedStyle( {
+		'.ugb-feature-grid__item': {
+			[ `padding-top` ]: '12%',
+			[ `padding-bottom` ]: '12%',
+			[ `padding-left` ]: '12%',
+			[ `padding-right` ]: '12%',
+		},
+	} )
+
+	cy.adjust( 'Image', 13, { viewport } ).assertComputedStyle( {
+		'.ugb-feature-grid__image': {
+			[ `margin-bottom` ]: '13px',
+		},
+	} )
+
+	cy.adjust( 'Title', 23, { viewport } ).assertComputedStyle( {
+		'.ugb-feature-grid__title': {
+			[ `margin-bottom` ]: '23px',
+		},
+	} )
+
+	cy.adjust( 'Description', 16, { viewport } ).assertComputedStyle( {
+		'.ugb-feature-grid__description': {
+			[ `margin-bottom` ]: '16px',
+		},
+	} )
+
+	cy.adjust( 'Button', 21, { viewport } ).assertComputedStyle( {
+		'.ugb-button-container': {
+			[ `margin-bottom` ]: '21px',
+		},
+	} )
+
 	desktopOnly( () => {
 		cy.collapse( 'Effects' )
 		const effects = [
