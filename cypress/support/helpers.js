@@ -12,7 +12,7 @@ import { collapse, openSidebar } from './commands/inspector'
  * External dependencies
  */
 import {
-	startCase, lowerCase,
+	startCase, lowerCase, max,
 } from 'lodash'
 
 /**
@@ -66,7 +66,6 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 	cy.newPage()
 	cy.addBlock( blockName )
 	designs.forEach( design => {
-		cy.wait( 300 )
 		cy.openInspector( blockName, 'Layout' )
 		cy.adjustDesign( design )
 		cy.publish()
@@ -127,7 +126,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 	const {
 		assertFrontend = true,
 		assertBackend = true,
-		wait = false,
+		wait = 1000,
 		viewportFrontend = false,
 	} = options
 	getActiveTab( tab => {
@@ -143,11 +142,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 
 					publish()
 
-					if ( ! wait || ( wait && wait < 300 ) ) {
-						cy.wait( 300 )
-					} else {
-						cy.wait( wait )
-					}
+					cy.wait( max( [ 1000, wait ] ) )
 
 					if ( assertBackend ) {
 						getPreviewMode( previewMode => {
@@ -167,11 +162,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 									cy.viewport( config[ `viewport${ previewMode }Width` ] || config.viewportWidth, config.viewportHeight )
 								}
 
-								if ( ! wait || ( wait && wait < 300 ) ) {
-									cy.wait( 300 )
-								} else {
-									cy.wait( wait )
-								}
+								cy.wait( max( [ 1000, wait ] ) )
 
 								frontendCallback( {
 									parsedClassList, viewport: previewMode,

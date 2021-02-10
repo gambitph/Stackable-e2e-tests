@@ -90,7 +90,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-heading__title', { viewport } )
 
@@ -148,7 +148,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-heading__subtitle', { viewport } )
 
@@ -173,12 +173,19 @@ function styleTab( viewport, desktopOnly ) {
 	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
 		'.ugb-heading__top-line': {
 			[ `margin-left` ]: '0px',
+			[ `margin-right` ]: 'auto',
 		},
 	} )
-	cy.adjust( 'Align', 'center', { viewport } )
+	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
+		'.ugb-heading__top-line': {
+			[ `margin-left` ]: 'auto',
+			[ `margin-right` ]: 'auto',
+		},
+	} )
 	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
 		'.ugb-heading__top-line': {
 			[ `margin-right` ]: '0px',
+			[ `margin-left` ]: 'auto',
 		},
 	} )
 
@@ -203,12 +210,19 @@ function styleTab( viewport, desktopOnly ) {
 	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
 		'.ugb-heading__bottom-line': {
 			[ `margin-left` ]: '0px',
+			[ `margin-right` ]: 'auto',
 		},
 	} )
-	cy.adjust( 'Align', 'center', { viewport } )
+	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
+		'.ugb-heading__bottom-line': {
+			[ `margin-left` ]: 'auto',
+			[ `margin-right` ]: 'auto',
+		},
+	} )
 	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
 		'.ugb-heading__top-line': {
 			[ `margin-right` ]: '0px',
+			[ `margin-left` ]: 'auto',
 		},
 	} )
 

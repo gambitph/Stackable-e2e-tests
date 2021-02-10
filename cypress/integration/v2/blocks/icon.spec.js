@@ -55,13 +55,15 @@ function desktopStyle() {
 		// Test Title options
 		cy.collapse( 'Title' )
 		cy.toggleStyle( 'Title' )
-		cy.adjust( 'Title on Top', true )
+
 		cy.typeBlock( 'ugb/icon', '.ugb-icon__item1 .ugb-icon__title', 'Title 1' )
 		cy.typeBlock( 'ugb/icon', '.ugb-icon__item2 .ugb-icon__title', 'Title 2' )
 		cy.typeBlock( 'ugb/icon', '.ugb-icon__item3 .ugb-icon__title', 'Title 3' )
 		cy.typeBlock( 'ugb/icon', '.ugb-icon__item4 .ugb-icon__title', 'Title 4' )
+
 		cy.adjust( 'Title HTML Tag', 'h4' )
 			.assertHtmlTag( '.ugb-icon__title', 'h4' )
+		cy.adjust( 'Title on Top', true )
 		cy.adjust( 'Typography', {
 			[ `Font Family` ]: 'Serif',
 			[ `Size` ]: 18,
@@ -183,7 +185,7 @@ function desktopStyle() {
 		} )
 
 		// Test Block Background
-		assertBlockBackground( { viewport: 'Desktop' } )
+		assertBlockBackground( '.ugb-icon', { viewport: 'Desktop' } )
 
 		// Test Top and Bottom Separator
 		assertSeparators( { viewport: 'Desktop' } )
@@ -427,7 +429,7 @@ function mobileStyle() {
 		} )
 
 		// Test Block Background.
-		assertBlockBackground( { viewport: 'Mobile' } )
+		assertBlockBackground( '.ugb-icon', { viewport: 'Mobile' } )
 
 		// Test Top and Bottom Separator.
 		assertSeparators( { viewport: 'Mobile' } )
