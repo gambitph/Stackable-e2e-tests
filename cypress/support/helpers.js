@@ -66,7 +66,6 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 	cy.newPage()
 	cy.addBlock( blockName )
 	designs.forEach( design => {
-		cy.wait( 300 )
 		cy.openInspector( blockName, 'Layout' )
 		cy.adjustDesign( design )
 		cy.publish()
@@ -127,7 +126,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 	const {
 		assertFrontend = true,
 		assertBackend = true,
-		wait = 300,
+		wait = 400,
 		viewportFrontend = false,
 	} = options
 	getActiveTab( tab => {
@@ -143,7 +142,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 
 					publish()
 
-					cy.wait( wait )
+					cy.wait( wait < 400 ? 400 : wait )
 
 					if ( assertBackend ) {
 						getPreviewMode( previewMode => {
@@ -163,7 +162,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 									cy.viewport( config[ `viewport${ previewMode }Width` ] || config.viewportWidth, config.viewportHeight )
 								}
 
-								cy.wait( wait )
+								cy.wait( wait < 400 ? 400 : wait )
 
 								frontendCallback( {
 									parsedClassList, viewport: previewMode,

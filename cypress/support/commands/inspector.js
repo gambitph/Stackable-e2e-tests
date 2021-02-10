@@ -42,6 +42,11 @@ export function openInspector( subject, tab, selector ) {
 	openSidebar( 'Settings' )
 	cy
 		.get( `button.edit-post-sidebar__panel-tab` )
+		.contains( containsRegExp( 'Block' ) )
+		.click( { force: true } )
+
+	cy
+		.get( `button.edit-post-sidebar__panel-tab` )
 		.contains( containsRegExp( tab ) )
 		.click( { force: true } )
 }

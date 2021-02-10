@@ -109,7 +109,7 @@ export function selectBlock( subject, selector ) {
 		.invoke( 'attr', 'data-block' )
 		.then( dataBlock => {
 			cy.window().then( win => {
-				if ( dataBlock && win.wp.data.select( 'core/block-editor' ).getSelectedBlockClientId() !== dataBlock ) {
+				if ( win.wp.data.select( 'core/block-editor' ).getSelectedBlockClientId() !== dataBlock ) {
 					win.wp.data.dispatch( 'core/block-editor' ).selectBlock( dataBlock )
 					cy.wait( 100 )
 				}
