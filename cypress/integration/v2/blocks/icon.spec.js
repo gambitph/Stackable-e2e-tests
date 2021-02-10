@@ -241,9 +241,9 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockTitleDescription( { viewport } )
 
 	// Test Block Background
-	assertBlockBackground( '.ugb-icon', { viewport: 'Desktop' } )
+	assertBlockBackground( '.ugb-icon', { viewport } )
 
 	// Test Top and Bottom Separator
-	assertSeparators( { viewport: 'Desktop' } )
+	assertSeparators( { viewport } )
 }
 
