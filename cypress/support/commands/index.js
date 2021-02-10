@@ -87,7 +87,7 @@ export function addBlock( blockname = 'ugb/accordion' ) {
  */
 export function selectBlock( subject, selector ) {
 // Initialize chained command based on selector type.
-	if ( ! selector ) {
+	if ( selector === '' ) {
 		selector = undefined
 	}
 

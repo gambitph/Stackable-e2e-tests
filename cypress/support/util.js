@@ -23,7 +23,7 @@ export const getBaseControl = ( tab = 'style', isInPopover = false ) => {
  * @param {string} name
  * @return {RegExp} generated RegExp
  */
-export const containsRegExp = ( name = '' ) => new RegExp( `^${ name.replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` )
+export const containsRegExp = ( name = '' ) => new RegExp( `^${ ( typeof name !== 'string' ? '' : name ).replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` )
 
 /**
  * Function for getting the active tab
