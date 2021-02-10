@@ -152,7 +152,6 @@ function styleTab( viewport, desktopOnly ) {
 				[ `padding-left` ]: '181px',
 			},
 		} )
-
 		cy.adjust( 'Paddings', [ 12, 4, 18, 3 ], { unit: 'em' } ).assertComputedStyle( {
 			'.ugb-countup__item': {
 				[ `padding-top` ]: '12em',
@@ -161,17 +160,15 @@ function styleTab( viewport, desktopOnly ) {
 				[ `padding-left` ]: '3em',
 			},
 		} )
-
-		cy.adjust( 'Paddings', [ 24, 12, 34, 21 ], { unit: '%' } ).assertComputedStyle( {
+		cy.adjust( 'Paddings', [ 10, 11, 12, 13 ], { unit: '%' } ).assertComputedStyle( {
 			'.ugb-countup__item': {
-				[ `padding-top` ]: '24%',
-				[ `padding-bottom` ]: '34%',
-				[ `padding-right` ]: '12%',
-				[ `padding-left` ]: '21%',
+				[ `padding-top` ]: '10%',
+				[ `padding-bottom` ]: '12%',
+				[ `padding-right` ]: '11%',
+				[ `padding-left` ]: '13%',
 			},
 		} )
 	} )
-
 	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
 	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
 		cy.adjust( 'Paddings', [ 24, 12, 13, 8 ], { unit: 'px', viewport } ).assertComputedStyle( {
@@ -182,7 +179,6 @@ function styleTab( viewport, desktopOnly ) {
 				[ `padding-left` ]: '8px',
 			},
 		} )
-
 		cy.adjust( 'Paddings', [ 12, 4, 10, 3 ], { unit: 'em', viewport } ).assertComputedStyle( {
 			'.ugb-countup__item': {
 				[ `padding-top` ]: '12em',
@@ -191,13 +187,12 @@ function styleTab( viewport, desktopOnly ) {
 				[ `padding-left` ]: '3em',
 			},
 		} )
-
-		cy.adjust( 'Paddings', [ 24, 12, 12, 21 ], { unit: '%', viewport } ).assertComputedStyle( {
+		cy.adjust( 'Paddings', [ 10, 11, 12, 13 ], { unit: '%', viewport } ).assertComputedStyle( {
 			'.ugb-countup__item': {
-				[ `padding-top` ]: '24%',
-				[ `padding-bottom` ]: '12%',
+				[ `padding-top` ]: '10%',
+				[ `padding-bottom` ]: '11%',
 				[ `padding-right` ]: '12%',
-				[ `padding-left` ]: '21%',
+				[ `padding-left` ]: '13%',
 			},
 		} )
 	}
