@@ -891,6 +891,15 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 						computedStyle = `${ parseInt( computedStyle ) }px`
 						break
 					}
+					case 'padding-top':
+					case 'padding-bottom':
+					case 'padding-left':
+					case 'padding-right': {
+						const elWidth = parseInt( win.getComputedStyle( element ).width )
+						expectedValue = `${ parseInt( ( elWidth / 100 ) * parseInt( expectedValue ) ) }px`
+						computedStyle = `${ parseInt( computedStyle ) }px`
+						break
+					}
 					default: {
 						const elWidth = parseInt( win.getComputedStyle( element.parentElement ).width )
 						expectedValue = `${ parseInt( ( elWidth / 100 ) * parseInt( expectedValue ) ) }px`
