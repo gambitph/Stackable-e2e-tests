@@ -1,16 +1,24 @@
+// Make sure to remove this after developing
+/// <reference types="Cypress" />
+
 /**
  * External dependencies
  */
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, registerTests,
+	assertBlockExist, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
+
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 
 describe( 'Container Block', registerTests( [
 	blockExist,
 	blockError,
 	innerBlocks,
 	switchLayout,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 ] ) )
 
 function blockExist() {
@@ -43,3 +51,27 @@ function switchLayout() {
 	] ) )
 }
 
+function styleTab( viewport, desktopOnly ) {
+	cy.setupWP()
+	cy.newPage()
+
+	// General Tab
+	// Test Height
+	// Test Content Width
+	// Test Text Align
+
+	// Container Tab
+	// Test Borders
+
+	// Background Tab
+	// Test Single
+	// Test Gradient
+	// Test Image
+	// Test Background Border
+
+	// Spacing Tab
+	// Test Padding
+
+	// Text Colors
+	// Test Link Colors
+}
