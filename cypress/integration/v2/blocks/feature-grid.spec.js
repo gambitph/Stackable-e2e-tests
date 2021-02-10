@@ -181,19 +181,19 @@ function styleTab( viewport, desktopOnly ) {
 			[ `margin-left` ]: '0px',
 			[ `margin-right` ]: 'auto',
 		},
-	}, { wait: 500 } )
+	} )
 	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
 		'.ugb-feature-grid__image': {
 			[ `margin-left` ]: 'auto',
 			[ `margin-right` ]: 'auto',
 		},
-	}, { wait: 500 } )
+	} )
 	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
 		'.ugb-feature-grid__image': {
 			[ `margin-left` ]: 'auto',
 			[ `margin-right` ]: '0px',
 		},
-	}, { wait: 500 } )
+	} )
 
 	desktopOnly( () => {
 		cy.adjust( 'Shape', {
@@ -261,7 +261,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-feature-grid__title', { viewport } )
 
@@ -316,7 +316,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-feature-grid__description', { viewport } )
 
@@ -335,7 +335,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `Letter Spacing` ]: 2.9,
 		} )
 		cy.adjust( 'Button Size', 'large' )
-			.assertClassName( '.ugb-button', 'ugb-button--size-large', { wait: 1000 } )
+			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
 		cy.adjust( 'Opacity', 0.2 ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
 				[ `font-weight` ]: '700',
@@ -367,7 +367,7 @@ function styleTab( viewport, desktopOnly ) {
 		'.ugb-button .ugb-button--inner': {
 			[ `font-size` ]: '50px',
 		},
-	}, { wait: 500 } )
+	} )
 
 	cy.adjust( 'Typography', {
 		[ `Size` ]: {
@@ -379,7 +379,7 @@ function styleTab( viewport, desktopOnly ) {
 		'.ugb-button .ugb-button--inner': {
 			[ `font-size` ]: '7em',
 		},
-	}, { wait: 500 } )
+	} )
 
 	desktopOnly( () => {
 		cy.collapse( 'Effects' )

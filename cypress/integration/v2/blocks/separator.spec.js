@@ -183,31 +183,23 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-separator__top-pad': {
 				[ `height` ]: '126px',
 			},
-		}, {
-			wait: 500,
 		} )
 		cy.resetStyle( 'Padding Top' )
 		cy.adjust( 'Padding Top', 40, { viewport, unit: 'em' } ).assertComputedStyle( {
 			'.ugb-separator__top-pad': {
 				[ `height` ]: '40em',
 			},
-		}, {
-			wait: 500,
 		} )
 		cy.adjust( 'Padding Bottom', 111, { viewport, unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator__bottom-pad': {
 				[ `height` ]: '111px',
 			},
-		}, {
-			wait: 500,
 		} )
 		cy.resetStyle( 'Padding Bottom' )
 		cy.adjust( 'Padding Bottom', 36, { viewport, unit: 'em' } ).assertComputedStyle( {
 			'.ugb-separator__bottom-pad': {
 				[ `height` ]: '36em',
 			},
-		}, {
-			wait: 500,
 		} )
 
 		/**
@@ -219,15 +211,11 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-separator': {
 				[ `margin-top` ]: '19px',
 			},
-		}, {
-			wait: 500,
 		} )
 		cy.adjust( 'Margin Top', 25, { viewport, unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
 				[ `margin-top` ]: '24%',
 			},
-		}, {
-			wait: 500,
 		} )
 
 		// Test Margin Bottom
@@ -235,15 +223,11 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-separator': {
 				[ `margin-bottom` ]: '34px',
 			},
-		}, {
-			wait: 500,
 		} )
 		cy.adjust( 'Margin Bottom', 40, { viewport, unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
 				[ `margin-bottom` ]: '39%',
 			},
-		}, {
-			wait: 500,
 		} )
 	}
 

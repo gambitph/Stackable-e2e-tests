@@ -64,7 +64,7 @@ function styleTab( viewport, desktopOnly ) {
 		'.ugb-icon-list ul': {
 			[ `columns` ]: 'auto 4',
 		},
-	}, { wait: 300 } )
+	} )
 	desktopOnly( () => {
 		cy.adjust( 'Display as a grid (left to right & evenly spaced)', true )
 	} )
@@ -117,7 +117,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `font-size` ]: '50px',
 			[ `line-height` ]: '4em',
 		},
-	}, { wait: 300 } )
+	} )
 
 	cy.adjust( 'Typography', {
 		[ `Size` ]: {
@@ -135,7 +135,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `font-size` ]: '7em',
 			[ `line-height` ]: '24px',
 		},
-	}, { wait: 300 } )
+	} )
 
 	desktopOnly( () => {
 		cy.adjust( 'Typography', {
@@ -154,7 +154,7 @@ function styleTab( viewport, desktopOnly ) {
 			li: {
 				[ `color` ]: '#742f2f',
 			},
-		}, { wait: 300 } )
+		} )
 	} )
 
 	assertBlockTitleDescription( { viewport } )

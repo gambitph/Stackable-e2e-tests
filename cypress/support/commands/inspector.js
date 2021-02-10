@@ -18,17 +18,15 @@ Cypress.Commands.add( 'toggleStyle', toggleStyle )
  * @param {string} label
  */
 export function openSidebar( label = 'Settings' ) {
-	cy
-		.get( `button[aria-label="${ label }"]` )
-		.invoke( 'attr', 'aria-expanded' )
-		.then( ariaExpanded => {
-			// Open the inspector first if not visible.
-			if ( ariaExpanded === 'false' ) {
-				cy
-					.get( `button[aria-label="${ label }"]` )
-					.click( { force: true } )
-			}
-		} )
+	const sidebarNamespace = {
+		[ `Settings` ]: 'edit-post/block',
+		[ `Stackable Settings` ]: 'stackable-global-settings/sidebar',
+	}
+
+	cy.window().then( win => {
+		win.wp.data.dispatch( 'core/edit-post' ).openGeneralSidebar( sidebarNamespace[ label ] )
+		cy.wait( 100 )
+	} )
 }
 
 /**
@@ -40,18 +38,17 @@ export function openSidebar( label = 'Settings' ) {
  */
 export function openInspector( subject, tab, selector ) {
 	selectBlock( subject, selector )
-	cy.document().then( doc => {
-		if ( ! doc.querySelector( '.is-selected' ) ) {
-			selectBlock( subject, selector )
-		}
 
-		openSidebar( 'Settings' )
+	openSidebar( 'Settings' )
+	cy
+		.get( `button.edit-post-sidebar__panel-tab` )
+		.contains( containsRegExp( 'Block' ) )
+		.click( { force: true } )
 
-		cy
-			.get( `button.edit-post-sidebar__panel-tab` )
-			.contains( containsRegExp( tab ) )
-			.click( { force: true } )
-	} )
+	cy
+		.get( `button.edit-post-sidebar__panel-tab` )
+		.contains( containsRegExp( tab ) )
+		.click( { force: true } )
 }
 
 /**
@@ -61,48 +58,42 @@ export function openInspector( subject, tab, selector ) {
  * @param {boolean} toggle
  */
 export function collapse( name = 'General', toggle = true ) {
-	cy
-		.document()
-		.then( doc => {
-			const globalSettingsElement = doc.querySelector( '.ugb-global-settings__inspector' )
+	getActiveTab( tab => {
+		if ( tab === 'Stackable Global Settings' ) {
+			return cy
+				.get( 'button.components-panel__body-toggle' )
+				.contains( containsRegExp( name ) )
+				.invoke( 'attr', 'aria-expanded' )
+				.then( ariaExpanded => {
+					if ( ariaExpanded !== toggle.toString() ) {
+						cy
+							.get( 'button.components-panel__body-toggle' )
+							.contains( containsRegExp( name ) )
+							.click( { force: true } )
+					}
+				} )
+		}
 
-			if ( globalSettingsElement ) {
-				cy
-					.get( 'button.components-panel__body-toggle' )
-					.contains( containsRegExp( name ) )
-					.invoke( 'attr', 'aria-expanded' )
-					.then( ariaExpanded => {
-						if ( ariaExpanded !== toggle.toString() ) {
-							cy
-								.get( 'button.components-panel__body-toggle' )
-								.contains( containsRegExp( name ) )
-								.click( { force: true } )
-						}
-					} )
-			} else {
-				getActiveTab( tab => {
+		return cy
+			.get( `.ugb-panel-${ tab }>.components-panel__body .components-panel__body-title` )
+			.contains( containsRegExp( name ) )
+			.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
+			.parent()
+			.find( 'button.components-panel__body-toggle' )
+			.invoke( 'attr', 'aria-expanded' )
+			.then( ariaExpanded => {
+				// Open the accordion if aria-expanded is false.
+				if ( ariaExpanded !== toggle.toString() ) {
 					cy
 						.get( `.ugb-panel-${ tab }>.components-panel__body .components-panel__body-title` )
 						.contains( containsRegExp( name ) )
 						.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
 						.parent()
 						.find( 'button.components-panel__body-toggle' )
-						.invoke( 'attr', 'aria-expanded' )
-						.then( ariaExpanded => {
-							// Open the accordion if aria-expanded is false.
-							if ( ariaExpanded !== toggle.toString() ) {
-								cy
-									.get( `.ugb-panel-${ tab }>.components-panel__body .components-panel__body-title` )
-									.contains( containsRegExp( name ) )
-									.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
-									.parent()
-									.find( 'button.components-panel__body-toggle' )
-									.click( { force: true } )
-							}
-						} )
-				} )
-			}
-		} )
+						.click( { force: true } )
+				}
+			} )
+	} )
 }
 
 /**

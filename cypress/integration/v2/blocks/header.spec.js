@@ -297,7 +297,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-header__title', { viewport } )
 
@@ -353,7 +353,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-header__subtitle', { viewport } )
 
@@ -438,7 +438,7 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-button1 .ugb-button--inner': {
 				[ `font-size` ]: '50px',
 			},
-		}, { wait: 300 } )
+		} )
 
 		cy.adjust( 'Typography', {
 			[ `Size` ]: {
@@ -450,7 +450,7 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-button1 .ugb-button--inner': {
 				[ `font-size` ]: '7em',
 			},
-		}, { wait: 300 } )
+		} )
 	}
 
 	cy.collapse( 'Button #2' )
@@ -534,7 +534,7 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-button2 .ugb-button--inner': {
 				[ `font-size` ]: '50px',
 			},
-		}, { wait: 300 } )
+		} )
 
 		cy.adjust( 'Typography', {
 			[ `Size` ]: {
@@ -546,7 +546,7 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-button2 .ugb-button--inner': {
 				[ `font-size` ]: '7em',
 			},
-		}, { wait: 300 } )
+		} )
 	}
 
 	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
