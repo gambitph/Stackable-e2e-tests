@@ -59,7 +59,7 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-block-content .ugb-button': {
 				[ `border-radius` ]: '20px',
 			},
-		}, { wait: 300 } )
+		} )
 		cy.adjust( 'Collapse Buttons On', 'tablet' )
 			.assertClassName( '.ugb-button-wrapper', 'ugb-button--collapse-tablet' )
 	} )
@@ -171,7 +171,7 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-button1 .ugb-button--inner': {
 				[ `font-size` ]: '31px',
 			},
-		}, { wait: 300 } )
+		} )
 
 		cy.adjust( 'Typography', {
 			[ `Size` ]: {
@@ -183,7 +183,7 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-button1 .ugb-button--inner': {
 				[ `font-size` ]: '7em',
 			},
-		}, { wait: 300 } )
+		} )
 	}
 
 	cy.collapse( 'Button #2' )
@@ -268,7 +268,7 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-button2 .ugb-button--inner': {
 				[ `font-size` ]: '31px',
 			},
-		}, { wait: 300 } )
+		} )
 
 		cy.adjust( 'Typography', {
 			[ `Size` ]: {
@@ -280,7 +280,7 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-button2 .ugb-button--inner': {
 				[ `font-size` ]: '7em',
 			},
-		}, { wait: 300 } )
+		} )
 	}
 
 	cy.collapse( 'Button #3' )
@@ -365,7 +365,7 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-button3 .ugb-button--inner': {
 				[ `font-size` ]: '31px',
 			},
-		}, { wait: 300 } )
+		} )
 
 		cy.adjust( 'Typography', {
 			[ `Size` ]: {
@@ -377,7 +377,7 @@ function styleTab( viewport, desktopOnly ) {
 			'.ugb-button3 .ugb-button--inner': {
 				[ `font-size` ]: '7em',
 			},
-		}, { wait: 300 } )
+		} )
 	}
 
 	assertBlockBackground( '.ugb-button-wrapper', { viewport } )

@@ -73,7 +73,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `padding-right` ]: '25px',
 			[ `padding-left` ]: '25px',
 		},
-	}, { wait: 300 } )
+	} )
 	cy.resetStyle( 'Paddings' )
 	cy.adjust( 'Paddings', 3, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-blockquote__item': {
@@ -82,7 +82,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `padding-right` ]: '3em',
 			[ `padding-left` ]: '3em',
 		},
-	}, { wait: 300 } )
+	} )
 	cy.resetStyle( 'Paddings' )
 	cy.adjust( 'Paddings', 17, { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-blockquote__item': {
@@ -91,7 +91,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `padding-right` ]: '17%',
 			[ `padding-left` ]: '17%',
 		},
-	}, { wait: 300 } )
+	} )
 
 	// Test Quotation Mark options
 	cy.collapse( 'Quotation Mark' )

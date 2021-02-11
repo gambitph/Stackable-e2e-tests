@@ -181,19 +181,19 @@ function styleTab( viewport, desktopOnly ) {
 			[ `margin-left` ]: '0px',
 			[ `margin-right` ]: 'auto',
 		},
-	}, { wait: 500 } )
+	} )
 	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
 		'.ugb-feature-grid__image': {
 			[ `margin-left` ]: 'auto',
 			[ `margin-right` ]: 'auto',
 		},
-	}, { wait: 500 } )
+	} )
 	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
 		'.ugb-feature-grid__image': {
 			[ `margin-left` ]: 'auto',
 			[ `margin-right` ]: '0px',
 		},
-	}, { wait: 500 } )
+	} )
 
 	desktopOnly( () => {
 		cy.adjust( 'Shape', {
@@ -261,7 +261,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-feature-grid__title', { viewport } )
 
@@ -316,7 +316,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-feature-grid__description', { viewport } )
 
@@ -335,7 +335,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `Letter Spacing` ]: 2.9,
 		} )
 		cy.adjust( 'Button Size', 'large' )
-			.assertClassName( '.ugb-button', 'ugb-button--size-large', { wait: 1000 } )
+			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
 		cy.adjust( 'Opacity', 0.2 ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
 				[ `font-weight` ]: '700',
@@ -367,7 +367,7 @@ function styleTab( viewport, desktopOnly ) {
 		'.ugb-button .ugb-button--inner': {
 			[ `font-size` ]: '50px',
 		},
-	}, { wait: 500 } )
+	} )
 
 	cy.adjust( 'Typography', {
 		[ `Size` ]: {
@@ -379,7 +379,60 @@ function styleTab( viewport, desktopOnly ) {
 		'.ugb-button .ugb-button--inner': {
 			[ `font-size` ]: '7em',
 		},
-	}, { wait: 500 } )
+	} )
+
+	cy.collapse( 'Spacing' )
+
+	cy.adjust( 'Paddings', 24, { viewport, unit: 'px' } ).assertComputedStyle( {
+		'.ugb-feature-grid__item': {
+			[ `padding-top` ]: '24px',
+			[ `padding-bottom` ]: '24px',
+			[ `padding-left` ]: '24px',
+			[ `padding-right` ]: '24px',
+		},
+	} )
+
+	cy.adjust( 'Paddings', 4, { viewport, unit: 'em' } ).assertComputedStyle( {
+		'.ugb-feature-grid__item': {
+			[ `padding-top` ]: '4em',
+			[ `padding-bottom` ]: '4em',
+			[ `padding-left` ]: '4em',
+			[ `padding-right` ]: '4em',
+		},
+	} )
+
+	cy.adjust( 'Paddings', 12, { viewport, unit: '%' } ).assertComputedStyle( {
+		'.ugb-feature-grid__item': {
+			[ `padding-top` ]: '12%',
+			[ `padding-bottom` ]: '12%',
+			[ `padding-left` ]: '12%',
+			[ `padding-right` ]: '12%',
+		},
+	} )
+
+	cy.adjust( 'Image', 13, { viewport } ).assertComputedStyle( {
+		'.ugb-feature-grid__image': {
+			[ `margin-bottom` ]: '13px',
+		},
+	} )
+
+	cy.adjust( 'Title', 23, { viewport } ).assertComputedStyle( {
+		'.ugb-feature-grid__title': {
+			[ `margin-bottom` ]: '23px',
+		},
+	} )
+
+	cy.adjust( 'Description', 16, { viewport } ).assertComputedStyle( {
+		'.ugb-feature-grid__description': {
+			[ `margin-bottom` ]: '16px',
+		},
+	} )
+
+	cy.adjust( 'Button', 21, { viewport } ).assertComputedStyle( {
+		'.ugb-button-container': {
+			[ `margin-bottom` ]: '21px',
+		},
+	} )
 
 	desktopOnly( () => {
 		cy.collapse( 'Effects' )

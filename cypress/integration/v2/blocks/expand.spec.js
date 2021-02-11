@@ -87,7 +87,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-expand__title', { viewport } )
 
@@ -144,7 +144,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-expand__less-text p, .ugb-expand__more-text p', { viewport } )
 
@@ -201,7 +201,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `line-height` ]: '24px',
 			[ `color` ]: '#742f2f',
 		},
-	}, { wait: 300 } )
+	} )
 
 	assertAligns( 'Align', '.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text', { viewport } )
 
