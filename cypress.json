@@ -6,6 +6,7 @@
 	"viewportHeight": 660,
 	"defaultCommandTimeout": 5000,
 	"numTestsKeptInMemory": 5,
+	"experimentalFetchPolyfill": true,
 	"env": {
 		"DEBUG": "false",
 		"INCLUDED_V2_TEST_FILES": [
