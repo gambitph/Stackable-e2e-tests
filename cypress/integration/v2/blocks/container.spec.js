@@ -173,37 +173,100 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setBlockAttribute( {
 		[ `column${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
 	} )
-	cy.adjust( 'Background', {
-		[ `Background Media Tint Strength` ]: 7,
-		[ `Fixed Background` ]: true,
-		[ `Adv. Background Image Settings` ]: {
-			[ `Image Position` ]: 'top right',
-			[ `Image Repeat` ]: 'repeat-x',
-			[ `Image Size` ]: 'cover',
-			[ `Image Blend Mode` ]: 'exclusion',
-		},
-	} ).assertComputedStyle( {
+
+	desktopOnly( () => {
+		cy.adjust( 'Background', {
+			[ `Background Media Tint Strength` ]: 7,
+			[ `Fixed Background` ]: true,
+			[ `Adv. Background Image Settings` ]: {
+				[ `Image Position` ]: 'top right',
+				[ `Image Repeat` ]: 'repeat-x',
+				[ `Image Size` ]: 'cover',
+				[ `Image Blend Mode` ]: 'exclusion',
+			},
+		} ).assertComputedStyle( {
+			'.ugb-container__wrapper': {
+				[ `background-image` ]: `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
+				[ `background-attachment` ]: 'fixed',
+				[ `background-position` ]: '100% 0%',
+				[ `background-repeat` ]: 'repeat-x',
+				[ `background-size` ]: 'cover',
+				[ `background-blend-mode` ]: 'exclusion',
+			},
+			'.ugb-container__wrapper:before': {
+				[ `opacity` ]: '0.7',
+			},
+		} )
+	} )
+
+	desktopOnly( () => {
+		// Test Borders
+		cy.adjust( 'Borders', 'solid' ).assertComputedStyle( {
+			'.ugb-container__wrapper': {
+				[ `border-style` ]: 'solid',
+			},
+		} )
+		cy.adjust( 'Borders', 'dashed' ).assertComputedStyle( {
+			'.ugb-container__wrapper': {
+				[ `border-style` ]: 'dashed',
+			},
+		} )
+		cy.adjust( 'Borders', 'dotted' ).assertComputedStyle( {
+			'.ugb-container__wrapper': {
+				[ `border-style` ]: 'dotted',
+			},
+		} )
+		cy.adjust( 'Border Width', 4 )
+		cy.adjust( 'Border Color', '#a12222' )
+		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
+			'.ugb-container__wrapper': {
+				[ `border-top-width` ]: '4px',
+				[ `border-bottom-width` ]: '4px',
+				[ `border-left-width` ]: '4px',
+				[ `border-right-width` ]: '4px',
+				[ `border-color` ]: '#a12222',
+				[ `border-radius` ]: '26px',
+			},
+		} )
+
+		// Test Shadow Outline
+		cy.adjust( 'Shadow / Outline', 5 )
+			.assertClassName( '.ugb-container__wrapper', 'ugb--shadow-5' )
+	} )
+
+	// Spacing Tab
+	cy.collapse( 'Spacing' )
+
+	// Test Padding
+	cy.adjust( 'Paddings', 100, { viewport } ).assertComputedStyle( {
 		'.ugb-container__wrapper': {
-			[ `background-image` ]: `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
-			[ `background-attachment` ]: 'fixed',
-			[ `background-position` ]: '100% 0%',
-			[ `background-repeat` ]: 'repeat-x',
-			[ `background-size` ]: 'cover',
-			[ `background-blend-mode` ]: 'exclusion',
+			[ `padding-top` ]: '100px',
+			[ `padding-bottom` ]: '100px',
+			[ `padding-right` ]: '100px',
+			[ `padding-left` ]: '100px',
 		},
-		'.ugb-container__wrapper:before': {
-			[ `opacity` ]: '0.7',
+	} )
+	cy.resetStyle( 'Paddings' )
+	cy.adjust( 'Paddings', 15, { viewport, unit: 'em' } ).assertComputedStyle( {
+		'.ugb-container__wrapper': {
+			[ `padding-top` ]: '15em',
+			[ `padding-bottom` ]: '15em',
+			[ `padding-right` ]: '15em',
+			[ `padding-left` ]: '15em',
+		},
+	} )
+	cy.resetStyle( 'Paddings' )
+	cy.adjust( 'Paddings', 50, { viewport, unit: '%' } ).assertComputedStyle( {
+		'.ugb-container__wrapper': {
+			[ `padding-top` ]: '50%',
+			[ `padding-bottom` ]: '50%',
+			[ `padding-right` ]: '50%',
+			[ `padding-left` ]: '50%',
 		},
 	} )
 
-	// Test Background Border
-	// Test Borders
-	// Test Border Radius
-	// Test Shadow Outline
+	// Text Colors Tab
+	cy.collapse( 'Text Colors' )
 
-	// Spacing Tab
-	// Test Padding
-
-	// Text Colors
-	// Test Link Colors
+	// Test Colors
 }
