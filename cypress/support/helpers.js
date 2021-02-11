@@ -64,13 +64,14 @@ export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-
 export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => () => {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( blockName )
 	designs.forEach( design => {
+		cy.addBlock( blockName )
 		cy.openInspector( blockName, 'Layout' )
 		cy.adjustDesign( design )
 		cy.publish()
 		cy.reload()
 		cy.assertBlockError()
+		cy.deleteBlock( blockName )
 	} )
 	cy.publish()
 }
@@ -84,8 +85,8 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => () => {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( blockName )
 	layouts.forEach( layout => {
+		cy.addBlock( blockName )
 		cy.openInspector( blockName, 'Layout' )
 		if ( typeof layout === 'string' ) {
 			cy.adjustLayout( layout )
@@ -110,6 +111,7 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 				cy.assertBlockError()
 			}
 		}
+		cy.deleteBlock( blockName )
 	} )
 	cy.publish()
 }

@@ -2,9 +2,8 @@
  * External dependencies
  */
 import {
-	kebabCase, keys, camelCase, isEmpty, first,
+	kebabCase, keys, camelCase, isEmpty, first, cloneDeep,
 } from 'lodash'
-import config from 'root/cypress.json'
 
 /**
  * Internal dependencies
@@ -15,7 +14,6 @@ import {
 	getActiveTab,
 	changeUnit,
 	waitLoader,
-	rgbToHex,
 } from '../util'
 import { assertFunction } from '../helpers'
 
@@ -849,6 +847,44 @@ export function adjustDesign( option = '' ) {
 	waitLoader( '.ugb-design-library-item span.components-spinner' )
 }
 
+function _assertComputedStyle( win, doc, element, _cssObject, pseudoEl, parentEl, assertType, viewport = 'Desktop' ) {
+	const removeAnimationStyles = [
+		'-webkit-transition: none !important',
+		'-moz-transition: none !important',
+		'-o-transition: none !important',
+		'transition: none !important',
+		'transition-duration: 0s !important',
+	]
+
+	const convertExpectedValueForEnqueue = expectedValue => {
+		// Handle conversion of vw to px.
+		if ( expectedValue.match( /vw$/ ) ) {
+			const visualEl = doc.querySelector( '.edit-post-visual-editor' )
+			if ( visualEl && assertType === 'Backend' && viewport !== 'Desktop' ) {
+				const currEditorWidth = win.getComputedStyle( visualEl ).width
+				return `${ parseFloat( ( parseInt( expectedValue ) ) / 100 * currEditorWidth ) }px`
+			}
+		}
+		return expectedValue
+	}
+
+	// Remove animations.
+	element.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
+	element.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
+	parentEl.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
+
+	const computedStyles = cloneDeep( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ) )
+	const expectedStylesToEnqueue = keys( _cssObject ).map( key => `${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` )
+	element.setAttribute( 'style', `${ [ ...removeAnimationStyles, ...expectedStylesToEnqueue ].join( '; ' ) }` )
+	const expectedStyles = cloneDeep( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ) )
+
+	keys( _cssObject ).forEach( key => {
+		const computedStyle = computedStyles[ camelCase( key ) ]
+		const expectedStyle = expectedStyles[ camelCase( key ) ]
+		assert.equal( computedStyle, expectedStyle, `'${ camelCase( key ) }' expected to be ${ expectedStyle }. Found '${ computedStyle }'.` )
+	} )
+}
+
 /**
  * Command for asserting the computed style of a block.
  *
@@ -857,135 +893,6 @@ export function adjustDesign( option = '' ) {
  * @param {Object} options
  */
 export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
-	const _assertComputedStyle = ( win, doc, element, cssRule, expectedValue, pseudoEl, parentEl, assertType, viewport = 'Desktop' ) => {
-		const removeAnimationStyles = [
-			'-webkit-transition: none !important',
-			'-moz-transition: none !important',
-			'-o-transition: none !important',
-			'transition: none !important',
-			'transition-duration: 0s !important',
-		]
-		// Remove animations.
-		element.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
-		element.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
-		parentEl.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
-		let computedStyle = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )[ camelCase( cssRule ) ]
-
-		/**
-		 * Section for overriding computed styles.
-		 */
-		if ( typeof computedStyle === 'string' && computedStyle.match( /rgb\(/ ) ) {
-			// Force rgb computed style to be hex.
-			if ( ! expectedValue.match( /rgb\(/ ) ) {
-				computedStyle = computedStyle.replace( /rgb\(([0-9]*), ([0-9]*), ([0-9]*)\)/g, val => rgbToHex( val ) )
-			}
-		}
-
-		if ( typeof expectedValue === 'string' && expectedValue.match( /^[^%]+%$/ ) ) {
-			// Convert % to px
-			if ( ! computedStyle.match( /^[^%]+%$/ ) ) {
-				switch ( cssRule ) {
-					case 'height': {
-						const elHeight = parseInt( win.getComputedStyle( element.parentElement ).height )
-						expectedValue = `${ parseInt( ( elHeight / 100 ) * parseInt( expectedValue ) ) }px`
-						computedStyle = `${ parseInt( computedStyle ) }px`
-						break
-					}
-					case 'padding-top':
-					case 'padding-bottom':
-					case 'padding-left':
-					case 'padding-right': {
-						const elWidth = parseInt( win.getComputedStyle( element ).width )
-						expectedValue = `${ parseInt( ( elWidth / 100 ) * parseInt( expectedValue ) ) }px`
-						computedStyle = `${ parseInt( computedStyle ) }px`
-						break
-					}
-					default: {
-						const elWidth = parseInt( win.getComputedStyle( element.parentElement ).width )
-						expectedValue = `${ parseInt( ( elWidth / 100 ) * parseInt( expectedValue ) ) }px`
-						computedStyle = `${ parseInt( computedStyle ) }px`
-					}
-				}
-			}
-		}
-
-		if ( typeof expectedValue === 'string' && expectedValue.match( /auto$/ ) ) {
-			if ( ! computedStyle.match( /auto$/ ) ) {
-				switch ( cssRule ) {
-					case 'margin-left':
-					case 'margin-right': {
-						const {
-							paddingLeft, paddingRight, width, borderLeftWidth, borderRightWidth,
-						} = win.getComputedStyle( element.parentElement )
-						// We're getting all variables which could affect auto assertions.
-						const parentWidthDifference = parseFloat( paddingLeft ) + parseFloat( paddingRight ) + parseFloat( borderLeftWidth ) + parseFloat( borderRightWidth )
-
-						const currWidth = parseFloat( win.getComputedStyle( element ).width )
-						const margin = parseFloat( win.getComputedStyle( element )[ cssRule === 'margin-left' ? `marginRight` : `marginLeft` ] )
-						const autoMargin = parseFloat( width ) - parseFloat( currWidth ) - parseFloat( margin ) - parentWidthDifference
-
-						// Round down to avoid parseFloat decimal inconsistencies.
-						expectedValue = `${ parseInt( autoMargin ) }px`
-						computedStyle = `${ parseInt( computedStyle ) }px`
-						break
-					}
-					default: break
-				}
-			}
-		}
-
-		if ( typeof expectedValue === 'string' && expectedValue.match( /vh$/ ) ) {
-			if ( ! computedStyle.match( /vh$/ ) ) {
-				expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * config.viewportHeight ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
-			}
-		}
-
-		if ( typeof expectedValue === 'string' && expectedValue.match( /vw$/ ) ) {
-			if ( ! computedStyle.match( /vw$/ ) ) {
-				if ( assertType === 'Backend' ) {
-					const visualEditorEl = doc.querySelector( '.edit-post-visual-editor' )
-					if ( visualEditorEl && viewport !== 'Desktop' ) {
-						const currEditorWidth = win.getComputedStyle( visualEditorEl ).width
-						expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * parseInt( currEditorWidth ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
-					} else {
-						expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * parseInt( config.viewportWidth ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
-					}
-				} else {
-					expectedValue = `${ parseFloat( parseFloat( parseInt( expectedValue ) / 100 ) * parseInt( config[ `viewport${ viewport === 'Desktop' ? '' : viewport }Width` ] ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
-				}
-			}
-		}
-
-		if ( typeof expectedValue === 'string' && expectedValue.match( /em$/ ) ) {
-			// Conditional `em` unit handling.
-			if ( ! computedStyle.match( /em$/ ) ) {
-				switch ( cssRule ) {
-					case 'line-height':
-					case 'padding-top':
-					case 'padding-left':
-					case 'padding-right':
-					case 'padding-bottom':
-					{
-						const fontSize = win.getComputedStyle( element ).fontSize
-						const oneEm = parseInt( fontSize )
-
-						expectedValue = `${ parseFloat( oneEm * parseInt( expectedValue ) ).toString().substring( 0, `${ computedStyle }`.length - 2 ) }px`
-						break
-					}
-					default: {
-					// Determine the theme's default font size.
-						const fontSize = win.getComputedStyle( parentEl ).fontSize
-						const oneEm = parseInt( fontSize )
-
-						expectedValue = `${ parseFloat( oneEm * parseFloat( expectedValue ) ) }px`
-					}
-				}
-			}
-		}
-
-		assert.equal( computedStyle, expectedValue, `'${ camelCase( cssRule ) }' expected to be ${ expectedValue }. Found '${ computedStyle }'.` )
-	}
-
 	assertFunction(
 		subject,
 		// Assertion in the editor.
@@ -998,9 +905,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 						cy
 							.get( `.is-selected${ ` ${ first( selector ) }` }` )
 							.then( $block => {
-								keys( cssObject[ _selector ] ).forEach( cssRule => {
-									_assertComputedStyle( win, doc, first( $block ), cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ), 'Backend', viewport )
-								} )
+								_assertComputedStyle( win, doc, first( $block ), cssObject[ _selector ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ), 'Backend', viewport )
 							} )
 					} )
 				} )
@@ -1023,9 +928,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 					cy.document().then( doc => {
 						const willAssertElement = doc.querySelector( documentSelector )
 						if ( willAssertElement ) {
-							keys( cssObject[ _selector ] ).forEach( cssRule => {
-								_assertComputedStyle( win, doc, willAssertElement, cssRule, cssObject[ _selector ][ cssRule ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ), 'Frontend', viewport )
-							} )
+							_assertComputedStyle( win, doc, willAssertElement, cssObject[ _selector ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ), 'Frontend', viewport )
 						}
 					} )
 				} )

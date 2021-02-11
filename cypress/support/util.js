@@ -112,27 +112,6 @@ export const waitLoader = ( selector = '', interval = 100 ) => {
 }
 
 /**
- * Function used for converting rgb to hex.
- *
- * @param {string} rgb
- * @return {string} converted string
- */
-export const rgbToHex = rgb => {
-	if ( ! rgb.match( /rgb\(/ ) ) {
-		return rgb
-	}
-
-	const parsedRgb = rgb.replace( 'rgb(', '' ).replace( ')', '' ).trim()
-	const [ r, g, b ] = parsedRgb.split( ',' ).map( colorCode => parseInt( colorCode ) )
-	const componentToHex = component => {
-		const hex = component.toString( 16 )
-		return hex.length === 1 ? '0' + hex : hex
-	}
-
-	return `#${ componentToHex( r ) }${ componentToHex( g ) }${ componentToHex( b ) }`
-}
-
-/**
  * Function that returns the original link address and preview address
  *
  * @param {Function} callback
