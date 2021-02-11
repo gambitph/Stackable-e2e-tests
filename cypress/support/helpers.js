@@ -64,13 +64,17 @@ export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-
 export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => () => {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( blockName )
-	designs.forEach( design => {
+	designs.forEach( ( design, index ) => {
+		cy.addBlock( blockName )
 		cy.openInspector( blockName, 'Layout' )
+		cy.wait( '@designLibrary' )
 		cy.adjustDesign( design )
 		cy.publish()
 		cy.reload()
 		cy.assertBlockError()
+		if ( index !== designs.length - 1 ) {
+			cy.deleteBlock( blockName )
+		}
 	} )
 	cy.publish()
 }
@@ -84,8 +88,8 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => () => {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( blockName )
-	layouts.forEach( layout => {
+	layouts.forEach( ( layout, index ) => {
+		cy.addBlock( blockName )
 		cy.openInspector( blockName, 'Layout' )
 		if ( typeof layout === 'string' ) {
 			cy.adjustLayout( layout )
@@ -109,6 +113,10 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 				cy.reload()
 				cy.assertBlockError()
 			}
+		}
+
+		if ( index !== layouts.length - 1 ) {
+			cy.deleteBlock( blockName )
 		}
 	} )
 	cy.publish()
@@ -206,7 +214,17 @@ export const assertAligns = ( name, selector, options = {} ) => {
  *
  * @param {Array} testsList
  */
-export const registerTests = ( testsList = [] ) => () => testsList.forEach( test => typeof test === 'function' && test() )
+export const registerTests = ( testsList = [] ) => () => {
+	beforeEach( () => {
+		cy.server()
+		cy.route( {
+			method: 'GET',
+			url: /stk_design_library/,
+			status: 200,
+		} ).as( 'designLibrary' )
+	} )
+	testsList.forEach( test => typeof test === 'function' && test() )
+}
 
 /**
  * Helper function for creating responsive assertions.
