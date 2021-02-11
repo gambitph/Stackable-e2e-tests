@@ -195,7 +195,7 @@ function styleTab( viewport, desktopOnly ) {
 			'lower-more',
 		]
 		effects.forEach( effect => {
-			cy.adjust( 'Hover Effect', { effect } )
+			cy.adjust( 'Hover Effect', effect )
 				.assertClassName( '.ugb-icon__item', `ugb--hover-${ effect }` )
 		} )
 	} )
