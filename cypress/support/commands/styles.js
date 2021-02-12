@@ -51,6 +51,39 @@ Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, assertHtmlTag
 Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, assertHtmlAttribute )
 
 /**
+ * Overwrite Cypress Commands
+ */
+Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
+	const optionsToPass = args.length === 3 ? args.pop() : {}
+	optionsToPass.beforeAdjust = ( name, value, options ) => {
+		const {
+			isInPopover = false,
+			viewport = 'Desktop',
+			unit = '',
+		} = options
+		cy.changePreviewMode( viewport )
+		changeUnit( unit, name, isInPopover )
+	}
+
+	return originalFn( ...[ ...args, optionsToPass ] )
+} )
+
+Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
+	const optionsToPass = args.length === 2 ? args.pop() : {}
+	optionsToPass.beforeAdjust = ( name, value, options ) => {
+		const {
+			isInPopover = false,
+			viewport = 'Desktop',
+			unit = '',
+		} = options
+		cy.changePreviewMode( viewport )
+		changeUnit( unit, name, isInPopover )
+	}
+
+	return originalFn( ...[ ...args, optionsToPass ] )
+} )
+
+/**
  * Command for enabling/disabling a toggle control.
  *
  * @param {string} name
@@ -60,6 +93,7 @@ Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, assertH
 function toggleControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
 	const selector = () => getBaseControl( isInPopover )
@@ -73,6 +107,7 @@ function toggleControl( name, value, options = {} ) {
 		.then( classNames => {
 			const parsedClassNames = classNames.split( ' ' )
 			if ( ( value && ! parsedClassNames.includes( 'is-checked' ) ) || ( ! value && parsedClassNames.includes( 'is-checked' ) ) ) {
+				beforeAdjust( name, value, options )
 				selector()
 					.find( 'input' )
 					.click( { force: true } )
@@ -90,12 +125,10 @@ function toggleControl( name, value, options = {} ) {
 function rangeControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
-		viewport = 'Desktop',
-		unit = '',
+		beforeAdjust = () => {},
 	} = options
 
-	cy.changePreviewMode( viewport )
-	changeUnit( unit, name, isInPopover )
+	beforeAdjust( name, value, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
@@ -113,12 +146,10 @@ function rangeControl( name, value, options = {} ) {
 function rangeControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
-		viewport = 'Desktop',
-		unit = '',
+		beforeAdjust = () => {},
 	} = options
 
-	cy.changePreviewMode( viewport )
-	changeUnit( unit, name, isInPopover )
+	beforeAdjust( name, null, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
@@ -139,7 +170,7 @@ function rangeControlReset( name, options = {} ) {
 function toolbarControl( name, value, options = {}, customRegExp = '' ) {
 	const {
 		isInPopover = false,
-		viewport = 'Desktop',
+		beforeAdjust = () => {},
 	} = options
 
 	// Compatibility for default values
@@ -151,7 +182,7 @@ function toolbarControl( name, value, options = {}, customRegExp = '' ) {
 		value = ''
 	}
 
-	cy.changePreviewMode( viewport )
+	beforeAdjust( name, value, options )
 	getBaseControl( isInPopover )
 		.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
@@ -171,8 +202,10 @@ function toolbarControl( name, value, options = {}, customRegExp = '' ) {
 function designControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
+	beforeAdjust( name, value, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
@@ -191,6 +224,7 @@ function designControl( name, value, options = {} ) {
 function colorControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
 	const selector = () => getBaseControl( isInPopover )
@@ -200,6 +234,7 @@ function colorControl( name, value, options = {} ) {
 
 	if ( typeof value === 'string' && value.match( /^#/ ) ) {
 		// Use custom color.
+		beforeAdjust( name, value, options )
 		selector()
 			.find( 'button' )
 			.contains( 'Custom color' )
@@ -217,6 +252,7 @@ function colorControl( name, value, options = {} ) {
 			.click( { force: true } )
 	} else if ( typeof value === 'number' ) {
 		// Get the nth color in the color picker.
+		beforeAdjust( name, value, options )
 		selector()
 			.find( 'button.components-circular-option-picker__option' )
 			.eq( value - 1 )
@@ -233,8 +269,10 @@ function colorControl( name, value, options = {} ) {
 function colorControlClear( name, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
+	beforeAdjust( name, null, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
@@ -252,9 +290,8 @@ function colorControlClear( name, options = {} ) {
  * @param {string} name
  * @param {*} value
  * @param {Object} options
- * @param {string} customRegex
  */
-function popoverControl( name, value = {}, options = {}, customRegex = '' ) {
+function popoverControl( name, value = {}, options = {} ) {
 	const {
 		isInPopover = false,
 	} = options
@@ -283,13 +320,14 @@ function popoverControl( name, value = {}, options = {}, customRegex = '' ) {
 					viewport = 'Desktop',
 					unit = '',
 					value: childValue = '',
+					beforeAdjust = () => {},
 				} = value[ key ]
 
 				cy.adjust( key, childValue === '' ? value[ key ] : childValue, {
-					viewport, unit, isInPopover: true,
-				}, customRegex )
+					viewport, unit, isInPopover: true, beforeAdjust,
+				} )
 			} else {
-				cy.adjust( key, value[ key ], { isInPopover: true }, customRegex )
+				cy.adjust( key, value[ key ], { isInPopover: true } )
 			}
 		} )
 
@@ -351,8 +389,7 @@ function popoverControlReset( name ) {
 function dropdownControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
-		viewport = 'Desktop',
-		unit = '',
+		beforeAdjust = () => {},
 	} = options
 
 	// Compatibility for default values
@@ -364,8 +401,7 @@ function dropdownControl( name, value, options = {} ) {
 		value = ''
 	}
 
-	cy.changePreviewMode( viewport )
-	changeUnit( unit, name, isInPopover )
+	beforeAdjust( name, value, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
@@ -384,8 +420,10 @@ function dropdownControl( name, value, options = {} ) {
 function suggestionControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
+	beforeAdjust( name, value, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
@@ -403,8 +441,10 @@ function suggestionControl( name, value, options = {} ) {
 function suggestionControlClear( name, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
+	beforeAdjust( name, null, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
@@ -423,8 +463,7 @@ function suggestionControlClear( name, options = {} ) {
 function fourRangeControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
-		viewport = 'Desktop',
-		unit = '',
+		beforeAdjust = () => {},
 	} = options
 
 	const selector = () => getBaseControl( isInPopover )
@@ -438,15 +477,13 @@ function fourRangeControl( name, value, options = {} ) {
 
 	if ( typeof value === 'number' ) {
 		// Adjust the single control field.
-		cy.changePreviewMode( viewport )
-		changeUnit( unit, name, isInPopover )
+		beforeAdjust( name, value, options )
 		selector()
 			.find( 'input.components-input-control__input' )
 			.type( `{selectall}${ value }`, { force: true } )
 	} else if ( Array.isArray( value ) ) {
 		// Adjust the four control field.
-		cy.changePreviewMode( viewport )
-		changeUnit( unit, name, isInPopover )
+		beforeAdjust( name, value, options )
 		selector()
 			.find( 'button.ugb-four-range-control__lock' )
 			.invoke( 'attr', 'class' )
@@ -477,7 +514,7 @@ function fourRangeControl( name, value, options = {} ) {
 function fourRangeControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
-		viewport = 'Desktop',
+		beforeAdjust = () => {},
 	} = options
 
 	const selector = isInPopover => getBaseControl( isInPopover )
@@ -489,7 +526,7 @@ function fourRangeControlReset( name, options = {} ) {
 		.find( 'button.ugb-four-range-control__lock' )
 		.click( { force: true } )
 
-	cy.changePreviewMode( viewport )
+	beforeAdjust( name, null, options )
 	selector( isInPopover )
 		.find( 'button.ugb-four-range-control__lock' )
 		.invoke( 'attr', 'class' )
@@ -516,8 +553,10 @@ function fourRangeControlReset( name, options = {} ) {
 function columnControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
+	beforeAdjust( name, value, options )
 	value.forEach( ( val, index ) => {
 		getBaseControl( isInPopover )
 			.contains( containsRegExp( name ) )
@@ -539,6 +578,7 @@ function columnControl( name, value, options = {} ) {
 function iconControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
 	const clickIconButton = () => getBaseControl( isInPopover )
@@ -548,6 +588,7 @@ function iconControl( name, value, options = {} ) {
 		.find( '.ugb-icon-control__button-wrapper>.ugb-icon-control__icon-button' )
 		.click( { force: true } )
 
+	beforeAdjust( name, value, options )
 	clickIconButton()
 	if ( typeof value === 'string' ) {
 		// Select the first icon based on keyword
@@ -600,8 +641,10 @@ function iconControl( name, value, options = {} ) {
 function iconControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
+	beforeAdjust( name, null, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )

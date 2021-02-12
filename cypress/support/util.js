@@ -78,9 +78,9 @@ export function getAddresses( callback = () => {} ) {
 export function getPreviewMode( callback = () => {} ) {
 	select( _select => {
 		const previewMode =
-	_select( 'core/edit-post' ).__experimentalGetPreviewDeviceType
-		?	select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
-		: 'Desktop'
+			_select( 'core/edit-post' ).__experimentalGetPreviewDeviceType
+				?	_select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
+				: 'Desktop'
 		callback( previewMode )
 	} )
 }

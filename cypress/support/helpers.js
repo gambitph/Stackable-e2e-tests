@@ -12,7 +12,7 @@ import { collapse, openSidebar } from './commands/inspector'
  * External dependencies
  */
 import {
-	startCase, lowerCase, max,
+	startCase, lowerCase,
 } from 'lodash'
 
 /**
@@ -134,7 +134,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 	const {
 		assertFrontend = true,
 		assertBackend = true,
-		wait = 1000,
+		wait = 0,
 		viewportFrontend = false,
 	} = options
 	getActiveTab( tab => {
@@ -150,7 +150,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 
 					publish()
 
-					cy.wait( max( [ 1000, wait ] ) )
+					cy.wait( wait )
 
 					if ( assertBackend ) {
 						getPreviewMode( previewMode => {
@@ -170,7 +170,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 									cy.viewport( config[ `viewport${ previewMode }Width` ] || config.viewportWidth, config.viewportHeight )
 								}
 
-								cy.wait( max( [ 1000, wait ] ) )
+								cy.wait( wait )
 
 								frontendCallback( {
 									parsedClassList, viewport: previewMode,
