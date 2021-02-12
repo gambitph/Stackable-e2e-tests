@@ -2,6 +2,7 @@
  * External dependencies
  */
 import config from 'root/cypress.json'
+import { lowerCase } from 'lodash'
 
 /**
  * Function for getting the base control
@@ -131,4 +132,22 @@ export function dispatch( callback = () => {} ) {
  */
 export function select( callback = () => {} ) {
 	wp( _wp => callback( _wp.data.select ) )
+}
+
+/**
+ * Function for getting the active tab
+ * in inspector.
+ *
+ * @param {*} callback callback function
+ */
+export function getActiveTab( callback = () => {} ) {
+	cy
+		.get( '.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active', { log: false } )
+		.invoke( 'attr', 'aria-label' )
+		.then( ariaLabel => {
+			// Get the active tab.
+			const tab = lowerCase( ariaLabel.split( ' ' )[ 0 ] )
+
+			callback( tab )
+		} )
 }
