@@ -213,8 +213,9 @@ export const assertAligns = ( name, selector, options = {} ) => {
  * Helper function for registering tests.
  *
  * @param {Array} testsList
+ * @param {Function} onTestsStart
  */
-export const registerTests = ( testsList = [] ) => () => {
+export const registerTests = ( testsList = [], onTestsStart = () => {
 	beforeEach( () => {
 		cy.server()
 		cy.route( {
@@ -223,6 +224,8 @@ export const registerTests = ( testsList = [] ) => () => {
 			status: 200,
 		} ).as( 'designLibrary' )
 	} )
+} ) => () => {
+	onTestsStart()
 	testsList.forEach( test => typeof test === 'function' && test() )
 }
 

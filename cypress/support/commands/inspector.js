@@ -2,18 +2,29 @@
  * Internal dependencies
  */
 import { selectBlock } from './index'
-import { containsRegExp, getActiveTab } from '../util'
+import {
+	containsRegExp, dispatch, select,
+} from '../util'
 
 /**
  * Register functions to Cypress Commands.
  */
+Cypress.Commands.add( 'toggleSidebar', toggleSidebar )
 Cypress.Commands.add( 'openSidebar', openSidebar )
+Cypress.Commands.add( 'closeSidebar', closeSidebar )
 Cypress.Commands.add( 'openInspector', openInspector )
 Cypress.Commands.add( 'collapse', collapse )
 Cypress.Commands.add( 'toggleStyle', toggleStyle )
 
+export function toggleSidebar( sidebarName = '', value = true ) {
+	dispatch( _dispatch => {
+		_dispatch( 'core/edit-post' )[ value ? 'openGeneralSidebar' : 'closeGeneralSidebar' ]( sidebarName )
+		cy.wait( 100 )
+	} )
+}
+
 /**
- * Command for opening a sidebar button.
+ * Stackable Command for opening a sidebar button.
  *
  * @param {string} label
  */
@@ -22,15 +33,24 @@ export function openSidebar( label = 'Settings' ) {
 		[ `Settings` ]: 'edit-post/block',
 		[ `Stackable Settings` ]: 'stackable-global-settings/sidebar',
 	}
-
-	cy.window().then( win => {
-		win.wp.data.dispatch( 'core/edit-post' ).openGeneralSidebar( sidebarNamespace[ label ] )
-		cy.wait( 100 )
-	} )
+	toggleSidebar( sidebarNamespace[ label ], true )
 }
 
 /**
- * Command for opening the block inspectore of a block.
+ * Stackable Command for closing a sidebar button.
+ *
+ * @param {string} label
+ */
+export function closeSidebar( label = 'Settings' ) {
+	const sidebarNamespace = {
+		[ `Settings` ]: 'edit-post/block',
+		[ `Stackable Settings` ]: 'stackable-global-settings/sidebar',
+	}
+	toggleSidebar( sidebarNamespace[ label ], false )
+}
+
+/**
+ * Stackable Command for opening the block inspectore of a block.
  *
  * @param {*} subject
  * @param {string} tab
@@ -52,47 +72,50 @@ export function openInspector( subject, tab, selector ) {
 }
 
 /**
- * Command for collapsing an accordion.
+ * Stackable Command for collapsing an accordion.
  *
  * @param {string} name
  * @param {boolean} toggle
  */
 export function collapse( name = 'General', toggle = true ) {
-	getActiveTab( tab => {
-		if ( tab === 'Stackable Global Settings' ) {
-			return cy
-				.get( 'button.components-panel__body-toggle' )
-				.contains( containsRegExp( name ) )
-				.invoke( 'attr', 'aria-expanded' )
-				.then( ariaExpanded => {
-					if ( ariaExpanded !== toggle.toString() ) {
-						cy
-							.get( 'button.components-panel__body-toggle' )
-							.contains( containsRegExp( name ) )
-							.click( { force: true } )
-					}
-				} )
+	select( _select => {
+		switch ( _select( 'core/edit-post' ).getActiveGeneralSidebarName() ) {
+			case 'stackabe-global-settings/sidebar': {
+				return cy
+					.get( 'button.components-panel__body-toggle' )
+					.contains( containsRegExp( name ) )
+					.invoke( 'attr', 'aria-expanded' )
+					.then( ariaExpanded => {
+						if ( ariaExpanded !== toggle.toString() ) {
+							cy
+								.get( 'button.components-panel__body-toggle' )
+								.contains( containsRegExp( name ) )
+								.click( { force: true } )
+						}
+					} )
+			}
+			default: {
+				return cy
+					.get( `.components-panel__body .components-panel__body-title` )
+					.contains( containsRegExp( name ) )
+					.parentsUntil( `.components-panel__body` )
+					.parent()
+					.find( 'button.components-panel__body-toggle' )
+					.invoke( 'attr', 'aria-expanded' )
+					.then( ariaExpanded => {
+						// Open the accordion if aria-expanded is false.
+						if ( ariaExpanded !== toggle.toString() ) {
+							cy
+								.get( `.components-panel__body .components-panel__body-title` )
+								.contains( containsRegExp( name ) )
+								.parentsUntil( `.components-panel__body` )
+								.parent()
+								.find( 'button.components-panel__body-toggle' )
+								.click( { force: true } )
+						}
+					} )
+			}
 		}
-
-		return cy
-			.get( `.ugb-panel-${ tab }>.components-panel__body .components-panel__body-title` )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
-			.parent()
-			.find( 'button.components-panel__body-toggle' )
-			.invoke( 'attr', 'aria-expanded' )
-			.then( ariaExpanded => {
-				// Open the accordion if aria-expanded is false.
-				if ( ariaExpanded !== toggle.toString() ) {
-					cy
-						.get( `.ugb-panel-${ tab }>.components-panel__body .components-panel__body-title` )
-						.contains( containsRegExp( name ) )
-						.parentsUntil( `.ugb-panel-${ tab }>.components-panel__body` )
-						.parent()
-						.find( 'button.components-panel__body-toggle' )
-						.click( { force: true } )
-				}
-			} )
 	} )
 }
 

@@ -1,18 +1,18 @@
 /**
  * External dependencies
  */
-import { lowerCase, keys } from 'lodash'
 import config from 'root/cypress.json'
 
 /**
  * Function for getting the base control
  *
- * @param {string} tab where the control is located.
  * @param {boolean} isInPopover
  * @return {*} generated cypress getter
  */
-export const getBaseControl = ( tab = 'style', isInPopover = false ) => {
-	const baseControlEl = ! isInPopover ? cy.get( `${ tab ? `.ugb-panel-${ tab }>` : `` }.components-panel__body.is-opened>.components-base-control`, { log: false } ) : cy.get( '.components-popover__content', { log: false } ).find( '.components-base-control', { log: false } )
+export function getBaseControl( isInPopover = false ) {
+	const baseControlEl = ! isInPopover
+		? cy.get( `.components-panel__body.is-opened>.components-base-control`, { log: false } )
+		: cy.get( '.components-popover__content', { log: false } ).find( '.components-base-control', { log: false } )
 	return baseControlEl
 }
 
@@ -23,35 +23,8 @@ export const getBaseControl = ( tab = 'style', isInPopover = false ) => {
  * @param {string} name
  * @return {RegExp} generated RegExp
  */
-export const containsRegExp = ( name = '' ) => new RegExp( `^${ ( typeof name !== 'string' ? '' : name ).replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` )
-
-/**
- * Function for getting the active tab
- * in inspector.
- *
- * @param {*} callbackFunc callback function
- */
-export const getActiveTab = ( callbackFunc = () => {} ) => {
-	cy.document().then( doc => {
-		const sidebarPanels = {
-			'.ugb-global-settings__inspector': 'Stackable Global Settings',
-		}
-
-		let activePanel
-		if ( keys( sidebarPanels ).some( panel => doc.querySelector( panel ) && ( activePanel = panel ) ) ) {
-			callbackFunc( sidebarPanels[ activePanel ] )
-		} else {
-			cy
-				.get( '.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active', { log: false } )
-				.invoke( 'attr', 'aria-label' )
-				.then( ariaLabel => {
-					// Get the active tab.
-					const tab = lowerCase( ariaLabel.split( ' ' )[ 0 ] )
-
-					callbackFunc( tab )
-				} )
-		}
-	} )
+export function containsRegExp( name = '' ) {
+	return new RegExp( `^${ ( typeof name !== 'string' ? '' : name ).replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` )
 }
 
 /**
@@ -59,11 +32,10 @@ export const getActiveTab = ( callbackFunc = () => {} ) => {
  *
  * @param {string} unit desired unit
  * @param {string} name selector name
- * @param {string} tab current active tab
  * @param {boolean} isInPopover if the control is in popover
  */
-export const changeUnit = ( unit = '', name = '', tab = 'style', isInPopover = false ) => {
-	const selector = () => getBaseControl( tab, isInPopover )
+export function changeUnit( unit = '', name = '', isInPopover = false ) {
+	const selector = () => getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
 		.parent( { log: false } )
@@ -81,42 +53,11 @@ export const changeUnit = ( unit = '', name = '', tab = 'style', isInPopover = f
 }
 
 /**
- * Function for waiting a spinner button to disappear.
- *
- * @param {string} selector
- * @param {number} interval
- */
-
-export const waitLoader = ( selector = '', interval = 100 ) => {
-	cy.wait( 20, { log: false } )
-	let done = false
-
-	const setDone = toggle => done = toggle
-
-	const update = () => {
-		setDone( ! Cypress.$( selector ).length )
-		return check()
-	}
-
-	const check = () => {
-		if ( done ) {
-			return done
-		}
-
-		cy.wait( interval, { log: false } ).then( () => {
-			update()
-		} )
-	}
-
-	return check()
-}
-
-/**
  * Function that returns the original link address and preview address
  *
  * @param {Function} callback
  */
-export const getAddresses = ( callback = () => {} ) => {
+export function getAddresses( callback = () => {} ) {
 	cy.window().then( _win => {
 		const _currUrl = _win.location.href
 		const parsedPostID = _currUrl.match( /post=([0-9]*)/g )[ 0 ].split( '=' )[ 1 ]
@@ -133,11 +74,12 @@ export const getAddresses = ( callback = () => {} ) => {
  *
  * @param {Function} callback
  */
-export const getPreviewMode = ( callback = () => {} ) => {
-	cy.window( { log: false } ).then( win => {
-		const previewMode =	win.wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType
-			? 			win.wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
-			: 'Desktop'
+export function getPreviewMode( callback = () => {} ) {
+	select( _select => {
+		const previewMode =
+	_select( 'core/edit-post' ).__experimentalGetPreviewDeviceType
+		?	select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
+		: 'Desktop'
 		callback( previewMode )
 	} )
 }
@@ -148,7 +90,7 @@ export const getPreviewMode = ( callback = () => {} ) => {
  *
  * @param {Array} classList
  */
-export const parseClassList = ( classList = [] ) => {
+export function parseClassList( classList = [] ) {
 	const excludedClassNames = [
 		'ugb-accordion--open',
 		'ugb-icon-list__left-align',
@@ -162,3 +104,31 @@ export const parseClassList = ( classList = [] ) => {
 	return parsedClassList
 }
 
+/*
+* Function used for getting the `wp` object.
+*
+* @param {Function} callback
+*/
+export function wp( callback = () => {} ) {
+	cy.window( { log: false } ).then( win => {
+		callback( win.wp )
+	} )
+}
+
+/**
+ * Function used for getting the `wp.data.dispatch` function
+ *
+ * @param {Function} callback
+ */
+export function dispatch( callback = () => {} ) {
+	wp( _wp => callback( _wp.data.dispatch ) )
+}
+
+/**
+ * Function used for getting the `wp.data.select` function
+ *
+ * @param {Function} callback
+ */
+export function select( callback = () => {} ) {
+	wp( _wp => callback( _wp.data.select ) )
+}

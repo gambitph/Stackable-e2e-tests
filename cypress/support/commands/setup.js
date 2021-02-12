@@ -7,7 +7,9 @@ Cypress.Commands.add( 'hideAnyGutenbergTip', hideAnyGutenbergTip )
 Cypress.Commands.add( 'newPage', newPage )
 Cypress.Commands.add( 'deactivatePlugin', deactivatePlugin )
 Cypress.Commands.add( 'activatePlugin', activatePlugin )
+Cypress.Commands.add( 'waitUntil', waitUntil )
 Cypress.Commands.add( 'waitFA', waitFA )
+Cypress.Commands.add( 'waitLoader', waitLoader )
 
 /**
  * Command for running the initial setup for the test.
@@ -57,6 +59,7 @@ export function newPage() {
  * @param {string} slug
  */
 export function deactivatePlugin( slug ) {
+	cy.setupWP()
 	cy.get( 'body' ).then( $body => {
 		if ( $body.find( 'form[name="loginform"]' ).length ) {
 			// Login user if still not logged in.
@@ -73,6 +76,7 @@ export function deactivatePlugin( slug ) {
  * @param {string} slug
  */
 export function activatePlugin( slug ) {
+	cy.setupWP()
 	cy.get( 'body' ).then( $body => {
 		if ( $body.find( 'form[name="loginform"]' ).length ) {
 			// Login user if still not logged in.
@@ -83,31 +87,52 @@ export function activatePlugin( slug ) {
 	cy.visit( `/wp-admin/` )
 }
 
-/**
- * Command for waiting FontAwesome to register inside window.
- */
-export function waitFA() {
-	cy.wait( 20, { log: false } )
+/*
+* Command for waiting to resolve anything in cy.window or cy.document.
+*/
+export function waitUntil( callback = () => true, options = {} ) {
+	const {
+		initialDelay = 20,
+		interval = 300,
+	} = options
 	let done = false
-
-	const setDone = toggle => done = toggle
-
-	const update = () => {
-		cy.window().then( win => {
-			setDone( win.FontAwesome )
-			return check()
-		} )
-	}
+	cy.wait( initialDelay, { log: false } )
 
 	const check = () => {
 		if ( done ) {
 			return done
 		}
 
-		cy.wait( 300, { log: false } ).then( () => {
-			update()
+		cy.wait( interval, { log: false } ).then( () => {
+			callback( toggle => done = toggle )
+			check()
 		} )
 	}
 
 	return check()
 }
+
+/**
+ * Stackable Command for waiting FontAwesome to register inside window.
+ */
+export function waitFA() {
+	return waitUntil( done => {
+		cy.window().then( win => {
+			done( win.FontAwesome )
+		} )
+	} )
+}
+
+/**
+ * Stackable Command for waiting a spinner button to disappear.
+ *
+ * @param {string} selector
+ * @param {number} interval
+ */
+
+export function waitLoader( selector = '', interval = 100 ) {
+	return waitUntil( done => cy.document().then( doc => {
+		done( ! doc.querySelector( selector ) )
+	} ), { interval } )
+}
+
