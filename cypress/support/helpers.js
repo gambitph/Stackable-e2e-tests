@@ -179,9 +179,9 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 								cy.viewport( config.viewportWidth, config.viewportHeight )
 
 								cy.visit( currUrl )
-								cy.get( parsedClassList ).click( { force: true } )
+								cy.get( parsedClassList ).first().click( { force: true } )
 								openSidebar( 'Settings' )
-								cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
+								cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).first().click( { force: true } )
 								collapse( activePanel )
 							} )
 						} )
