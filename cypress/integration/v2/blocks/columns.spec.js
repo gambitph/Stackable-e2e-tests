@@ -160,4 +160,6 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-columns', { viewport } )
 	assertSeparators( { viewport } )
+
+	// TODO: Add style tab tests for one column
 }
