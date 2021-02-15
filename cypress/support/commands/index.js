@@ -1,4 +1,3 @@
-
 /**
  * Overwrite Cypress Commands
  */
@@ -32,6 +31,7 @@ Cypress.Commands.add( 'changeIcon', changeIcon )
 Cypress.Commands.add( 'assertPluginError', assertPluginError )
 Cypress.Commands.add( 'appendBlock', appendBlock )
 Cypress.Commands.add( 'assertBlockError', assertBlockError )
+Cypress.Commands.add( 'addInnerBlock', addInnerBlock )
 
 import './styles'
 import './global-settings'
@@ -284,6 +284,28 @@ export function appendBlock( blockName = 'ugb/accordion', parentSelector ) {
 		.click( { force: true } )
 
 	cy.deleteBlock( blockName )
+}
+
+/**
+ * Command for adding inner block using block appender
+ *
+ * @param {string} blockName
+ * @param {string} parentSelector
+ */
+export function addInnerBlock( blockName = 'ugb/accordion', parentSelector ) {
+	cy
+		.get( `${ parentSelector ? `${ parentSelector } ` : '' }button.block-editor-button-block-appender` )
+		.first()
+		.click( { force: true } )
+
+	cy
+		.get( 'button' )
+		.contains( 'Browse all' )
+		.click( { force: true } )
+
+	cy
+		.get( `button.editor-block-list-item-${ blockName.replace( '/', '-' ) }:first` )
+		.click( { force: true } )
 }
 
 /**

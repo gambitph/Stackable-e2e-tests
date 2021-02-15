@@ -3,7 +3,7 @@
  */
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertAligns, assertBlockExist, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper,
+	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -238,35 +238,66 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Spacing' )
 
 	// Test Padding
-	cy.adjust( 'Paddings', 100, { viewport } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', 30, { viewport } ).assertComputedStyle( {
 		'.ugb-container__wrapper': {
-			[ `padding-top` ]: '100px',
-			[ `padding-bottom` ]: '100px',
-			[ `padding-right` ]: '100px',
-			[ `padding-left` ]: '100px',
+			[ `padding-top` ]: '30px',
+			[ `padding-bottom` ]: '30px',
+			[ `padding-right` ]: '30px',
+			[ `padding-left` ]: '30px',
 		},
 	} )
 	cy.resetStyle( 'Paddings' )
-	cy.adjust( 'Paddings', 15, { viewport, unit: 'em' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', 5, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-container__wrapper': {
-			[ `padding-top` ]: '15em',
-			[ `padding-bottom` ]: '15em',
-			[ `padding-right` ]: '15em',
-			[ `padding-left` ]: '15em',
+			[ `padding-top` ]: '5em',
+			[ `padding-bottom` ]: '5em',
+			[ `padding-right` ]: '5em',
+			[ `padding-left` ]: '5em',
 		},
 	} )
 	cy.resetStyle( 'Paddings' )
-	cy.adjust( 'Paddings', 50, { viewport, unit: '%' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', 25, { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-container__wrapper': {
-			[ `padding-top` ]: '50%',
-			[ `padding-bottom` ]: '50%',
-			[ `padding-right` ]: '50%',
-			[ `padding-left` ]: '50%',
+			[ `padding-top` ]: '25%',
+			[ `padding-bottom` ]: '25%',
+			[ `padding-right` ]: '25%',
+			[ `padding-left` ]: '25%',
 		},
 	} )
 
 	// Text Colors Tab
-	cy.collapse( 'Text Colors' )
-
 	// Test Colors
+	desktopOnly( () => {
+		cy.collapse( 'Text Colors' )
+		cy.adjust( 'Heading Color', '#8e8ee0' )
+		cy.adjust( 'Text Color', '#24b267' )
+		cy.adjust( 'Link Color', '#642c2c' )
+		cy.adjust( 'Link Color', '#642c2c' )
+		cy.adjust( 'Link Hover Color', '#ba89df' )
+
+		cy.addInnerBlock( 'ugb/card' )
+		cy.openInspector( 'ugb/card', 'Style' )
+		cy.collapse( 'Button' )
+		cy.adjust( 'Button Design', {
+			label: 'Link',
+			value: 'link',
+		} ).assertComputedStyle( {
+			'.ugb-card__title': {
+				[ `color` ]: '#8e8ee0',
+			},
+			'.ugb-card__subtitle': {
+				[ `color` ]: '#24b267',
+			},
+			'.ugb-card__description': {
+				[ `color` ]: '#24b267',
+			},
+			'.ugb-button': {
+				[ `color` ]: '#642c2c',
+			},
+		} )
+	} )
+
+	cy.selectBlock( 'ugb/container' )
+	assertBlockBackground( '.ugb-container', { viewport } )
+	assertSeparators( { viewport } )
 }
