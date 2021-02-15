@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -212,112 +212,24 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h4' )
 			.assertHtmlTag( '.ugb-feature-grid__title', 'h4' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: 50,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 4,
-			[ `Letter Spacing` ]: 2.9,
-		} ).assertComputedStyle( {
+		cy.adjust( 'Title Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-feature-grid__title': {
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
+				[ `color` ]: '#742f2f',
 			},
 		} )
 	} )
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 50,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 4,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-feature-grid__title': {
-			[ `font-size` ]: '50px',
-			[ `line-height` ]: '4em',
-		},
-	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			unit: 'px',
-			value: 24,
-		},
-	} )
-
-	cy.adjust( 'Title Color', '#742f2f' ).assertComputedStyle( {
-		'.ugb-feature-grid__title': {
-			[ `font-size` ]: '7em',
-			[ `line-height` ]: '24px',
-			[ `color` ]: '#742f2f',
-		},
-	} )
-
+	assertTypography( '.ugb-feature-grid__title', viewport )
 	assertAligns( 'Align', '.ugb-feature-grid__title', { viewport } )
 
 	cy.collapse( 'Description' )
 	desktopOnly( () => {
-		cy.adjust( 'Typography', {
-			[ `Size` ]: 50,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 4,
-			[ `Letter Spacing` ]: 2.9,
-		} ).assertComputedStyle( {
+		cy.adjust( 'Description Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-feature-grid__description': {
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
+				[ `color` ]: '#742f2f',
 			},
 		} )
 	} )
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 50,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 4,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-feature-grid__description': {
-			[ `font-size` ]: '50px',
-			[ `line-height` ]: '4em',
-		},
-	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			unit: 'px',
-			value: 24,
-		},
-	} )
-
-	cy.adjust( 'Description Color', '#742f2f' ).assertComputedStyle( {
-		'.ugb-feature-grid__description': {
-			[ `font-size` ]: '7em',
-			[ `line-height` ]: '24px',
-			[ `color` ]: '#742f2f',
-		},
-	} )
-
+	assertTypography( '.ugb-feature-grid__description', viewport )
 	assertAligns( 'Align', '.ugb-feature-grid__description', { viewport } )
 
 	cy.collapse( 'Button' )

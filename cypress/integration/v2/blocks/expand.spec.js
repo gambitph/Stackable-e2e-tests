@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertAligns, registerTests, responsiveAssertHelper,
+	assertBlockExist, blockErrorTest, assertAligns, registerTests, responsiveAssertHelper, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -37,172 +37,37 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h6' )
 			.assertHtmlTag( '.ugb-expand__title', 'h6' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: 50,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 4,
-			[ `Letter Spacing` ]: 2.9,
-		} ).assertComputedStyle( {
+		cy.adjust( 'Title Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-expand__title': {
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
+				[ `color` ]: '#742f2f',
 			},
 		} )
 	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 50,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 4,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-expand__title': {
-			[ `font-size` ]: '50px',
-			[ `line-height` ]: '4em',
-		},
-	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			unit: 'px',
-			value: 24,
-		},
-	} )
-
-	cy.adjust( 'Title Color', '#742f2f' ).assertComputedStyle( {
-		'.ugb-expand__title': {
-			[ `font-size` ]: '7em',
-			[ `line-height` ]: '24px',
-			[ `color` ]: '#742f2f',
-		},
-	} )
-
+	assertTypography( '.ugb-expand__title', viewport )
 	assertAligns( 'Align', '.ugb-expand__title', { viewport } )
 
 	// Test Text options
 	cy.collapse( 'Text' )
 	desktopOnly( () => {
-		cy.adjust( 'Typography', {
-			[ `Size` ]: 50,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 4,
-			[ `Letter Spacing` ]: 2.9,
-		} ).assertComputedStyle( {
+		cy.adjust( 'Text Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-expand__less-text p, .ugb-expand__more-text p': {
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
+				[ `color` ]: '#742f2f',
 			},
 		} )
 	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 50,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 4,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-expand__less-text p, .ugb-expand__more-text p': {
-			[ `font-size` ]: '50px',
-			[ `line-height` ]: '4em',
-		},
-	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			unit: 'px',
-			value: 24,
-		},
-	} )
-
-	cy.adjust( 'Text Color', '#742f2f' ).assertComputedStyle( {
-		'.ugb-expand__less-text p, .ugb-expand__more-text p': {
-			[ `font-size` ]: '7em',
-			[ `line-height` ]: '24px',
-			[ `color` ]: '#742f2f',
-		},
-	} )
-
+	assertTypography( '.ugb-expand__less-text p, .ugb-expand__more-text p', viewport )
 	assertAligns( 'Align', '.ugb-expand__less-text p, .ugb-expand__more-text p', { viewport } )
 
 	// Test Link options
 	cy.collapse( 'Link' )
 	desktopOnly( () => {
-		cy.adjust( 'Typography', {
-			[ `Size` ]: 50,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 4,
-			[ `Letter Spacing` ]: 2.9,
-		} ).assertComputedStyle( {
+		cy.adjust( 'Link Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
+				[ `color` ]: '#742f2f',
 			},
 		} )
 	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 50,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 4,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
-			[ `font-size` ]: '50px',
-			[ `line-height` ]: '4em',
-		},
-	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			unit: 'px',
-			value: 24,
-		},
-	} )
-
-	cy.adjust( 'Link Color', '#742f2f' ).assertComputedStyle( {
-		'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
-			[ `font-size` ]: '7em',
-			[ `line-height` ]: '24px',
-			[ `color` ]: '#742f2f',
-		},
-	} )
-
+	assertTypography( '.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text', viewport )
 	assertAligns( 'Align', '.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text', { viewport } )
 
 	// Test Spacing options

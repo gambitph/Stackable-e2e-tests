@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, registerTests, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, registerTests, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -226,172 +226,37 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h6' )
 			.assertHtmlTag( '.ugb-countup__title', 'h6' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: 50,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 4,
-			[ `Letter Spacing` ]: 2.9,
-		} ).assertComputedStyle( {
+		cy.adjust( 'Title Color', '#dc6b6b' ).assertComputedStyle( {
 			'.ugb-countup__title': {
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
+				[ `color` ]: '#dc6b6b',
 			},
 		} )
 	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 50,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 4,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-countup__title': {
-			[ `font-size` ]: '50px',
-			[ `line-height` ]: '4em',
-		},
-	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			unit: 'px',
-			value: 24,
-		},
-	} )
-
-	cy.adjust( 'Title Color', '#dc6b6b' ).assertComputedStyle( {
-		'.ugb-countup__title': {
-			[ `font-size` ]: '7em',
-			[ `line-height` ]: '24px',
-			[ `color` ]: '#dc6b6b',
-		},
-	}, { wait: 300 } )
-
+	assertTypography( '.ugb-countup__title', viewport )
 	assertAligns( 'Align', '.ugb-countup__title', { viewport } )
 
 	cy.collapse( 'Number' )
 
 	desktopOnly( () => {
-		cy.adjust( 'Typography', {
-			[ `Size` ]: 50,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 4,
-			[ `Letter Spacing` ]: 2.9,
-		} ).assertComputedStyle( {
+		cy.adjust( 'Number Color', '#dc6b6b' ).assertComputedStyle( {
 			'.ugb-countup__counter': {
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
+				[ `color` ]: '#dc6b6b',
 			},
 		} )
 	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 50,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 4,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-countup__counter': {
-			[ `font-size` ]: '50px',
-			[ `line-height` ]: '4em',
-		},
-	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			unit: 'px',
-			value: 24,
-		},
-	} )
-
-	cy.adjust( 'Number Color', '#dc6b6b' ).assertComputedStyle( {
-		'.ugb-countup__counter': {
-			[ `font-size` ]: '7em',
-			[ `line-height` ]: '24px',
-			[ `color` ]: '#dc6b6b',
-		},
-	}, { wait: 300 } )
-
+	assertTypography( '.ugb-countup__counter', viewport )
 	assertAligns( 'Align', '.ugb-countup__counter', { viewport } )
 
 	cy.collapse( 'Description' )
 
 	desktopOnly( () => {
-		cy.adjust( 'Typography', {
-			[ `Size` ]: 50,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 4,
-			[ `Letter Spacing` ]: 2.9,
-		} ).assertComputedStyle( {
+		cy.adjust( 'Description Color', '#dc6b6b' ).assertComputedStyle( {
 			'.ugb-countup__description': {
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
+				[ `color` ]: '#dc6b6b',
 			},
 		} )
 	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 50,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 4,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-countup__description': {
-			[ `font-size` ]: '50px',
-			[ `line-height` ]: '4em',
-		},
-	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			unit: 'px',
-			value: 24,
-		},
-	} )
-
-	cy.adjust( 'Description Color', '#dc6b6b' ).assertComputedStyle( {
-		'.ugb-countup__description': {
-			[ `font-size` ]: '7em',
-			[ `line-height` ]: '24px',
-			[ `color` ]: '#dc6b6b',
-		},
-	}, { wait: 300 } )
-
+	assertTypography( '.ugb-countup__description', viewport )
 	assertAligns( 'Align', '.ugb-countup__description', { viewport } )
 
 	assertBlockTitleDescription( { viewport } )

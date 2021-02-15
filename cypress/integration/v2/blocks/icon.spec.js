@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, registerTests, responsiveAssertHelper,
+	assertBlockExist, blockErrorTest, switchDesigns, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, registerTests, responsiveAssertHelper, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -65,57 +65,13 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h4' )
 			.assertHtmlTag( '.ugb-icon__title', 'h4' )
-		cy.adjust( 'Typography', {
-			[ `Size` ]: 50,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 4,
-			[ `Letter Spacing` ]: 2.9,
-		} ).assertComputedStyle( {
+		cy.adjust( 'Title Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-icon__title': {
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
+				[ `color` ]: '#742f2f',
 			},
 		} )
 	} )
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 50,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 4,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-icon__title': {
-			[ `font-size` ]: '50px',
-			[ `line-height` ]: '4em',
-		},
-	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			unit: 'px',
-			value: 24,
-		},
-	} )
-
-	cy.adjust( 'Title Color', '#742f2f' ).assertComputedStyle( {
-		'.ugb-icon__title': {
-			[ `font-size` ]: '7em',
-			[ `line-height` ]: '24px',
-			[ `color` ]: '#742f2f',
-		},
-	} )
-
+	assertTypography( '.ugb-icon__title', viewport )
 	assertAligns( 'Align', '.ugb-icon__title', { viewport } )
 
 	// Test Icon options

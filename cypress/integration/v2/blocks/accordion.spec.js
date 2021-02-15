@@ -6,7 +6,7 @@ import { range } from 'lodash'
 import { blocks } from '~stackable-e2e/config'
 import { getAddresses } from '~stackable-e2e/util'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -280,57 +280,14 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h3' )
 			.assertHtmlTag( '.ugb-accordion__title', 'h3' )
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Serif',
-			[ `Weight` ]: '600',
-			[ `Transform` ]: 'uppercase',
-			[ `Letter Spacing` ]: 2.4,
-		} )
 		cy.adjust( 'Title Color', '#f00069' )
 			.assertComputedStyle( {
 				'.ugb-accordion__title': {
-					[ `font-weight` ]: '600',
-					[ `text-transform` ]: 'uppercase',
-					[ `letter-spacing` ]: '2.4px',
 					[ `color` ]: '#f00069',
 				},
 			} )
 	} )
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 60,
-			unit: 'px',
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 3,
-			unit: 'em',
-		},
-	} ).assertComputedStyle( {
-		'.ugb-accordion__title': {
-			[ `font-size` ]: '60px',
-			[ `line-height` ]: '3em',
-		},
-	} )
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 3,
-			unit: 'em',
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 23,
-			unit: 'px',
-		},
-	} ).assertComputedStyle( {
-		'.ugb-accordion__title': {
-			[ `line-height` ]: '23px',
-			[ `font-size` ]: '3em',
-		},
-	} )
-
+	assertTypography( '.ugb-accordion__title', viewport )
 	assertAligns( 'Align', '.ugb-accordion__title', { viewport } )
 
 	// Test Arrow settings

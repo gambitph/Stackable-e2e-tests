@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockBackground, assertSeparators, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -250,80 +250,26 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h5' )
 			.assertHtmlTag( '.ugb-cta__title', 'h5' )
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Serif',
-			[ `Weight` ]: '600',
-			[ `Transform` ]: 'uppercase',
-			[ `Letter Spacing` ]: 1.9,
-		} )
 		cy.adjust( 'Title Color', '#333333' ).assertComputedStyle( {
 			'.ugb-cta__title': {
-				[ `font-weight` ]: '600',
-				[ `text-transform` ]: 'uppercase',
-				[ `letter-spacing` ]: '1.9px',
 				[ `color` ]: '#333333',
 			},
 		} )
 	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 34,
-			unit: 'px',
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 24,
-			unit: 'px',
-		},
-	} )
-	cy.adjust( 'Size', 1.75, { viewport, unit: 'em' } ).assertComputedStyle( {
-		'.ugb-cta__title': {
-			[ `font-size` ]: '1.75em',
-			[ `line-height` ]: '24px',
-		},
-	} )
+	assertTypography( '.ugb-cta__title', viewport )
 	assertAligns( 'Align', '.ugb-cta__title', { viewport } )
 
 	// Test Description options
 	cy.collapse( 'Description' )
 
 	desktopOnly( () => {
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Sans-Serif',
-			[ `Weight` ]: '200',
-			[ `Transform` ]: 'capitalize',
-			[ `Letter Spacing` ]: 1.9,
-		} )
 		cy.adjust( 'Description Color', '#333333' ).assertComputedStyle( {
 			'.ugb-cta__description': {
-				[ `font-weight` ]: '200',
-				[ `text-transform` ]: 'capitalize',
-				[ `letter-spacing` ]: '1.9px',
 				[ `color` ]: '#333333',
 			},
 		} )
 	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 25,
-			unit: 'px',
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 21,
-			unit: 'px',
-		},
-	} )
-	cy.adjust( 'Size', 1.3, { viewport, unit: 'em' } ).assertComputedStyle( {
-		'.ugb-cta__description': {
-			[ `font-size` ]: '1.3em',
-			[ `line-height` ]: '21px',
-		},
-	} )
+	assertTypography( '.ugb-cta__description', viewport )
 	assertAligns( 'Align', '.ugb-cta__description', { viewport } )
 
 	// Test Button options
