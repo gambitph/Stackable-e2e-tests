@@ -9,7 +9,6 @@ import {
 import config from 'root/cypress.json'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
-const [ desktopColumnStyle, tabletColumnStyle, mobileColumnStyle ] = responsiveAssertHelper( columnStyleTab )
 
 describe( 'Advanced Columns and Grid Block', registerTests( [
 	blockExist,
@@ -19,9 +18,6 @@ describe( 'Advanced Columns and Grid Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
-	desktopColumnStyle,
-	tabletColumnStyle,
-	mobileColumnStyle,
 ] ) )
 
 function blockExist() {
@@ -164,112 +160,4 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-columns', { viewport } )
 	assertSeparators( { viewport } )
-}
-
-function columnStyleTab( viewport, desktopOnly ) {
-	cy.setupWP()
-	cy.newPage()
-	cy.addBlock( 'ugb/columns' )
-	cy.openInspector( 'ugb/column', 'Style', 0 )
-
-	cy.collapse( 'General' )
-	const aligns = [ 'flex-start', 'center', 'flex-end' ]
-	aligns.forEach( align => {
-		cy.openInspector( 'ugb/column', 'Style', 0 )
-		cy.adjust( 'Content Vertical Align', align, { viewport } ).assertComputedStyle( {
-			'.ugb-column__item': {
-				[ `justify-content` ]: align,
-			},
-		} )
-	} )
-
-	cy.openInspector( 'ugb/column', 'Style', 0 )
-	cy.adjust( 'Content Width', 94, { viewport, unit: '%' } ).assertComputedStyle( {
-		'.ugb-column__content-wrapper': {
-			[ `width` ]: '94%',
-		},
-	} )
-	cy.openInspector( 'ugb/column', 'Style', 0 )
-	cy.adjust( 'Content Width', 269, { viewport, unit: 'px' } ).assertComputedStyle( {
-		'.ugb-column__content-wrapper': {
-			[ `width` ]: '269px',
-		},
-	} )
-	const textAligns = [ 'left', 'center', 'right' ]
-	textAligns.forEach( align => {
-		cy.openInspector( 'ugb/column', 'Style', 0 )
-		cy.adjust( 'Align', align, { viewport } ).assertComputedStyle( {
-			'.ugb-inner-block': {
-				[ `text-align` ]: align,
-			},
-		} )
-	} )
-
-	cy.selectBlock( 'ugb/column', 0 )
-	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', 20, { viewport, unit: 'px' } ).assertComputedStyle( {
-		'.ugb-column__item': {
-			[ `padding-top` ]: '20px',
-			[ `padding-bottom` ]: '20px',
-			[ `padding-right` ]: '20px',
-			[ `padding-left` ]: '20px',
-		},
-	} )
-	cy.selectBlock( 'ugb/column', 0 )
-	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', 5, { viewport, unit: 'em' } ).assertComputedStyle( {
-		'.ugb-column__item': {
-			[ `padding-top` ]: '5em',
-			[ `padding-bottom` ]: '5em',
-			[ `padding-right` ]: '5em',
-			[ `padding-left` ]: '5em',
-		},
-	} )
-	cy.selectBlock( 'ugb/column', 0 )
-	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', 10, { viewport, unit: '%' } ).assertComputedStyle( {
-		'.ugb-column__item': {
-			[ `padding-top` ]: '10%',
-			[ `padding-bottom` ]: '10%',
-			[ `padding-right` ]: '10%',
-			[ `padding-left` ]: '10%',
-		},
-	} )
-
-	desktopOnly( () => {
-		// Add a ugb/card block inside the first column
-		cy.addInnerBlock( 'ugb/card' )
-		cy.openInspector( 'ugb/card', 'Style', 0 )
-		cy.collapse( 'General' )
-		cy.adjust( 'Columns', 1 )
-		cy.collapse( 'Button' )
-		cy.adjust( 'Button Design', {
-			label: 'Link',
-			value: 'link',
-		} )
-		// Set the text colors in ugb/column
-		cy.openInspector( 'ugb/column', 'Style', 0 )
-		cy.collapse( 'Text Colors' )
-		cy.adjust( 'Heading Color', '#8e8ee0' )
-		cy.adjust( 'Text Color', '#24b267' )
-		cy.adjust( 'Link Color', '#642c2c' )
-		cy.adjust( 'Link Hover Color', '#ba89df' )
-		// Assert the text colors in ugb/card
-		cy.selectBlock( 'ugb/card' ).assertComputedStyle( {
-			'.ugb-card__title': {
-				[ `color` ]: '#8e8ee0',
-			},
-			'.ugb-card__subtitle': {
-				[ `color` ]: '#24b267',
-			},
-			'.ugb-card__description': {
-				[ `color` ]: '#24b267',
-			},
-			'.ugb-button': {
-				[ `color` ]: '#642c2c',
-			},
-		} )
-		// Go back to ugb/column
-		cy.selectBlock( 'ugb/column', 0 )
-	} )
 }
