@@ -43,7 +43,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-expand__title', viewport )
+	assertTypography( '.ugb-expand__title', { viewport } )
 	assertAligns( 'Align', '.ugb-expand__title', { viewport } )
 
 	// Test Text options
@@ -55,7 +55,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-expand__less-text p, .ugb-expand__more-text p', viewport )
+	assertTypography( '.ugb-expand__less-text p, .ugb-expand__more-text p', { viewport } )
 	assertAligns( 'Align', '.ugb-expand__less-text p, .ugb-expand__more-text p', { viewport } )
 
 	// Test Link options
@@ -67,7 +67,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text', viewport )
+	assertTypography( '.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text', { viewport } )
 	assertAligns( 'Align', '.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text', { viewport } )
 
 	// Test Spacing options

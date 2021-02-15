@@ -218,7 +218,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-feature-grid__title', viewport )
+	assertTypography( '.ugb-feature-grid__title', { viewport } )
 	assertAligns( 'Align', '.ugb-feature-grid__title', { viewport } )
 
 	cy.collapse( 'Description' )
@@ -229,7 +229,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-feature-grid__description', viewport )
+	assertTypography( '.ugb-feature-grid__description', { viewport } )
 	assertAligns( 'Align', '.ugb-feature-grid__description', { viewport } )
 
 	cy.collapse( 'Button' )

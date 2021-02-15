@@ -264,9 +264,13 @@ export const responsiveAssertHelper = ( callback = () => {}, options = {} ) => {
 * Helper function for Typography popover assertion.
 *
 * @param {string} selector
-* @param {string} viewport
+* @param {Object} options
 */
-export const assertTypography = ( selector, viewport ) => {
+export const assertTypography = ( selector, options = {} ) => {
+	const {
+		viewport = 'Desktop',
+	} = options
+
 	if ( viewport === 'Desktop' ) {
 		cy.adjust( 'Typography', {
 			[ `Size` ]: 50,

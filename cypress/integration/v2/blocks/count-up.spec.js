@@ -232,7 +232,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-countup__title', viewport )
+	assertTypography( '.ugb-countup__title', { viewport } )
 	assertAligns( 'Align', '.ugb-countup__title', { viewport } )
 
 	cy.collapse( 'Number' )
@@ -244,7 +244,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-countup__counter', viewport )
+	assertTypography( '.ugb-countup__counter', { viewport } )
 	assertAligns( 'Align', '.ugb-countup__counter', { viewport } )
 
 	cy.collapse( 'Description' )
@@ -256,7 +256,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-countup__description', viewport )
+	assertTypography( '.ugb-countup__description', { viewport } )
 	assertAligns( 'Align', '.ugb-countup__description', { viewport } )
 
 	assertBlockTitleDescription( { viewport } )

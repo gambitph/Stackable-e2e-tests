@@ -47,7 +47,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-heading__title', viewport )
+	assertTypography( '.ugb-heading__title', { viewport } )
 	assertAligns( 'Align', '.ugb-heading__title', { viewport } )
 
 	// Test Subtitle options
@@ -61,7 +61,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-heading__subtitle', viewport )
+	assertTypography( '.ugb-heading__subtitle', { viewport } )
 	assertAligns( 'Align', '.ugb-heading__subtitle', { viewport } )
 
 	// Test Top Line options

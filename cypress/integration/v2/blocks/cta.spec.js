@@ -256,7 +256,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-cta__title', viewport )
+	assertTypography( '.ugb-cta__title', { viewport } )
 	assertAligns( 'Align', '.ugb-cta__title', { viewport } )
 
 	// Test Description options
@@ -269,7 +269,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-cta__description', viewport )
+	assertTypography( '.ugb-cta__description', { viewport } )
 	assertAligns( 'Align', '.ugb-cta__description', { viewport } )
 
 	// Test Button options

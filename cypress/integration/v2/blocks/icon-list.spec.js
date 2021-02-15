@@ -109,7 +109,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( 'li', viewport )
+	assertTypography( 'li', { viewport } )
 
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-icon-list', { viewport } )

@@ -254,7 +254,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-header__title', viewport )
+	assertTypography( '.ugb-header__title', { viewport } )
 	assertAligns( 'Align', '.ugb-header__title', { viewport } )
 
 	cy.collapse( 'Subtitle' )
@@ -266,7 +266,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-header__subtitle', viewport )
+	assertTypography( '.ugb-header__subtitle', { viewport } )
 	assertAligns( 'Align', '.ugb-header__subtitle', { viewport } )
 
 	cy.collapse( 'Button #1' )

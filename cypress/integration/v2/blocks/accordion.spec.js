@@ -287,7 +287,7 @@ function styleTab( viewport, desktopOnly ) {
 				},
 			} )
 	} )
-	assertTypography( '.ugb-accordion__title', viewport )
+	assertTypography( '.ugb-accordion__title', { viewport } )
 	assertAligns( 'Align', '.ugb-accordion__title', { viewport } )
 
 	// Test Arrow settings

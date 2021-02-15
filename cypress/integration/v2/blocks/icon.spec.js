@@ -71,7 +71,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-icon__title', viewport )
+	assertTypography( '.ugb-icon__title', { viewport } )
 	assertAligns( 'Align', '.ugb-icon__title', { viewport } )
 
 	// Test Icon options

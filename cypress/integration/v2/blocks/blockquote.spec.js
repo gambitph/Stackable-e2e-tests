@@ -128,7 +128,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	assertTypography( '.ugb-blockquote__text', viewport )
+	assertTypography( '.ugb-blockquote__text', { viewport } )
 	assertAligns( 'Align', '.ugb-blockquote__item', { viewport } )
 
 	assertBlockBackground( '.ugb-blockquote', { viewport } )

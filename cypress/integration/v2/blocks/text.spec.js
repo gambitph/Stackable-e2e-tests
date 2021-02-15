@@ -100,7 +100,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `font-size` ]: '1.3em',
 		},
 	} )
-	assertTypography( '.ugb-text__text p', viewport )
+	assertTypography( '.ugb-text__text p', { viewport } )
 	assertAligns( 'Align', '.ugb-text__text p', { viewport } )
 
 	// Test Title
@@ -131,7 +131,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `font-size` ]: '1.6em',
 		},
 	} )
-	assertTypography( '.ugb-text__title', viewport )
+	assertTypography( '.ugb-text__title', { viewport } )
 	assertAligns( 'Align', '.ugb-text__title', { viewport } )
 
 	// Test Subtitle options
@@ -153,7 +153,7 @@ function styleTab( viewport, desktopOnly ) {
 			[ `font-size` ]: '0.9em',
 		},
 	} )
-	assertTypography( '.ugb-text__subtitle', viewport )
+	assertTypography( '.ugb-text__subtitle', { viewport } )
 	assertAligns( 'Align', '.ugb-text__subtitle', { viewport } )
 
 	// Test Spacing options
