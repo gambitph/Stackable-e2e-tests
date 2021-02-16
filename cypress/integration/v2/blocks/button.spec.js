@@ -90,6 +90,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	cy.collapse( 'Button #1' )
+	cy.waitFA()
 	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
@@ -146,7 +147,6 @@ function styleTab( viewport, desktopOnly ) {
 				[ `font-size` ]: '2em',
 			},
 		} )
-		cy.waitFA()
 		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
 			[ `Icon Size` ]: 41,
@@ -188,6 +188,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.collapse( 'Button #2' )
 	cy.toggleStyle( 'Button #2' )
+	cy.waitFA()
 	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
@@ -244,7 +245,6 @@ function styleTab( viewport, desktopOnly ) {
 				[ `font-size` ]: '2em',
 			},
 		} )
-		cy.waitFA()
 		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
 			[ `Icon Size` ]: 41,
@@ -285,6 +285,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.collapse( 'Button #3' )
 	cy.toggleStyle( 'Button #3' )
+	cy.waitFA()
 	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
@@ -341,7 +342,6 @@ function styleTab( viewport, desktopOnly ) {
 				[ `font-size` ]: '2em',
 			},
 		} )
-		cy.waitFA()
 		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
 			[ `Icon Size` ]: 41,

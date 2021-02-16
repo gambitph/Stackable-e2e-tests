@@ -262,3 +262,67 @@ export const responsiveAssertHelper = ( callback = () => {}, options = {} ) => {
 
 	return responsiveAssertFunctions
 }
+
+/*
+* Helper function for Typography popover assertion.
+*
+* @param {string} selector
+* @param {Object} options
+*/
+export const assertTypography = ( selector, options = {} ) => {
+	const {
+		viewport = 'Desktop',
+	} = options
+
+	if ( viewport === 'Desktop' ) {
+		cy.adjust( 'Typography', {
+			[ `Size` ]: 50,
+			[ `Weight` ]: '700',
+			[ `Transform` ]: 'lowercase',
+			[ `Line-Height` ]: 4,
+			[ `Letter Spacing` ]: 2.9,
+		} ).assertComputedStyle( {
+			[ selector ]: {
+				[ `font-size` ]: '50px',
+				[ `font-weight` ]: '700',
+				[ `text-transform` ]: 'lowercase',
+				[ `line-height` ]: '4em',
+				[ `letter-spacing` ]: '2.9px',
+			},
+		} )
+	}
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			value: 2,
+			unit: 'em',
+		},
+		[ `Line-Height` ]: {
+			viewport,
+			value: 24,
+			unit: 'px',
+		},
+	} ).assertComputedStyle( {
+		[ selector ]: {
+			[ `font-size` ]: '2em',
+			[ `line-height` ]: '24px',
+		},
+	} )
+	cy.adjust( 'Typography', {
+		[ `Size` ]: {
+			viewport,
+			value: 50,
+			unit: 'px',
+		},
+		[ `Line-Height` ]: {
+			viewport,
+			value: 4,
+			unit: 'em',
+		},
+	} ).assertComputedStyle( {
+		[ selector ]: {
+			[ `font-size` ]: '50px',
+			[ `line-height` ]: '4em',
+		},
+	} )
+}

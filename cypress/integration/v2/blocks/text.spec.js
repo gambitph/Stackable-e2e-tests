@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, switchDesigns, assertAligns, assertBlockBackground, assertSeparators, registerTests, responsiveAssertHelper,
+	assertBlockExist, blockErrorTest, switchLayouts, switchDesigns, assertAligns, assertBlockBackground, assertSeparators, registerTests, responsiveAssertHelper, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -89,40 +89,18 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Text' )
 
 	desktopOnly( () => {
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Serif',
-			[ `Weight` ]: '600',
-			[ `Transform` ]: 'lowercase',
-			[ `Letter Spacing` ]: 1.9,
-		} )
 		cy.adjust( 'Text Color', '#333333' ).assertComputedStyle( {
 			'.ugb-text__text p': {
-				[ `font-weight` ]: '600',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '1.9px',
 				[ `color` ]: '#333333',
 			},
 		} )
 	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 18,
-			unit: 'px',
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 26,
-			unit: 'px',
-		},
-	} )
 	cy.adjust( 'Size', 1.3, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-text__text p': {
 			[ `font-size` ]: '1.3em',
-			[ `line-height` ]: '26px',
 		},
 	} )
+	assertTypography( '.ugb-text__text p', { viewport } )
 	assertAligns( 'Align', '.ugb-text__text p', { viewport } )
 
 	// Test Title
@@ -133,17 +111,8 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h3' )
 			.assertHtmlTag( '.ugb-text__title', 'h3' )
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Sans-Serif',
-			[ `Weight` ]: '600',
-			[ `Transform` ]: 'uppercase',
-			[ `Letter Spacing` ]: 1.9,
-		} )
 		cy.adjust( 'Title Color', '#333333' ).assertComputedStyle( {
 			'.ugb-text__title': {
-				[ `font-weight` ]: '600',
-				[ `text-transform` ]: 'uppercase',
-				[ `letter-spacing` ]: '1.9px',
 				[ `color` ]: '#333333',
 			},
 		} )
@@ -157,24 +126,12 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 	} )
 
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 26,
-			unit: 'px',
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 29,
-			unit: 'px',
-		},
-	} )
 	cy.adjust( 'Size', 1.6, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-text__title': {
 			[ `font-size` ]: '1.6em',
-			[ `line-height` ]: '29px',
 		},
 	} )
+	assertTypography( '.ugb-text__title', { viewport } )
 	assertAligns( 'Align', '.ugb-text__title', { viewport } )
 
 	// Test Subtitle options
@@ -184,40 +141,19 @@ function styleTab( viewport, desktopOnly ) {
 
 	desktopOnly( () => {
 		cy.adjust( 'Subtitle on Top', true )
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Sans-Serif',
-			[ `Weight` ]: '200',
-			[ `Transform` ]: 'uppercase',
-			[ `Letter Spacing` ]: 1.5,
-		} )
 		cy.adjust( 'Subtitle Color', '#333333' ).assertComputedStyle( {
 			'.ugb-text__subtitle': {
-				[ `font-weight` ]: '200',
-				[ `text-transform` ]: 'uppercase',
-				[ `letter-spacing` ]: '1.5px',
 				[ `color` ]: '#333333',
 			},
 		} )
 	} )
 
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 26,
-			unit: 'px',
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 25,
-			unit: 'px',
-		},
-	} )
 	cy.adjust( 'Size', 0.9, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-text__subtitle': {
 			[ `font-size` ]: '0.9em',
-			[ `line-height` ]: '25px',
 		},
 	} )
+	assertTypography( '.ugb-text__subtitle', { viewport } )
 	assertAligns( 'Align', '.ugb-text__subtitle', { viewport } )
 
 	// Test Spacing options

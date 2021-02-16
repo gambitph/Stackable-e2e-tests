@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertBlockBackground, assertSeparators, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -122,51 +122,13 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Text' )
 
 	desktopOnly( () => {
-		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Serif',
-			[ `Weight` ]: '200',
-			[ `Transform` ]: 'lowercase',
-			[ `Letter Spacing` ]: 1.3,
-		} )
 		cy.adjust( 'Text Color', '#ffffff' ).assertComputedStyle( {
 			'.ugb-blockquote__text': {
-				[ `font-weight` ]: '200',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '1.3px',
 				[ `color` ]: '#ffffff',
 			},
 		} )
 	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 30,
-			unit: 'px',
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			value: 29,
-			unit: 'px',
-		},
-	} )
-	cy.adjust( 'Size', 1.9, { viewport, unit: 'em' } ).assertComputedStyle( {
-		'.ugb-blockquote__text': {
-			[ `font-size` ]: '1.9em',
-			[ `line-height` ]: '29px',
-		},
-	} )
-	cy.adjust( 'Typography', {
-		[ `Line-Height` ]: {
-			viewport,
-			value: 2,
-			unit: 'em',
-		},
-	} ).assertComputedStyle( {
-		'.ugb-blockquote__text': {
-			[ `line-height` ]: '2em',
-		},
-	} )
+	assertTypography( '.ugb-blockquote__text', { viewport } )
 	assertAligns( 'Align', '.ugb-blockquote__item', { viewport } )
 
 	assertBlockBackground( '.ugb-blockquote', { viewport } )
