@@ -46,10 +46,10 @@ function styleTab( viewport, desktopOnly ) {
 	cy.waitFA()
 	cy.adjust( 'Number of Icons / Columns', 4 )
 	cy.get( '.ugb-icon__item4' ).should( 'exist' )
-	cy.changeIcon( 'ugb/icon', undefined, 1, 'info' )
-	cy.changeIcon( 'ugb/icon', undefined, 2, 'info' )
-	cy.changeIcon( 'ugb/icon', undefined, 3, 'info' )
-	cy.changeIcon( 'ugb/icon', undefined, 4, 'info' )
+	cy.changeIcon( 1, 'info' )
+	cy.changeIcon( 2, 'info' )
+	cy.changeIcon( 3, 'info' )
+	cy.changeIcon( 4, 'info' )
 
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 

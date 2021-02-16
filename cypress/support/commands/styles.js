@@ -11,9 +11,7 @@ import {
 import {
 	getBaseControl,
 	containsRegExp,
-	getActiveTab,
 	changeUnit,
-	waitLoader,
 } from '../util'
 import { assertFunction } from '../helpers'
 
@@ -53,6 +51,39 @@ Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, assertHtmlTag
 Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, assertHtmlAttribute )
 
 /**
+ * Overwrite Cypress Commands
+ */
+Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
+	const optionsToPass = args.length === 3 ? args.pop() : {}
+	optionsToPass.beforeAdjust = ( name, value, options ) => {
+		const {
+			isInPopover = false,
+			viewport = 'Desktop',
+			unit = '',
+		} = options
+		cy.changePreviewMode( viewport )
+		changeUnit( unit, name, isInPopover )
+	}
+
+	return originalFn( ...[ ...args, optionsToPass ] )
+} )
+
+Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
+	const optionsToPass = args.length === 2 ? args.pop() : {}
+	optionsToPass.beforeAdjust = ( name, value, options ) => {
+		const {
+			isInPopover = false,
+			viewport = 'Desktop',
+			unit = '',
+		} = options
+		cy.changePreviewMode( viewport )
+		changeUnit( unit, name, isInPopover )
+	}
+
+	return originalFn( ...[ ...args, optionsToPass ] )
+} )
+
+/**
  * Command for enabling/disabling a toggle control.
  *
  * @param {string} name
@@ -62,26 +93,26 @@ Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, assertH
 function toggleControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
-	const selector = tab => getBaseControl( tab, isInPopover )
+	const selector = () => getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
 		.parent()
 
-	getActiveTab( tab => {
-		selector( tab )
-			.find( 'span.components-form-toggle' )
-			.invoke( 'attr', 'class' )
-			.then( classNames => {
-				const parsedClassNames = classNames.split( ' ' )
-				if ( ( value && ! parsedClassNames.includes( 'is-checked' ) ) || ( ! value && parsedClassNames.includes( 'is-checked' ) ) ) {
-					selector( tab )
-						.find( 'input' )
-						.click( { force: true } )
-				}
-			} )
-	} )
+	selector()
+		.find( 'span.components-form-toggle' )
+		.invoke( 'attr', 'class' )
+		.then( classNames => {
+			const parsedClassNames = classNames.split( ' ' )
+			if ( ( value && ! parsedClassNames.includes( 'is-checked' ) ) || ( ! value && parsedClassNames.includes( 'is-checked' ) ) ) {
+				beforeAdjust( name, value, options )
+				selector()
+					.find( 'input' )
+					.click( { force: true } )
+			}
+		} )
 }
 
 /**
@@ -94,20 +125,16 @@ function toggleControl( name, value, options = {} ) {
 function rangeControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
-		viewport = 'Desktop',
-		unit = '',
+		beforeAdjust = () => {},
 	} = options
 
-	getActiveTab( tab => {
-		cy.changePreviewMode( viewport )
-		changeUnit( unit, name, tab, isInPopover )
-		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
-			.find( 'input.components-input-control__input' )
-			.type( `{selectall}${ value }`, { force: true } )
-	} )
+	beforeAdjust( name, value, options )
+	getBaseControl( isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+		.find( 'input.components-input-control__input' )
+		.type( `{selectall}${ value }`, { force: true } )
 }
 
 /**
@@ -119,21 +146,17 @@ function rangeControl( name, value, options = {} ) {
 function rangeControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
-		viewport = 'Desktop',
-		unit = '',
+		beforeAdjust = () => {},
 	} = options
 
-	getActiveTab( tab => {
-		cy.changePreviewMode( viewport )
-		changeUnit( unit, name, tab, isInPopover )
-		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
-			.find( 'button' )
-			.contains( containsRegExp( 'Reset' ) )
-			.click( { force: true } )
-	} )
+	beforeAdjust( name, null, options )
+	getBaseControl( isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+		.find( 'button' )
+		.contains( containsRegExp( 'Reset' ) )
+		.click( { force: true } )
 }
 
 /**
@@ -147,7 +170,7 @@ function rangeControlReset( name, options = {} ) {
 function toolbarControl( name, value, options = {}, customRegExp = '' ) {
 	const {
 		isInPopover = false,
-		viewport = 'Desktop',
+		beforeAdjust = () => {},
 	} = options
 
 	// Compatibility for default values
@@ -159,15 +182,13 @@ function toolbarControl( name, value, options = {}, customRegExp = '' ) {
 		value = ''
 	}
 
-	getActiveTab( tab => {
-		cy.changePreviewMode( viewport )
-		getBaseControl( tab, isInPopover )
-			.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
-			.find( `button[value="${ value }"]` )
-			.click( { force: true } )
-	} )
+	beforeAdjust( name, value, options )
+	getBaseControl( isInPopover )
+		.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+		.find( `button[value="${ value }"]` )
+		.click( { force: true } )
 }
 
 /**
@@ -181,16 +202,16 @@ function toolbarControl( name, value, options = {}, customRegExp = '' ) {
 function designControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
-	getActiveTab( tab => {
-		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
-			.find( `input[value="${ typeof value === 'object' ? value.value : kebabCase( value ) }"]` )
-			.click( { force: true } )
-	} )
+	beforeAdjust( name, value, options )
+	getBaseControl( isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+		.find( `input[value="${ typeof value === 'object' ? value.value : kebabCase( value ) }"]` )
+		.click( { force: true } )
 }
 
 /**
@@ -203,21 +224,21 @@ function designControl( name, value, options = {} ) {
 function colorControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
-	const selector = tab => getBaseControl( tab, isInPopover )
+	const selector = () => getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
 		.parent()
 
 	if ( typeof value === 'string' && value.match( /^#/ ) ) {
 		// Use custom color.
-		getActiveTab( tab => {
-			selector( tab )
-				.find( 'button' )
-				.contains( 'Custom color' )
-				.click( { force: true } )
-		} )
+		beforeAdjust( name, value, options )
+		selector()
+			.find( 'button' )
+			.contains( 'Custom color' )
+			.click( { force: true } )
 
 		cy
 			.get( '.components-popover__content' )
@@ -225,20 +246,17 @@ function colorControl( name, value, options = {} ) {
 			.type( `{selectall}${ value }{enter}`, { force: true } )
 
 		// Declare the variable again
-		getActiveTab( tab => {
-			selector( tab )
-				.find( 'button' )
-				.contains( containsRegExp( 'Custom color' ) )
-				.click( { force: true } )
-		} )
+		selector()
+			.find( 'button' )
+			.contains( containsRegExp( 'Custom color' ) )
+			.click( { force: true } )
 	} else if ( typeof value === 'number' ) {
 		// Get the nth color in the color picker.
-		getActiveTab( tab => {
-			selector( tab )
-				.find( 'button.components-circular-option-picker__option' )
-				.eq( value - 1 )
-				.click( { force: true } )
-		} )
+		beforeAdjust( name, value, options )
+		selector()
+			.find( 'button.components-circular-option-picker__option' )
+			.eq( value - 1 )
+			.click( { force: true } )
 	}
 }
 
@@ -251,19 +269,19 @@ function colorControl( name, value, options = {} ) {
 function colorControlClear( name, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
-	getActiveTab( tab => {
-		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
-			.find( 'button' )
-			.contains( containsRegExp( 'Clear' ) )
-			.click( { force: true } )
-			// We are adding an additional click as sometimes click does not register.
-			.click( { force: true, log: false } )
-	} )
+	beforeAdjust( name, null, options )
+	getBaseControl( isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+		.find( 'button' )
+		.contains( containsRegExp( 'Clear' ) )
+		.click( { force: true } )
+	// We are adding an additional click as sometimes click does not register.
+		.click( { force: true, log: false } )
 }
 
 /**
@@ -272,22 +290,19 @@ function colorControlClear( name, options = {} ) {
  * @param {string} name
  * @param {*} value
  * @param {Object} options
- * @param {string} customRegex
  */
-function popoverControl( name, value = {}, options = {}, customRegex = '' ) {
+function popoverControl( name, value = {}, options = {} ) {
 	const {
 		isInPopover = false,
 	} = options
 
 	const clickPopoverButton = () => {
-		getActiveTab( tab => {
-			getBaseControl( tab, isInPopover )
-				.contains( containsRegExp( name ) )
-				.parentsUntil( '.components-panel__body>.components-base-control' )
-				.parent()
-				.find( 'button[aria-label="Edit"]' )
-				.click( { force: true } )
-		} )
+		getBaseControl( isInPopover )
+			.contains( containsRegExp( name ) )
+			.parentsUntil( '.components-panel__body>.components-base-control' )
+			.parent()
+			.find( 'button[aria-label="Edit"]' )
+			.click( { force: true } )
 	}
 
 	if ( typeof value === 'object' ) {
@@ -305,13 +320,14 @@ function popoverControl( name, value = {}, options = {}, customRegex = '' ) {
 					viewport = 'Desktop',
 					unit = '',
 					value: childValue = '',
+					beforeAdjust = () => {},
 				} = value[ key ]
 
 				cy.adjust( key, childValue === '' ? value[ key ] : childValue, {
-					viewport, unit, isInPopover: true,
-				}, customRegex )
+					viewport, unit, isInPopover: true, beforeAdjust,
+				} )
 			} else {
-				cy.adjust( key, value[ key ], { isInPopover: true }, customRegex )
+				cy.adjust( key, value[ key ], { isInPopover: true } )
 			}
 		} )
 
@@ -319,27 +335,25 @@ function popoverControl( name, value = {}, options = {}, customRegex = '' ) {
 		clickPopoverButton()
 	} else if ( typeof value === 'boolean' ) {
 		// In some cases, a popover control has an input checkbox.
-		getActiveTab( tab => {
-			getBaseControl( tab, isInPopover )
-				.contains( containsRegExp( name ) )
-				.parentsUntil( '.components-panel__body>.components-base-control' )
-				.parent()
-				.find( 'span.components-form-toggle' )
-				.invoke( 'attr', 'class' )
-				.then( $classNames => {
-					const parsedClassNames = $classNames.split( ' ' )
+		getBaseControl( isInPopover )
+			.contains( containsRegExp( name ) )
+			.parentsUntil( '.components-panel__body>.components-base-control' )
+			.parent()
+			.find( 'span.components-form-toggle' )
+			.invoke( 'attr', 'class' )
+			.then( $classNames => {
+				const parsedClassNames = $classNames.split( ' ' )
 
-					if ( ( value && ! parsedClassNames.includes( 'is-checked' ) ) || ( ! value === parsedClassNames.includes( 'is-checked' ) ) ) {
-						cy
-							.get( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
-							.contains( containsRegExp( name ) )
-							.parentsUntil( '.components-panel__body>.components-base-control' )
-							.parent()
-							.find( 'input[type="checkbox"]' )
-							.click( { force: true } )
-					}
-				} )
-		} )
+				if ( ( value && ! parsedClassNames.includes( 'is-checked' ) ) || ( ! value === parsedClassNames.includes( 'is-checked' ) ) ) {
+					cy
+						.get( `.components-panel__body>.components-base-control` )
+						.contains( containsRegExp( name ) )
+						.parentsUntil( '.components-panel__body>.components-base-control' )
+						.parent()
+						.find( 'input[type="checkbox"]' )
+						.click( { force: true } )
+				}
+			} )
 	}
 }
 
@@ -349,22 +363,20 @@ function popoverControl( name, value = {}, options = {}, customRegex = '' ) {
  * @param {string} name
  */
 function popoverControlReset( name ) {
-	const selector = tab => cy
-		.get( `.ugb-panel-${ tab }>.components-panel__body>.components-base-control` )
+	const selector = () => cy
+		.get( `.components-panel__body>.components-base-control` )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 
-	getActiveTab( tab => {
-		selector( tab )
-			.then( $parent => {
-				if ( $parent.find( 'button[aria-label="Reset"]' ).length ) {
-					selector( tab )
-						.find( 'button[aria-label="Reset"]' )
-						.click( { force: true } )
-				}
-			} )
-	} )
+	selector()
+		.then( $parent => {
+			if ( $parent.find( 'button[aria-label="Reset"]' ).length ) {
+				selector()
+					.find( 'button[aria-label="Reset"]' )
+					.click( { force: true } )
+			}
+		} )
 }
 
 /**
@@ -377,8 +389,7 @@ function popoverControlReset( name ) {
 function dropdownControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
-		viewport = 'Desktop',
-		unit = '',
+		beforeAdjust = () => {},
 	} = options
 
 	// Compatibility for default values
@@ -390,16 +401,13 @@ function dropdownControl( name, value, options = {} ) {
 		value = ''
 	}
 
-	getActiveTab( tab => {
-		cy.changePreviewMode( viewport )
-		changeUnit( unit, name, tab, isInPopover )
-		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
-			.find( 'select' )
-			.select( value, { force: true } )
-	} )
+	beforeAdjust( name, value, options )
+	getBaseControl( isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+		.find( 'select' )
+		.select( value, { force: true } )
 }
 
 /**
@@ -412,16 +420,16 @@ function dropdownControl( name, value, options = {} ) {
 function suggestionControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
-	getActiveTab( tab => {
-		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
-			.find( 'input' )
-			.type( `{selectall}${ value }{enter}`, { force: true } )
-	} )
+	beforeAdjust( name, value, options )
+	getBaseControl( isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+		.find( 'input' )
+		.type( `{selectall}${ value }{enter}`, { force: true } )
 }
 
 /**
@@ -433,16 +441,16 @@ function suggestionControl( name, value, options = {} ) {
 function suggestionControlClear( name, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
-	getActiveTab( tab => {
-		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
-			.find( 'input' )
-			.type( `{selectall}{backspace}{enter}`, { force: true } )
-	} )
+	beforeAdjust( name, null, options )
+	getBaseControl( isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+		.find( 'input' )
+		.type( `{selectall}{backspace}{enter}`, { force: true } )
 }
 
 /**
@@ -455,54 +463,43 @@ function suggestionControlClear( name, options = {} ) {
 function fourRangeControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
-		viewport = 'Desktop',
-		unit = '',
+		beforeAdjust = () => {},
 	} = options
 
-	const selector = tab => getBaseControl( tab, isInPopover )
+	const selector = () => getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
 		.parent()
 
-	const clickLockButton = () => getActiveTab( tab => {
-		selector( tab )
-			.find( 'button.ugb-four-range-control__lock' )
-			.click( { force: true } )
-	} )
+	const clickLockButton = () => selector()
+		.find( 'button.ugb-four-range-control__lock' )
+		.click( { force: true } )
 
 	if ( typeof value === 'number' ) {
 		// Adjust the single control field.
-		getActiveTab( tab => {
-			cy.changePreviewMode( viewport )
-			changeUnit( unit, name, tab, isInPopover )
-			selector( tab )
-				.find( 'input.components-input-control__input' )
-				.type( `{selectall}${ value }`, { force: true } )
-		} )
+		beforeAdjust( name, value, options )
+		selector()
+			.find( 'input.components-input-control__input' )
+			.type( `{selectall}${ value }`, { force: true } )
 	} else if ( Array.isArray( value ) ) {
 		// Adjust the four control field.
-		getActiveTab( tab => {
-			cy.changePreviewMode( viewport )
-			changeUnit( unit, name, tab, isInPopover )
-			selector( tab )
-				.find( 'button.ugb-four-range-control__lock' )
-				.invoke( 'attr', 'class' )
-				.then( className => {
-					const parsedClassName = className.split( ' ' )
-					if ( parsedClassName.includes( 'ugb--is-locked' ) ) {
-						clickLockButton()
-					}
-				} )
-		} )
+		beforeAdjust( name, value, options )
+		selector()
+			.find( 'button.ugb-four-range-control__lock' )
+			.invoke( 'attr', 'class' )
+			.then( className => {
+				const parsedClassName = className.split( ' ' )
+				if ( parsedClassName.includes( 'ugb--is-locked' ) ) {
+					clickLockButton()
+				}
+			} )
 
 		value.forEach( ( entry, index ) => {
 			if ( entry !== undefined ) {
-				getActiveTab( tab => {
-					selector( tab )
-						.find( 'input.components-input-control__input' )
-						.eq( index )
-						.type( `{selectall}${ entry }`, { force: true } )
-				} )
+				selector()
+					.find( 'input.components-input-control__input' )
+					.eq( index )
+					.type( `{selectall}${ entry }`, { force: true } )
 			}
 		} )
 	}
@@ -517,37 +514,33 @@ function fourRangeControl( name, value, options = {} ) {
 function fourRangeControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
-		viewport = 'Desktop',
+		beforeAdjust = () => {},
 	} = options
 
-	const selector = ( tab, isInPopover ) => getBaseControl( tab, isInPopover )
+	const selector = isInPopover => getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( `.components-panel__body>.components-base-control` )
 		.parent()
 
-	const clickLockButton = () => getActiveTab( tab => {
-		selector( tab, isInPopover )
-			.find( 'button.ugb-four-range-control__lock' )
-			.click( { force: true } )
-	} )
+	const clickLockButton = () => selector( isInPopover )
+		.find( 'button.ugb-four-range-control__lock' )
+		.click( { force: true } )
 
-	getActiveTab( tab => {
-		cy.changePreviewMode( viewport )
-		selector( tab, isInPopover )
-			.find( 'button.ugb-four-range-control__lock' )
-			.invoke( 'attr', 'class' )
-			.then( className => {
-				const parsedClassName = className.split( ' ' )
-				if ( ! parsedClassName.includes( 'ugb--is-locked' ) ) {
-					clickLockButton()
-				}
+	beforeAdjust( name, null, options )
+	selector( isInPopover )
+		.find( 'button.ugb-four-range-control__lock' )
+		.invoke( 'attr', 'class' )
+		.then( className => {
+			const parsedClassName = className.split( ' ' )
+			if ( ! parsedClassName.includes( 'ugb--is-locked' ) ) {
+				clickLockButton()
+			}
 
-				selector( tab, isInPopover )
-					.find( 'button' )
-					.contains( containsRegExp( 'Reset' ) )
-					.click( { force: true } )
-			} )
-	} )
+			selector( isInPopover )
+				.find( 'button' )
+				.contains( containsRegExp( 'Reset' ) )
+				.click( { force: true } )
+		} )
 }
 
 /**
@@ -560,18 +553,18 @@ function fourRangeControlReset( name, options = {} ) {
 function columnControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
+	beforeAdjust( name, value, options )
 	value.forEach( ( val, index ) => {
-		getActiveTab( tab => {
-			getBaseControl( tab, isInPopover )
-				.contains( containsRegExp( name ) )
-				.parentsUntil( `.components-panel__body>.components-base-control` )
-				.parent()
-				.find( 'input.components-column-widths-control__number' )
-				.eq( index )
-				.type( `{selectall}${ val }{enter}`, { force: true } )
-		} )
+		getBaseControl( isInPopover )
+			.contains( containsRegExp( name ) )
+			.parentsUntil( `.components-panel__body>.components-base-control` )
+			.parent()
+			.find( 'input.components-column-widths-control__number' )
+			.eq( index )
+			.type( `{selectall}${ val }{enter}`, { force: true } )
 	} )
 }
 
@@ -585,17 +578,17 @@ function columnControl( name, value, options = {} ) {
 function iconControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
-	const clickIconButton = () => getActiveTab( tab => {
-		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
-			.find( '.ugb-icon-control__button-wrapper>.ugb-icon-control__icon-button' )
-			.click( { force: true } )
-	} )
+	const clickIconButton = () => getBaseControl( isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+		.find( '.ugb-icon-control__button-wrapper>.ugb-icon-control__icon-button' )
+		.click( { force: true } )
 
+	beforeAdjust( name, value, options )
 	clickIconButton()
 	if ( typeof value === 'string' ) {
 		// Select the first icon based on keyword
@@ -605,7 +598,7 @@ function iconControl( name, value, options = {} ) {
 			.type( value, { force: true } )
 
 		// Wait until the loader disappears.
-		waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
+		cy.waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
 
 		cy
 			.get( `.ugb-icon-popover__iconlist>button` )
@@ -623,7 +616,7 @@ function iconControl( name, value, options = {} ) {
 			.type( keyword, { force: true } )
 
 		// Wait until the loader disappears.
-		waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
+		cy.waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
 
 		if ( icon ) {
 			cy
@@ -648,17 +641,17 @@ function iconControl( name, value, options = {} ) {
 function iconControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
+		beforeAdjust = () => {},
 	} = options
 
-	getActiveTab( tab => {
-		getBaseControl( tab, isInPopover )
-			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
-			.parent()
-			.find( 'button' )
-			.contains( 'Reset' )
-			.click( { force: true } )
-	} )
+	beforeAdjust( name, null, options )
+	getBaseControl( isInPopover )
+		.contains( containsRegExp( name ) )
+		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parent()
+		.find( 'button' )
+		.contains( 'Reset' )
+		.click( { force: true } )
 }
 
 /**
@@ -750,7 +743,8 @@ export function adjust( name, value, options = {} ) {
 
 			withNestedBaseControl.forEach( className => {
 				if ( ! nestedBaseControl ) {
-					nestedBaseControl = block.find( `.components-base-control.${ className }` ).length ? block.find( `.components-base-control.${ className }` ) : false
+					nestedBaseControl = block.find( `.components-base-control.${ className }` ).length
+						? 						block.find( `.components-base-control.${ className }` ) : null
 				}
 			} )
 
@@ -835,7 +829,7 @@ export function adjustLayout( value = '' ) {
 export function adjustDesign( option = '' ) {
 	cy
 		.get( '.ugb-design-library-items' )
-	waitLoader( '.ugb-design-library-search__spinner>span.components-spinner' )
+	cy.waitLoader( '.ugb-design-library-search__spinner>span.components-spinner' )
 
 	cy
 		.get( '.ugb-design-library-item' )
@@ -844,7 +838,7 @@ export function adjustDesign( option = '' ) {
 		.parent()
 		.find( 'button' )
 		.click( { force: true } )
-	waitLoader( '.ugb-design-library-item span.components-spinner' )
+	cy.waitLoader( '.ugb-design-library-item span.components-spinner' )
 }
 
 function _assertComputedStyle( win, doc, element, _cssObject, pseudoEl, parentEl, assertType, viewport = 'Desktop' ) {

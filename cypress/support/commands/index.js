@@ -43,7 +43,7 @@ import './attributes'
  * Internal dependencies
  */
 import {
-	containsRegExp, waitLoader,
+	containsRegExp, select, dispatch,
 } from '../util'
 import { last, first } from 'lodash'
 
@@ -108,11 +108,13 @@ export function selectBlock( subject, selector ) {
 	_selector()
 		.invoke( 'attr', 'data-block' )
 		.then( dataBlock => {
-			cy.window().then( win => {
-				if ( win.wp.data.select( 'core/block-editor' ).getSelectedBlockClientId() !== dataBlock ) {
-					win.wp.data.dispatch( 'core/block-editor' ).selectBlock( dataBlock )
-					cy.wait( 100 )
-				}
+			select( _select => {
+				dispatch( _dispatch => {
+					if ( _select( 'core/block-editor' ).getSelectedBlockClientId() !== dataBlock ) {
+						_dispatch( 'core/block-editor' ).selectBlock( dataBlock )
+						cy.wait( 100 )
+					}
+				} )
 			} )
 		} )
 
@@ -149,18 +151,20 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
  * @param {string} mode
  */
 export function changePreviewMode( mode = 'Desktop' ) {
-	cy.window( { log: false } ).then( win => {
-		const { __experimentalSetPreviewDeviceType } = win.wp.data.dispatch( 'core/edit-post' )
-		const { __experimentalGetPreviewDeviceType } = win.wp.data.select( 'core/edit-post' )
-		if ( __experimentalSetPreviewDeviceType && __experimentalGetPreviewDeviceType ) {
-			if ( __experimentalGetPreviewDeviceType() !== mode ) {
-				__experimentalSetPreviewDeviceType( mode )
-				cy.wait( 100 )
-			}
-		} else {
+	select( _select => {
+		dispatch( _dispatch => {
+			const { __experimentalSetPreviewDeviceType } = _dispatch( 'core/edit-post' )
+			const { __experimentalGetPreviewDeviceType } = _select( 'core/edit-post' )
+			if ( __experimentalSetPreviewDeviceType && __experimentalGetPreviewDeviceType ) {
+				if ( __experimentalGetPreviewDeviceType() !== mode ) {
+					__experimentalSetPreviewDeviceType( mode )
+					cy.wait( 100 )
+				}
+			} else {
 			// Handle WP 5.4 preview mode.
 			// TODO: Handle WP 5.4 editor
-		}
+			}
+		} )
 	} )
 }
 
@@ -209,21 +213,19 @@ export function publish() {
 						}
 					}
 
-					waitLoader( '.editor-post-publish-button.is-busy' )
+					cy.waitLoader( '.editor-post-publish-button.is-busy' )
 				} )
 		} )
 }
 
 /**
- * Command for changing the icon in icon block.
+ * Stackable Command for changing the icon in icon block.
  *
- * @param {string} subject
- * @param {string} selector
  * @param {number} index
  * @param {string} keyword
  * @param {string} icon
  */
-export function changeIcon( subject, selector, index = 1, keyword = '', icon ) {
+export function changeIcon( index = 1, keyword = '', icon ) {
 	cy
 		.get( '.block-editor-block-list__block.is-selected' )
 		.find( '.ugb-svg-icon-placeholder__button' )
@@ -237,7 +239,7 @@ export function changeIcon( subject, selector, index = 1, keyword = '', icon ) {
 
 	// Wait until the loader disappears.
 	cy.wait( 1000 )
-	waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
+	cy.waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
 
 	cy
 		.get( `.ugb-icon-popover__iconlist>button${ icon ? `.${ icon }` : '' }` )

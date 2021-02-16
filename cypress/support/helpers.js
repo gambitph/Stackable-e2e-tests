@@ -12,7 +12,7 @@ import { collapse, openSidebar } from './commands/inspector'
  * External dependencies
  */
 import {
-	startCase, lowerCase, max,
+	startCase, lowerCase,
 } from 'lodash'
 
 /**
@@ -134,7 +134,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 	const {
 		assertFrontend = true,
 		assertBackend = true,
-		wait = 1000,
+		wait = 0,
 		viewportFrontend = false,
 	} = options
 	getActiveTab( tab => {
@@ -150,7 +150,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 
 					publish()
 
-					cy.wait( max( [ 1000, wait ] ) )
+					cy.wait( wait )
 
 					if ( assertBackend ) {
 						getPreviewMode( previewMode => {
@@ -170,7 +170,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 									cy.viewport( config[ `viewport${ previewMode }Width` ] || config.viewportWidth, config.viewportHeight )
 								}
 
-								cy.wait( max( [ 1000, wait ] ) )
+								cy.wait( wait )
 
 								frontendCallback( {
 									parsedClassList, viewport: previewMode,
@@ -213,8 +213,9 @@ export const assertAligns = ( name, selector, options = {} ) => {
  * Helper function for registering tests.
  *
  * @param {Array} testsList
+ * @param {Function} onTestsStart
  */
-export const registerTests = ( testsList = [] ) => () => {
+export const registerTests = ( testsList = [], onTestsStart = () => {
 	beforeEach( () => {
 		cy.server()
 		cy.route( {
@@ -223,6 +224,8 @@ export const registerTests = ( testsList = [] ) => () => {
 			status: 200,
 		} ).as( 'designLibrary' )
 	} )
+} ) => () => {
+	onTestsStart()
 	testsList.forEach( test => typeof test === 'function' && test() )
 }
 
