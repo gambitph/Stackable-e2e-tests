@@ -205,39 +205,30 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 	} )
 
+	// Test Borders and Shadow Outlines
 	desktopOnly( () => {
-		// Test Borders
-		cy.adjust( 'Borders', 'solid' ).assertComputedStyle( {
-			'.ugb-container__wrapper': {
-				[ `border-style` ]: 'solid',
-			},
-		} )
-		cy.adjust( 'Borders', 'dashed' ).assertComputedStyle( {
-			'.ugb-container__wrapper': {
-				[ `border-style` ]: 'dashed',
-			},
-		} )
-		cy.adjust( 'Borders', 'dotted' ).assertComputedStyle( {
-			'.ugb-container__wrapper': {
-				[ `border-style` ]: 'dotted',
-			},
-		} )
-		cy.adjust( 'Border Width', 4 )
+		cy.adjust( 'Borders', 'solid' )
 		cy.adjust( 'Border Color', '#a12222' )
 		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
 			'.ugb-container__wrapper': {
-				[ `border-top-width` ]: '4px',
-				[ `border-bottom-width` ]: '4px',
-				[ `border-left-width` ]: '4px',
-				[ `border-right-width` ]: '4px',
+				[ `border-style` ]: 'solid',
 				[ `border-color` ]: '#a12222',
 				[ `border-radius` ]: '26px',
 			},
 		} )
-
-		// Test Shadow Outline
 		cy.adjust( 'Shadow / Outline', 5 )
 			.assertClassName( '.ugb-container__wrapper', 'ugb--shadow-5' )
+	} )
+
+	cy.adjust( 'Borders', 'dashed' )
+	cy.adjust( 'Border Width', 4, { viewport } ).assertComputedStyle( {
+		'.ugb-container__wrapper': {
+			[ `border-style` ]: 'dashed',
+			[ `border-top-width` ]: '4px',
+			[ `border-bottom-width` ]: '4px',
+			[ `border-left-width` ]: '4px',
+			[ `border-right-width` ]: '4px',
+		},
 	} )
 
 	// Spacing Tab
