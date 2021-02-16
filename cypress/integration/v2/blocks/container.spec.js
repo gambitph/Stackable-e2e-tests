@@ -165,11 +165,20 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 	cy.adjust( 'Background', {
 		[ `Adv. Background Image Settings` ]: {
-			[ `Image Position` ]: 'top right',
-			[ `Image Repeat` ]: 'repeat-x',
-			[ `Image Size` ]: 'cover',
+			[ `Image Position` ]: {
+				viewport,
+				value: 'top right',
+			},
+			[ `Image Repeat` ]: {
+				viewport,
+				value: 'repeat-x',
+			},
+			[ `Image Size` ]: {
+				viewport,
+				value: 'cover',
+			},
 		},
-	}, { viewport } ).assertComputedStyle( {
+	} ).assertComputedStyle( {
 		'.ugb-container__wrapper': {
 			[ `background-position` ]: '100% 0%',
 			[ `background-repeat` ]: 'repeat-x',
