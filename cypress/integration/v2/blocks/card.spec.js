@@ -209,65 +209,6 @@ function styleTab( viewport, desktopOnly ) {
 		},
 	} )
 
-	// Test Spacing options
-	cy.toggleStyle( 'Block Title' )
-	cy.toggleStyle( 'Block Description' )
-	cy.collapse( 'Spacing' )
-	cy.adjust( 'Block Title', 35, { viewport } ).assertComputedStyle( {
-		'.ugb-block-title': {
-			[ `margin-bottom` ]: '35px',
-		},
-	} )
-	cy.adjust( 'Block Description', 41, { viewport } ).assertComputedStyle( {
-		'.ugb-block-description': {
-			[ `margin-bottom` ]: '41px',
-		},
-	} )
-	cy.adjust( 'Paddings', 21, { viewport, unit: 'px' } ).assertComputedStyle( {
-		'.ugb-card__content': {
-			[ `padding-top` ]: '21px',
-			[ `padding-bottom` ]: '21px',
-			[ `padding-right` ]: '21px',
-			[ `padding-left` ]: '21px',
-		},
-	} )
-	cy.adjust( 'Paddings', 3, { viewport, unit: 'em' } ).assertComputedStyle( {
-		'.ugb-card__content': {
-			[ `padding-top` ]: '3em',
-			[ `padding-bottom` ]: '3em',
-			[ `padding-right` ]: '3em',
-			[ `padding-left` ]: '3em',
-		},
-	} )
-	cy.adjust( 'Paddings', 19, { viewport, unit: 'em' } ).assertComputedStyle( {
-		'.ugb-card__content': {
-			[ `padding-top` ]: '19%',
-			[ `padding-bottom` ]: '19%',
-			[ `padding-right` ]: '19%',
-			[ `padding-left` ]: '19%',
-		},
-	} )
-	cy.adjust( 'Title', 25, { viewport } ).assertComputedStyle( {
-		'.ugb-card__title': {
-			[ `margin-bottom` ]: '25px',
-		},
-	} )
-	cy.adjust( 'Subtitle', 61, { viewport } ).assertComputedStyle( {
-		'.ugb-card__subtitle': {
-			[ `margin-bottom` ]: '61px',
-		},
-	} )
-	cy.adjust( 'Description', 43, { viewport } ).assertComputedStyle( {
-		'.ugb-card__description': {
-			[ `margin-bottom` ]: '43px',
-		},
-	} )
-	cy.adjust( 'Button', 26, { viewport } ).assertComputedStyle( {
-		'.ugb-button-container': {
-			[ `margin-bottom` ]: '26px',
-		},
-	} )
-
 	cy.collapse( 'Image' )
 	// TODO: Image Size assertion
 	// We won't be able to assert image size for now since it requires server handling.
@@ -458,7 +399,67 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 	} )
 
+	// Test Block Title and Description
 	assertBlockTitleDescription( { viewport } )
+
+	// Test Spacing options
+	cy.collapse( 'Spacing' )
+	cy.adjust( 'Block Title', 35, { viewport } ).assertComputedStyle( {
+		'.ugb-block-title': {
+			[ `margin-bottom` ]: '35px',
+		},
+	} )
+	cy.adjust( 'Block Description', 41, { viewport } ).assertComputedStyle( {
+		'.ugb-block-description': {
+			[ `margin-bottom` ]: '41px',
+		},
+	} )
+	cy.adjust( 'Paddings', 21, { viewport, unit: 'px' } ).assertComputedStyle( {
+		'.ugb-card__content': {
+			[ `padding-top` ]: '21px',
+			[ `padding-bottom` ]: '21px',
+			[ `padding-right` ]: '21px',
+			[ `padding-left` ]: '21px',
+		},
+	} )
+	cy.adjust( 'Paddings', 3, { viewport, unit: 'em' } ).assertComputedStyle( {
+		'.ugb-card__content': {
+			[ `padding-top` ]: '3em',
+			[ `padding-bottom` ]: '3em',
+			[ `padding-right` ]: '3em',
+			[ `padding-left` ]: '3em',
+		},
+	} )
+	cy.adjust( 'Paddings', 19, { viewport, unit: 'em' } ).assertComputedStyle( {
+		'.ugb-card__content': {
+			[ `padding-top` ]: '19%',
+			[ `padding-bottom` ]: '19%',
+			[ `padding-right` ]: '19%',
+			[ `padding-left` ]: '19%',
+		},
+	} )
+	cy.adjust( 'Title', 25, { viewport } ).assertComputedStyle( {
+		'.ugb-card__title': {
+			[ `margin-bottom` ]: '25px',
+		},
+	} )
+	cy.adjust( 'Subtitle', 61, { viewport } ).assertComputedStyle( {
+		'.ugb-card__subtitle': {
+			[ `margin-bottom` ]: '61px',
+		},
+	} )
+	cy.adjust( 'Description', 43, { viewport } ).assertComputedStyle( {
+		'.ugb-card__description': {
+			[ `margin-bottom` ]: '43px',
+		},
+	} )
+	cy.adjust( 'Button', 26, { viewport } ).assertComputedStyle( {
+		'.ugb-button-container': {
+			[ `margin-bottom` ]: '26px',
+		},
+	} )
+
+	// Test Block Background
 	assertBlockBackground( '.ugb-card', { viewport } )
 	assertSeparators( { viewport } )
 }
