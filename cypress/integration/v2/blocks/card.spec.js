@@ -180,15 +180,10 @@ function styleTab( viewport, desktopOnly ) {
 
 	desktopOnly( () => {
 		cy.adjust( 'Borders', 'solid' )
-		cy.adjust( 'Border Width', 4 )
 		cy.adjust( 'Border Color', '#a12222' )
 		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
 			'.ugb-card__item': {
 				[ `border-style` ]: 'solid',
-				[ `border-top-width` ]: '4px',
-				[ `border-bottom-width` ]: '4px',
-				[ `border-left-width` ]: '4px',
-				[ `border-right-width` ]: '4px',
 				[ `border-color` ]: '#a12222',
 				[ `border-radius` ]: '26px',
 			},
@@ -200,6 +195,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.adjust( 'Borders', 'dashed' )
 	cy.adjust( 'Border Width', 3, { viewport } ).assertComputedStyle( {
 		'.ugb-card__item': {
+			[ `border-style` ]: 'dashed',
 			[ `border-top-width` ]: '3px',
 			[ `border-bottom-width` ]: '3px',
 			[ `border-left-width` ]: '3px',
