@@ -70,10 +70,8 @@ function styleTab( viewport, desktopOnly ) {
 	cy.openInspector( 'ugb/card', 'Style' )
 
 	cy.collapse( 'General' )
-	desktopOnly( () => {
-		cy.adjust( 'Columns', 3 )
-			.assertClassName( '.ugb-card', 'ugb-card--columns-3' )
-	} )
+	cy.adjust( 'Columns', 3 )
+		.assertClassName( '.ugb-card', 'ugb-card--columns-3' )
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
 	cy.collapse( 'Container' )
