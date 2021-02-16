@@ -668,6 +668,7 @@ export function adjust( name, value, options = {} ) {
 		[ `Icon Color Type` ]: 'Single|Gradient|Multicolor',
 		[ `Button Color Type` ]: 'Single|Gradient',
 		[ `Shape` ]: typeof value === 'object' ? value.label : value,
+		[ `Button Design` ]: typeof value === 'object' ? value.label : value,
 	}
 
 	const _adjust = classNames => {
