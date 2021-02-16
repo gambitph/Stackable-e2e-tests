@@ -280,6 +280,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Button options
 	cy.collapse( 'Button' )
+	cy.waitFA()
 	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
@@ -335,7 +336,6 @@ function styleTab( viewport, desktopOnly ) {
 				[ `font-size` ]: '7em',
 			},
 		} )
-		cy.waitFA()
 		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
 			[ `Icon Size` ]: 41,
