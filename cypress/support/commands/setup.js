@@ -67,7 +67,7 @@ export function deactivatePlugin( slug ) {
 		}
 	} )
 	cy.visit( `/?deactivate-plugin=${ slug }` )
-	cy.visit( `/wp-admin/` )
+	cy.visit( '/wp-admin/' )
 }
 
 /**
@@ -84,7 +84,7 @@ export function activatePlugin( slug ) {
 		}
 	} )
 	cy.visit( `/?activate-plugin=${ slug }` )
-	cy.visit( `/wp-admin/` )
+	cy.visit( '/wp-admin/' )
 }
 
 /*

@@ -74,14 +74,14 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		// Test Opacity
 		_adjust( 'Opacity', 0.7, { viewport }, 'assertComputedStyle', [ {
 			[ MAIN_SELECTOR ]: {
-				[ `opacity` ]: '0.7',
+				'opacity': '0.7',
 			},
 		} ] )
 
 		// Test Z-index
 		_adjust( 'Z-index', 6, { viewport }, 'assertComputedStyle', [ {
 			[ MAIN_SELECTOR ]: {
-				[ `z-index` ]: '6',
+				'z-index': '6',
 			},
 		} ] )
 
@@ -90,12 +90,12 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		// Test Min. Block Height.
 		_adjust( 'Min. Block Height', 850, { viewport }, 'assertComputedStyle', [ {
 			[ BLOCK_SELECTOR ]: {
-				[ `min-height` ]: '850px',
+				'min-height': '850px',
 			},
 		} ] )
 		_adjust( 'Min. Block Height', 87, { viewport, unit: 'vh' }, 'assertComputedStyle', [ {
 			[ BLOCK_SELECTOR ]: {
-				[ `min-height` ]: '87vh',
+				'min-height': '87vh',
 			},
 		} ] )
 
@@ -104,7 +104,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		verticalAligns.forEach( align => {
 			_adjust( 'Content Vertical Align', align, { viewport }, 'assertComputedStyle', [ {
 				[ BLOCK_SELECTOR ]: {
-					[ `align-items` ]: align,
+					'align-items': align,
 				},
 			} ] )
 		} )
@@ -112,12 +112,12 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		// Test Max Content Width.
 		_adjust( 'Max Content Width', 2303, { viewport }, 'assertComputedStyle', [ {
 			'.ugb-inner-block': {
-				[ `max-width` ]: '2303px',
+				'max-width': '2303px',
 			},
 		} ] )
 		_adjust( 'Max Content Width', 78, { viewport, unit: '%' }, 'assertComputedStyle', [ {
 			'.ugb-inner-block': {
-				[ `max-width` ]: '78%',
+				'max-width': '78%',
 			},
 		} ] )
 
@@ -126,7 +126,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		horizontalAlign.forEach( align => {
 			_adjust( 'Content Horizontal Align', align, { viewport }, 'assertComputedStyle', [ {
 				[ BLOCK_SELECTOR ]: {
-					[ `justify-content` ]: align,
+					'justify-content': align,
 				},
 			} ] )
 		} )
@@ -186,7 +186,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		// Test Column Gap.
 		_adjust( 'Column Gap', 24, { viewport }, 'assertComputedStyle', [ {
 			'.ugb-block-content': {
-				[ `column-gap` ]: '24px',
+				'column-gap': '24px',
 			},
 		} ] )
 
@@ -195,7 +195,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		columnVerticalAligns.forEach( align => {
 			_adjust( 'Column Vertical Align', align, { viewport }, 'assertComputedStyle', [ {
 				'.ugb-block-content': {
-					[ `align-items` ]: align,
+					'align-items': align,
 				},
 			} ] )
 		} )
@@ -203,7 +203,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		// Test Min. Column Height.
 		_adjust( 'Min. Column Height', 161, { viewport }, 'assertComputedStyle', [ {
 			'.ugb-block-content>*': {
-				[ `min-height` ]: '161px',
+				'min-height': '161px',
 			},
 		} ] )
 
@@ -212,7 +212,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		contentVerticalAligns.forEach( align => {
 			_adjust( 'Content Vertical Align', align, { viewport }, 'assertComputedStyle', [ {
 				'.ugb-block-content>*': {
-					[ `justify-content` ]: align,
+					'justify-content': align,
 				},
 			} ] )
 		} )
@@ -234,7 +234,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		previewMode.forEach( preview => {
 			_adjust( `Hide on ${ preview }`, true, {}, 'assertComputedStyle', [ {
 				[ MAIN_SELECTOR ]: {
-					[ `display` ]: 'none',
+					'display': 'none',
 				},
 			}, {
 				assertBackend: false,

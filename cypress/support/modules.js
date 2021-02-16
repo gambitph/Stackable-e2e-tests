@@ -20,38 +20,38 @@ export const assertBlockTitleDescription = ( options = {} ) => {
 			cy.adjust( 'Title HTML Tag', 'h2' )
 				.assertHtmlTag( '.ugb-block-title', 'h2' )
 			cy.adjust( 'Typography', {
-				[ `Font Family` ]: 'Sans-Serif',
-				[ `Size` ]: 31,
-				[ `Weight` ]: '700',
-				[ `Transform` ]: 'uppercase',
-				[ `Line-Height` ]: {
+				'Font Family': 'Sans-Serif',
+				'Size': 31,
+				'Weight': '700',
+				'Transform': 'uppercase',
+				'Line-Height': {
 					value: 46,
 					unit: 'px',
 				},
-				[ `Letter Spacing` ]: 1.3,
+				'Letter Spacing': 1.3,
 			} )
 			cy.adjust( 'Size', 46 )
 			cy.adjust( 'Title Color', '#636363' )
 			cy.adjust( 'Max Width', 748 ).assertComputedStyle( {
 				'.ugb-block-title': {
-					[ `font-size` ]: '46px',
-					[ `font-weight` ]: '700',
-					[ `text-transform` ]: 'uppercase',
-					[ `letter-spacing` ]: '1.3px',
-					[ `color` ]: '#636363',
-					[ `max-width` ]: '748px',
-					[ `line-height` ]: '46px',
+					'font-size': '46px',
+					'font-weight': '700',
+					'text-transform': 'uppercase',
+					'letter-spacing': '1.3px',
+					'color': '#636363',
+					'max-width': '748px',
+					'line-height': '46px',
 				},
 			} )
 			cy.adjust( 'Horizontal Align', 'flex-start' ).assertComputedStyle( {
 				'.ugb-block-title': {
-					[ `margin-left` ]: '0px',
+					'margin-left': '0px',
 				},
 			} )
 			cy.adjust( 'Horizontal Align', 'center' )
 			cy.adjust( 'Horizontal Align', 'flex-end' ).assertComputedStyle( {
 				'.ugb-block-title': {
-					[ `margin-right` ]: '0px',
+					'margin-right': '0px',
 				},
 			} )
 			assertAligns( 'Text Align', '.ugb-block-title' )
@@ -59,38 +59,38 @@ export const assertBlockTitleDescription = ( options = {} ) => {
 			cy.collapse( 'Block Description' )
 			cy.toggleStyle( 'Block Description' )
 			cy.adjust( 'Typography', {
-				[ `Font Family` ]: 'Serif',
-				[ `Size` ]: 25,
-				[ `Weight` ]: '300',
-				[ `Transform` ]: 'lowercase',
-				[ `Line-Height` ]: {
+				'Font Family': 'Serif',
+				'Size': 25,
+				'Weight': '300',
+				'Transform': 'lowercase',
+				'Line-Height': {
 					value: 36,
 					unit: 'px',
 				},
-				[ `Letter Spacing` ]: 1.3,
+				'Letter Spacing': 1.3,
 			} )
 			cy.adjust( 'Size', 31 )
 			cy.adjust( 'Description Color', '#636363' )
 			cy.adjust( 'Max Width', 734 ).assertComputedStyle( {
 				'.ugb-block-description': {
-					[ `font-size` ]: '31px',
-					[ `font-weight` ]: '300',
-					[ `text-transform` ]: 'lowercase',
-					[ `letter-spacing` ]: '1.3px',
-					[ `color` ]: '#636363',
-					[ `max-width` ]: '734px',
-					[ `line-height` ]: '36px',
+					'font-size': '31px',
+					'font-weight': '300',
+					'text-transform': 'lowercase',
+					'letter-spacing': '1.3px',
+					'color': '#636363',
+					'max-width': '734px',
+					'line-height': '36px',
 				},
 			} )
 			cy.adjust( 'Horizontal Align', 'flex-start' ).assertComputedStyle( {
 				'.ugb-block-description': {
-					[ `margin-left` ]: '0px',
+					'margin-left': '0px',
 				},
 			} )
 			cy.adjust( 'Horizontal Align', 'center' )
 			cy.adjust( 'Horizontal Align', 'flex-end' ).assertComputedStyle( {
 				'.ugb-block-description': {
-					[ `margin-right` ]: '0px',
+					'margin-right': '0px',
 				},
 			} )
 
@@ -103,28 +103,28 @@ export const assertBlockTitleDescription = ( options = {} ) => {
 			cy.collapse( 'Block Title' )
 			cy.toggleStyle( 'Block Title' )
 			cy.adjust( 'Typography', {
-				[ `Font Family` ]: 'Sans-Serif',
-				[ `Size` ]: 31,
-				[ `Weight` ]: '700',
-				[ `Transform` ]: 'uppercase',
-				[ `Line-Height` ]: {
+				'Font Family': 'Sans-Serif',
+				'Size': 31,
+				'Weight': '700',
+				'Transform': 'uppercase',
+				'Line-Height': {
 					viewport,
 					value: 42,
 					unit: 'px',
 				},
-				[ `Letter Spacing` ]: 1.3,
+				'Letter Spacing': 1.3,
 			} )
 			cy.adjust( 'Size', 46, { viewport } )
 			cy.adjust( 'Title Color', '#636363' )
 			cy.adjust( 'Max Width', 748, { viewport } ).assertComputedStyle( {
 				'.ugb-block-title': {
-					[ `font-size` ]: '46px',
-					[ `font-weight` ]: '700',
-					[ `text-transform` ]: 'uppercase',
-					[ `letter-spacing` ]: '1.3px',
-					[ `color` ]: '#636363',
-					[ `max-width` ]: '748px',
-					[ `line-height` ]: '42px',
+					'font-size': '46px',
+					'font-weight': '700',
+					'text-transform': 'uppercase',
+					'letter-spacing': '1.3px',
+					'color': '#636363',
+					'max-width': '748px',
+					'line-height': '42px',
 				},
 			} )
 
@@ -133,28 +133,28 @@ export const assertBlockTitleDescription = ( options = {} ) => {
 			cy.collapse( 'Block Description' )
 			cy.toggleStyle( 'Block Description' )
 			cy.adjust( 'Typography', {
-				[ `Font Family` ]: 'Sans-Serif',
-				[ `Size` ]: 21,
-				[ `Weight` ]: '700',
-				[ `Transform` ]: 'uppercase',
-				[ `Line-Height` ]: {
+				'Font Family': 'Sans-Serif',
+				'Size': 21,
+				'Weight': '700',
+				'Transform': 'uppercase',
+				'Line-Height': {
 					viewport,
 					value: 38,
 					unit: 'px',
 				},
-				[ `Letter Spacing` ]: 1.3,
+				'Letter Spacing': 1.3,
 			} )
 			cy.adjust( 'Size', 36, { viewport } )
 			cy.adjust( 'Description Color', '#636363' )
 			cy.adjust( 'Max Width', 748, { viewport } ).assertComputedStyle( {
 				'.ugb-block-description': {
-					[ `font-size` ]: '36px',
-					[ `font-weight` ]: '700',
-					[ `text-transform` ]: 'uppercase',
-					[ `letter-spacing` ]: '1.3px',
-					[ `color` ]: '#636363',
-					[ `max-width` ]: '748px',
-					[ `line-height` ]: '38px',
+					'font-size': '36px',
+					'font-weight': '700',
+					'text-transform': 'uppercase',
+					'letter-spacing': '1.3px',
+					'color': '#636363',
+					'max-width': '748px',
+					'line-height': '38px',
 				},
 			} )
 
@@ -187,61 +187,61 @@ export const assertBlockBackground = ( selector, options = {} ) => {
 			cy.adjust( 'Background Color', '#ffffff' )
 			cy.adjust( 'Background Color Opacity', 0.7 ).assertComputedStyle( {
 				[ selector ]: {
-					[ `background-color` ]: 'rgba(255, 255, 255, 0.7)',
+					'background-color': 'rgba(255, 255, 255, 0.7)',
 				},
 			} )
 		} )
-		cy.setBlockAttribute( { [ `blockBackground${ viewport === 'Desktop' ? `` : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ) } )
+		cy.setBlockAttribute( { [ `blockBackground${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ) } )
 		desktopOnly( () => {
 			cy.adjust( 'No Paddings', true )
 			cy.adjust( 'Color Type', 'gradient' )
 			cy.adjust( 'Background Color #1', '#6d6d6d' )
 			cy.adjust( 'Background Color #2', '#cd2653' )
 			cy.adjust( 'Adv. Gradient Color Settings', {
-				[ `Gradient Direction (degrees)` ]: '180deg',
-				[ `Color 1 Location` ]: '11%',
-				[ `Color 2 Location` ]: '80%',
-				[ `Background Gradient Blend Mode` ]: 'multiply',
+				'Gradient Direction (degrees)': '180deg',
+				'Color 1 Location': '11%',
+				'Color 2 Location': '80%',
+				'Background Gradient Blend Mode': 'multiply',
 			} )
 			cy.adjust( 'Background Media Tint Strength', 7 )
 			cy.adjust( 'Fixed Background', true )
 			cy.adjust( 'Adv. Background Image Settings', {
-				[ `Image Blend Mode` ]: 'multiply',
+				'Image Blend Mode': 'multiply',
 			} ).assertComputedStyle( {
 				[ `${ selector }:before` ]: {
-					[ `background-image` ]: 'linear-gradient(#6d6d6d 11%, #cd2653 80%)',
-					[ `mix-blend-mode` ]: 'multiply',
-					[ `opacity` ]: '0.7',
+					'background-image': 'linear-gradient(#6d6d6d 11%, #cd2653 80%)',
+					'mix-blend-mode': 'multiply',
+					'opacity': '0.7',
 				},
 				[ selector ]: {
-					[ `background-attachment` ]: 'fixed',
-					[ `background-blend-mode` ]: 'multiply',
+					'background-attachment': 'fixed',
+					'background-blend-mode': 'multiply',
 				},
 			} )
 		} )
 		cy.adjust( 'Adv. Background Image Settings', {
-			[ `Image Position` ]: {
+			'Image Position': {
 				viewport,
 				value: 'center center',
 			},
-			[ `Image Repeat` ]: {
+			'Image Repeat': {
 				viewport,
 				value: 'repeat-x',
 			},
-			[ `Image Size` ]: {
+			'Image Size': {
 				viewport,
 				value: 'custom',
 			},
-			[ `Custom Size` ]: {
+			'Custom Size': {
 				viewport,
 				value: 19,
 				unit: '%',
 			},
 		} ).assertComputedStyle( {
 			[ selector ]: {
-				[ `background-position` ]: '50% 50%',
-				[ `background-repeat` ]: 'repeat-x',
-				[ `background-size` ]: '19%',
+				'background-position': '50% 50%',
+				'background-repeat': 'repeat-x',
+				'background-size': '19%',
 			},
 		} )
 	}
@@ -281,7 +281,7 @@ export const assertSeparators = ( options = {} ) => {
 		cy.toggleStyle( 'Top Separator' )
 		cy.adjust( 'Height', 191, { viewport } ).assertComputedStyle( {
 			'.ugb-top-separator>.ugb-separator-wrapper': {
-				[ `height` ]: '191px',
+				'height': '191px',
 			},
 		} )
 		desktopOnly( () => {
@@ -289,7 +289,7 @@ export const assertSeparators = ( options = {} ) => {
 			cy.adjust( 'Color', '#000000' )
 			cy.adjust( 'Width', 1.7 ).assertComputedStyle( {
 				'.ugb-top-separator svg': {
-					[ `fill` ]: '#000000',
+					'fill': '#000000',
 				},
 			} )
 			cy.adjust( 'Flip Horizontally', true )
@@ -301,32 +301,32 @@ export const assertSeparators = ( options = {} ) => {
 				},
 			} ] )
 			cy.adjust( 'Separator Layer 2', {
-				[ `Color` ]: '#ffffff',
-				[ `Layer Height` ]: '1.16',
-				[ `Layer Width` ]: '1.9',
-				[ `Flip Horizontally` ]: true,
-				[ `Opacity` ]: '0.3',
-				[ `Mix Blend Mode` ]: 'overlay',
+				'Color': '#ffffff',
+				'Layer Height': '1.16',
+				'Layer Width': '1.9',
+				'Flip Horizontally': true,
+				'Opacity': '0.3',
+				'Mix Blend Mode': 'overlay',
 			} ).assertComputedStyle( {
 				'.ugb-top-separator .ugb-separator__layer-2': {
-					[ `fill` ]: '#ffffff',
-					[ `transform` ]: 'matrix(-1.9, 0, 0, 1.16, 0, 0)',
-					[ `opacity` ]: '0.3',
-					[ `mix-blend-mode` ]: 'overlay',
+					'fill': '#ffffff',
+					'transform': 'matrix(-1.9, 0, 0, 1.16, 0, 0)',
+					'opacity': '0.3',
+					'mix-blend-mode': 'overlay',
 				},
 			} )
 
 			cy.adjust( 'Separator Layer 3', {
-				[ `Color` ]: '#6d6d6d',
-				[ `Layer Height` ]: '1.03',
-				[ `Layer Width` ]: '1.2',
-				[ `Flip Horizontally` ]: true,
-				[ `Opacity` ]: '0.8',
+				'Color': '#6d6d6d',
+				'Layer Height': '1.03',
+				'Layer Width': '1.2',
+				'Flip Horizontally': true,
+				'Opacity': '0.8',
 			} ).assertComputedStyle( {
 				'.ugb-top-separator .ugb-separator__layer-3': {
-					[ `fill` ]: '#6d6d6d',
-					[ `transform` ]: 'matrix(-1.2, 0, 0, 1.03, 0, 0)',
-					[ `opacity` ]: '0.8',
+					'fill': '#6d6d6d',
+					'transform': 'matrix(-1.2, 0, 0, 1.03, 0, 0)',
+					'opacity': '0.8',
 				},
 			} )
 		} )
@@ -334,7 +334,7 @@ export const assertSeparators = ( options = {} ) => {
 		cy.toggleStyle( 'Bottom Separator' )
 		cy.adjust( 'Height', 150, { viewport } ).assertComputedStyle( {
 			'.ugb-bottom-separator>.ugb-separator-wrapper': {
-				[ `height` ]: '150px',
+				'height': '150px',
 			},
 		} )
 		desktopOnly( () => {
@@ -342,7 +342,7 @@ export const assertSeparators = ( options = {} ) => {
 			cy.adjust( 'Color', '#f00069' )
 			cy.adjust( 'Width', 1.7 ).assertComputedStyle( {
 				'.ugb-bottom-separator svg': {
-					[ `fill` ]: '#f00069',
+					'fill': '#f00069',
 				},
 			} )
 			cy.adjust( 'Flip Horizontally', true )
@@ -354,32 +354,32 @@ export const assertSeparators = ( options = {} ) => {
 				},
 			} ] )
 			cy.adjust( 'Separator Layer 2', {
-				[ `Color` ]: '#ffffff',
-				[ `Layer Height` ]: '1.16',
-				[ `Layer Width` ]: '1.9',
-				[ `Flip Horizontally` ]: true,
-				[ `Opacity` ]: '0.3',
-				[ `Mix Blend Mode` ]: 'saturation',
+				'Color': '#ffffff',
+				'Layer Height': '1.16',
+				'Layer Width': '1.9',
+				'Flip Horizontally': true,
+				'Opacity': '0.3',
+				'Mix Blend Mode': 'saturation',
 			} ).assertComputedStyle( {
 				'.ugb-bottom-separator .ugb-separator__layer-2': {
-					[ `fill` ]: '#ffffff',
-					[ `transform` ]: 'matrix(-1.9, 0, 0, 1.16, 0, 0)',
-					[ `opacity` ]: '0.3',
-					[ `mix-blend-mode` ]: 'saturation',
+					'fill': '#ffffff',
+					'transform': 'matrix(-1.9, 0, 0, 1.16, 0, 0)',
+					'opacity': '0.3',
+					'mix-blend-mode': 'saturation',
 				},
 			} )
 
 			cy.adjust( 'Separator Layer 3', {
-				[ `Color` ]: '#6d6d6d',
-				[ `Layer Height` ]: '1.03',
-				[ `Layer Width` ]: '1.2',
-				[ `Flip Horizontally` ]: true,
-				[ `Opacity` ]: '0.8',
+				'Color': '#6d6d6d',
+				'Layer Height': '1.03',
+				'Layer Width': '1.2',
+				'Flip Horizontally': true,
+				'Opacity': '0.8',
 			} ).assertComputedStyle( {
 				'.ugb-bottom-separator .ugb-separator__layer-3': {
-					[ `fill` ]: '#6d6d6d',
-					[ `transform` ]: 'matrix(-1.2, 0, 0, 1.03, 0, 0)',
-					[ `opacity` ]: '0.8',
+					'fill': '#6d6d6d',
+					'transform': 'matrix(-1.2, 0, 0, 1.03, 0, 0)',
+					'opacity': '0.8',
 				},
 			} )
 		} )

@@ -87,55 +87,55 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Container' )
 	cy.setBlockAttribute( {
 		[ `column${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-		[ `image1Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-		[ `image2Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-		[ `image3Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-		[ `image4Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
+		'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		'image4Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
 	} )
 	desktopOnly( () => {
 		cy.adjust( 'Background', {
-			[ `Color Type` ]: 'gradient',
-			[ `Background Color #1` ]: '#ff5c5c',
-			[ `Background Color #2` ]: '#7bff5a',
-			[ `Adv. Gradient Color Settings` ]: {
-				[ `Gradient Direction (degrees)` ]: 160,
-				[ `Color 1 Location` ]: 28,
-				[ `Color 2 Location` ]: 75,
-				[ `Background Gradient Blend Mode` ]: 'hue',
+			'Color Type': 'gradient',
+			'Background Color #1': '#ff5c5c',
+			'Background Color #2': '#7bff5a',
+			'Adv. Gradient Color Settings': {
+				'Gradient Direction (degrees)': 160,
+				'Color 1 Location': 28,
+				'Color 2 Location': 75,
+				'Background Gradient Blend Mode': 'hue',
 			},
-			[ `Background Media Tint Strength` ]: 6,
-			[ `Fixed Background` ]: true,
-			[ `Adv. Background Image Settings` ]: {
-				[ `Image Blend Mode` ]: 'exclusion',
+			'Background Media Tint Strength': 6,
+			'Fixed Background': true,
+			'Adv. Background Image Settings': {
+				'Image Blend Mode': 'exclusion',
 			},
 		} ).assertComputedStyle( {
 			'.ugb-feature-grid__item:before': {
-				[ `background-image` ]: 'linear-gradient(160deg, #ff5c5c 28%, #7bff5a 75%)',
-				[ `opacity` ]: '0.6',
-				[ `mix-blend-mode` ]: 'hue',
+				'background-image': 'linear-gradient(160deg, #ff5c5c 28%, #7bff5a 75%)',
+				'opacity': '0.6',
+				'mix-blend-mode': 'hue',
 			},
 			'.ugb-feature-grid__item': {
-				[ `background-color` ]: '#ff5c5c',
-				[ `background-attachment` ]: 'fixed',
-				[ `background-blend-mode` ]: 'exclusion',
+				'background-color': '#ff5c5c',
+				'background-attachment': 'fixed',
+				'background-blend-mode': 'exclusion',
 			},
 		} )
 	} )
 	cy.adjust( 'Background', {
-		[ `Adv. Background Image Settings` ]: {
-			[ `Image Position` ]: {
+		'Adv. Background Image Settings': {
+			'Image Position': {
 				viewport,
 				value: 'center center',
 			},
-			[ `Image Repeat` ]: {
+			'Image Repeat': {
 				viewport,
 				value: 'repeat-x',
 			},
-			[ `Image Size` ]: {
+			'Image Size': {
 				viewport,
 				value: 'custom',
 			},
-			[ `Custom Size` ]: {
+			'Custom Size': {
 				viewport,
 				value: 19,
 				unit: '%',
@@ -143,9 +143,9 @@ function styleTab( viewport, desktopOnly ) {
 		},
 	} ).assertComputedStyle( {
 		'.ugb-feature-grid__item': {
-			[ `background-position` ]: '50% 50%',
-			[ `background-repeat` ]: 'repeat-x',
-			[ `background-size` ]: '19%',
+			'background-position': '50% 50%',
+			'background-repeat': 'repeat-x',
+			'background-size': '19%',
 		},
 	} )
 	desktopOnly( () => {
@@ -154,13 +154,13 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Border Color', '#a12222' )
 		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
 			'.ugb-feature-grid__item': {
-				[ `border-style` ]: 'solid',
-				[ `border-top-width` ]: '4px',
-				[ `border-bottom-width` ]: '4px',
-				[ `border-left-width` ]: '4px',
-				[ `border-right-width` ]: '4px',
-				[ `border-color` ]: '#a12222',
-				[ `border-radius` ]: '26px',
+				'border-style': 'solid',
+				'border-top-width': '4px',
+				'border-bottom-width': '4px',
+				'border-left-width': '4px',
+				'border-right-width': '4px',
+				'border-color': '#a12222',
+				'border-radius': '26px',
 			},
 		} )
 		cy.adjust( 'Shadow / Outline', 7 )
@@ -169,7 +169,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Image' )
 	cy.adjust( 'Image Width', 29, { viewport } ).assertComputedStyle( {
 		'.ugb-img': {
-			[ `width` ]: '29px',
+			'width': '29px',
 		},
 	} )
 	desktopOnly( () => {
@@ -178,20 +178,20 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
 		'.ugb-feature-grid__image': {
-			[ `margin-left` ]: '0px',
-			[ `margin-right` ]: 'auto',
+			'margin-left': '0px',
+			'margin-right': 'auto',
 		},
 	} )
 	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
 		'.ugb-feature-grid__image': {
-			[ `margin-left` ]: 'auto',
-			[ `margin-right` ]: 'auto',
+			'margin-left': 'auto',
+			'margin-right': 'auto',
 		},
 	} )
 	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
 		'.ugb-feature-grid__image': {
-			[ `margin-left` ]: 'auto',
-			[ `margin-right` ]: '0px',
+			'margin-left': 'auto',
+			'margin-right': '0px',
 		},
 	} )
 
@@ -214,7 +214,7 @@ function styleTab( viewport, desktopOnly ) {
 			.assertHtmlTag( '.ugb-feature-grid__title', 'h4' )
 		cy.adjust( 'Title Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-feature-grid__title': {
-				[ `color` ]: '#742f2f',
+				'color': '#742f2f',
 			},
 		} )
 	} )
@@ -225,7 +225,7 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Description Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-feature-grid__description': {
-				[ `color` ]: '#742f2f',
+				'color': '#742f2f',
 			},
 		} )
 	} )
@@ -240,56 +240,56 @@ function styleTab( viewport, desktopOnly ) {
 			.assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
-			[ `Button Color` ]: '#371010',
+			'Button Color': '#371010',
 		} )
 		cy.adjust( 'Typography', {
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Letter Spacing` ]: 2.9,
+			'Weight': '700',
+			'Transform': 'lowercase',
+			'Letter Spacing': 2.9,
 		} )
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
 		cy.adjust( 'Opacity', 0.2 ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
-				[ `color` ]: '#4e2e2e',
+				'font-weight': '700',
+				'text-transform': 'lowercase',
+				'letter-spacing': '2.9px',
+				'color': '#4e2e2e',
 			},
 		} )
 		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
-			[ `Icon Size` ]: 41,
-			[ `Icon Spacing` ]: 25,
+			'Icon Size': 41,
+			'Icon Spacing': 25,
 		} ).assertComputedStyle( {
 			'.ugb-button svg': {
-				[ `height` ]: '41px',
-				[ `width` ]: '41px',
-				[ `margin-right` ]: '25px',
+				'height': '41px',
+				'width': '41px',
+				'margin-right': '25px',
 			},
 		} )
 	} )
 
 	cy.adjust( 'Typography', {
-		[ `Size` ]: {
+		'Size': {
 			viewport,
 			value: 50,
 		},
 	} ).assertComputedStyle( {
 		'.ugb-button .ugb-button--inner': {
-			[ `font-size` ]: '50px',
+			'font-size': '50px',
 		},
 	} )
 
 	cy.adjust( 'Typography', {
-		[ `Size` ]: {
+		'Size': {
 			viewport,
 			unit: 'em',
 			value: 7,
 		},
 	} ).assertComputedStyle( {
 		'.ugb-button .ugb-button--inner': {
-			[ `font-size` ]: '7em',
+			'font-size': '7em',
 		},
 	} )
 
@@ -297,52 +297,52 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.adjust( 'Paddings', 24, { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-feature-grid__item': {
-			[ `padding-top` ]: '24px',
-			[ `padding-bottom` ]: '24px',
-			[ `padding-left` ]: '24px',
-			[ `padding-right` ]: '24px',
+			'padding-top': '24px',
+			'padding-bottom': '24px',
+			'padding-left': '24px',
+			'padding-right': '24px',
 		},
 	} )
 
 	cy.adjust( 'Paddings', 4, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-feature-grid__item': {
-			[ `padding-top` ]: '4em',
-			[ `padding-bottom` ]: '4em',
-			[ `padding-left` ]: '4em',
-			[ `padding-right` ]: '4em',
+			'padding-top': '4em',
+			'padding-bottom': '4em',
+			'padding-left': '4em',
+			'padding-right': '4em',
 		},
 	} )
 
 	cy.adjust( 'Paddings', 12, { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-feature-grid__item': {
-			[ `padding-top` ]: '12%',
-			[ `padding-bottom` ]: '12%',
-			[ `padding-left` ]: '12%',
-			[ `padding-right` ]: '12%',
+			'padding-top': '12%',
+			'padding-bottom': '12%',
+			'padding-left': '12%',
+			'padding-right': '12%',
 		},
 	} )
 
 	cy.adjust( 'Image', 13, { viewport } ).assertComputedStyle( {
 		'.ugb-feature-grid__image': {
-			[ `margin-bottom` ]: '13px',
+			'margin-bottom': '13px',
 		},
 	} )
 
 	cy.adjust( 'Title', 23, { viewport } ).assertComputedStyle( {
 		'.ugb-feature-grid__title': {
-			[ `margin-bottom` ]: '23px',
+			'margin-bottom': '23px',
 		},
 	} )
 
 	cy.adjust( 'Description', 16, { viewport } ).assertComputedStyle( {
 		'.ugb-feature-grid__description': {
-			[ `margin-bottom` ]: '16px',
+			'margin-bottom': '16px',
 		},
 	} )
 
 	cy.adjust( 'Button', 21, { viewport } ).assertComputedStyle( {
 		'.ugb-button-container': {
-			[ `margin-bottom` ]: '21px',
+			'margin-bottom': '21px',
 		},
 	} )
 

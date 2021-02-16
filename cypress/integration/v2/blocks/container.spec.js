@@ -60,30 +60,30 @@ function styleTab( viewport, desktopOnly ) {
 	// Test Height
 	cy.adjust( 'Height', 'short', { viewport } ).assertComputedStyle( {
 		'.ugb-container__side': {
-			[ `padding-top` ]: '35px',
-			[ `padding-bottom` ]: '35px',
+			'padding-top': '35px',
+			'padding-bottom': '35px',
 		},
 	} )
 	cy.adjust( 'Height', 'normal', { viewport } ).assertComputedStyle( {
 		'.ugb-container__side': {
-			[ `padding-top` ]: '0px',
-			[ `padding-bottom` ]: '0px',
+			'padding-top': '0px',
+			'padding-bottom': '0px',
 		},
 	} )
 	cy.adjust( 'Height', 'tall', { viewport } ).assertComputedStyle( {
 		'.ugb-container__side': {
-			[ `padding-top` ]: '120px',
-			[ `padding-bottom` ]: '120px',
+			'padding-top': '120px',
+			'padding-bottom': '120px',
 		},
 	} )
 	cy.adjust( 'Height', 'half', { viewport } ).assertComputedStyle( {
 		'.ugb-container__wrapper': {
-			[ `min-height` ]: '50vh',
+			'min-height': '50vh',
 		},
 	} )
 	cy.adjust( 'Height', 'full', { viewport } ).assertComputedStyle( {
 		'.ugb-container__wrapper': {
-			[ `min-height` ]: '100vh',
+			'min-height': '100vh',
 		},
 	} )
 
@@ -94,7 +94,7 @@ function styleTab( viewport, desktopOnly ) {
 			.adjust( 'Content Vertical Align', align, { viewport } )
 			.assertComputedStyle( {
 				'.ugb-container__wrapper': {
-					[ `justify-content` ]: align,
+					'justify-content': align,
 				},
 			} )
 	} )
@@ -102,7 +102,7 @@ function styleTab( viewport, desktopOnly ) {
 	// Test Content Width
 	cy.adjust( 'Content Width (%)', 50, { viewport } ).assertComputedStyle( {
 		'.ugb-container__content-wrapper': {
-			[ `width` ]: '50%',
+			'width': '50%',
 		},
 	} )
 
@@ -113,7 +113,7 @@ function styleTab( viewport, desktopOnly ) {
 			.adjust( 'Content Horizontal Align', align, { viewport } )
 			.assertComputedStyle( {
 				'.ugb-container__side': {
-					[ `align-items` ]: align,
+					'align-items': align,
 				},
 			} )
 	} )
@@ -128,33 +128,33 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		// Test Single
 		cy.adjust( 'Background', {
-			[ `Color Type` ]: 'single',
-			[ `Background Color` ]: '#000000',
-			[ `Background Color Opacity` ]: 0.7,
+			'Color Type': 'single',
+			'Background Color': '#000000',
+			'Background Color Opacity': 0.7,
 		} ).assertComputedStyle( {
 			'.ugb-container__wrapper': {
-				[ `background-color` ]: 'rgba(0, 0, 0, 0.7)',
+				'background-color': 'rgba(0, 0, 0, 0.7)',
 			},
 		} )
 
 		// Test Gradient
 		cy.adjust( 'Background', {
-			[ `Color Type` ]: 'gradient',
-			[ `Background Color #1` ]: '#ff5c5c',
-			[ `Background Color #2` ]: '#7bff5a',
-			[ `Adv. Gradient Color Settings` ]: {
-				[ `Gradient Direction (degrees)` ]: 160,
-				[ `Color 1 Location` ]: 28,
-				[ `Color 2 Location` ]: 75,
-				[ `Background Gradient Blend Mode` ]: 'hue',
+			'Color Type': 'gradient',
+			'Background Color #1': '#ff5c5c',
+			'Background Color #2': '#7bff5a',
+			'Adv. Gradient Color Settings': {
+				'Gradient Direction (degrees)': 160,
+				'Color 1 Location': 28,
+				'Color 2 Location': 75,
+				'Background Gradient Blend Mode': 'hue',
 			},
 		} ).assertComputedStyle( {
 			'.ugb-container__wrapper:before': {
-				[ `background-image` ]: 'linear-gradient(160deg, #ff5c5c 28%, #7bff5a 75%)',
-				[ `mix-blend-mode` ]: 'hue',
+				'background-image': 'linear-gradient(160deg, #ff5c5c 28%, #7bff5a 75%)',
+				'mix-blend-mode': 'hue',
 			},
 			'.ugb-container__wrapper': {
-				[ `background-color` ]: '#ff5c5c',
+				'background-color': '#ff5c5c',
 			},
 		} )
 	} )
@@ -164,43 +164,43 @@ function styleTab( viewport, desktopOnly ) {
 		[ `column${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
 	} )
 	cy.adjust( 'Background', {
-		[ `Adv. Background Image Settings` ]: {
-			[ `Image Position` ]: {
+		'Adv. Background Image Settings': {
+			'Image Position': {
 				viewport,
 				value: 'top right',
 			},
-			[ `Image Repeat` ]: {
+			'Image Repeat': {
 				viewport,
 				value: 'repeat-x',
 			},
-			[ `Image Size` ]: {
+			'Image Size': {
 				viewport,
 				value: 'cover',
 			},
 		},
 	} ).assertComputedStyle( {
 		'.ugb-container__wrapper': {
-			[ `background-position` ]: '100% 0%',
-			[ `background-repeat` ]: 'repeat-x',
-			[ `background-size` ]: 'cover',
+			'background-position': '100% 0%',
+			'background-repeat': 'repeat-x',
+			'background-size': 'cover',
 		},
 	} )
 
 	desktopOnly( () => {
 		// Test non-responsive image settings
 		cy.adjust( 'Background', {
-			[ `Background Media Tint Strength` ]: 7,
-			[ `Fixed Background` ]: true,
-			[ `Adv. Background Image Settings` ]: {
-				[ `Image Blend Mode` ]: 'exclusion',
+			'Background Media Tint Strength': 7,
+			'Fixed Background': true,
+			'Adv. Background Image Settings': {
+				'Image Blend Mode': 'exclusion',
 			},
 		} ).assertComputedStyle( {
 			'.ugb-container__wrapper': {
-				[ `background-attachment` ]: 'fixed',
-				[ `background-blend-mode` ]: 'exclusion',
+				'background-attachment': 'fixed',
+				'background-blend-mode': 'exclusion',
 			},
 			'.ugb-container__wrapper:before': {
-				[ `opacity` ]: '0.7',
+				'opacity': '0.7',
 			},
 		} )
 	} )
@@ -211,9 +211,9 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Border Color', '#a12222' )
 		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
 			'.ugb-container__wrapper': {
-				[ `border-style` ]: 'solid',
-				[ `border-color` ]: '#a12222',
-				[ `border-radius` ]: '26px',
+				'border-style': 'solid',
+				'border-color': '#a12222',
+				'border-radius': '26px',
 			},
 		} )
 		cy.adjust( 'Shadow / Outline', 5 )
@@ -223,11 +223,11 @@ function styleTab( viewport, desktopOnly ) {
 	cy.adjust( 'Borders', 'dashed' )
 	cy.adjust( 'Border Width', 4, { viewport } ).assertComputedStyle( {
 		'.ugb-container__wrapper': {
-			[ `border-style` ]: 'dashed',
-			[ `border-top-width` ]: '4px',
-			[ `border-bottom-width` ]: '4px',
-			[ `border-left-width` ]: '4px',
-			[ `border-right-width` ]: '4px',
+			'border-style': 'dashed',
+			'border-top-width': '4px',
+			'border-bottom-width': '4px',
+			'border-left-width': '4px',
+			'border-right-width': '4px',
 		},
 	} )
 
@@ -237,28 +237,28 @@ function styleTab( viewport, desktopOnly ) {
 	// Test Padding
 	cy.adjust( 'Paddings', 30, { viewport } ).assertComputedStyle( {
 		'.ugb-container__wrapper': {
-			[ `padding-top` ]: '30px',
-			[ `padding-bottom` ]: '30px',
-			[ `padding-right` ]: '30px',
-			[ `padding-left` ]: '30px',
+			'padding-top': '30px',
+			'padding-bottom': '30px',
+			'padding-right': '30px',
+			'padding-left': '30px',
 		},
 	} )
 	cy.resetStyle( 'Paddings' )
 	cy.adjust( 'Paddings', 5, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-container__wrapper': {
-			[ `padding-top` ]: '5em',
-			[ `padding-bottom` ]: '5em',
-			[ `padding-right` ]: '5em',
-			[ `padding-left` ]: '5em',
+			'padding-top': '5em',
+			'padding-bottom': '5em',
+			'padding-right': '5em',
+			'padding-left': '5em',
 		},
 	} )
 	cy.resetStyle( 'Paddings' )
 	cy.adjust( 'Paddings', 25, { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-container__wrapper': {
-			[ `padding-top` ]: '25%',
-			[ `padding-bottom` ]: '25%',
-			[ `padding-right` ]: '25%',
-			[ `padding-left` ]: '25%',
+			'padding-top': '25%',
+			'padding-bottom': '25%',
+			'padding-right': '25%',
+			'padding-left': '25%',
 		},
 	} )
 
@@ -279,16 +279,16 @@ function styleTab( viewport, desktopOnly ) {
 			value: 'link',
 		} ).assertComputedStyle( {
 			'.ugb-card__title': {
-				[ `color` ]: '#8e8ee0',
+				'color': '#8e8ee0',
 			},
 			'.ugb-card__subtitle': {
-				[ `color` ]: '#24b267',
+				'color': '#24b267',
 			},
 			'.ugb-card__description': {
-				[ `color` ]: '#24b267',
+				'color': '#24b267',
 			},
 			'.ugb-button': {
-				[ `color` ]: '#642c2c',
+				'color': '#642c2c',
 			},
 		} )
 	} )

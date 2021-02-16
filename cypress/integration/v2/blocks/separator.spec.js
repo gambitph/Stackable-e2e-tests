@@ -53,8 +53,8 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Separator Width', 2.1 )
 		cy.adjust( 'Flip Horizontally', true ).assertComputedStyle( {
 			'.ugb-separator__layer-1': {
-				[ `fill` ]: '#c99292',
-				[ `transform` ]: 'matrix(-2.1, 0, 0, 1, 0, 0)',
+				'fill': '#c99292',
+				'transform': 'matrix(-2.1, 0, 0, 1, 0, 0)',
 			},
 		} )
 
@@ -66,7 +66,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'General' )
 	cy.adjust( 'Height', 240, { viewport } ).assertComputedStyle( {
 		'.ugb-separator__svg-wrapper': {
-			[ `height` ]: '240px',
+			'height': '240px',
 		},
 	} )
 	cy.resetStyle( 'Height' )
@@ -79,7 +79,7 @@ function styleTab( viewport, desktopOnly ) {
 
 		cy.adjust( 'Background Color', '#733535' ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `background-color` ]: '#733535',
+				'background-color': '#733535',
 			},
 		} )
 	} )
@@ -91,24 +91,24 @@ function styleTab( viewport, desktopOnly ) {
 		// Test Paddings
 		cy.adjust( 'Padding Top', 126, { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator__top-pad': {
-				[ `height` ]: '126px',
+				'height': '126px',
 			},
 		} )
 		cy.resetStyle( 'Padding Top' )
 		cy.adjust( 'Padding Top', 40, { unit: 'em' } ).assertComputedStyle( {
 			'.ugb-separator__top-pad': {
-				[ `height` ]: '40em',
+				'height': '40em',
 			},
 		} )
 		cy.adjust( 'Padding Bottom', 111, { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator__bottom-pad': {
-				[ `height` ]: '111px',
+				'height': '111px',
 			},
 		} )
 		cy.resetStyle( 'Padding Bottom' )
 		cy.adjust( 'Padding Bottom', 36, { unit: 'em' } ).assertComputedStyle( {
 			'.ugb-separator__bottom-pad': {
-				[ `height` ]: '36em',
+				'height': '36em',
 			},
 		} )
 
@@ -119,28 +119,28 @@ function styleTab( viewport, desktopOnly ) {
 		 */
 		cy.adjust( 'Margin Top', 20, { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-top` ]: '5px',
+				'margin-top': '5px',
 			},
 		}, {
 			assertFrontend: false,
 		} )
 		cy.adjust( 'Margin Top', 20, { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-top` ]: '19px',
+				'margin-top': '19px',
 			},
 		}, {
 			assertBackend: false,
 		} )
 		cy.adjust( 'Margin Top', 20, { unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-top` ]: '5%',
+				'margin-top': '5%',
 			},
 		}, {
 			assertFrontend: false,
 		} )
 		cy.adjust( 'Margin Top', 20, { unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-top` ]: '19%',
+				'margin-top': '19%',
 			},
 		}, {
 			assertBackend: false,
@@ -149,28 +149,28 @@ function styleTab( viewport, desktopOnly ) {
 		// Test Margin Bottom
 		cy.adjust( 'Margin Bottom', 35, { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-bottom` ]: '20px',
+				'margin-bottom': '20px',
 			},
 		}, {
 			assertFrontend: false,
 		} )
 		cy.adjust( 'Margin Bottom', 35, { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-bottom` ]: '34px',
+				'margin-bottom': '34px',
 			},
 		}, {
 			assertBackend: false,
 		} )
 		cy.adjust( 'Margin Bottom', 40, { unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-bottom` ]: '25%',
+				'margin-bottom': '25%',
 			},
 		}, {
 			assertFrontend: false,
 		} )
 		cy.adjust( 'Margin Bottom', 40, { unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-bottom` ]: '39%',
+				'margin-bottom': '39%',
 			},
 		}, {
 			assertBackend: false,
@@ -181,24 +181,24 @@ function styleTab( viewport, desktopOnly ) {
 		// Test Paddings
 		cy.adjust( 'Padding Top', 126, { viewport, unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator__top-pad': {
-				[ `height` ]: '126px',
+				'height': '126px',
 			},
 		} )
 		cy.resetStyle( 'Padding Top' )
 		cy.adjust( 'Padding Top', 40, { viewport, unit: 'em' } ).assertComputedStyle( {
 			'.ugb-separator__top-pad': {
-				[ `height` ]: '40em',
+				'height': '40em',
 			},
 		} )
 		cy.adjust( 'Padding Bottom', 111, { viewport, unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator__bottom-pad': {
-				[ `height` ]: '111px',
+				'height': '111px',
 			},
 		} )
 		cy.resetStyle( 'Padding Bottom' )
 		cy.adjust( 'Padding Bottom', 36, { viewport, unit: 'em' } ).assertComputedStyle( {
 			'.ugb-separator__bottom-pad': {
-				[ `height` ]: '36em',
+				'height': '36em',
 			},
 		} )
 
@@ -209,24 +209,24 @@ function styleTab( viewport, desktopOnly ) {
 		 */
 		cy.adjust( 'Margin Top', 20, { viewport, unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-top` ]: '19px',
+				'margin-top': '19px',
 			},
 		} )
 		cy.adjust( 'Margin Top', 25, { viewport, unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-top` ]: '24%',
+				'margin-top': '24%',
 			},
 		} )
 
 		// Test Margin Bottom
 		cy.adjust( 'Margin Bottom', 35, { viewport, unit: 'px' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-bottom` ]: '34px',
+				'margin-bottom': '34px',
 			},
 		} )
 		cy.adjust( 'Margin Bottom', 40, { viewport, unit: '%' } ).assertComputedStyle( {
 			'.ugb-separator': {
-				[ `margin-bottom` ]: '39%',
+				'margin-bottom': '39%',
 			},
 		} )
 	}
@@ -242,10 +242,10 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Opacity', 0.6 )
 		cy.adjust( 'Mix Blend Mode', 'soft-light' ).assertComputedStyle( {
 			'.ugb-separator__layer-2': {
-				[ `fill` ]: '#000000',
-				[ `opacity` ]: '0.6',
-				[ `mix-blend-mode` ]: 'soft-light',
-				[ `transform` ]: 'matrix(-1.7, 0, 0, 0.94, 0, 0)',
+				'fill': '#000000',
+				'opacity': '0.6',
+				'mix-blend-mode': 'soft-light',
+				'transform': 'matrix(-1.7, 0, 0, 0.94, 0, 0)',
 			},
 		} )
 
@@ -258,9 +258,9 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Flip Horizontally', true )
 		cy.adjust( 'Opacity', 0.2 ).assertComputedStyle( {
 			'.ugb-separator__layer-3': {
-				[ `fill` ]: '#ffffff',
-				[ `opacity` ]: '0.2',
-				[ `transform` ]: 'matrix(-3.3, 0, 0, 0.79, 0, 0)',
+				'fill': '#ffffff',
+				'opacity': '0.2',
+				'transform': 'matrix(-3.3, 0, 0, 0.79, 0, 0)',
 			},
 		} )
 	} )

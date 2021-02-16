@@ -66,41 +66,41 @@ function desktopStyle() {
 
 		cy.adjust( 'Columns', 2 )
 		cy.adjust( 'Column Widths', [ 20 ] ).assertComputedStyle( {
-			[ `.ugb-columns__item` ]: {
-				[ `grid-template-columns` ]: '0.4fr 1fr',
+			'.ugb-columns__item': {
+				'grid-template-columns': '0.4fr 1fr',
 			},
 		}, {
 			assertFrontend: false,
 		} )
 
 		cy.adjust( 'Column Gap', 115 ).assertComputedStyle( {
-			[ `.ugb-columns__item` ]: {
-				[ `grid-column-gap` ]: '115px',
+			'.ugb-columns__item': {
+				'grid-column-gap': '115px',
 			},
 		} )
 
 		cy.adjust( 'Height', 'half' ).assertComputedStyle( {
-			[ `.ugb-columns__item` ]: {
-				[ `min-height` ]: `${ config.viewportHeight / 2 }px`,
+			'.ugb-columns__item': {
+				'min-height': `${ config.viewportHeight / 2 }px`,
 			},
 		} )
 
 		cy.adjust( 'Height', 'full' ).assertComputedStyle( {
-			[ `.ugb-columns__item` ]: {
-				[ `min-height` ]: `${ config.viewportHeight }px`,
+			'.ugb-columns__item': {
+				'min-height': `${ config.viewportHeight }px`,
 			},
 		} )
 
 		cy.adjust( 'Height', 'custom' )
 		cy.adjust( 'Custom Height', 220 ).assertComputedStyle( {
-			[ `.ugb-columns__item` ]: {
-				[ `min-height` ]: '220px',
+			'.ugb-columns__item': {
+				'min-height': '220px',
 			},
 		} )
 
 		cy.adjust( 'Column Vertical Align', 'center' ).assertComputedStyle( {
-			[ `.ugb-column` ]: {
-				[ `justify-content` ]: 'center',
+			'.ugb-column': {
+				'justify-content': 'center',
 			},
 		} )
 
@@ -108,12 +108,12 @@ function desktopStyle() {
 		cy.collapse( 'Block Title' )
 		cy.adjust( 'Title HTML Tag', 'h5' )
 		cy.adjust( 'Typography', {
-			[ `Font Family` ]: 'Monospace',
-			[ `Size` ]: 75,
-			[ `Weight` ]: 600,
-			[ `Transform` ]: 'uppercase',
-			[ `Line-Height` ]: 1.9,
-			[ `Letter Spacing` ]: 7.1,
+			'Font Family': 'Monospace',
+			'Size': 75,
+			'Weight': 600,
+			'Transform': 'uppercase',
+			'Line-Height': 1.9,
+			'Letter Spacing': 7.1,
 		} )
 	} )
 }

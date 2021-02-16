@@ -47,15 +47,15 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Height / Size', 9 )
 		cy.adjust( 'Width (%)', 68 ).assertComputedStyle( {
 			'.ugb-divider__hr': {
-				[ `background-color` ]: '#000000',
-				[ `height` ]: '9px',
-				[ `width` ]: '68%',
+				'background-color': '#000000',
+				'height': '9px',
+				'width': '68%',
 			},
 		} )
 		cy.adjust( 'Vertical Margin', 32 ).assertComputedStyle( {
 			'.ugb-block-content': {
-				[ `margin-top` ]: '32px',
-				[ `margin-bottom` ]: '32px',
+				'margin-top': '32px',
+				'margin-bottom': '32px',
 			},
 		} )
 	} )

@@ -39,7 +39,7 @@ function styleTab( viewport, desktopOnly ) {
 			.assertHtmlTag( '.ugb-expand__title', 'h6' )
 		cy.adjust( 'Title Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-expand__title': {
-				[ `color` ]: '#742f2f',
+				'color': '#742f2f',
 			},
 		} )
 	} )
@@ -51,7 +51,7 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Text Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-expand__less-text p, .ugb-expand__more-text p': {
-				[ `color` ]: '#742f2f',
+				'color': '#742f2f',
 			},
 		} )
 	} )
@@ -63,7 +63,7 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Link Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
-				[ `color` ]: '#742f2f',
+				'color': '#742f2f',
 			},
 		} )
 	} )
@@ -74,17 +74,17 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Spacing' )
 	cy.adjust( 'Title', 44, { viewport } ).assertComputedStyle( {
 		'.ugb-expand__title': {
-			[ `margin-bottom` ]: '44px',
+			'margin-bottom': '44px',
 		},
 	} )
 	cy.adjust( 'Text', 12, { viewport } ).assertComputedStyle( {
 		'.ugb-expand__less-text, .ugb-expand__more-text': {
-			[ `margin-bottom` ]: '12px',
+			'margin-bottom': '12px',
 		},
 	} )
 	cy.adjust( 'Link', 39, { viewport } ).assertComputedStyle( {
 		'.ugb-expand__more-toggle-text, .ugb-expand__less-toggle-text': {
-			[ `margin-bottom` ]: '39px',
+			'margin-bottom': '39px',
 		},
 	} )
 }
