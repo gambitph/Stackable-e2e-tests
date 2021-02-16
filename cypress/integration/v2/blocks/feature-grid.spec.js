@@ -233,6 +233,7 @@ function styleTab( viewport, desktopOnly ) {
 	assertAligns( 'Align', '.ugb-feature-grid__description', { viewport } )
 
 	cy.collapse( 'Button' )
+	cy.waitFA()
 	desktopOnly( () => {
 		cy.adjust( 'Button Color', '#4e2e2e' )
 		cy.adjust( 'Hover Effect', 'scale' )
@@ -256,18 +257,17 @@ function styleTab( viewport, desktopOnly ) {
 				[ `color` ]: '#4e2e2e',
 			},
 		} )
-	} )
-	cy.waitFA()
-	cy.adjust( 'Icon', 'info' )
-	cy.adjust( 'Adv. Icon Settings', {
-		[ `Icon Size` ]: 41,
-		[ `Icon Spacing` ]: 25,
-	} ).assertComputedStyle( {
-		'.ugb-button svg': {
-			[ `height` ]: '41px',
-			[ `width` ]: '41px',
-			[ `margin-right` ]: '25px',
-		},
+		cy.adjust( 'Icon', 'info' )
+		cy.adjust( 'Adv. Icon Settings', {
+			[ `Icon Size` ]: 41,
+			[ `Icon Spacing` ]: 25,
+		} ).assertComputedStyle( {
+			'.ugb-button svg': {
+				[ `height` ]: '41px',
+				[ `width` ]: '41px',
+				[ `margin-right` ]: '25px',
+			},
+		} )
 	} )
 
 	cy.adjust( 'Typography', {

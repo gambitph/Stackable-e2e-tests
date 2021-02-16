@@ -274,6 +274,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Button options
 	cy.collapse( 'Button' )
+	cy.waitFA()
 
 	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'single' )
@@ -332,7 +333,6 @@ function styleTab( viewport, desktopOnly ) {
 				[ `opacity` ]: '0.6',
 			},
 		} )
-		cy.waitFA()
 		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
 			[ `Icon Size` ]: 18,

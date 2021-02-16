@@ -68,9 +68,9 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.collapse( 'Icon' )
 	cy.toggleStyle( 'Icon' )
+	cy.waitFA()
 
 	desktopOnly( () => {
-		cy.waitFA()
 		cy.adjust( 'Icon #1', 'info' )
 		cy.adjust( 'Icon #2', 'info' )
 		cy.adjust( 'Icon #3', 'info' )
