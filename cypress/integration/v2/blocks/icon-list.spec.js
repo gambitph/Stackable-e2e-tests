@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, registerTests, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, registerTests, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -102,60 +102,14 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	cy.collapse( 'List Text' )
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			value: 50,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			unit: 'em',
-			value: 4,
-		},
-	} ).assertComputedStyle( {
-		li: {
-			[ `font-size` ]: '50px',
-			[ `line-height` ]: '4em',
-		},
-	} )
-
-	cy.adjust( 'Typography', {
-		[ `Size` ]: {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-		[ `Line-Height` ]: {
-			viewport,
-			unit: 'px',
-			value: 24,
-		},
-	} ).assertComputedStyle( {
-		li: {
-			[ `font-size` ]: '7em',
-			[ `line-height` ]: '24px',
-		},
-	} )
-
 	desktopOnly( () => {
-		cy.adjust( 'Typography', {
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Letter Spacing` ]: 2.9,
-		} ).assertComputedStyle( {
-			li: {
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
-			},
-		} )
-
 		cy.adjust( 'Color', '#742f2f' ).assertComputedStyle( {
 			li: {
 				[ `color` ]: '#742f2f',
 			},
 		} )
 	} )
+	assertTypography( 'li', { viewport } )
 
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-icon-list', { viewport } )
