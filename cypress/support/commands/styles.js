@@ -98,7 +98,7 @@ function toggleControl( name, value, options = {} ) {
 
 	const selector = () => getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 
 	selector()
@@ -131,7 +131,7 @@ function rangeControl( name, value, options = {} ) {
 	beforeAdjust( name, value, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 		.find( 'input.components-input-control__input' )
 		.type( `{selectall}${ value }`, { force: true } )
@@ -152,7 +152,7 @@ function rangeControlReset( name, options = {} ) {
 	beforeAdjust( name, null, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 		.find( 'button' )
 		.contains( containsRegExp( 'Reset' ) )
@@ -185,7 +185,7 @@ function toolbarControl( name, value, options = {}, customRegExp = '' ) {
 	beforeAdjust( name, value, options )
 	getBaseControl( isInPopover )
 		.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 		.find( `button[value="${ value }"]` )
 		.click( { force: true } )
@@ -208,7 +208,7 @@ function designControl( name, value, options = {} ) {
 	beforeAdjust( name, value, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 		.find( `input[value="${ typeof value === 'object' ? value.value : kebabCase( value ) }"]` )
 		.click( { force: true } )
@@ -229,7 +229,7 @@ function colorControl( name, value, options = {} ) {
 
 	const selector = () => getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 
 	if ( typeof value === 'string' && value.match( /^#/ ) ) {
@@ -275,7 +275,7 @@ function colorControlClear( name, options = {} ) {
 	beforeAdjust( name, null, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 		.find( 'button' )
 		.contains( containsRegExp( 'Clear' ) )
@@ -346,7 +346,7 @@ function popoverControl( name, value = {}, options = {} ) {
 
 				if ( ( value && ! parsedClassNames.includes( 'is-checked' ) ) || ( ! value === parsedClassNames.includes( 'is-checked' ) ) ) {
 					cy
-						.get( `.components-panel__body>.components-base-control` )
+						.get( '.components-panel__body>.components-base-control' )
 						.contains( containsRegExp( name ) )
 						.parentsUntil( '.components-panel__body>.components-base-control' )
 						.parent()
@@ -364,7 +364,7 @@ function popoverControl( name, value = {}, options = {} ) {
  */
 function popoverControlReset( name ) {
 	const selector = () => cy
-		.get( `.components-panel__body>.components-base-control` )
+		.get( '.components-panel__body>.components-base-control' )
 		.contains( containsRegExp( name ) )
 		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
@@ -404,7 +404,7 @@ function dropdownControl( name, value, options = {} ) {
 	beforeAdjust( name, value, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 		.find( 'select' )
 		.select( value, { force: true } )
@@ -426,7 +426,7 @@ function suggestionControl( name, value, options = {} ) {
 	beforeAdjust( name, value, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 		.find( 'input' )
 		.type( `{selectall}${ value }{enter}`, { force: true } )
@@ -447,10 +447,10 @@ function suggestionControlClear( name, options = {} ) {
 	beforeAdjust( name, null, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 		.find( 'input' )
-		.type( `{selectall}{backspace}{enter}`, { force: true } )
+		.type( '{selectall}{backspace}{enter}', { force: true } )
 }
 
 /**
@@ -468,7 +468,7 @@ function fourRangeControl( name, value, options = {} ) {
 
 	const selector = () => getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 
 	const clickLockButton = () => selector()
@@ -519,7 +519,7 @@ function fourRangeControlReset( name, options = {} ) {
 
 	const selector = isInPopover => getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 
 	const clickLockButton = () => selector( isInPopover )
@@ -560,7 +560,7 @@ function columnControl( name, value, options = {} ) {
 	value.forEach( ( val, index ) => {
 		getBaseControl( isInPopover )
 			.contains( containsRegExp( name ) )
-			.parentsUntil( `.components-panel__body>.components-base-control` )
+			.parentsUntil( '.components-panel__body>.components-base-control' )
 			.parent()
 			.find( 'input.components-column-widths-control__number' )
 			.eq( index )
@@ -583,7 +583,7 @@ function iconControl( name, value, options = {} ) {
 
 	const clickIconButton = () => getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 		.find( '.ugb-icon-control__button-wrapper>.ugb-icon-control__icon-button' )
 		.click( { force: true } )
@@ -601,7 +601,7 @@ function iconControl( name, value, options = {} ) {
 		cy.waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
 
 		cy
-			.get( `.ugb-icon-popover__iconlist>button` )
+			.get( '.ugb-icon-popover__iconlist>button' )
 			.first()
 			.click( { force: true } )
 	} else if ( typeof value === 'object' ) {
@@ -625,7 +625,7 @@ function iconControl( name, value, options = {} ) {
 				.click( { force: true } )
 		} else {
 			cy
-				.get( `.ugb-icon-popover__iconlist>button` )
+				.get( '.ugb-icon-popover__iconlist>button' )
 				.first()
 				.click( { force: true } )
 		}
@@ -647,7 +647,7 @@ function iconControlReset( name, options = {} ) {
 	beforeAdjust( name, null, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control` )
+		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 		.find( 'button' )
 		.contains( 'Reset' )
@@ -664,11 +664,11 @@ function iconControlReset( name, options = {} ) {
 export function adjust( name, value, options = {} ) {
 	// Handle custom style options without label
 	const customLabels = {
-		[ `Color Type` ]: 'Single|Gradient',
-		[ `Icon Color Type` ]: 'Single|Gradient|Multicolor',
-		[ `Button Color Type` ]: 'Single|Gradient',
-		[ `Shape` ]: typeof value === 'object' ? value.label : value,
-		[ `Button Design` ]: typeof value === 'object' ? value.label : value,
+		'Color Type': 'Single|Gradient',
+		'Icon Color Type': 'Single|Gradient|Multicolor',
+		'Button Color Type': 'Single|Gradient',
+		'Shape': typeof value === 'object' ? value.label : value,
+		'Button Design': typeof value === 'object' ? value.label : value,
 	}
 
 	const _adjust = classNames => {
@@ -949,7 +949,7 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 				.get( subject )
 				.invoke( 'attr', 'id' )
 				.then( id => {
-					const block = cy.get( `#${ id }${ ` ${ customSelector }` || `` }` )
+					const block = cy.get( `#${ id }${ ` ${ customSelector }` || '' }` )
 					block
 						.invoke( 'attr', 'class' )
 						.then( $classNames => {

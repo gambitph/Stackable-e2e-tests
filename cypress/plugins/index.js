@@ -7,7 +7,7 @@ const path = require( 'path' )
 const { compact } = require( 'lodash' )
 
 module.exports = ( on, config ) => {
-	on( `file:preprocessor`, webpack( {
+	on( 'file:preprocessor', webpack( {
 		webpackOptions: require( '../../webpack.conf.js' ),
 		watchOptions: {},
 	} ) )

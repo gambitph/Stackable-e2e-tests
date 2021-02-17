@@ -10,13 +10,13 @@ module.exports = {
 	],
 	rules: {
 		// No semi-colons because they're a hassle.
-		semi: [ 'error', 'never' ],
+		'semi': [ 'error', 'never' ],
 
 		// Only use parenthesis on arrow functions that need them since it's a hassle.
 		'arrow-parens': [ 'error', 'as-needed' ],
 
 		// Allow our deprecated properties since they're readable.
-		camelcase: [ 'error', {
+		'camelcase': [ 'error', {
 			allow: [ '\\w+(_\\d+)+' ],
 		} ],
 
@@ -62,6 +62,9 @@ module.exports = {
 		// 'linebreak-style': [ 'error', 'unix' ],
 		// Added linebreak-style off to avoid cross platform eol error.
 		'linebreak-style': 'off',
+
+		'quotes': [ 'error', 'single' ],
+		'quote-props': [ 'error', 'consistent' ],
 	},
 	globals: {
 		Cypress: true,

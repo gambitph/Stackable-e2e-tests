@@ -68,28 +68,28 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Spacing' )
 	cy.adjust( 'Paddings', 25, { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-blockquote__item': {
-			[ `padding-top` ]: '25px',
-			[ `padding-bottom` ]: '25px',
-			[ `padding-right` ]: '25px',
-			[ `padding-left` ]: '25px',
+			'padding-top': '25px',
+			'padding-bottom': '25px',
+			'padding-right': '25px',
+			'padding-left': '25px',
 		},
 	} )
 	cy.resetStyle( 'Paddings' )
 	cy.adjust( 'Paddings', 3, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-blockquote__item': {
-			[ `padding-top` ]: '3em',
-			[ `padding-bottom` ]: '3em',
-			[ `padding-right` ]: '3em',
-			[ `padding-left` ]: '3em',
+			'padding-top': '3em',
+			'padding-bottom': '3em',
+			'padding-right': '3em',
+			'padding-left': '3em',
 		},
 	} )
 	cy.resetStyle( 'Paddings' )
 	cy.adjust( 'Paddings', 17, { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-blockquote__item': {
-			[ `padding-top` ]: '17%',
-			[ `padding-bottom` ]: '17%',
-			[ `padding-right` ]: '17%',
-			[ `padding-left` ]: '17%',
+			'padding-top': '17%',
+			'padding-bottom': '17%',
+			'padding-right': '17%',
+			'padding-left': '17%',
 		},
 	} )
 
@@ -101,8 +101,8 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Color', '#f00069' )
 		cy.adjust( 'Opacity', 0.7 ).assertComputedStyle( {
 			'.ugb-blockquote__quote': {
-				[ `fill` ]: '#f00069',
-				[ `opacity` ]: '0.7',
+				'fill': '#f00069',
+				'opacity': '0.7',
 			},
 		} )
 	} )
@@ -111,10 +111,10 @@ function styleTab( viewport, desktopOnly ) {
 	cy.adjust( 'Horizontal Position', 76, { viewport } )
 	cy.adjust( 'Vertical Position', 59, { viewport } ).assertComputedStyle( {
 		'.ugb-blockquote__quote': {
-			[ `width` ]: '93px',
-			[ `height` ]: '93px',
-			[ `left` ]: '76px',
-			[ `top` ]: '59px',
+			'width': '93px',
+			'height': '93px',
+			'left': '76px',
+			'top': '59px',
 		},
 	} )
 
@@ -124,7 +124,7 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Text Color', '#ffffff' ).assertComputedStyle( {
 			'.ugb-blockquote__text': {
-				[ `color` ]: '#ffffff',
+				'color': '#ffffff',
 			},
 		} )
 	} )

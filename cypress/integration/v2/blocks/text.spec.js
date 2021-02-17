@@ -78,9 +78,9 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Width', 3 )
 		cy.adjust( 'Height', 48 ).assertComputedStyle( {
 			'.ugb-text__rule': {
-				[ `background-color` ]: '#000000',
-				[ `width` ]: '3px',
-				[ `height` ]: '48%',
+				'background-color': '#000000',
+				'width': '3px',
+				'height': '48%',
 			},
 		} )
 	} )
@@ -91,13 +91,13 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Text Color', '#333333' ).assertComputedStyle( {
 			'.ugb-text__text p': {
-				[ `color` ]: '#333333',
+				'color': '#333333',
 			},
 		} )
 	} )
 	cy.adjust( 'Size', 1.3, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-text__text p': {
-			[ `font-size` ]: '1.3em',
+			'font-size': '1.3em',
 		},
 	} )
 	assertTypography( '.ugb-text__text p', { viewport } )
@@ -113,14 +113,14 @@ function styleTab( viewport, desktopOnly ) {
 			.assertHtmlTag( '.ugb-text__title', 'h3' )
 		cy.adjust( 'Title Color', '#333333' ).assertComputedStyle( {
 			'.ugb-text__title': {
-				[ `color` ]: '#333333',
+				'color': '#333333',
 			},
 		} )
 		const aligns = [ 'flex-start', 'center', 'flex-end' ]
 		aligns.forEach( align => {
 			cy.adjust( 'Vertical Align', align ).assertComputedStyle( {
 				'.ugb-text__title-wrapper': {
-					[ `justify-content` ]: align,
+					'justify-content': align,
 				},
 			} )
 		} )
@@ -128,7 +128,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.adjust( 'Size', 1.6, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-text__title': {
-			[ `font-size` ]: '1.6em',
+			'font-size': '1.6em',
 		},
 	} )
 	assertTypography( '.ugb-text__title', { viewport } )
@@ -143,14 +143,14 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Subtitle on Top', true )
 		cy.adjust( 'Subtitle Color', '#333333' ).assertComputedStyle( {
 			'.ugb-text__subtitle': {
-				[ `color` ]: '#333333',
+				'color': '#333333',
 			},
 		} )
 	} )
 
 	cy.adjust( 'Size', 0.9, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-text__subtitle': {
-			[ `font-size` ]: '0.9em',
+			'font-size': '0.9em',
 		},
 	} )
 	assertTypography( '.ugb-text__subtitle', { viewport } )
@@ -160,43 +160,43 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Spacing' )
 	cy.adjust( 'Paddings', 28, { viewport } ).assertComputedStyle( {
 		'.ugb-text__text-wrapper': {
-			[ `padding-top` ]: '28px',
-			[ `padding-bottom` ]: '28px',
-			[ `padding-right` ]: '28px',
-			[ `padding-left` ]: '28px',
+			'padding-top': '28px',
+			'padding-bottom': '28px',
+			'padding-right': '28px',
+			'padding-left': '28px',
 		},
 	} )
 	cy.resetStyle( 'Paddings' )
 	cy.adjust( 'Paddings', 5, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-text__text-wrapper': {
-			[ `padding-top` ]: '5em',
-			[ `padding-bottom` ]: '5em',
-			[ `padding-right` ]: '5em',
-			[ `padding-left` ]: '5em',
+			'padding-top': '5em',
+			'padding-bottom': '5em',
+			'padding-right': '5em',
+			'padding-left': '5em',
 		},
 	} )
 	cy.resetStyle( 'Paddings' )
 	cy.adjust( 'Paddings', 16, { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-text__text-wrapper': {
-			[ `padding-top` ]: '16%',
-			[ `padding-bottom` ]: '16%',
-			[ `padding-right` ]: '16%',
-			[ `padding-left` ]: '16%',
+			'padding-top': '16%',
+			'padding-bottom': '16%',
+			'padding-right': '16%',
+			'padding-left': '16%',
 		},
 	} )
 	cy.adjust( 'Title', 23, { viewport } ).assertComputedStyle( {
 		'.ugb-text__title': {
-			[ `margin-bottom` ]: '23px',
+			'margin-bottom': '23px',
 		},
 	} )
 	cy.adjust( 'Subtitle', 8, { viewport } ).assertComputedStyle( {
 		'.ugb-text__subtitle': {
-			[ `margin-bottom` ]: '8px',
+			'margin-bottom': '8px',
 		},
 	} )
 	cy.adjust( 'Text', 21, { viewport } ).assertComputedStyle( {
 		'.ugb-text__text': {
-			[ `margin-bottom` ]: '21px',
+			'margin-bottom': '21px',
 		},
 	} )
 

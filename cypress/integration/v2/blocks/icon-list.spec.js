@@ -62,7 +62,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'General' )
 	cy.adjust( 'Columns', 4, { viewport } ).assertComputedStyle( {
 		'.ugb-icon-list ul': {
-			[ `columns` ]: 'auto 4',
+			'columns': 'auto 4',
 		},
 	} )
 	desktopOnly( () => {
@@ -74,7 +74,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'List Gap', 25 ).assertComputedStyle( {
 			'ul li': {
-				[ `margin-bottom` ]: '25px',
+				'margin-bottom': '25px',
 			},
 		} )
 	} )
@@ -87,16 +87,16 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 	cy.adjust( 'Icon Size', 23, { viewport } ).assertComputedStyle( {
 		'li:before': {
-			[ `width` ]: '23px',
-			[ `height` ]: '23px',
+			'width': '23px',
+			'height': '23px',
 		},
 	} )
 	desktopOnly( () => {
 		cy.adjust( 'Icon Opacity', 0.6 )
 		cy.adjust( 'Icon Rotation', 128 ).assertComputedStyle( {
 			'li:before': {
-				[ `opacity` ]: '0.6',
-				[ `transform` ]: 'matrix(-0.615661, 0.788011, -0.788011, -0.615661, 0, 0)',
+				'opacity': '0.6',
+				'transform': 'matrix(-0.615661, 0.788011, -0.788011, -0.615661, 0, 0)',
 			},
 		} )
 	} )
@@ -105,7 +105,7 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Color', '#742f2f' ).assertComputedStyle( {
 			li: {
-				[ `color` ]: '#742f2f',
+				'color': '#742f2f',
 			},
 		} )
 	} )

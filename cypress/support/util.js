@@ -12,7 +12,7 @@ import { lowerCase } from 'lodash'
  */
 export function getBaseControl( isInPopover = false ) {
 	const baseControlEl = ! isInPopover
-		? cy.get( `.components-panel__body.is-opened>.components-base-control`, { log: false } )
+		? cy.get( '.components-panel__body.is-opened>.components-base-control', { log: false } )
 		: cy.get( '.components-popover__content', { log: false } ).find( '.components-base-control', { log: false } )
 	return baseControlEl
 }
@@ -38,14 +38,14 @@ export function containsRegExp( name = '' ) {
 export function changeUnit( unit = '', name = '', isInPopover = false ) {
 	const selector = () => getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( `.components-panel__body>.components-base-control`, { log: false } )
+		.parentsUntil( '.components-panel__body>.components-base-control', { log: false } )
 		.parent( { log: false } )
 	if ( unit ) {
 		selector()
 			.then( $baseControl => {
 				if ( $baseControl.find( '.ugb-base-control-multi-label__units', { log: false } ).length ) {
 					selector()
-						.find( `button`, { log: false } )
+						.find( 'button', { log: false } )
 						.contains( containsRegExp( unit ) )
 						.click( { force: true, log: false } )
 				}

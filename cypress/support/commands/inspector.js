@@ -30,8 +30,8 @@ export function toggleSidebar( sidebarName = '', value = true ) {
  */
 export function openSidebar( label = 'Settings' ) {
 	const sidebarNamespace = {
-		[ `Settings` ]: 'edit-post/block',
-		[ `Stackable Settings` ]: 'stackable-global-settings/sidebar',
+		'Settings': 'edit-post/block',
+		'Stackable Settings': 'stackable-global-settings/sidebar',
 	}
 	toggleSidebar( sidebarNamespace[ label ], true )
 }
@@ -43,8 +43,8 @@ export function openSidebar( label = 'Settings' ) {
  */
 export function closeSidebar( label = 'Settings' ) {
 	const sidebarNamespace = {
-		[ `Settings` ]: 'edit-post/block',
-		[ `Stackable Settings` ]: 'stackable-global-settings/sidebar',
+		'Settings': 'edit-post/block',
+		'Stackable Settings': 'stackable-global-settings/sidebar',
 	}
 	toggleSidebar( sidebarNamespace[ label ], false )
 }
@@ -61,12 +61,12 @@ export function openInspector( subject, tab, selector ) {
 
 	openSidebar( 'Settings' )
 	cy
-		.get( `button.edit-post-sidebar__panel-tab` )
+		.get( 'button.edit-post-sidebar__panel-tab' )
 		.contains( containsRegExp( 'Block' ) )
 		.click( { force: true } )
 
 	cy
-		.get( `button.edit-post-sidebar__panel-tab` )
+		.get( 'button.edit-post-sidebar__panel-tab' )
 		.contains( containsRegExp( tab ) )
 		.click( { force: true } )
 }
@@ -96,9 +96,9 @@ export function collapse( name = 'General', toggle = true ) {
 			}
 			default: {
 				return cy
-					.get( `.components-panel__body .components-panel__body-title` )
+					.get( '.components-panel__body .components-panel__body-title' )
 					.contains( containsRegExp( name ) )
-					.parentsUntil( `.components-panel__body` )
+					.parentsUntil( '.components-panel__body' )
 					.parent()
 					.find( 'button.components-panel__body-toggle' )
 					.invoke( 'attr', 'aria-expanded' )
@@ -106,9 +106,9 @@ export function collapse( name = 'General', toggle = true ) {
 						// Open the accordion if aria-expanded is false.
 						if ( ariaExpanded !== toggle.toString() ) {
 							cy
-								.get( `.components-panel__body .components-panel__body-title` )
+								.get( '.components-panel__body .components-panel__body-title' )
 								.contains( containsRegExp( name ) )
-								.parentsUntil( `.components-panel__body` )
+								.parentsUntil( '.components-panel__body' )
 								.parent()
 								.find( 'button.components-panel__body-toggle' )
 								.click( { force: true } )

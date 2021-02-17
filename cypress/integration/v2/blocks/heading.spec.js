@@ -43,7 +43,7 @@ function styleTab( viewport, desktopOnly ) {
 			.assertHtmlTag( '.ugb-heading__title', 'h4' )
 		cy.adjust( 'Title Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-heading__title': {
-				[ `color` ]: '#742f2f',
+				'color': '#742f2f',
 			},
 		} )
 	} )
@@ -57,7 +57,7 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Subtitle Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-heading__subtitle': {
-				[ `color` ]: '#742f2f',
+				'color': '#742f2f',
 			},
 		} )
 	} )
@@ -73,9 +73,9 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Width', 390, { unit: 'px' } )
 		cy.adjust( 'Height', 11 ).assertComputedStyle( {
 			'.ugb-heading__top-line': {
-				[ `background-color` ]: '#000000',
-				[ `height` ]: '11px',
-				[ `width` ]: '390px',
+				'background-color': '#000000',
+				'height': '11px',
+				'width': '390px',
 			},
 		} )
 	} )
@@ -84,20 +84,20 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
 		'.ugb-heading__top-line': {
-			[ `margin-left` ]: '0px',
-			[ `margin-right` ]: 'auto',
+			'margin-left': '0px',
+			'margin-right': 'auto',
 		},
 	} )
 	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
 		'.ugb-heading__top-line': {
-			[ `margin-left` ]: 'auto',
-			[ `margin-right` ]: 'auto',
+			'margin-left': 'auto',
+			'margin-right': 'auto',
 		},
 	} )
 	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
 		'.ugb-heading__top-line': {
-			[ `margin-right` ]: '0px',
-			[ `margin-left` ]: 'auto',
+			'margin-right': '0px',
+			'margin-left': 'auto',
 		},
 	} )
 
@@ -110,9 +110,9 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Width', 300, { unit: 'px' } )
 		cy.adjust( 'Height', 11 ).assertComputedStyle( {
 			'.ugb-heading__bottom-line': {
-				[ `background-color` ]: '#000000',
-				[ `height` ]: '11px',
-				[ `width` ]: '300px',
+				'background-color': '#000000',
+				'height': '11px',
+				'width': '300px',
 			},
 		} )
 	} )
@@ -121,20 +121,20 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
 		'.ugb-heading__bottom-line': {
-			[ `margin-left` ]: '0px',
-			[ `margin-right` ]: 'auto',
+			'margin-left': '0px',
+			'margin-right': 'auto',
 		},
 	} )
 	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
 		'.ugb-heading__bottom-line': {
-			[ `margin-left` ]: 'auto',
-			[ `margin-right` ]: 'auto',
+			'margin-left': 'auto',
+			'margin-right': 'auto',
 		},
 	} )
 	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
 		'.ugb-heading__top-line': {
-			[ `margin-right` ]: '0px',
-			[ `margin-left` ]: 'auto',
+			'margin-right': '0px',
+			'margin-left': 'auto',
 		},
 	} )
 
@@ -143,22 +143,22 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Spacing' )
 	cy.adjust( 'Top Line', 36, { viewport } ).assertComputedStyle( {
 		'.ugb-heading__top-line': {
-			[ `margin-bottom` ]: '36px',
+			'margin-bottom': '36px',
 		},
 	} )
 	cy.adjust( 'Title', 40, { viewport } ).assertComputedStyle( {
 		'.ugb-heading__title': {
-			[ `margin-bottom` ]: '40px',
+			'margin-bottom': '40px',
 		},
 	} )
 	cy.adjust( 'Subtitle', 25, { viewport } ).assertComputedStyle( {
 		'.ugb-heading__subtitle': {
-			[ `margin-bottom` ]: '25px',
+			'margin-bottom': '25px',
 		},
 	} )
 	cy.adjust( 'Bottom Line', 12, { viewport } ).assertComputedStyle( {
 		'.ugb-heading__bottom-line': {
-			[ `margin-bottom` ]: '12px',
+			'margin-bottom': '12px',
 		},
 	} )
 }
