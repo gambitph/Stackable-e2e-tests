@@ -78,48 +78,48 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 	desktopOnly( () => {
 		cy.adjust( 'Background', {
-			[ `Color Type` ]: 'gradient',
-			[ `Background Color #1` ]: '#ff5c5c',
-			[ `Background Color #2` ]: '#7bff5a',
-			[ `Adv. Gradient Color Settings` ]: {
-				[ `Gradient Direction (degrees)` ]: 160,
-				[ `Color 1 Location` ]: 28,
-				[ `Color 2 Location` ]: 75,
-				[ `Background Gradient Blend Mode` ]: 'multiply',
+			'Color Type': 'gradient',
+			'Background Color #1': '#ff5c5c',
+			'Background Color #2': '#7bff5a',
+			'Adv. Gradient Color Settings': {
+				'Gradient Direction (degrees)': 160,
+				'Color 1 Location': 28,
+				'Color 2 Location': 75,
+				'Background Gradient Blend Mode': 'multiply',
 			},
-			[ `Background Media Tint Strength` ]: 6,
-			[ `Fixed Background` ]: true,
-			[ `Adv. Background Image Settings` ]: {
-				[ `Image Blend Mode` ]: 'exclusion',
+			'Background Media Tint Strength': 6,
+			'Fixed Background': true,
+			'Adv. Background Image Settings': {
+				'Image Blend Mode': 'exclusion',
 			},
 		} ).assertComputedStyle( {
 			'.ugb-notification__item:before': {
-				[ `background-image` ]: 'linear-gradient(160deg, #ff5c5c 28%, #7bff5a 75%)',
-				[ `opacity` ]: '0.6',
-				[ `mix-blend-mode` ]: 'multiply',
+				'background-image': 'linear-gradient(160deg, #ff5c5c 28%, #7bff5a 75%)',
+				'opacity': '0.6',
+				'mix-blend-mode': 'multiply',
 			},
 			'.ugb-notification__item': {
-				[ `background-color` ]: '#ff5c5c',
-				[ `background-attachment` ]: 'fixed',
-				[ `background-blend-mode` ]: 'exclusion',
+				'background-color': '#ff5c5c',
+				'background-attachment': 'fixed',
+				'background-blend-mode': 'exclusion',
 			},
 		} )
 	} )
 	cy.adjust( 'Background', {
-		[ `Adv. Background Image Settings` ]: {
-			[ `Image Position` ]: {
+		'Adv. Background Image Settings': {
+			'Image Position': {
 				viewport,
 				value: 'center center',
 			},
-			[ `Image Repeat` ]: {
+			'Image Repeat': {
 				viewport,
 				value: 'repeat-x',
 			},
-			[ `Image Size` ]: {
+			'Image Size': {
 				viewport,
 				value: 'custom',
 			},
-			[ `Custom Size` ]: {
+			'Custom Size': {
 				viewport,
 				value: 19,
 				unit: '%',
@@ -127,19 +127,19 @@ function styleTab( viewport, desktopOnly ) {
 		},
 	} ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			[ `background-position` ]: '50% 50%',
-			[ `background-repeat` ]: 'repeat-x',
-			[ `background-size` ]: '19%',
+			'background-position': '50% 50%',
+			'background-repeat': 'repeat-x',
+			'background-size': '19%',
 		},
 	} )
 
 	cy.adjust( 'Background', {
-		[ `Adv. Background Image Settings` ]: {
-			[ `Image Size` ]: {
+		'Adv. Background Image Settings': {
+			'Image Size': {
 				viewport,
 				value: 'custom',
 			},
-			[ `Custom Size` ]: {
+			'Custom Size': {
 				viewport,
 				value: 160,
 				unit: 'px',
@@ -147,17 +147,17 @@ function styleTab( viewport, desktopOnly ) {
 		},
 	} ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			[ `background-size` ]: '160px',
+			'background-size': '160px',
 		},
 	} )
 
 	cy.adjust( 'Background', {
-		[ `Adv. Background Image Settings` ]: {
-			[ `Image Size` ]: {
+		'Adv. Background Image Settings': {
+			'Image Size': {
 				viewport,
 				value: 'custom',
 			},
-			[ `Custom Size` ]: {
+			'Custom Size': {
 				viewport,
 				value: 8,
 				unit: 'vw',
@@ -165,7 +165,7 @@ function styleTab( viewport, desktopOnly ) {
 		},
 	} ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			[ `background-size` ]: '8vw',
+			'background-size': '8vw',
 		},
 	} )
 
@@ -174,8 +174,8 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Border Color', '#3f3f3f' )
 		cy.adjust( 'Border Radius', 23 ).assertComputedStyle( {
 			'.ugb-notification__item': {
-				[ `border-color` ]: '#3f3f3f',
-				[ `border-radius` ]: '23px',
+				'border-color': '#3f3f3f',
+				'border-radius': '23px',
 			},
 		} )
 		cy.adjust( 'Shadow / Outline', 7 )
@@ -183,11 +183,11 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 	cy.adjust( 'Border Width', 23, { viewport } ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			[ `border-style` ]: 'dashed',
-			[ `border-top-width` ]: '23px',
-			[ `border-right-width` ]: '23px',
-			[ `border-bottom-width` ]: '23px',
-			[ `border-left-width` ]: '23px',
+			'border-style': 'dashed',
+			'border-top-width': '23px',
+			'border-right-width': '23px',
+			'border-bottom-width': '23px',
+			'border-left-width': '23px',
 		},
 	} )
 
@@ -198,14 +198,14 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Icon Color', '#ffffff' ).assertComputedStyle( {
 			'.ugb-notification__close-button svg': {
-				[ `fill` ]: '#ffffff',
+				'fill': '#ffffff',
 			},
 		} )
 	} )
 	cy.adjust( 'Icon Size', 24, { viewport } ).assertComputedStyle( {
 		'.ugb-notification__close-button': {
-			[ `width` ]: '24px',
-			[ `height` ]: '24px',
+			'width': '24px',
+			'height': '24px',
 		},
 	} )
 
@@ -222,42 +222,42 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Icon Opacity', 0.8 )
 		cy.adjust( 'Icon Rotation', 325 ).assertComputedStyle( {
 			'.ugb-notification__icon': {
-				[ `opacity` ]: '0.8',
+				'opacity': '0.8',
 			},
 			'.ugb-icon-inner-svg': {
-				[ `fill` ]: 'url("#grad-e4dd57-34f8ff-123")',
-				[ `rotation` ]: 'matrix(0.819152, -0.573576, 0.573576, 0.819152, 0, 0)',
+				'fill': 'url("#grad-e4dd57-34f8ff-123")',
+				'rotation': 'matrix(0.819152, -0.573576, 0.573576, 0.819152, 0, 0)',
 			},
 		} )
 	} )
 
 	cy.adjust( 'Icon Size', 63, { viewport } ).assertComputedStyle( {
 		'.ugb-icon-inner-svg': {
-			[ `height` ]: '63px',
-			[ `width` ]: '63px',
+			'height': '63px',
+			'width': '63px',
 		},
 		'.ugb-notification__icon': {
-			[ `height` ]: '63px',
-			[ `width` ]: '63px',
+			'height': '63px',
+			'width': '63px',
 		},
 	} )
 
 	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
 		'.ugb-notification__icon': {
-			[ `margin-left` ]: '0',
-			[ `margin-right` ]: 'auto',
+			'margin-left': '0',
+			'margin-right': 'auto',
 		},
 	} )
 	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
 		'.ugb-notification__icon': {
-			[ `margin-left` ]: 'auto',
-			[ `margin-right` ]: 'auto',
+			'margin-left': 'auto',
+			'margin-right': 'auto',
 		},
 	} )
 	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
 		'.ugb-notification__icon': {
-			[ `margin-left` ]: 'auto',
-			[ `margin-right` ]: '0',
+			'margin-left': 'auto',
+			'margin-right': '0',
 		},
 	} )
 
@@ -265,46 +265,46 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Spacing' )
 	cy.adjust( 'Paddings', 27, { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			[ `padding-top` ]: '27px',
-			[ `padding-bottom` ]: '27px',
-			[ `padding-right` ]: '27px',
-			[ `padding-left` ]: '27px',
+			'padding-top': '27px',
+			'padding-bottom': '27px',
+			'padding-right': '27px',
+			'padding-left': '27px',
 		},
 	} )
 	cy.adjust( 'Paddings', 8, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			[ `padding-top` ]: '8em',
-			[ `padding-bottom` ]: '8em',
-			[ `padding-right` ]: '8em',
-			[ `padding-left` ]: '8em',
+			'padding-top': '8em',
+			'padding-bottom': '8em',
+			'padding-right': '8em',
+			'padding-left': '8em',
 		},
 	} )
 	cy.adjust( 'Paddings', 22, { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			[ `padding-top` ]: '22%',
-			[ `padding-bottom` ]: '22%',
-			[ `padding-right` ]: '22%',
-			[ `padding-left` ]: '22%',
+			'padding-top': '22%',
+			'padding-bottom': '22%',
+			'padding-right': '22%',
+			'padding-left': '22%',
 		},
 	} )
 	cy.adjust( 'Icon', 52, { viewport } ).assertComputedStyle( {
 		'.ugb-notification__icon': {
-			[ `margin-bottom` ]: '52px',
+			'margin-bottom': '52px',
 		},
 	} )
 	cy.adjust( 'Title', 37, { viewport } ).assertComputedStyle( {
 		'.ugb-notification__title': {
-			[ `margin-bottom` ]: '37px',
+			'margin-bottom': '37px',
 		},
 	} )
 	cy.adjust( 'Description', 45, { viewport } ).assertComputedStyle( {
 		'.ugb-notification__description': {
-			[ `margin-bottom` ]: '45px',
+			'margin-bottom': '45px',
 		},
 	} )
 	cy.adjust( 'Button', 31, { viewport } ).assertComputedStyle( {
 		'.ugb-button-container': {
-			[ `margin-bottom` ]: '31px',
+			'margin-bottom': '31px',
 		},
 	} )
 
@@ -315,7 +315,7 @@ function styleTab( viewport, desktopOnly ) {
 			.assertHtmlTag( '.ugb-notification__title', 'h6' )
 		cy.adjust( 'Title Color', '#ff7979' ).assertComputedStyle( {
 			'.ugb-notification__title': {
-				[ `color` ]: '#ff7979',
+				'color': '#ff7979',
 			},
 		} )
 	} )
@@ -328,7 +328,7 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Description Color', '#ff7979' ).assertComputedStyle( {
 			'.ugb-notification__description': {
-				[ `color` ]: '#ff7979',
+				'color': '#ff7979',
 			},
 		} )
 	} )
@@ -353,16 +353,16 @@ function styleTab( viewport, desktopOnly ) {
 			.assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
-			[ `Button Color #1` ]: '#bd8b8b',
-			[ `Button Color #2` ]: '#3fa35b',
-			[ `Gradient Direction (degrees)` ]: 72,
-			[ `Text Color` ]: '#80194d',
+			'Button Color #1': '#bd8b8b',
+			'Button Color #2': '#3fa35b',
+			'Gradient Direction (degrees)': 72,
+			'Text Color': '#80194d',
 		} )
 		cy.adjust( 'Typography', {
-			[ `Size` ]: 50,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Letter Spacing` ]: 2.9,
+			'Size': 50,
+			'Weight': '700',
+			'Transform': 'lowercase',
+			'Letter Spacing': 2.9,
 		} )
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
@@ -373,41 +373,41 @@ function styleTab( viewport, desktopOnly ) {
 			.assertClassName( '.ugb-button', 'ugb--shadow-4' )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				[ `font-size` ]: '50px',
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
+				'font-size': '50px',
+				'font-weight': '700',
+				'text-transform': 'lowercase',
+				'letter-spacing': '2.9px',
 			},
 			'.ugb-button': {
-				[ `background-color` ]: '#a13939',
-				[ `background-image` ]: 'linear-gradient(138deg, #a13939, #4e59d4)',
-				[ `padding-top` ]: '15px',
-				[ `padding-right` ]: '43px',
-				[ `padding-bottom` ]: '15px',
-				[ `padding-left` ]: '43px',
-				[ `opacity` ]: '0.6',
-				[ `border-radius` ]: '40px',
+				'background-color': '#a13939',
+				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
+				'padding-top': '15px',
+				'padding-right': '43px',
+				'padding-bottom': '15px',
+				'padding-left': '43px',
+				'opacity': '0.6',
+				'border-radius': '40px',
 			},
 		} )
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				unit: 'em',
 				value: 7,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				[ `font-size` ]: '7em',
+				'font-size': '7em',
 			},
 		} )
 		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
-			[ `Icon Size` ]: 41,
-			[ `Icon Spacing` ]: 25,
+			'Icon Size': 41,
+			'Icon Spacing': 25,
 		} ).assertComputedStyle( {
 			'.ugb-button svg': {
-				[ `height` ]: '41px',
-				[ `width` ]: '41px',
-				[ `margin-right` ]: '25px',
+				'height': '41px',
+				'width': '41px',
+				'margin-right': '25px',
 			},
 		} )
 	} )
@@ -415,25 +415,25 @@ function styleTab( viewport, desktopOnly ) {
 	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
 	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				viewport,
 				value: 50,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				[ `font-size` ]: '50px',
+				'font-size': '50px',
 			},
 		} )
 
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				viewport,
 				unit: 'em',
 				value: 7,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				[ `font-size` ]: '7em',
+				'font-size': '7em',
 			},
 		} )
 	}

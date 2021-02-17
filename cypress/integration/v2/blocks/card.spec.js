@@ -78,57 +78,57 @@ function styleTab( viewport, desktopOnly ) {
 
 	desktopOnly( () => {
 		cy.adjust( 'Background', {
-			[ `Color Type` ]: 'single',
-			[ `Background Color` ]: '#000000',
-			[ `Background Color Opacity` ]: 0.7,
+			'Color Type': 'single',
+			'Background Color': '#000000',
+			'Background Color Opacity': 0.7,
 		} ).assertComputedStyle( {
 			'.ugb-card__item': {
-				[ `background-color` ]: 'rgba(0, 0, 0, 0.7)',
+				'background-color': 'rgba(0, 0, 0, 0.7)',
 			},
 		} )
 	} )
 
 	cy.setBlockAttribute( {
 		[ `column${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-		[ `image1Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-		[ `image2Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-		[ `image3Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
+		'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
 	} )
 
 	desktopOnly( () => {
 		cy.adjust( 'Background', {
-			[ `Background Media Tint Strength` ]: 7,
-			[ `Fixed Background` ]: true,
-			[ `Adv. Background Image Settings` ]: {
-				[ `Image Blend Mode` ]: 'hue',
+			'Background Media Tint Strength': 7,
+			'Fixed Background': true,
+			'Adv. Background Image Settings': {
+				'Image Blend Mode': 'hue',
 			},
 		} ).assertComputedStyle( {
 			'.ugb-card__item': {
-				[ `background-image` ]: `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
-				[ `background-attachment` ]: 'fixed',
-				[ `background-blend-mode` ]: 'hue',
+				'background-image': `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
+				'background-attachment': 'fixed',
+				'background-blend-mode': 'hue',
 			},
 			'.ugb-card__item:before': {
-				[ `opacity` ]: '0.7',
+				'opacity': '0.7',
 			},
 		} )
 	} )
 
 	cy.adjust( 'Background', {
-		[ `Adv. Background Image Settings` ]: {
-			[ `Image Position` ]: {
+		'Adv. Background Image Settings': {
+			'Image Position': {
 				viewport,
 				value: 'center center',
 			},
-			[ `Image Repeat` ]: {
+			'Image Repeat': {
 				viewport,
 				value: 'repeat-x',
 			},
-			[ `Image Size` ]: {
+			'Image Size': {
 				viewport,
 				value: 'custom',
 			},
-			[ `Custom Size` ]: {
+			'Custom Size': {
 				viewport,
 				value: 19,
 				unit: '%',
@@ -136,19 +136,19 @@ function styleTab( viewport, desktopOnly ) {
 		},
 	} ).assertComputedStyle( {
 		'.ugb-card__item': {
-			[ `background-position` ]: '50% 50%',
-			[ `background-repeat` ]: 'repeat-x',
-			[ `background-size` ]: '19%',
+			'background-position': '50% 50%',
+			'background-repeat': 'repeat-x',
+			'background-size': '19%',
 		},
 	} )
 
 	cy.adjust( 'Background', {
-		[ `Adv. Background Image Settings` ]: {
-			[ `Image Size` ]: {
+		'Adv. Background Image Settings': {
+			'Image Size': {
 				viewport,
 				value: 'custom',
 			},
-			[ `Custom Size` ]: {
+			'Custom Size': {
 				viewport,
 				value: 23,
 				unit: 'px',
@@ -156,17 +156,17 @@ function styleTab( viewport, desktopOnly ) {
 		},
 	} ).assertComputedStyle( {
 		'.ugb-card__item': {
-			[ `background-size` ]: '23px',
+			'background-size': '23px',
 		},
 	} )
 
 	cy.adjust( 'Background', {
-		[ `Adv. Background Image Settings` ]: {
-			[ `Image Size` ]: {
+		'Adv. Background Image Settings': {
+			'Image Size': {
 				viewport,
 				value: 'custom',
 			},
-			[ `Custom Size` ]: {
+			'Custom Size': {
 				viewport,
 				value: 8,
 				unit: 'vw',
@@ -174,7 +174,7 @@ function styleTab( viewport, desktopOnly ) {
 		},
 	} ).assertComputedStyle( {
 		'.ugb-card__item': {
-			[ `background-size` ]: '8vw',
+			'background-size': '8vw',
 		},
 	} )
 
@@ -183,9 +183,9 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Border Color', '#a12222' )
 		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
 			'.ugb-card__item': {
-				[ `border-style` ]: 'solid',
-				[ `border-color` ]: '#a12222',
-				[ `border-radius` ]: '26px',
+				'border-style': 'solid',
+				'border-color': '#a12222',
+				'border-radius': '26px',
 			},
 		} )
 		cy.adjust( 'Shadow / Outline', 7 )
@@ -195,11 +195,11 @@ function styleTab( viewport, desktopOnly ) {
 	cy.adjust( 'Borders', 'dashed' )
 	cy.adjust( 'Border Width', 3, { viewport } ).assertComputedStyle( {
 		'.ugb-card__item': {
-			[ `border-style` ]: 'dashed',
-			[ `border-top-width` ]: '3px',
-			[ `border-bottom-width` ]: '3px',
-			[ `border-left-width` ]: '3px',
-			[ `border-right-width` ]: '3px',
+			'border-style': 'dashed',
+			'border-top-width': '3px',
+			'border-bottom-width': '3px',
+			'border-left-width': '3px',
+			'border-right-width': '3px',
 		},
 	} )
 
@@ -212,22 +212,22 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Background Image Size', 'custom' )
 		cy.adjust( 'Custom Size', 198, { unit: 'px' } ).assertComputedStyle( {
 			'.ugb-card__image': {
-				[ `background-position` ]: '50% 50%',
-				[ `background-repeat` ]: 'repeat-x',
-				[ `background-size` ]: '198px',
+				'background-position': '50% 50%',
+				'background-repeat': 'repeat-x',
+				'background-size': '198px',
 			},
 		} )
 		cy.adjust( 'Background Image Size', 'custom' )
 		cy.adjust( 'Custom Size', 75, { unit: '%' } ).assertComputedStyle( {
 			'.ugb-card__image': {
-				[ `background-size` ]: '75%',
+				'background-size': '75%',
 			},
 		} )
 	} )
 
 	cy.adjust( 'Image Height', 395, { viewport } ).assertComputedStyle( {
 		'.ugb-card__image': {
-			[ `height` ]: '395px',
+			'height': '395px',
 		},
 	} )
 
@@ -238,7 +238,7 @@ function styleTab( viewport, desktopOnly ) {
 			.assertHtmlTag( '.ugb-card__title', 'h6' )
 		cy.adjust( 'Title Color', '#ff7979' ).assertComputedStyle( {
 			'.ugb-card__title': {
-				[ `color` ]: '#ff7979',
+				'color': '#ff7979',
 			},
 		} )
 	} )
@@ -251,7 +251,7 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Subtitle Color', '#ff7979' ).assertComputedStyle( {
 			'.ugb-card__subtitle': {
-				[ `color` ]: '#ff7979',
+				'color': '#ff7979',
 			},
 		} )
 	} )
@@ -264,7 +264,7 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Description Color', '#ff7979' ).assertComputedStyle( {
 			'.ugb-card__description': {
-				[ `color` ]: '#ff7979',
+				'color': '#ff7979',
 			},
 		} )
 	} )
@@ -285,16 +285,16 @@ function styleTab( viewport, desktopOnly ) {
 			.assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
-			[ `Button Color #1` ]: '#bd8b8b',
-			[ `Button Color #2` ]: '#3fa35b',
-			[ `Gradient Direction (degrees)` ]: 72,
-			[ `Text Color` ]: '#80194d',
+			'Button Color #1': '#bd8b8b',
+			'Button Color #2': '#3fa35b',
+			'Gradient Direction (degrees)': 72,
+			'Text Color': '#80194d',
 		} )
 		cy.adjust( 'Typography', {
-			[ `Size` ]: 50,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Letter Spacing` ]: 2.9,
+			'Size': 50,
+			'Weight': '700',
+			'Transform': 'lowercase',
+			'Letter Spacing': 2.9,
 		} )
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
@@ -304,41 +304,41 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Shadow', 4 )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				[ `font-size` ]: '50px',
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
+				'font-size': '50px',
+				'font-weight': '700',
+				'text-transform': 'lowercase',
+				'letter-spacing': '2.9px',
 			},
 			'.ugb-button': {
-				[ `background-color` ]: '#a13939',
-				[ `background-image` ]: 'linear-gradient(138deg, #a13939, #4e59d4)',
-				[ `padding-top` ]: '15px',
-				[ `padding-right` ]: '43px',
-				[ `padding-bottom` ]: '15px',
-				[ `padding-left` ]: '43px',
-				[ `opacity` ]: '0.6',
-				[ `border-radius` ]: '40px',
+				'background-color': '#a13939',
+				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
+				'padding-top': '15px',
+				'padding-right': '43px',
+				'padding-bottom': '15px',
+				'padding-left': '43px',
+				'opacity': '0.6',
+				'border-radius': '40px',
 			},
 		} )
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				unit: 'em',
 				value: 7,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				[ `font-size` ]: '7em',
+				'font-size': '7em',
 			},
 		} )
 		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
-			[ `Icon Size` ]: 41,
-			[ `Icon Spacing` ]: 25,
+			'Icon Size': 41,
+			'Icon Spacing': 25,
 		} ).assertComputedStyle( {
 			'.ugb-button svg': {
-				[ `height` ]: '41px',
-				[ `width` ]: '41px',
-				[ `margin-right` ]: '25px',
+				'height': '41px',
+				'width': '41px',
+				'margin-right': '25px',
 			},
 		} )
 	} )
@@ -346,25 +346,25 @@ function styleTab( viewport, desktopOnly ) {
 	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
 	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				viewport,
 				value: 50,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				[ `font-size` ]: '50px',
+				'font-size': '50px',
 			},
 		} )
 
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				viewport,
 				unit: 'em',
 				value: 7,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				[ `font-size` ]: '7em',
+				'font-size': '7em',
 			},
 		} )
 	}
@@ -400,56 +400,56 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Spacing' )
 	cy.adjust( 'Block Title', 35, { viewport } ).assertComputedStyle( {
 		'.ugb-block-title': {
-			[ `margin-bottom` ]: '35px',
+			'margin-bottom': '35px',
 		},
 	} )
 	cy.adjust( 'Block Description', 41, { viewport } ).assertComputedStyle( {
 		'.ugb-block-description': {
-			[ `margin-bottom` ]: '41px',
+			'margin-bottom': '41px',
 		},
 	} )
 	cy.adjust( 'Paddings', 21, { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-card__content': {
-			[ `padding-top` ]: '21px',
-			[ `padding-bottom` ]: '21px',
-			[ `padding-right` ]: '21px',
-			[ `padding-left` ]: '21px',
+			'padding-top': '21px',
+			'padding-bottom': '21px',
+			'padding-right': '21px',
+			'padding-left': '21px',
 		},
 	} )
 	cy.adjust( 'Paddings', 3, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-card__content': {
-			[ `padding-top` ]: '3em',
-			[ `padding-bottom` ]: '3em',
-			[ `padding-right` ]: '3em',
-			[ `padding-left` ]: '3em',
+			'padding-top': '3em',
+			'padding-bottom': '3em',
+			'padding-right': '3em',
+			'padding-left': '3em',
 		},
 	} )
 	cy.adjust( 'Paddings', 19, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-card__content': {
-			[ `padding-top` ]: '19%',
-			[ `padding-bottom` ]: '19%',
-			[ `padding-right` ]: '19%',
-			[ `padding-left` ]: '19%',
+			'padding-top': '19%',
+			'padding-bottom': '19%',
+			'padding-right': '19%',
+			'padding-left': '19%',
 		},
 	} )
 	cy.adjust( 'Title', 25, { viewport } ).assertComputedStyle( {
 		'.ugb-card__title': {
-			[ `margin-bottom` ]: '25px',
+			'margin-bottom': '25px',
 		},
 	} )
 	cy.adjust( 'Subtitle', 61, { viewport } ).assertComputedStyle( {
 		'.ugb-card__subtitle': {
-			[ `margin-bottom` ]: '61px',
+			'margin-bottom': '61px',
 		},
 	} )
 	cy.adjust( 'Description', 43, { viewport } ).assertComputedStyle( {
 		'.ugb-card__description': {
-			[ `margin-bottom` ]: '43px',
+			'margin-bottom': '43px',
 		},
 	} )
 	cy.adjust( 'Button', 26, { viewport } ).assertComputedStyle( {
 		'.ugb-button-container': {
-			[ `margin-bottom` ]: '26px',
+			'margin-bottom': '26px',
 		},
 	} )
 

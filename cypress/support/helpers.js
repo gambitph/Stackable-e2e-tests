@@ -203,7 +203,7 @@ export const assertAligns = ( name, selector, options = {} ) => {
 	aligns.forEach( align => {
 		cy.adjust( name, align, options ).assertComputedStyle( {
 			[ selector ]: {
-				[ `text-align` ]: align,
+				'text-align': align,
 			},
 		} )
 	} )
@@ -276,53 +276,53 @@ export const assertTypography = ( selector, options = {} ) => {
 
 	if ( viewport === 'Desktop' ) {
 		cy.adjust( 'Typography', {
-			[ `Size` ]: 50,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Line-Height` ]: 4,
-			[ `Letter Spacing` ]: 2.9,
+			'Size': 50,
+			'Weight': '700',
+			'Transform': 'lowercase',
+			'Line-Height': 4,
+			'Letter Spacing': 2.9,
 		} ).assertComputedStyle( {
 			[ selector ]: {
-				[ `font-size` ]: '50px',
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `line-height` ]: '4em',
-				[ `letter-spacing` ]: '2.9px',
+				'font-size': '50px',
+				'font-weight': '700',
+				'text-transform': 'lowercase',
+				'line-height': '4em',
+				'letter-spacing': '2.9px',
 			},
 		} )
 	}
 	cy.adjust( 'Typography', {
-		[ `Size` ]: {
+		'Size': {
 			viewport,
 			value: 2,
 			unit: 'em',
 		},
-		[ `Line-Height` ]: {
+		'Line-Height': {
 			viewport,
 			value: 24,
 			unit: 'px',
 		},
 	} ).assertComputedStyle( {
 		[ selector ]: {
-			[ `font-size` ]: '2em',
-			[ `line-height` ]: '24px',
+			'font-size': '2em',
+			'line-height': '24px',
 		},
 	} )
 	cy.adjust( 'Typography', {
-		[ `Size` ]: {
+		'Size': {
 			viewport,
 			value: 50,
 			unit: 'px',
 		},
-		[ `Line-Height` ]: {
+		'Line-Height': {
 			viewport,
 			value: 4,
 			unit: 'em',
 		},
 	} ).assertComputedStyle( {
 		[ selector ]: {
-			[ `font-size` ]: '50px',
-			[ `line-height` ]: '4em',
+			'font-size': '50px',
+			'line-height': '4em',
 		},
 	} )
 }

@@ -57,7 +57,7 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Border Radius', 20 ).assertComputedStyle( {
 			'.ugb-block-content .ugb-button': {
-				[ `border-radius` ]: '20px',
+				'border-radius': '20px',
 			},
 		} )
 		cy.adjust( 'Collapse Buttons On', 'tablet' )
@@ -66,26 +66,26 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
 		'.ugb-block-content': {
-			[ `justify-content` ]: 'flex-start',
+			'justify-content': 'flex-start',
 		},
 		'.ugb-inner-block': {
-			[ `text-align` ]: 'left',
+			'text-align': 'left',
 		},
 	} )
 	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
 		'.ugb-block-content': {
-			[ `justify-content` ]: 'center',
+			'justify-content': 'center',
 		},
 		'.ugb-inner-block': {
-			[ `text-align` ]: 'center',
+			'text-align': 'center',
 		},
 	} )
 	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
 		'.ugb-block-content': {
-			[ `justify-content` ]: 'flex-end',
+			'justify-content': 'flex-end',
 		},
 		'.ugb-inner-block': {
-			[ `text-align` ]: 'right',
+			'text-align': 'right',
 		},
 	} )
 
@@ -101,16 +101,16 @@ function styleTab( viewport, desktopOnly ) {
 			.assertClassName( '.ugb-button1', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
-			[ `Button Color #1` ]: '#bd8b8b',
-			[ `Button Color #2` ]: '#3fa35b',
-			[ `Gradient Direction (degrees)` ]: 72,
-			[ `Text Color` ]: '#80194d',
+			'Button Color #1': '#bd8b8b',
+			'Button Color #2': '#3fa35b',
+			'Gradient Direction (degrees)': 72,
+			'Text Color': '#80194d',
 		} )
 		cy.adjust( 'Typography', {
-			[ `Size` ]: 31,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Letter Spacing` ]: 2.9,
+			'Size': 31,
+			'Weight': '700',
+			'Transform': 'lowercase',
+			'Letter Spacing': 2.9,
 		} )
 		cy.adjust( 'Button Size', 'small' )
 			.assertClassName( '.ugb-button1', 'ugb-button--size-small' )
@@ -120,42 +120,42 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Shadow', 4 )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
 			'.ugb-button1 .ugb-button--inner': {
-				[ `font-size` ]: '31px',
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
-				[ `color` ]: '#ffa03b',
+				'font-size': '31px',
+				'font-weight': '700',
+				'text-transform': 'lowercase',
+				'letter-spacing': '2.9px',
+				'color': '#ffa03b',
 			},
 			'.ugb-button1': {
-				[ `background-color` ]: '#a13939',
-				[ `background-image` ]: 'linear-gradient(138deg, #a13939, #4e59d4)',
-				[ `padding-top` ]: '15px',
-				[ `padding-right` ]: '43px',
-				[ `padding-bottom` ]: '15px',
-				[ `padding-left` ]: '43px',
-				[ `opacity` ]: '0.6',
-				[ `border-radius` ]: '40px',
+				'background-color': '#a13939',
+				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
+				'padding-top': '15px',
+				'padding-right': '43px',
+				'padding-bottom': '15px',
+				'padding-left': '43px',
+				'opacity': '0.6',
+				'border-radius': '40px',
 			},
 		} )
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				unit: 'em',
 				value: 2,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button1 .ugb-button--inner': {
-				[ `font-size` ]: '2em',
+				'font-size': '2em',
 			},
 		} )
 		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
-			[ `Icon Size` ]: 41,
-			[ `Icon Spacing` ]: 25,
+			'Icon Size': 41,
+			'Icon Spacing': 25,
 		} ).assertComputedStyle( {
 			'.ugb-button1 svg': {
-				[ `height` ]: '41px',
-				[ `width` ]: '41px',
-				[ `margin-right` ]: '25px',
+				'height': '41px',
+				'width': '41px',
+				'margin-right': '25px',
 			},
 		} )
 	} )
@@ -163,25 +163,25 @@ function styleTab( viewport, desktopOnly ) {
 	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
 	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				viewport,
 				value: 31,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button1 .ugb-button--inner': {
-				[ `font-size` ]: '31px',
+				'font-size': '31px',
 			},
 		} )
 
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				viewport,
 				unit: 'em',
 				value: 7,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button1 .ugb-button--inner': {
-				[ `font-size` ]: '7em',
+				'font-size': '7em',
 			},
 		} )
 	}
@@ -199,16 +199,16 @@ function styleTab( viewport, desktopOnly ) {
 			.assertClassName( '.ugb-button2', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
-			[ `Button Color #1` ]: '#bd8b8b',
-			[ `Button Color #2` ]: '#3fa35b',
-			[ `Gradient Direction (degrees)` ]: 72,
-			[ `Text Color` ]: '#80194d',
+			'Button Color #1': '#bd8b8b',
+			'Button Color #2': '#3fa35b',
+			'Gradient Direction (degrees)': 72,
+			'Text Color': '#80194d',
 		} )
 		cy.adjust( 'Typography', {
-			[ `Size` ]: 31,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Letter Spacing` ]: 2.9,
+			'Size': 31,
+			'Weight': '700',
+			'Transform': 'lowercase',
+			'Letter Spacing': 2.9,
 		} )
 		cy.adjust( 'Button Size', 'small' )
 			.assertClassName( '.ugb-button2', 'ugb-button--size-small' )
@@ -218,67 +218,67 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Shadow', 4 )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
 			'.ugb-button2 .ugb-button--inner': {
-				[ `font-size` ]: '31px',
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
-				[ `color` ]: '#ffa03b',
+				'font-size': '31px',
+				'font-weight': '700',
+				'text-transform': 'lowercase',
+				'letter-spacing': '2.9px',
+				'color': '#ffa03b',
 			},
 			'.ugb-button2': {
-				[ `background-color` ]: '#a13939',
-				[ `background-image` ]: 'linear-gradient(138deg, #a13939, #4e59d4)',
-				[ `padding-top` ]: '15px',
-				[ `padding-right` ]: '43px',
-				[ `padding-bottom` ]: '15px',
-				[ `padding-left` ]: '43px',
-				[ `opacity` ]: '0.6',
-				[ `border-radius` ]: '40px',
+				'background-color': '#a13939',
+				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
+				'padding-top': '15px',
+				'padding-right': '43px',
+				'padding-bottom': '15px',
+				'padding-left': '43px',
+				'opacity': '0.6',
+				'border-radius': '40px',
 			},
 		} )
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				unit: 'em',
 				value: 2,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button2 .ugb-button--inner': {
-				[ `font-size` ]: '2em',
+				'font-size': '2em',
 			},
 		} )
 		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
-			[ `Icon Size` ]: 41,
-			[ `Icon Spacing` ]: 25,
+			'Icon Size': 41,
+			'Icon Spacing': 25,
 		} ).assertComputedStyle( {
 			'.ugb-button2 svg': {
-				[ `height` ]: '41px',
-				[ `width` ]: '41px',
-				[ `margin-right` ]: '25px',
+				'height': '41px',
+				'width': '41px',
+				'margin-right': '25px',
 			},
 		} )
 	} )
 
 	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				viewport,
 				value: 31,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button2 .ugb-button--inner': {
-				[ `font-size` ]: '31px',
+				'font-size': '31px',
 			},
 		} )
 
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				viewport,
 				unit: 'em',
 				value: 7,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button2 .ugb-button--inner': {
-				[ `font-size` ]: '7em',
+				'font-size': '7em',
 			},
 		} )
 	}
@@ -296,16 +296,16 @@ function styleTab( viewport, desktopOnly ) {
 			.assertClassName( '.ugb-button3', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
-			[ `Button Color #1` ]: '#bd8b8b',
-			[ `Button Color #2` ]: '#3fa35b',
-			[ `Gradient Direction (degrees)` ]: 72,
-			[ `Text Color` ]: '#80194d',
+			'Button Color #1': '#bd8b8b',
+			'Button Color #2': '#3fa35b',
+			'Gradient Direction (degrees)': 72,
+			'Text Color': '#80194d',
 		} )
 		cy.adjust( 'Typography', {
-			[ `Size` ]: 31,
-			[ `Weight` ]: '700',
-			[ `Transform` ]: 'lowercase',
-			[ `Letter Spacing` ]: 2.9,
+			'Size': 31,
+			'Weight': '700',
+			'Transform': 'lowercase',
+			'Letter Spacing': 2.9,
 		} )
 		cy.adjust( 'Button Size', 'small' )
 			.assertClassName( '.ugb-button3', 'ugb-button--size-small' )
@@ -315,67 +315,67 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Shadow', 4 )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
 			'.ugb-button3 .ugb-button--inner': {
-				[ `font-size` ]: '31px',
-				[ `font-weight` ]: '700',
-				[ `text-transform` ]: 'lowercase',
-				[ `letter-spacing` ]: '2.9px',
-				[ `color` ]: '#ffa03b',
+				'font-size': '31px',
+				'font-weight': '700',
+				'text-transform': 'lowercase',
+				'letter-spacing': '2.9px',
+				'color': '#ffa03b',
 			},
 			'.ugb-button3': {
-				[ `background-color` ]: '#a13939',
-				[ `background-image` ]: 'linear-gradient(138deg, #a13939, #4e59d4)',
-				[ `padding-top` ]: '15px',
-				[ `padding-right` ]: '43px',
-				[ `padding-bottom` ]: '15px',
-				[ `padding-left` ]: '43px',
-				[ `opacity` ]: '0.6',
-				[ `border-radius` ]: '40px',
+				'background-color': '#a13939',
+				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
+				'padding-top': '15px',
+				'padding-right': '43px',
+				'padding-bottom': '15px',
+				'padding-left': '43px',
+				'opacity': '0.6',
+				'border-radius': '40px',
 			},
 		} )
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				unit: 'em',
 				value: 2,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button3 .ugb-button--inner': {
-				[ `font-size` ]: '2em',
+				'font-size': '2em',
 			},
 		} )
 		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
-			[ `Icon Size` ]: 41,
-			[ `Icon Spacing` ]: 25,
+			'Icon Size': 41,
+			'Icon Spacing': 25,
 		} ).assertComputedStyle( {
 			'.ugb-button3 svg': {
-				[ `height` ]: '41px',
-				[ `width` ]: '41px',
-				[ `margin-right` ]: '25px',
+				'height': '41px',
+				'width': '41px',
+				'margin-right': '25px',
 			},
 		} )
 	} )
 
 	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				viewport,
 				value: 31,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button3 .ugb-button--inner': {
-				[ `font-size` ]: '31px',
+				'font-size': '31px',
 			},
 		} )
 
 		cy.adjust( 'Typography', {
-			[ `Size` ]: {
+			'Size': {
 				viewport,
 				unit: 'em',
 				value: 7,
 			},
 		} ).assertComputedStyle( {
 			'.ugb-button3 .ugb-button--inner': {
-				[ `font-size` ]: '7em',
+				'font-size': '7em',
 			},
 		} )
 	}

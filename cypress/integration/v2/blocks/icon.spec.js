@@ -67,7 +67,7 @@ function styleTab( viewport, desktopOnly ) {
 			.assertHtmlTag( '.ugb-icon__title', 'h4' )
 		cy.adjust( 'Title Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-icon__title': {
-				[ `color` ]: '#742f2f',
+				'color': '#742f2f',
 			},
 		} )
 	} )
@@ -79,8 +79,8 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		cy.adjust( 'Icon Color', '#acacac' ).assertComputedStyle( {
 			'.ugb-icon-inner-svg': {
-				[ `color` ]: '#acacac',
-				[ `fill` ]: '#acacac',
+				'color': '#acacac',
+				'fill': '#acacac',
 			},
 		} )
 		cy.adjust( 'Icon Color Type', 'gradient' )
@@ -90,19 +90,19 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Icon Opacity', 0.5 )
 		cy.adjust( 'Icon Rotation', 31 ).assertComputedStyle( {
 			'.ugb-icon__icon': {
-				[ `opacity` ]: '0.5',
+				'opacity': '0.5',
 			},
 			'.ugb-icon-inner-svg': {
-				[ `fill` ]: 'url("#grad-f00069-000000-180")',
-				[ `transform` ]: 'matrix(0.857167, 0.515038, -0.515038, 0.857167, 0, 0)',
+				'fill': 'url("#grad-f00069-000000-180")',
+				'transform': 'matrix(0.857167, 0.515038, -0.515038, 0.857167, 0, 0)',
 			},
 		} )
 	} )
 
 	cy.adjust( 'Icon Size', 23, { viewport } ).assertComputedStyle( {
 		'.ugb-icon-inner-svg': {
-			[ `height` ]: '23px',
-			[ `width` ]: '23px',
+			'height': '23px',
+			'width': '23px',
 		},
 	} )
 
@@ -117,25 +117,25 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Horizontal Offset', 9 )
 		cy.adjust( 'Vertical Offset', 8 ).assertComputedStyle( {
 			'.ugb-icon__bg-shape': {
-				[ `fill` ]: '#bcdeff',
-				[ `color` ]: '#bcdeff',
-				[ `opacity` ]: '0.9',
+				'fill': '#bcdeff',
+				'color': '#bcdeff',
+				'opacity': '0.9',
 			},
 		} )
 	} )
 	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
 		'.ugb-icon__icon': {
-			[ `align-self` ]: 'flex-start',
+			'align-self': 'flex-start',
 		},
 	} )
 	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
 		'.ugb-icon__icon': {
-			[ `align-self` ]: 'center',
+			'align-self': 'center',
 		},
 	} )
 	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
 		'.ugb-icon__icon': {
-			[ `align-self` ]: 'flex-end',
+			'align-self': 'flex-end',
 		},
 	} )
 
@@ -160,36 +160,36 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Spacing' )
 	cy.adjust( 'Paddings', 27, { viewport } ).assertComputedStyle( {
 		'.ugb-icon__content-wrapper': {
-			[ `padding-bottom` ]: '27px',
-			[ `padding-left` ]: '27px',
-			[ `padding-right` ]: '27px',
-			[ `padding-top` ]: '27px',
+			'padding-bottom': '27px',
+			'padding-left': '27px',
+			'padding-right': '27px',
+			'padding-top': '27px',
 		},
 	} )
 	cy.adjust( 'Paddings', 3, { unit: 'em', viewport } ).assertComputedStyle( {
 		'.ugb-icon__content-wrapper': {
-			[ `padding-bottom` ]: '3em',
-			[ `padding-left` ]: '3em',
-			[ `padding-right` ]: '3em',
-			[ `padding-top` ]: '3em',
+			'padding-bottom': '3em',
+			'padding-left': '3em',
+			'padding-right': '3em',
+			'padding-top': '3em',
 		},
 	} )
 	cy.adjust( 'Paddings', 12, { unit: '%', viewport } ).assertComputedStyle( {
 		'.ugb-icon__content-wrapper': {
-			[ `padding-bottom` ]: '12%',
-			[ `padding-left` ]: '12%',
-			[ `padding-right` ]: '12%',
-			[ `padding-top` ]: '12%',
+			'padding-bottom': '12%',
+			'padding-left': '12%',
+			'padding-right': '12%',
+			'padding-top': '12%',
 		},
 	} )
 	cy.adjust( 'Icon', 14, { viewport } ).assertComputedStyle( {
 		'.ugb-icon__icon': {
-			[ `margin-bottom` ]: '14px',
+			'margin-bottom': '14px',
 		},
 	} )
 	cy.adjust( 'Title', 29, { viewport } ).assertComputedStyle( {
 		'.ugb-icon__title': {
-			[ `margin-bottom` ]: '29px',
+			'margin-bottom': '29px',
 		},
 	} )
 
