@@ -2,14 +2,19 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
+	assertAligns, assertBlockExist, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
+
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 
 describe( 'Feature Block', registerTests( [
 	blockExist,
 	blockError,
 	switchLayout,
 	switchDesign,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 ] ) )
 
 function blockExist() {
@@ -104,3 +109,128 @@ function switchDesign() {
 	] ) )
 }
 
+function styleTab( viewport, desktopOnly ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/feature' )
+	cy.openInspector( 'ugb/feature', 'Style' )
+
+	// General Tab
+	cy.collapse( 'General' )
+
+	const desktopTabletViewports = [ 'Desktop', 'Tablet' ]
+	if ( desktopTabletViewports.some( _viewport => _viewport === viewport ) ) {
+		cy.adjust( 'Image Column Width', 50, { viewport } ).assertComputedStyle( {
+			'.ugb-feature__item': {
+				'grid-template-columns': '1.00fr 1.00fr',
+			},
+		} )
+	}
+
+	desktopOnly( () => {
+		cy.adjust( 'Reverse Horizontally', true ).assertClassName( '.ugb-feature', 'ugb-feature--invert' )
+	} )
+
+	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
+
+	// Spacing Tab
+	cy.collapse( 'Spacing' )
+
+	cy.adjust( 'Title', 50, { viewport } ).assertComputedStyle( {
+		'.ugb-feature__title': {
+			'margin-bottom': '50px',
+		},
+	} )
+
+	cy.adjust( 'Description', 33, { viewport } ).assertComputedStyle( {
+		'.ugb-feature__description': {
+			'margin-bottom': '33px',
+		},
+	} )
+
+	cy.adjust( 'Button', 10, { viewport } ).assertComputedStyle( {
+		'.ugb-button-container': {
+			'margin-bottom': '10px',
+		},
+	} )
+
+	// Image Tab
+	cy.collapse( 'Image' )
+
+	cy.setBlockAttribute( {
+		'imageUrl': Cypress.env( 'DUMMY_IMAGE_URL' ),
+	} )
+
+	desktopOnly( () => {
+		cy.adjust( 'Shape', {
+			label: 'Blob 1',
+			value: 'blob1',
+		} )
+		cy.adjust( 'Flip Shape Horizontally', true )
+		cy.adjust( 'Flip Shape Vertically', true )
+		cy.adjust( 'Stretch Shape Mask', true ).assertClassName( 'img.ugb-img--shape', 'ugb-image--shape-stretch' )
+
+		// We won't be able to assert image size for now since it requires server handling.
+
+		// cy.adjust( 'Alt Text (Alternative Text)', 'Hello World!' ).assertHtmlAttribute( '.ugb-img', 'alt', 'Hello World!' )
+
+		// Test for height attribute
+	} )
+
+	cy.adjust( 'Image Width', 87, { viewport } ).assertComputedStyle( {
+		'.ugb-img': {
+			'width': '87px',
+		},
+	} )
+
+	desktopOnly( () => {
+		cy.adjust( 'Force square image', true ).assertComputedStyle( {
+			'.ugb-img': {
+				'height': '87px',
+			},
+		} )
+	} )
+
+	// Title Tab and Description Tab
+	cy.collapse( 'Title' )
+
+	desktopOnly( () => {
+		cy.adjust( 'Title HTML Tag', 'h4' ).assertHtmlTag( '.ugb-feature__title', 'h4' )
+	} )
+
+	const titleDescriptionTabs = [
+		{
+			name: 'Title',
+			class: '.ugb-feature__title',
+		},
+		{
+			name: 'Description',
+			class: '.ugb-feature__description',
+		},
+	]
+	titleDescriptionTabs.forEach( tab => {
+		cy.collapse( tab.name )
+
+		desktopOnly( () => {
+			cy.adjust( tab.name + ' Color', '#742f2f' ).assertComputedStyle( {
+				[ `${ tab.class }` ]: {
+					'color': '#742f2f',
+				},
+			} )
+		} )
+
+		cy.adjust( 'Size', 55, { viewport } ).assertComputedStyle( {
+			[ `${ tab.class }` ]: {
+				'font-size': '55px',
+			},
+		} )
+		cy.adjust( 'Size', 2, { viewport, unit: 'em' } ).assertComputedStyle( {
+			[ `${ tab.class }` ]: {
+				'font-size': '2em',
+			},
+		} )
+
+		assertTypography( [ `${ tab.class }` ], { viewport } )
+		assertAligns( 'Align', [ `${ tab.class }` ], { viewport } )
+	} )
+}
