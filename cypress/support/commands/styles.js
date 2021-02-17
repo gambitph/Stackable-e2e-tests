@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys, camelCase, isEmpty, first, cloneDeep,
+	kebabCase, keys, camelCase, isEmpty, first,
 } from 'lodash'
 
 /**
@@ -868,10 +868,10 @@ function _assertComputedStyle( win, doc, element, _cssObject, pseudoEl, parentEl
 	element.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
 	parentEl.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
 
-	const computedStyles = cloneDeep( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ) )
+	const computedStyles = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )
 	const expectedStylesToEnqueue = keys( _cssObject ).map( key => `${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` )
 	element.setAttribute( 'style', `${ [ ...removeAnimationStyles, ...expectedStylesToEnqueue ].join( '; ' ) }` )
-	const expectedStyles = cloneDeep( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ) )
+	const expectedStyles = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )
 
 	keys( _cssObject ).forEach( key => {
 		const computedStyle = computedStyles[ camelCase( key ) ]
