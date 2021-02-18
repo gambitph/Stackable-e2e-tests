@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -72,10 +72,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, __experimentalRegisterBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/feature-grid' )
+	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
+	const featureGridBlock = __experimentalRegisterBlockSnapshots( 'featureGridBlock' )
 
 	cy.openInspector( 'ugb/feature-grid', 'Style' )
 
@@ -86,86 +87,13 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.collapse( 'Container' )
 	cy.setBlockAttribute( {
-		[ `column${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
 		'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
 		'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
 		'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
 		'image4Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
 	} )
-	desktopOnly( () => {
-		cy.adjust( 'Background', {
-			'Color Type': 'gradient',
-			'Background Color #1': '#ff5c5c',
-			'Background Color #2': '#7bff5a',
-			'Adv. Gradient Color Settings': {
-				'Gradient Direction (degrees)': 160,
-				'Color 1 Location': 28,
-				'Color 2 Location': 75,
-				'Background Gradient Blend Mode': 'hue',
-			},
-			'Background Media Tint Strength': 6,
-			'Fixed Background': true,
-			'Adv. Background Image Settings': {
-				'Image Blend Mode': 'exclusion',
-			},
-		} ).assertComputedStyle( {
-			'.ugb-feature-grid__item:before': {
-				'background-image': 'linear-gradient(160deg, #ff5c5c 28%, #7bff5a 75%)',
-				'opacity': '0.6',
-				'mix-blend-mode': 'hue',
-			},
-			'.ugb-feature-grid__item': {
-				'background-color': '#ff5c5c',
-				'background-attachment': 'fixed',
-				'background-blend-mode': 'exclusion',
-			},
-		} )
-	} )
-	cy.adjust( 'Background', {
-		'Adv. Background Image Settings': {
-			'Image Position': {
-				viewport,
-				value: 'center center',
-			},
-			'Image Repeat': {
-				viewport,
-				value: 'repeat-x',
-			},
-			'Image Size': {
-				viewport,
-				value: 'custom',
-			},
-			'Custom Size': {
-				viewport,
-				value: 19,
-				unit: '%',
-			},
-		},
-	} ).assertComputedStyle( {
-		'.ugb-feature-grid__item': {
-			'background-position': '50% 50%',
-			'background-repeat': 'repeat-x',
-			'background-size': '19%',
-		},
-	} )
-	desktopOnly( () => {
-		cy.adjust( 'Borders', 'solid' )
-		cy.adjust( 'Border Width', 4 )
-		cy.adjust( 'Border Color', '#a12222' )
-		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
-			'.ugb-feature-grid__item': {
-				'border-style': 'solid',
-				'border-top-width': '4px',
-				'border-bottom-width': '4px',
-				'border-left-width': '4px',
-				'border-right-width': '4px',
-				'border-color': '#a12222',
-				'border-radius': '26px',
-			},
-		} )
-		cy.adjust( 'Shadow / Outline', 7 )
-			.assertClassName( '.ugb-feature-grid__item', 'ugb--shadow-7' )
-	} )
+
+	assertContainer( '.ugb-feature-grid__item', { viewport }, 'column%sBackgroundMediaUrl' )
 	cy.collapse( 'Image' )
 	cy.adjust( 'Image Width', 29, { viewport } ).assertComputedStyle( {
 		'.ugb-img': {
@@ -369,5 +297,6 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-feature-grid', { viewport } )
 	assertSeparators( { viewport } )
+	featureGridBlock.assertFrontendStyles()
 }
 

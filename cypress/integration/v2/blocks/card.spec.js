@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -63,10 +63,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, __experimentalRegisterBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/card' )
+	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
+	const cardBlock = __experimentalRegisterBlockSnapshots( 'cardBlock' )
 	cy.openInspector( 'ugb/card', 'Style' )
 
 	cy.collapse( 'General' )
@@ -76,132 +77,13 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.collapse( 'Container' )
 
-	desktopOnly( () => {
-		cy.adjust( 'Background', {
-			'Color Type': 'single',
-			'Background Color': '#000000',
-			'Background Color Opacity': 0.7,
-		} ).assertComputedStyle( {
-			'.ugb-card__item': {
-				'background-color': 'rgba(0, 0, 0, 0.7)',
-			},
-		} )
-	} )
-
 	cy.setBlockAttribute( {
-		[ `column${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
 		'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
 		'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
 		'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
 	} )
 
-	desktopOnly( () => {
-		cy.adjust( 'Background', {
-			'Background Media Tint Strength': 7,
-			'Fixed Background': true,
-			'Adv. Background Image Settings': {
-				'Image Blend Mode': 'hue',
-			},
-		} ).assertComputedStyle( {
-			'.ugb-card__item': {
-				'background-image': `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
-				'background-attachment': 'fixed',
-				'background-blend-mode': 'hue',
-			},
-			'.ugb-card__item:before': {
-				'opacity': '0.7',
-			},
-		} )
-	} )
-
-	cy.adjust( 'Background', {
-		'Adv. Background Image Settings': {
-			'Image Position': {
-				viewport,
-				value: 'center center',
-			},
-			'Image Repeat': {
-				viewport,
-				value: 'repeat-x',
-			},
-			'Image Size': {
-				viewport,
-				value: 'custom',
-			},
-			'Custom Size': {
-				viewport,
-				value: 19,
-				unit: '%',
-			},
-		},
-	} ).assertComputedStyle( {
-		'.ugb-card__item': {
-			'background-position': '50% 50%',
-			'background-repeat': 'repeat-x',
-			'background-size': '19%',
-		},
-	} )
-
-	cy.adjust( 'Background', {
-		'Adv. Background Image Settings': {
-			'Image Size': {
-				viewport,
-				value: 'custom',
-			},
-			'Custom Size': {
-				viewport,
-				value: 23,
-				unit: 'px',
-			},
-		},
-	} ).assertComputedStyle( {
-		'.ugb-card__item': {
-			'background-size': '23px',
-		},
-	} )
-
-	cy.adjust( 'Background', {
-		'Adv. Background Image Settings': {
-			'Image Size': {
-				viewport,
-				value: 'custom',
-			},
-			'Custom Size': {
-				viewport,
-				value: 8,
-				unit: 'vw',
-			},
-		},
-	} ).assertComputedStyle( {
-		'.ugb-card__item': {
-			'background-size': '8vw',
-		},
-	} )
-
-	desktopOnly( () => {
-		cy.adjust( 'Borders', 'solid' )
-		cy.adjust( 'Border Color', '#a12222' )
-		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
-			'.ugb-card__item': {
-				'border-style': 'solid',
-				'border-color': '#a12222',
-				'border-radius': '26px',
-			},
-		} )
-		cy.adjust( 'Shadow / Outline', 7 )
-			.assertClassName( '.ugb-card__item', 'ugb--shadow-7' )
-	} )
-
-	cy.adjust( 'Borders', 'dashed' )
-	cy.adjust( 'Border Width', 3, { viewport } ).assertComputedStyle( {
-		'.ugb-card__item': {
-			'border-style': 'dashed',
-			'border-top-width': '3px',
-			'border-bottom-width': '3px',
-			'border-left-width': '3px',
-			'border-right-width': '3px',
-		},
-	} )
+	assertContainer( '.ugb-card__item', { viewport }, 'column%sBackgroundMediaUrl' )
 
 	cy.collapse( 'Image' )
 	// TODO: Image Size assertion
@@ -424,7 +306,7 @@ function styleTab( viewport, desktopOnly ) {
 			'padding-left': '3em',
 		},
 	} )
-	cy.adjust( 'Paddings', 19, { viewport, unit: 'em' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', 19, { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-card__content': {
 			'padding-top': '19%',
 			'padding-bottom': '19%',
@@ -456,4 +338,5 @@ function styleTab( viewport, desktopOnly ) {
 	// Test Block Background
 	assertBlockBackground( '.ugb-card', { viewport } )
 	assertSeparators( { viewport } )
+	cardBlock.assertFrontendStyles()
 }

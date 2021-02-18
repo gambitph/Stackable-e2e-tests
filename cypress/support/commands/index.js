@@ -76,10 +76,10 @@ function modifyLogFunc( position = 'last' ) {
  */
 export function addBlock( blockName = 'ugb/accordion' ) {
 	cy.wp().then( wp => {
-		return new Cypress.Promise( ( resolve, reject ) => {
-			wp.data.dispatch( 'core/editor' ).insertBlock( wp.blocks.createBlock( blockName ) )
-				.then( dispatchResolver( resolve ) )
-				.catch( reject )
+		return new Cypress.Promise( resolve => {
+			const block = wp.blocks.createBlock( blockName )
+			wp.data.dispatch( 'core/editor' ).insertBlock( block )
+				.then( dispatchResolver( () => resolve( last( wp.data.select( 'core/block-editor' ).getBlocks() ) ) ) )
 		} )
 	} )
 }

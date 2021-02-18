@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys, camelCase, isEmpty, first,
+	kebabCase, keys, camelCase, isEmpty, first, pick, toUpper, last,
 } from 'lodash'
 
 /**
@@ -841,9 +841,7 @@ export function adjustDesign( option = '' ) {
 	cy.waitLoader( '.ugb-design-library-item span.components-spinner' )
 }
 
-function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Desktop' ) {
-	const pseudoEl = selector.length === 2 && selector[ 1 ]
-
+export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop' ) {
 	const removeAnimationStyles = [
 		'-webkit-transition: none !important',
 		'-moz-transition: none !important',
@@ -859,7 +857,7 @@ function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Des
 				.then( $block => {
 					const element = first( $block )
 
-					const parentEl = assertType === 'Backend'
+					const parentEl = assertType === 'Editor'
 						? doc.querySelector( '.edit-post-visual-editor' )
 						: doc.querySelector( 'body' )
 
@@ -868,7 +866,7 @@ function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Des
 						if ( expectedValue.match( /vw$/ ) ) {
 							const visualEl = doc.querySelector( '.edit-post-visual-editor' )
 							if ( visualEl && assertType === 'Backend' && viewport !== 'Desktop' ) {
-								const currEditorWidth = win.getComputedStyle( visualEl ).width
+								const currEditorWidth = pick( win.getComputedStyle( visualEl ), 'width' ).width
 								return `${ parseFloat( ( parseInt( expectedValue ) ) / 100 * currEditorWidth ) }px`
 							}
 						}
@@ -880,12 +878,12 @@ function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Des
 					element.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
 					parentEl.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
 
-					const computedStyles = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )
+					const computedStyles = pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) )
 					const expectedStylesToEnqueue = keys( _cssObject ).map( key =>
 						`${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` )
 
 					element.setAttribute( 'style', `${ [ ...removeAnimationStyles, ...expectedStylesToEnqueue ].join( '; ' ) }` )
-					const expectedStyles = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )
+					const expectedStyles = pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) )
 
 					keys( _cssObject ).forEach( key => {
 						const computedStyle = computedStyles[ camelCase( key ) ]
@@ -893,7 +891,7 @@ function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Des
 						assert.equal(
 							computedStyle,
 							expectedStyle,
-							`'${ camelCase( key ) }' expected to be ${ expectedStyle }. Found '${ computedStyle }'.`
+							`'${ camelCase( key ) }' expected to be ${ expectedStyle } in ${ assertType }. Found '${ computedStyle }'.`
 						)
 					} )
 				} )
@@ -909,22 +907,40 @@ function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Des
  * @param {Object} options
  */
 export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
+	const {
+		__experimentalBlockSnapshots = null,
+		assertBackend = true,
+		assertFrontend = true,
+		viewportFrontend = false,
+	} = options
+
 	assertFunction(
 		subject,
 		// Assertion in the editor.
 		( { viewport } ) => {
-			keys( cssObject ).forEach( _selector => {
-				const selector = _selector.split( ':' )
+			// Stub the block's HTML content and styles. Only do assertions
+			// before the end of responsiveAssertion tests.
+			if ( __experimentalBlockSnapshots && assertFrontend ) {
+				__experimentalBlockSnapshots.createContentSnapshot()
+				__experimentalBlockSnapshots.stubStyles( cssObject, viewportFrontend ? viewportFrontend : viewport )
+			}
 
-				_assertComputedStyle(
-					`.is-selected${ ` ${ first( selector ) }` }`,
-					cssObject[ _selector ],
-					'Backend',
-					viewport
-				)
-			} )
+			if ( assertBackend ) {
+				keys( cssObject ).forEach( _selector => {
+					const selector = _selector.split( ':' )
+
+					_assertComputedStyle(
+						`.is-selected${ ` ${ first( selector ) }` }`,
+						selector.length === 2 && last( selector ),
+						cssObject[ _selector ],
+						'Editor',
+						viewport
+					)
+				} )
+			}
 		},
 		// Assertion in the frontend.
+		// Frontend callback may soon be deprecated in favor of BlockSnapshots.
 		( {
 			parsedClassList, viewport,
 		} ) => {
@@ -941,6 +957,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 
 				_assertComputedStyle(
 					documentSelector,
+					selector.length === 2 && last( selector ),
 					cssObject[ _selector ],
 					'Frontend',
 					viewport )
@@ -958,10 +975,15 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
  * @param {Object} options
  */
 export function assertClassName( subject, customSelector = '', expectedValue = '', options = {} ) {
+	const {
+		assertBackend = true,
+		assertFrontend = true,
+	} = options
+
 	assertFunction(
 		subject,
 		// Assertion in the editor.
-		() => {
+		( { parsedClassList, blockContent } ) => {
 			cy
 				.get( subject )
 				.invoke( 'attr', 'id' )
@@ -971,33 +993,37 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 						.invoke( 'attr', 'class' )
 						.then( $classNames => {
 							const parsedClassNames = $classNames.split( ' ' )
-							assert.isTrue(
-								parsedClassNames.includes( expectedValue ),
-								`${ expectedValue } must be present in block #${ id }`
-							)
+							// Assert editor classes.
+							if ( assertBackend ) {
+								assert.isTrue(
+									parsedClassNames.includes( expectedValue ),
+									`${ expectedValue } must be present in block #${ id } in Editor`
+								)
+							}
+
+							// Assert frontend classes.
+							// Check if we're asserting the parent element.
+							if ( assertFrontend ) {
+								if ( parsedClassList.match( customSelector ) ) {
+									assert.isTrue(
+										!! parsedClassList.match( expectedValue ),
+										`${ expectedValue } must be present in block #${ id } in Frontend`
+									)
+								} else {
+									// Otherwise, search the element
+									cy.log( '2', Array.from( blockContent.querySelector( customSelector ).classList ).includes( expectedValue ) )
+									assert.isTrue(
+										!! Array.from( blockContent.querySelector( customSelector ).classList ).includes( expectedValue ),
+										`${ expectedValue } must be present in block #${ id } in Frontend`
+									)
+								}
+							}
 						} )
 				} )
 		},
-		// Assertion in the frontend.
-		( {
-			parsedClassList,
-		} ) => {
-			cy.document().then( doc => {
-				const willAssertElement = doc.querySelector( `${ parsedClassList }${ parsedClassList.match( customSelector ) ? '' : ` ${ customSelector }` }` )
-				if ( willAssertElement ) {
-					( parsedClassList.includes( customSelector )
-						? cy.get( parsedClassList ).invoke( 'attr', 'class' )
-						: cy.get( parsedClassList ).find( customSelector ).invoke( 'attr', 'class' )
-					).then( $classNames => {
-						const parsedClassNames = $classNames.split( ' ' )
-						assert.isTrue(
-							parsedClassNames.includes( expectedValue ),
-							`${ expectedValue } must be present in block`
-						)
-					} )
-				}
-			} )
-		},
+		// We no longer need to visit the frontend to assert class names.
+		// We can just generate the block content from the editor and convert it to HTML for assertions.
+		null,
 		options
 	)
 }
@@ -1011,29 +1037,45 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
  * @param {Object} options
  */
 export function assertHtmlTag( subject, customSelector = '', expectedValue = '', options = {} ) {
+	const {
+		assertBackend = true,
+		assertFrontend = true,
+	} = options
+
 	assertFunction(
 		subject,
-		() => {
+		( { parsedClassList, blockContent } ) => {
 			cy
 				.get( subject )
 				.then( $block => {
-					assert.isTrue(
-						! isEmpty( $block.find( `${ expectedValue }${ customSelector }` ) ),
-						`${ customSelector } must have HTML tag '${ expectedValue }'`
-					)
+					// Assert editor HTML tag.
+					if ( assertBackend ) {
+						assert.isTrue(
+							! isEmpty( $block.find( `${ expectedValue }${ customSelector }` ) ),
+							`${ customSelector } must have HTML tag '${ expectedValue } in Editor'`
+						)
+					}
+
+					// Check if we're asserting the parent element.
+					if ( assertFrontend ) {
+						if ( parsedClassList.match( customSelector ) ) {
+							assert.isTrue(
+								blockContent.tagName === toUpper( expectedValue ),
+								`${ customSelector } must have HTML tag '${ expectedValue } in Frontend'`
+							)
+						} else {
+							// Otherwise, search the element
+							assert.isTrue(
+								blockContent.querySelector( customSelector ).tagName === toUpper( expectedValue ),
+								`${ customSelector } must have HTML tag '${ expectedValue } in Frontend'`
+							)
+						}
+					}
 				} )
 		},
-		( { parsedClassList } ) => {
-			cy
-				.get( parsedClassList )
-				.then( $block => {
-					assert.isTrue(
-						! isEmpty( parsedClassList.match( customSelector )
-							?	Cypress.$( `${ expectedValue }${ parsedClassList }` )
-							: $block.find( `${ expectedValue }${ customSelector }` ) ),
-						`${ customSelector } must have HTML tag '${ expectedValue }'` )
-				} )
-		},
+		// We no longer need to visit the frontend to assert htmlTag.
+		// We can just generate the block content from the editor and convert it to HTML for assertions.
+		null,
 		options
 	)
 }
@@ -1048,40 +1090,57 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
  * @param {Object} options
  */
 export function assertHtmlAttribute( subject, customSelector = '', attribute = '', expectedValue = '', options = {} ) {
+	const {
+		assertBackend = true,
+		assertFrontend = true,
+	} = options
+
 	assertFunction(
 		subject,
-		() => {
+		( { blockContent, parsedClassList } ) => {
 			cy
 				.get( subject )
 				.find( customSelector )
 				.invoke( 'attr', attribute )
 				.then( $attribute => {
-					if ( typeof expectedValue === 'string' ) {
-						assert.isTrue( $attribute === expectedValue, `${ customSelector } must have a ${ attribute } = "${ expectedValue }"` )
+					// Assert editor HTML attributes.
+					if ( assertBackend ) {
+						if ( typeof expectedValue === 'string' ) {
+							assert.isTrue(
+								$attribute === expectedValue,
+								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor`
+							)
+						} else if ( expectedValue instanceof RegExp ) {
+							assert.isTrue(
+								( $attribute || '' ).match( expectedValue ),
+								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor` )
+						}
 					}
-					if ( expectedValue instanceof RegExp ) {
-						assert.isTrue( ( $attribute || '' ).match( expectedValue ), `${ customSelector } must have a ${ attribute } = "${ expectedValue }"` )
+
+					// Check if we're asserting the parent element.
+					if ( assertFrontend ) {
+						if ( parsedClassList.match( customSelector ) ) {
+							assert.isTrue(
+								attribute instanceof RegExp
+									? !! blockContent.getAttribute( attribute ).match( expectedValue )
+									: blockContent.getAttribute( attribute ) === expectedValue,
+								`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+							)
+						} else {
+							// Otherwise, search the element
+							assert.isTrue(
+								attribute instanceof RegExp
+									? !! blockContent.querySelector( customSelector ).getAttribute( attribute ).match( expectedValue )
+									: blockContent.querySelector( customSelector ).getAttribute( attribute ) === expectedValue,
+								`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+							)
+						}
 					}
 				} )
 		},
-		( { parsedClassList } ) => {
-			cy
-				.get( parsedClassList )
-				.then( $block => {
-					if ( typeof expectedValue === 'string' ) {
-						assert.isTrue( ( parsedClassList.match( customSelector )
-							?	 Cypress.$( parsedClassList ).attr( attribute )
-							: $block.find( customSelector ).attr( attribute ) || '' ) === expectedValue
-						, `${ customSelector } must have a ${ attribute } = "${ expectedValue }"` )
-					}
-					if ( expectedValue instanceof RegExp ) {
-						assert.isTrue( ( parsedClassList.match( customSelector )
-							?	 Cypress.$( parsedClassList ).attr( attribute )
-							: $block.find( customSelector ).attr( attribute ) || '' ).match( expectedValue )
-						, `${ customSelector } must have a ${ attribute } = "${ expectedValue }"` )
-					}
-				} )
-		},
+		// We no longer need to visit the frontend to assert attributes.
+		// We can just generate the block content from the editor and convert it to HTML for assertions.
+		null,
 		options
 	)
 }
