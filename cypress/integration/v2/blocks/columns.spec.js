@@ -32,7 +32,9 @@ function innerBlocks() {
 
 		blocks
 			.filter( blockName => blockName !== 'ugb/columns' )
-			.forEach( blockName => cy.appendBlock( blockName ) )
+			.forEach( blockName => cy.addInnerBlock( 'ugb/columns', blockName ) )
+
+		cy.publish()
 	} )
 }
 
