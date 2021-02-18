@@ -63,6 +63,7 @@ export function parseClassList( classList = [] ) {
 		'ugb-icon-list__left-align',
 		'ugb-icon-list__center-align',
 		'ugb-icon-list__right-align',
+		'alignfull',
 	]
 	const parsedClassList = classList.split( ' ' )
 		.filter( className => ! className.match( /ugb-(.......)$/ ) && ! excludedClassNames.includes( className ) )
@@ -87,6 +88,20 @@ export function getActiveTab( callback = () => {} ) {
 
 			callback( tab )
 		} )
+}
+
+/**
+ * Create a DOM Element based on HTML string
+ *
+ * @param {string} htmlString
+ *
+ * @return {*} DOM Element
+ */
+export function createElementFromHTMLString( htmlString ) {
+	const parentElement = document.createElement( 'div' )
+	parentElement.innerHTML = htmlString
+
+	return parentElement.firstElementChild
 }
 
 /**

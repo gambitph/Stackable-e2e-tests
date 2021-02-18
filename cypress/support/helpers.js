@@ -3,7 +3,7 @@
  */
 import { publish } from './commands'
 import {
-	getActiveTab, parseClassList,
+	getActiveTab, parseClassList, createElementFromHTMLString,
 } from './util'
 import config from '../../cypress.json'
 import { collapse, openSidebar } from './commands/inspector'
@@ -137,53 +137,50 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 	getActiveTab( tab => {
 		cy.document().then( doc => {
 			const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
-			const blockSelector = Array.from( subject[ 0 ].classList ).includes( 'wp-block' ) ? '.ugb-main-block' : '.wp-block > *'
-			cy
-				.get( subject )
-				.find( blockSelector )
-				.invoke( 'attr', 'class' )
-				.then( classList => {
-					const parsedClassList = parseClassList( classList )
 
-					publish()
+			cy.wp().then( wp => {
+				const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+				const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+				const parsedClassList = parseClassList( Array.from( saveElement.classList ).join( ' ' ) )
+				publish()
 
-					cy.wait( wait )
+				cy.wait( wait )
 
-					if ( assertBackend ) {
-						cy.getPreviewMode().then( previewMode => {
-							editorCallback( {
+				if ( assertBackend ) {
+					cy.getPreviewMode().then( previewMode => {
+						editorCallback( {
+							parsedClassList, viewport: previewMode,
+						} )
+					} )
+				}
+
+				if ( assertFrontend ) {
+					cy.getPreviewMode().then( previewMode => {
+						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+							cy.visit( previewUrl )
+							if ( viewportFrontend && viewportFrontend !== 'Desktop' ) {
+								cy.viewport( config[ `viewport${ viewportFrontend }Width` ] || config.viewportWidth, config.viewportHeight )
+							} else if ( previewMode !== 'Desktop' ) {
+								cy.viewport( config[ `viewport${ previewMode }Width` ] || config.viewportWidth, config.viewportHeight )
+							}
+
+							cy.wait( wait )
+
+							frontendCallback( {
 								parsedClassList, viewport: previewMode,
 							} )
+
+							cy.viewport( config.viewportWidth, config.viewportHeight )
+
+							cy.visit( editorUrl )
+							cy.get( parsedClassList ).click( { force: true } )
+							openSidebar( 'Settings' )
+							cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
+							collapse( activePanel )
 						} )
-					}
-
-					if ( assertFrontend ) {
-						cy.getPreviewMode().then( previewMode => {
-							cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-								cy.visit( previewUrl )
-								if ( viewportFrontend && viewportFrontend !== 'Desktop' ) {
-									cy.viewport( config[ `viewport${ viewportFrontend }Width` ] || config.viewportWidth, config.viewportHeight )
-								} else if ( previewMode !== 'Desktop' ) {
-									cy.viewport( config[ `viewport${ previewMode }Width` ] || config.viewportWidth, config.viewportHeight )
-								}
-
-								cy.wait( wait )
-
-								frontendCallback( {
-									parsedClassList, viewport: previewMode,
-								} )
-
-								cy.viewport( config.viewportWidth, config.viewportHeight )
-
-								cy.visit( editorUrl )
-								cy.get( parsedClassList ).click( { force: true } )
-								openSidebar( 'Settings' )
-								cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
-								collapse( activePanel )
-							} )
-						} )
-					}
-				} )
+					} )
+				}
+			} )
 		} )
 	} )
 }
