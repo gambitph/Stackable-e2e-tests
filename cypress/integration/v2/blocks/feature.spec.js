@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-// import { startCase } from 'lodash'
+import { startCase } from 'lodash'
 import {
 	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
@@ -129,9 +129,9 @@ function styleTab( viewport, desktopOnly ) {
 	}
 
 	// ISSUE: Reverse Horizontally updates in the back end but not in the front end
-	// desktopOnly( () => {
-	// 	// cy.adjust( 'Reverse Horizontally', true ).assertClassName( '.ugb-feature', 'ugb-feature--invert' )
-	// } )
+	desktopOnly( () => {
+		cy.adjust( 'Reverse Horizontally', true ).assertClassName( '.ugb-feature', 'ugb-feature--invert' )
+	} )
 
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
@@ -166,28 +166,22 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 		cy.adjust( 'Flip Shape Horizontally', true )
 		cy.adjust( 'Flip Shape Vertically', true )
-		// ISSUE: Stretch Shape Mask updates in the back end but not in the front end
 
-		// cy.adjust( 'Stretch Shape Mask', true ).assertClassName( 'img.ugb-img--shape', 'ugb-image--shape-stretch' )
+		// ISSUE: Stretch Shape Mask updates in the back end but not in the front end
+		cy.adjust( 'Stretch Shape Mask', true ).assertClassName( 'img.ugb-img--shape', 'ugb-image--shape-stretch' )
 
 		// We won't be able to assert image size for now since it requires server handling.
 
 		// TODO: Handle Alt Text option
 	} )
 
-	cy.adjust( 'Image Width', 87, { viewport } ).assertComputedStyle( {
+	cy.adjust( 'Image Width', 87, { viewport } )
+	cy.adjust( 'Force square image', true, { viewport } ).assertComputedStyle( {
 		'.ugb-img': {
 			'width': '87px',
+			'height': '87px',
 		},
 	} )
-
-	// desktopOnly( () => {
-	// 	cy.adjust( 'Force square image', true ).assertComputedStyle( {
-	// 		'.ugb-img': {
-	// 			'height': '87px',
-	// 		},
-	// 	} )
-	// } )
 
 	// Title Tab and Description Tab
 	cy.collapse( 'Title' )
@@ -238,20 +232,20 @@ function styleTab( viewport, desktopOnly ) {
 
 	desktopOnly( () => {
 		// ISSUE: Button design test updates in the backend but doesn't update in the front end
-
-		// const buttonDesigns = [ 'ghost', 'plain', 'link' ]
-		// buttonDesigns.forEach( design => {
-		// 	cy.adjust( 'Button Design', {
-		// 		label: startCase( design ),
-		// 		value: design,
-		// 	} ).assertClassName( '.ugb-button', `ugb-button--design-${ design }` )
-		// } )
+		const buttonDesigns = [ 'ghost', 'plain', 'link' ]
+		buttonDesigns.forEach( design => {
+			cy.adjust( 'Button Design', {
+				label: startCase( design ),
+				value: design,
+			} ).assertClassName( '.ugb-button', `ugb-button--design-${ design }` )
+		} )
 		cy.adjust( 'Button Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
 		cy.adjust( 'Button Color #2', '#4e59d4' )
 		cy.adjust( 'Gradient Direction (degrees)', 138 )
 		cy.adjust( 'Text Color', '#ffa03b' )
-		// cy.adjust( 'Hover Effect', 'scale' ).assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
+		// ISSUE: Hover Effect test updates in the backend but doesn't update in the front end
+		cy.adjust( 'Hover Effect', 'scale' ).assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
 			'Button Color #1': '#bd8b8b',
@@ -266,7 +260,8 @@ function styleTab( viewport, desktopOnly ) {
 			'Transform': 'lowercase',
 			'Letter Spacing': 2.9,
 		} )
-		// cy.adjust( 'Button Size', 'small' ).assertClassName( '.ugb-button', 'ugb-button--size-small' )
+		// ISSUE: Button Size test updates in the backend but doesn't update in the front end
+		cy.adjust( 'Button Size', 'small' ).assertClassName( '.ugb-button', 'ugb-button--size-small' )
 		cy.adjust( 'Border Radius', 40 )
 		cy.adjust( 'Vertical Padding', 15 )
 		cy.adjust( 'Horizontal Padding', 43 )
@@ -303,7 +298,6 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 		cy.waitFA()
 		cy.adjust( 'Icon', 'barcode' )
-		//Add adjust icon side
 		cy.adjust( 'Adv. Icon Settings', {
 			'Icon Size': 41,
 			'Icon Spacing': 25,
@@ -314,6 +308,10 @@ function styleTab( viewport, desktopOnly ) {
 				'margin-right': '25px',
 			},
 		} )
+		// ISSUE: Icon Position test updates in the backend but doesn't update in the front end
+		cy.adjust( 'Adv. Icon Settings', {
+			'Icon Position': 'Right',
+		} ).assertClassName( '.ugb-button', 'ugb-button--icon-position-right' )
 	} )
 
 	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
