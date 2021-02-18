@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { startCase } from 'lodash'
 import {
 	assertAligns, assertBlockExist, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
@@ -115,40 +116,40 @@ function styleTab( viewport, desktopOnly ) {
 	cy.addBlock( 'ugb/feature' )
 	cy.openInspector( 'ugb/feature', 'Style' )
 
-	// General Tab
-	cy.collapse( 'General' )
+	// // General Tab
+	// cy.collapse( 'General' )
 
-	const desktopTabletViewports = [ 'Desktop', 'Tablet' ]
-	if ( desktopTabletViewports.some( _viewport => _viewport === viewport ) ) {
-		cy.adjust( 'Image Column Width', 45, { viewport } ).assertComputedStyle( {
-			'.ugb-feature__item': {
-				'grid-template-columns': '1.10fr 0.90fr',
-			},
-		} )
-	}
+	// const desktopTabletViewports = [ 'Desktop', 'Tablet' ]
+	// if ( desktopTabletViewports.some( _viewport => _viewport === viewport ) ) {
+	// 	cy.adjust( 'Image Column Width', 45, { viewport } ).assertComputedStyle( {
+	// 		'.ugb-feature__item': {
+	// 			'grid-template-columns': '1.10fr 0.90fr',
+	// 		},
+	// 	} )
+	// }
 
 	// desktopOnly( () => {
 	// 	cy.adjust( 'Reverse Horizontally', true ).assertClassName( '.ugb-feature', 'ugb-feature--invert' )
 	// } )
 
-	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
+	// assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
-	// Spacing Tab
-	cy.collapse( 'Spacing' )
+	// // Spacing Tab
+	// cy.collapse( 'Spacing' )
 
-	cy.adjust( 'Title', 50, { viewport } )
-	cy.adjust( 'Description', 33, { viewport } )
-	cy.adjust( 'Button', 10, { viewport } ).assertComputedStyle( {
-		'.ugb-feature__title': {
-			'margin-bottom': '50px',
-		},
-		'.ugb-feature__description': {
-			'margin-bottom': '33px',
-		},
-		'.ugb-button-container': {
-			'margin-bottom': '10px',
-		},
-	} )
+	// cy.adjust( 'Title', 50, { viewport } )
+	// cy.adjust( 'Description', 33, { viewport } )
+	// cy.adjust( 'Button', 10, { viewport } ).assertComputedStyle( {
+	// 	'.ugb-feature__title': {
+	// 		'margin-bottom': '50px',
+	// 	},
+	// 	'.ugb-feature__description': {
+	// 		'margin-bottom': '33px',
+	// 	},
+	// 	'.ugb-button-container': {
+	// 		'margin-bottom': '10px',
+	// 	},
+	// } )
 
 	// Image Tab
 	cy.collapse( 'Image' )
@@ -168,24 +169,22 @@ function styleTab( viewport, desktopOnly ) {
 
 		// We won't be able to assert image size for now since it requires server handling.
 
-		// cy.adjust( 'Alt Text (Alternative Text)', 'Hello World!' ).assertHtmlAttribute( '.ugb-img', 'alt', 'Hello World!' )
-
-		// Test for height attribute
+		// TODO: Handle Alt Text option
 	} )
 
-	// cy.adjust( 'Image Width', 87, { viewport } ).assertComputedStyle( {
-	// 	'.ugb-img': {
-	// 		'width': '87px',
-	// 	},
-	// } )
+	cy.adjust( 'Image Width', 87, { viewport } ).assertComputedStyle( {
+		'.ugb-img': {
+			'width': '87px',
+		},
+	} )
 
-	// desktopOnly( () => {
-	// 	cy.adjust( 'Force square image', true ).assertComputedStyle( {
-	// 		'.ugb-img': {
-	// 			'height': '87px',
-	// 		},
-	// 	} )
-	// } )
+	desktopOnly( () => {
+		cy.adjust( 'Force square image', true ).assertComputedStyle( {
+			'.ugb-img': {
+				'height': '87px',
+			},
+		} )
+	} )
 
 	// Title Tab and Description Tab
 	cy.collapse( 'Title' )
@@ -208,7 +207,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.collapse( tab.name )
 
 		desktopOnly( () => {
-			cy.adjust( tab.name + ' Color', '#742f2f' ).assertComputedStyle( {
+			cy.adjust( `${ tab.name } Color`, '#742f2f' ).assertComputedStyle( {
 				[ `${ tab.class }` ]: {
 					'color': '#742f2f',
 				},
@@ -235,13 +234,19 @@ function styleTab( viewport, desktopOnly ) {
 	cy.waitFA()
 
 	desktopOnly( () => {
+		const buttonDesigns = [ 'ghost', 'plain', 'link' ]
+		buttonDesigns.forEach( design => {
+			cy.adjust( 'Button Design', {
+				label: startCase( design ),
+				value: design,
+			} ).assertClassName( '.ugb-button', `ugb-button--design-${ design }` )
+		} )
 		cy.adjust( 'Button Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
 		cy.adjust( 'Button Color #2', '#4e59d4' )
 		cy.adjust( 'Gradient Direction (degrees)', 138 )
 		cy.adjust( 'Text Color', '#ffa03b' )
-		// cy.adjust( 'Hover Effect', 'scale' )
-		// 	.assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
+		cy.adjust( 'Hover Effect', 'scale' ).assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
 			'Button Color #1': '#bd8b8b',
@@ -256,8 +261,7 @@ function styleTab( viewport, desktopOnly ) {
 			'Transform': 'lowercase',
 			'Letter Spacing': 2.9,
 		} )
-		// cy.adjust( 'Button Size', 'small' )
-		// 	.assertClassName( '.ugb-button', 'ugb-button--size-small' )
+		cy.adjust( 'Button Size', 'small' ).assertClassName( '.ugb-button', 'ugb-button--size-small' )
 		cy.adjust( 'Border Radius', 40 )
 		cy.adjust( 'Vertical Padding', 15 )
 		cy.adjust( 'Horizontal Padding', 43 )
