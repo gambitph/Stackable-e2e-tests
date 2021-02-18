@@ -138,9 +138,9 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 		cy.document().then( doc => {
 			const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
 
-			cy.window().then( win => {
-				const block = win.wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
-				const saveElement = createElementFromHTMLString( win.wp.blocks.getBlockContent( block ) )
+			cy.wp().then( wp => {
+				const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+				const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
 				const parsedClassList = parseClassList( Array.from( saveElement.classList ).join( ' ' ) )
 				publish()
 
