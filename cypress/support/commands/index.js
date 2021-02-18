@@ -29,9 +29,11 @@ Cypress.Commands.add( 'deleteBlock', deleteBlock )
 Cypress.Commands.add( 'publish', publish )
 Cypress.Commands.add( 'changeIcon', changeIcon )
 Cypress.Commands.add( 'assertPluginError', assertPluginError )
-Cypress.Commands.add( 'appendBlock', appendBlock )
 Cypress.Commands.add( 'assertBlockError', assertBlockError )
 Cypress.Commands.add( 'addInnerBlock', addInnerBlock )
+Cypress.Commands.add( 'wp', wp )
+Cypress.Commands.add( 'getPostUrls', getPostUrls )
+Cypress.Commands.add( 'getPreviewMode', getPreviewMode )
 
 import './styles'
 import './global-settings'
@@ -43,9 +45,10 @@ import './attributes'
  * Internal dependencies
  */
 import {
-	containsRegExp, select, dispatch,
+	containsRegExp, getBlocksRecursive, dispatchResolver,
 } from '../util'
 import { last, first } from 'lodash'
+import config from 'root/cypress.json'
 
 /**
  * Function for overwriting log argument.
@@ -69,70 +72,70 @@ function modifyLogFunc( position = 'last' ) {
 /**
  * Command for adding a specific block in the inserter button.
  *
- * @param {string} blockname
+ * @param {string} blockName
  */
-export function addBlock( blockname = 'ugb/accordion' ) {
-	const [ plugin, block ] = blockname.split( '/' )
-	// Click the adder button located at the upper left part of the screen.
-	cy.get( '.edit-post-header-toolbar__inserter-toggle' ).click( { force: true } )
-	// core blocks have different selector buttons.
-	cy.get( `.block-editor-block-types-list>.block-editor-block-types-list__list-item>.editor-block-list-item-${ plugin !== 'core' ? `${ plugin }-` : '' }${ block }:first` ).click( { force: true } )
+export function addBlock( blockName = 'ugb/accordion' ) {
+	cy.wp().then( wp => {
+		return new Cypress.Promise( ( resolve, reject ) => {
+			wp.data.dispatch( 'core/editor' ).insertBlock( wp.blocks.createBlock( blockName ) )
+				.then( dispatchResolver( resolve ) )
+				.catch( reject )
+		} )
+	} )
 }
 
 /**
  * Command for selecting a specific block.
  *
- * @param {*} subject
+ * @param {string} subject
  * @param {string} selector
  */
 export function selectBlock( subject, selector ) {
-// Initialize chained command based on selector type.
-	if ( selector === '' ) {
-		selector = undefined
-	}
+	cy.wp().then( wp => {
+		cy.get( 'body' ).then( $body => {
+			return new Cypress.Promise( resolve => {
+				const willSelectBlock = getBlocksRecursive( wp.data.select( 'core/block-editor' ).getBlocks() ).filter( block => block.name === subject )
 
-	const chainedCommand = {
-		number: { func: 'eq', arg: [ selector ] },
-		string: { func: 'contains', arg: [ containsRegExp( selector ) ] },
-	}
+				if ( typeof selector === 'string' ) {
+					let foundClientId = null
+					let resolveCallback = null
 
-	const _selector = () => {
-		const initialSelector = cy.get( `.block-editor-block-list__layout>[data-type="${ subject }"]` )
-			[ ( chainedCommand[ typeof selector ] || {} ).func || 'last' ]( ...( ( chainedCommand[ typeof selector ] || {} ).arg || [] ) )
-		if ( typeof selector === 'string' ) {
-			return initialSelector.parentsUntil( `.block-editor-block-list__layout>[data-type="${ subject }"]` ).parent()
-		}
-		return initialSelector
-	}
+					willSelectBlock.forEach( ( { clientId } ) => {
+						if ( ! foundClientId && $body.find( `.wp-block[data-block="${ clientId }"]:contains(${ selector })` ).length ) {
+							foundClientId = clientId
+							resolveCallback = $body.find( `.wp-block[data-block="${ clientId }"]:contains(${ selector })` )
+						}
+					} )
 
-	_selector()
-		.invoke( 'attr', 'data-block' )
-		.then( dataBlock => {
-			select( _select => {
-				dispatch( _dispatch => {
-					if ( _select( 'core/block-editor' ).getSelectedBlockClientId() !== dataBlock ) {
-						_dispatch( 'core/block-editor' ).selectBlock( dataBlock )
-						cy.wait( 100 )
-					}
-				} )
+					wp.data.dispatch( 'core/block-editor' )
+						.selectBlock( foundClientId )
+						.then( dispatchResolver( () => resolve( resolveCallback ) ) )
+				} else if ( typeof selector === 'number' ) {
+					wp.data.dispatch( 'core/block-editor' )
+						.selectBlock( willSelectBlock[ selector ].clientId )
+						.then( dispatchResolver( () => resolve( $body.find( `.wp-block[data-block="${ willSelectBlock[ selector ].clientId }"]` ) ) ) )
+				} else {
+					wp.data.dispatch( 'core/block-editor' )
+						.selectBlock( ( first( willSelectBlock ) || {} ).clientId )
+						.then( dispatchResolver( () => resolve( $body.find( `.wp-block[data-block="${ ( first( willSelectBlock ) || {} ).clientId }"]` ) ) ) )
+				}
 			} )
 		} )
-
-	return _selector()
+	} )
 }
 
 /**
  * Command for typing in blocks
  *
- * @param {*} subject
+ * @param {string} subject
  * @param {string} contentSelector
  * @param {string} content
  * @param {string} customSelector
  */
 export function typeBlock( subject, contentSelector = '', content = '', customSelector = '' ) {
 	( contentSelector
-		? 		selectBlock( subject, customSelector ).find( contentSelector )
-		: 		selectBlock( subject, customSelector )
+		? cy.selectBlock( subject, customSelector ).find( contentSelector )
+		: cy.selectBlock( subject, customSelector )
 	)
 		.click( { force: true } )
 		.type( `{selectall}${ content }`, { force: true } )
@@ -141,7 +144,7 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
 		} )
 
 	if ( content[ 0 ] !== '/' ) {
-		selectBlock( subject, customSelector )
+		cy.selectBlock( subject, customSelector )
 	}
 }
 
@@ -151,18 +154,22 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
  * @param {string} mode
  */
 export function changePreviewMode( mode = 'Desktop' ) {
-	select( _select => {
-		dispatch( _dispatch => {
-			const { __experimentalSetPreviewDeviceType } = _dispatch( 'core/edit-post' )
-			const { __experimentalGetPreviewDeviceType } = _select( 'core/edit-post' )
+	return cy.wp().then( wp => {
+		return new Cypress.Promise( ( resolve, reject ) => {
+			const { __experimentalSetPreviewDeviceType } = wp.data.dispatch( 'core/edit-post' )
+			const { __experimentalGetPreviewDeviceType } = wp.data.select( 'core/edit-post' )
 			if ( __experimentalSetPreviewDeviceType && __experimentalGetPreviewDeviceType ) {
 				if ( __experimentalGetPreviewDeviceType() !== mode ) {
 					__experimentalSetPreviewDeviceType( mode )
-					cy.wait( 100 )
+						.then( dispatchResolver( resolve ) )
+						.catch( reject )
+				} else {
+					resolve( null )
 				}
 			} else {
-			// Handle WP 5.4 preview mode.
-			// TODO: Handle WP 5.4 editor
+				// Handle WP 5.4 preview mode.
+				// TODO: Handle WP 5.4 editor
+				dispatchResolver( resolve )()
 			}
 		} )
 	} )
@@ -175,9 +182,15 @@ export function changePreviewMode( mode = 'Desktop' ) {
  * @param {string} selector
  */
 export function deleteBlock( subject, selector ) {
-	selectBlock( subject, selector )
-	cy.get( 'button[aria-label="More options"]' ).first().click( { force: true } )
-	cy.get( 'button' ).contains( 'Remove block' ).click( { force: true } )
+	cy.selectBlock( subject, selector )
+		.then( $block => {
+			const clientId = $block.data( 'block' )
+			cy.wp().then( wp => {
+				return new Cypress.Promise( resolve => {
+					wp.data.dispatch( 'core/block-editor' ).removeBlock( clientId ).then( dispatchResolver( resolve ) )
+				} )
+			} )
+		} )
 }
 
 /**
@@ -238,7 +251,6 @@ export function changeIcon( index = 1, keyword = '', icon ) {
 		.type( keyword )
 
 	// Wait until the loader disappears.
-	cy.wait( 1000 )
 	cy.waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
 
 	cy
@@ -256,49 +268,21 @@ export function assertPluginError() {
 }
 
 /**
- * Command for appending inner block using block appender
- *
- * @param {string} blockName
- * @param {string} parentSelector
- */
-export function appendBlock( blockName = 'ugb/accordion', parentSelector ) {
-	cy
-		.get( `${ parentSelector ? `${ parentSelector } ` : '' }button.block-editor-button-block-appender` )
-		.first()
-		.click( { force: true } )
-
-	cy
-		.get( 'button' )
-		.contains( 'Browse all' )
-		.click( { force: true } )
-
-	cy
-		.get( `button.editor-block-list-item-${ blockName.replace( '/', '-' ) }:first` )
-		.click( { force: true } )
-
-	cy.deleteBlock( blockName )
-}
-
-/**
  * Command for adding inner block using block appender
  *
  * @param {string} blockName
- * @param {string} parentSelector
+ * @param {string} blockToAdd
+ * @param {string} customSelector
  */
-export function addInnerBlock( blockName = 'ugb/accordion', parentSelector ) {
-	cy
-		.get( `${ parentSelector ? `${ parentSelector } ` : '' }button.block-editor-button-block-appender` )
-		.first()
-		.click( { force: true } )
-
-	cy
-		.get( 'button' )
-		.contains( 'Browse all' )
-		.click( { force: true } )
-
-	cy
-		.get( `button.editor-block-list-item-${ blockName.replace( '/', '-' ) }:first` )
-		.click( { force: true } )
+export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/accordion', customSelector ) {
+	cy.selectBlock( blockName, customSelector )
+	cy.wp().then( wp => {
+		return new Cypress.Promise( resolve => {
+			const selectedBlockClientId = wp.data.select( 'core/block-editor' ).getSelectedBlockClientId()
+			const newBlock = wp.blocks.createBlock( blockToAdd )
+			wp.data.dispatch( 'core/editor' ).insertBlock( newBlock, 0, selectedBlockClientId ).then( dispatchResolver( resolve ) )
+		} )
+	} )
 }
 
 /**
@@ -306,4 +290,45 @@ export function addInnerBlock( blockName = 'ugb/accordion', parentSelector ) {
  */
 export function assertBlockError() {
 	cy.get( '.block-editor-warning' ).should( 'not.exist' )
+}
+
+/*
+* Command for getting the gutenberg `wp` object.
+*
+*/
+export function wp() {
+	cy.wait( 1 )
+	return cy.window().then( win => win.wp )
+}
+
+/**
+ * Command that returns the original link address and preview address
+ */
+export function getPostUrls() {
+	return cy.window().then( _win => {
+		const _currUrl = _win.location.href
+		const parsedPostID = _currUrl.match( /post=([0-9]*)/g )[ 0 ].split( '=' )[ 1 ]
+		const previewUrl = `/?page_id=${ parsedPostID }&preview=true`
+		const editorUrl = _currUrl.replace( config.baseUrl, '/' )
+		return new Cypress.Promise( resolve => {
+			resolve( {
+				editorUrl, previewUrl, postID: parsedPostID,
+			} )
+		} )
+	} )
+}
+
+/**
+ * Command that returns the current editor's preview mode.
+ *
+ */
+export function getPreviewMode() {
+	return cy.wp().then( wp => {
+		return new Cypress.Promise( resolve => {
+			const previewMode = wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType
+				?	wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
+				: 'Desktop'
+			resolve( previewMode )
+		} )
+	} )
 }

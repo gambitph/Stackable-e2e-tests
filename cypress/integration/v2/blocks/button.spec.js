@@ -90,6 +90,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	cy.collapse( 'Button #1' )
+	cy.typeBlock( 'ugb/button', '.ugb-button1 .ugb-button--inner', 'Button 1' )
 	cy.waitFA()
 	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )
@@ -188,6 +189,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.collapse( 'Button #2' )
 	cy.toggleStyle( 'Button #2' )
+	cy.typeBlock( 'ugb/button', '.ugb-button2 .ugb-button--inner', 'Button 2' )
 	cy.waitFA()
 	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )
@@ -285,6 +287,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.collapse( 'Button #3' )
 	cy.toggleStyle( 'Button #3' )
+	cy.typeBlock( 'ugb/button', '.ugb-button3 .ugb-button--inner', 'Button 3' )
 	cy.waitFA()
 	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )

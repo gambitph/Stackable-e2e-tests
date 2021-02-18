@@ -3,7 +3,7 @@
  */
 import { publish } from './commands'
 import {
-	getActiveTab, getAddresses, getPreviewMode, parseClassList,
+	getActiveTab, parseClassList,
 } from './util'
 import config from '../../cypress.json'
 import { collapse, openSidebar } from './commands/inspector'
@@ -66,16 +66,15 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 	cy.newPage()
 	designs.forEach( ( design, index ) => {
 		cy.addBlock( blockName )
-		cy.openInspector( blockName, 'Layout' )
-		cy.wait( '@designLibrary' )
-		cy.adjustDesign( design )
-		cy.publish()
-		cy.reload()
-		cy.assertBlockError()
-		if ( index !== designs.length - 1 ) {
-			cy.deleteBlock( blockName )
+		cy.openInspector( blockName, 'Layout', index )
+		if ( ! index ) {
+			cy.wait( '@designLibrary' )
 		}
+		cy.adjustDesign( design )
 	} )
+	cy.publish()
+	cy.reload()
+	cy.assertBlockError()
 	cy.publish()
 }
 
@@ -90,35 +89,33 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 	cy.newPage()
 	layouts.forEach( ( layout, index ) => {
 		cy.addBlock( blockName )
-		cy.openInspector( blockName, 'Layout' )
+		cy.openInspector( blockName, 'Layout', index )
 		if ( typeof layout === 'string' ) {
 			cy.adjustLayout( layout )
-			cy.publish()
-			cy.reload()
-			cy.assertBlockError()
 		}
 		if ( typeof layout === 'object' && ! Array.isArray( layout ) ) {
-			const { selector, value } = layout
+			const { value, selector } = layout
 			cy.adjustLayout( value )
-			cy.publish()
 			if ( selector ) {
-				getAddresses( ( { currUrl, previewUrl } ) => {
-					cy.get( selector ).should( 'exist' )
-					cy.visit( previewUrl )
-					cy.get( selector ).should( 'exist' )
-					cy.visit( currUrl )
-					cy.assertBlockError()
-				} )
-			} else {
-				cy.reload()
-				cy.assertBlockError()
+				cy.get( selector ).should( 'exist' )
 			}
 		}
-
-		if ( index !== layouts.length - 1 ) {
-			cy.deleteBlock( blockName )
-		}
 	} )
+
+	cy.publish()
+
+	cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+		cy.visit( previewUrl )
+		layouts.forEach( layout => {
+			const { selector } = layout
+			if ( selector ) {
+				cy.get( selector ).should( 'exist' )
+			}
+		} )
+		cy.visit( editorUrl )
+	} )
+
+	cy.assertBlockError()
 	cy.publish()
 }
 
@@ -153,7 +150,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 					cy.wait( wait )
 
 					if ( assertBackend ) {
-						getPreviewMode( previewMode => {
+						cy.getPreviewMode().then( previewMode => {
 							editorCallback( {
 								parsedClassList, viewport: previewMode,
 							} )
@@ -161,8 +158,8 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 					}
 
 					if ( assertFrontend ) {
-						getPreviewMode( previewMode => {
-							getAddresses( ( { currUrl, previewUrl } ) => {
+						cy.getPreviewMode().then( previewMode => {
+							cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 								cy.visit( previewUrl )
 								if ( viewportFrontend && viewportFrontend !== 'Desktop' ) {
 									cy.viewport( config[ `viewport${ viewportFrontend }Width` ] || config.viewportWidth, config.viewportHeight )
@@ -178,7 +175,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 
 								cy.viewport( config.viewportWidth, config.viewportHeight )
 
-								cy.visit( currUrl )
+								cy.visit( editorUrl )
 								cy.get( parsedClassList ).click( { force: true } )
 								openSidebar( 'Settings' )
 								cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
