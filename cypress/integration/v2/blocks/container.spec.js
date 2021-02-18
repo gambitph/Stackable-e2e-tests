@@ -3,7 +3,7 @@
  */
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper,
+	assertAligns, assertBorders, assertBlockBackground, assertBlockExist, assertSeparators, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -209,7 +209,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Borders and Shadow Outlines
 	desktopOnly( () => {
-		cy.adjust( 'Borders', 'solid' )
+		assertBorders( 'Borders', '.ugb-container__wrapper' )
 		cy.adjust( 'Border Color', '#a12222' )
 		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
 			'.ugb-container__wrapper': {

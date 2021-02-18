@@ -204,6 +204,24 @@ export const assertAligns = ( name, selector, options = {} ) => {
 }
 
 /**
+ * Helper function for generating border assertion commands.
+ *
+ * @param {string} name
+ * @param {string} selector
+ * @param {Object} options
+ */
+export const assertBorders = ( name, selector, options = {} ) => {
+	const borders = [ 'solid', 'dashed', 'dotted' ]
+	borders.forEach( border => {
+		cy.adjust( name, border, options ).assertComputedStyle( {
+			[ selector ]: {
+				'border-style': border,
+			},
+		} )
+	} )
+}
+
+/**
  * Helper function for registering tests.
  *
  * @param {Array} testsList
