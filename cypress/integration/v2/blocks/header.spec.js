@@ -269,9 +269,9 @@ function styleTab( viewport, desktopOnly ) {
 	assertTypography( '.ugb-header__subtitle', { viewport } )
 	assertAligns( 'Align', '.ugb-header__subtitle', { viewport } )
 
+	cy.typeBlock( 'ugb/header', '.ugb-button1 .ugb-button--inner', 'Button 1' )
 	cy.collapse( 'Button #1' )
 	cy.toggleStyle( 'Button #1' )
-	cy.typeBlock( 'ugb/header', '.ugb-button1 .ugb-button--inner', 'Button 1' )
 	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
