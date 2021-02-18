@@ -69,12 +69,12 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Icon' )
 	cy.toggleStyle( 'Icon' )
 	cy.waitFA()
+	cy.adjust( 'Icon #1', 'info' )
+	cy.adjust( 'Icon #2', 'info' )
+	cy.adjust( 'Icon #3', 'info' )
+	cy.adjust( 'Icon #4', 'info' )
 
 	desktopOnly( () => {
-		cy.adjust( 'Icon #1', 'info' )
-		cy.adjust( 'Icon #2', 'info' )
-		cy.adjust( 'Icon #3', 'info' )
-		cy.adjust( 'Icon #4', 'info' )
 		cy.adjust( 'Icon Color Type', 'single' )
 		cy.adjust( 'Icon Color', '#d77777' ).assertComputedStyle( {
 			'.ugb-icon-inner-svg': {
