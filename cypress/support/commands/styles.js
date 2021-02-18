@@ -717,7 +717,7 @@ export function adjust( name, value, options = {} ) {
 		if ( customLabels[ name ] ) {
 			return cy
 				.get( '.components-panel__body.is-opened>.components-base-control' )
-				.contains( new RegExp( customLabels[ name ] ) )
+				.contains( new RegExp( `^${ customLabels[ name ] }$` ) )
 				.last()
 				.parentsUntil( '.components-panel__body.is-opened>.components-base-control' )
 				.parent()
