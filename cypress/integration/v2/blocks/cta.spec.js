@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockBackground, assertSeparators, assertTypography,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBorders, assertBlockBackground, assertSeparators, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -173,7 +173,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 
-		cy.adjust( 'Borders', 'solid' )
+		assertBorders( 'Borders', '.ugb-cta__item' )
 		cy.adjust( 'Border Width', 4 )
 		cy.adjust( 'Border Color', '#ff0000' )
 		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
@@ -186,10 +186,6 @@ function styleTab( viewport, desktopOnly ) {
 				'border-right-width': '4px',
 				'border-bottom-width': '4px',
 				'border-left-width': '4px',
-				'border-top-style': 'solid',
-				'border-right-style': 'solid',
-				'border-bottom-style': 'solid',
-				'border-left-style': 'solid',
 				'border-top-color': '#ff0000',
 				'border-right-color': '#ff0000',
 				'border-bottom-color': '#ff0000',

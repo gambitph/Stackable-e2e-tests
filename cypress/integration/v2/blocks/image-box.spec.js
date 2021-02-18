@@ -3,7 +3,7 @@
  */
 import { range } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBorders, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -86,21 +86,21 @@ function styleTab( viewport, desktopOnly ) {
 		},
 	} )
 
-	cy.adjust( 'Borders', 'solid' )
 	desktopOnly( () => {
+		assertBorders( 'Borders', '.ugb-image-box__item' )
 		cy.adjust( 'Border Color', '#ff0000' )
 		cy.adjust( 'Border Radius', 31 ).assertComputedStyle( {
 			'.ugb-image-box__box': {
 				'border-radius': '31px',
 			},
 			'.ugb-image-box__item': {
-				'border-style': 'solid',
 				'border-color': '#ff0000',
 			},
 		} )
 		cy.adjust( 'Shadow / Outline', 9 )
 			.assertClassName( '.ugb-image-box__item', 'ugb--shadow-9' )
 	} )
+	cy.adjust( 'Borders', 'solid' )
 	cy.adjust( 'Border Width', 9, { viewport } ).assertComputedStyle( {
 		'.ugb-image-box__item': {
 			'border-top-width': '9px',

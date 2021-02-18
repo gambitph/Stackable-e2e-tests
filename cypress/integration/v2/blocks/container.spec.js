@@ -213,7 +213,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Border Color', '#a12222' )
 		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
 			'.ugb-container__wrapper': {
-				'border-style': 'solid',
 				'border-color': '#a12222',
 				'border-radius': '26px',
 			},

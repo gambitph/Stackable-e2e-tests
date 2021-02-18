@@ -5,7 +5,7 @@
 import { range } from 'lodash'
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertTypography,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertBorders, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -224,11 +224,10 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Border Options
 	desktopOnly( () => {
-		cy.adjust( 'Borders', 'solid' )
+		assertBorders( 'Borders', '.ugb-accordion__heading' )
 		cy.adjust( 'Border Width', 3 )
 		cy.adjust( 'Border Color', '#f1f1f1' ).assertComputedStyle( {
 			'.ugb-accordion__heading': {
-				'border-style': 'solid',
 				'border-color': '#f1f1f1',
 				'border-top-width': '3px',
 				'border-bottom-width': '3px',

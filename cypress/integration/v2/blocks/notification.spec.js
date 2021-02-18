@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBorders, assertTypography, assertBlockBackground,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -169,8 +169,8 @@ function styleTab( viewport, desktopOnly ) {
 		},
 	} )
 
-	cy.adjust( 'Borders', 'dashed' )
 	desktopOnly( () => {
+		assertBorders( 'Borders', '.ugb-notification__item' )
 		cy.adjust( 'Border Color', '#3f3f3f' )
 		cy.adjust( 'Border Radius', 23 ).assertComputedStyle( {
 			'.ugb-notification__item': {
@@ -181,9 +181,9 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Shadow / Outline', 7 )
 			.assertClassName( '.ugb-notification__item', 'ugb--shadow-7' )
 	} )
+	cy.adjust( 'Borders', 'solid' )
 	cy.adjust( 'Border Width', 23, { viewport } ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			'border-style': 'dashed',
 			'border-top-width': '23px',
 			'border-right-width': '23px',
 			'border-bottom-width': '23px',
