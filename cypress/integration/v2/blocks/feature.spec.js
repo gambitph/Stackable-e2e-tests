@@ -3,7 +3,7 @@
  */
 // import { startCase } from 'lodash'
 import {
-	assertAligns, assertBlockExist, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper,
+	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -343,4 +343,7 @@ function styleTab( viewport, desktopOnly ) {
 	}
 
 	assertAligns( 'Align', '.ugb-button-container', { viewport } )
+
+	assertBlockBackground( '.ugb-feature', { viewport } )
+	assertSeparators( { viewport } )
 }
