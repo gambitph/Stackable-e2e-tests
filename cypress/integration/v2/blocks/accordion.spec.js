@@ -4,7 +4,6 @@
  */
 import { range } from 'lodash'
 import { blocks } from '~stackable-e2e/config'
-import { getAddresses } from '~stackable-e2e/util'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertTypography,
 } from '~stackable-e2e/helpers'
@@ -36,13 +35,10 @@ function innerBlocks() {
 		cy.newPage()
 		cy.addBlock( 'ugb/accordion' )
 		cy.selectBlock( 'ugb/accordion' )
-		cy.get( '.ugb-accordion__heading' ).click( { force: true } )
-		cy.deleteBlock( 'core/paragraph' )
-		cy.wait( 1000 )
 
 		blocks
 			.filter( blockName => blockName !== 'ugb/accordion' )
-			.forEach( blockName => cy.appendBlock( blockName ) )
+			.forEach( blockName => cy.addInnerBlock( 'ugb/accordion', blockName ) )
 
 		cy.publish()
 	} )
@@ -80,7 +76,7 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 
 		cy.publish()
-		getAddresses( ( { currUrl, previewUrl } ) => {
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 			cy.visit( previewUrl )
 			range( 0, 3 ).forEach( idx1 => {
 				cy
@@ -102,7 +98,7 @@ function styleTab( viewport, desktopOnly ) {
 						} )
 					} )
 			} )
-			cy.visit( currUrl )
+			cy.visit( editorUrl )
 		} )
 		cy.deleteBlock( 'ugb/accordion', 'Accordion 2' )
 		cy.deleteBlock( 'ugb/accordion', 'Accordion 3' )
@@ -112,14 +108,14 @@ function styleTab( viewport, desktopOnly ) {
 		cy.collapse( 'General' )
 		cy.adjust( 'Open at the start', true )
 		cy.publish()
-		getAddresses( ( { currUrl, previewUrl } ) => {
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 			cy.visit( previewUrl )
 			cy
 				.get( '.ugb-accordion' )
 				.invoke( 'attr', 'aria-expanded' )
 				.then( ariaExpanded => {
 					expect( ariaExpanded ).toBe( 'true' )
-					cy.visit( currUrl )
+					cy.visit( editorUrl )
 				} )
 		} )
 

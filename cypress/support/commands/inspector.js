@@ -1,9 +1,8 @@
 /**
  * Internal dependencies
  */
-import { selectBlock } from './index'
 import {
-	containsRegExp, dispatch, select,
+	containsRegExp,
 } from '../util'
 
 /**
@@ -16,10 +15,19 @@ Cypress.Commands.add( 'openInspector', openInspector )
 Cypress.Commands.add( 'collapse', collapse )
 Cypress.Commands.add( 'toggleStyle', toggleStyle )
 
+/**
+ * Command for toggling a sidebar
+ *
+ * @param {string} sidebarName
+ * @param {boolean} value
+ */
 export function toggleSidebar( sidebarName = '', value = true ) {
-	dispatch( _dispatch => {
-		_dispatch( 'core/edit-post' )[ value ? 'openGeneralSidebar' : 'closeGeneralSidebar' ]( sidebarName )
-		cy.wait( 100 )
+	cy.wp().then( wp => {
+		return new Cypress.Promise( ( resolve, reject ) => {
+			wp.data.dispatch( 'core/edit-post' )[ value ? 'openGeneralSidebar' : 'closeGeneralSidebar' ]( sidebarName )
+				.then( resolve )
+				.catch( reject )
+		} )
 	} )
 }
 
@@ -33,7 +41,7 @@ export function openSidebar( label = 'Settings' ) {
 		'Settings': 'edit-post/block',
 		'Stackable Settings': 'stackable-global-settings/sidebar',
 	}
-	toggleSidebar( sidebarNamespace[ label ], true )
+	cy.toggleSidebar( sidebarNamespace[ label ], true )
 }
 
 /**
@@ -46,7 +54,7 @@ export function closeSidebar( label = 'Settings' ) {
 		'Settings': 'edit-post/block',
 		'Stackable Settings': 'stackable-global-settings/sidebar',
 	}
-	toggleSidebar( sidebarNamespace[ label ], false )
+	cy.toggleSidebar( sidebarNamespace[ label ], false )
 }
 
 /**
@@ -57,9 +65,9 @@ export function closeSidebar( label = 'Settings' ) {
  * @param {string} selector
  */
 export function openInspector( subject, tab, selector ) {
-	selectBlock( subject, selector )
+	cy.selectBlock( subject, selector )
+	cy.openSidebar( 'Settings' )
 
-	openSidebar( 'Settings' )
 	cy
 		.get( 'button.edit-post-sidebar__panel-tab' )
 		.contains( containsRegExp( 'Block' ) )
@@ -78,8 +86,8 @@ export function openInspector( subject, tab, selector ) {
  * @param {boolean} toggle
  */
 export function collapse( name = 'General', toggle = true ) {
-	select( _select => {
-		switch ( _select( 'core/edit-post' ).getActiveGeneralSidebarName() ) {
+	cy.wp().then( wp => {
+		switch ( wp.data.select( 'core/edit-post' ).getActiveGeneralSidebarName() ) {
 			case 'stackabe-global-settings/sidebar': {
 				return cy
 					.get( 'button.components-panel__body-toggle' )
@@ -120,7 +128,7 @@ export function collapse( name = 'General', toggle = true ) {
 }
 
 /**
- * Command for enabling/disabling an
+ * Stackable Command for enabling/disabling an
  * accordion.
  *
  * @param {string} name

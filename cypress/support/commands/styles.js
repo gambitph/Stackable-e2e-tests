@@ -15,36 +15,35 @@ import {
 } from '../util'
 import { assertFunction } from '../helpers'
 
-export const AdjustCommands = {
-	toggleControl,
-	rangeControl,
-	toolbarControl,
-	designControl,
-	colorControl,
-	popoverControl,
-	dropdownControl,
-	suggestionControl,
-	fourRangeControl,
-	iconControl,
-	columnControl,
-}
-
-export const ResetCommands = {
-	rangeControlReset,
-	colorControlClear,
-	popoverControlReset,
-	suggestionControlClear,
-	fourRangeControlReset,
-	iconControlReset,
-}
-
 /**
  * Register functions to Cypress Commands.
  */
+// Controls
+Cypress.Commands.add( 'iconControlReset', iconControlReset )
+Cypress.Commands.add( 'fourRangeControlReset', fourRangeControlReset )
+Cypress.Commands.add( 'suggestionControlClear', suggestionControlClear )
+Cypress.Commands.add( 'popoverControlReset', popoverControlReset )
+Cypress.Commands.add( 'colorControlClear', colorControlClear )
+Cypress.Commands.add( 'rangeControlReset', rangeControlReset )
+Cypress.Commands.add( 'columnControl', columnControl )
+Cypress.Commands.add( 'iconControl', iconControl )
+Cypress.Commands.add( 'fourRangeControl', fourRangeControl )
+Cypress.Commands.add( 'suggestionControl', suggestionControl )
+Cypress.Commands.add( 'dropdownControl', dropdownControl )
+Cypress.Commands.add( 'popoverControl', popoverControl )
+Cypress.Commands.add( 'colorControl', colorControl )
+Cypress.Commands.add( 'designControl', designControl )
+Cypress.Commands.add( 'rangeControl', rangeControl )
+Cypress.Commands.add( 'toolbarControl', toolbarControl )
+Cypress.Commands.add( 'toggleControl', toggleControl )
+
+// Adjust Styles
 Cypress.Commands.add( 'adjust', adjust )
 Cypress.Commands.add( 'resetStyle', resetStyle )
 Cypress.Commands.add( 'adjustLayout', adjustLayout )
 Cypress.Commands.add( 'adjustDesign', adjustDesign )
+
+// Assertions
 Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, assertComputedStyle )
 Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, assertClassName )
 Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, assertHtmlTag )
@@ -697,7 +696,7 @@ export function adjust( name, value, options = {} ) {
 
 		const executeCommand = key => {
 			if ( parsedClassNames.includes( key ) ) {
-				AdjustCommands[ commandsBasedOnClassName[ key ] ]( customLabels[ name ] || name, value, options, customLabels[ name ] )
+				cy[ commandsBasedOnClassName[ key ] ]( customLabels[ name ] || name, value, options, customLabels[ name ] )
 				return true
 			}
 			return false
@@ -708,7 +707,7 @@ export function adjust( name, value, options = {} ) {
 			return selector()
 				.find( 'select' )
 				.then( () => {
-					return AdjustCommands.dropdownControl( name, value, options )
+					return cy.dropdownControl( name, value, options )
 				} )
 		}
 	}
@@ -795,7 +794,7 @@ export function resetStyle( name, options = {} ) {
 
 			const executeCommand = key => {
 				if ( parsedClassNames.includes( key ) ) {
-					ResetCommands[ commandsBasedOnClassName[ key ] ]( name, options )
+					cy[ commandsBasedOnClassName[ key ] ]( name, options )
 				}
 			}
 
@@ -842,7 +841,9 @@ export function adjustDesign( option = '' ) {
 	cy.waitLoader( '.ugb-design-library-item span.components-spinner' )
 }
 
-function _assertComputedStyle( win, doc, element, _cssObject, pseudoEl, parentEl, assertType, viewport = 'Desktop' ) {
+function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Desktop' ) {
+	const pseudoEl = selector.length === 2 && selector[ 1 ]
+
 	const removeAnimationStyles = [
 		'-webkit-transition: none !important',
 		'-moz-transition: none !important',
@@ -851,32 +852,52 @@ function _assertComputedStyle( win, doc, element, _cssObject, pseudoEl, parentEl
 		'transition-duration: 0s !important',
 	]
 
-	const convertExpectedValueForEnqueue = expectedValue => {
-		// Handle conversion of vw to px.
-		if ( expectedValue.match( /vw$/ ) ) {
-			const visualEl = doc.querySelector( '.edit-post-visual-editor' )
-			if ( visualEl && assertType === 'Backend' && viewport !== 'Desktop' ) {
-				const currEditorWidth = win.getComputedStyle( visualEl ).width
-				return `${ parseFloat( ( parseInt( expectedValue ) ) / 100 * currEditorWidth ) }px`
-			}
-		}
-		return expectedValue
-	}
+	cy.window().then( win => {
+		cy.document().then( doc => {
+			cy
+				.get( selector )
+				.then( $block => {
+					const element = first( $block )
 
-	// Remove animations.
-	element.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
-	element.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
-	parentEl.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
+					const parentEl = assertType === 'Backend'
+						? doc.querySelector( '.edit-post-visual-editor' )
+						: doc.querySelector( 'body' )
 
-	const computedStyles = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )
-	const expectedStylesToEnqueue = keys( _cssObject ).map( key => `${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` )
-	element.setAttribute( 'style', `${ [ ...removeAnimationStyles, ...expectedStylesToEnqueue ].join( '; ' ) }` )
-	const expectedStyles = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )
+					const convertExpectedValueForEnqueue = expectedValue => {
+						// Handle conversion of vw to px.
+						if ( expectedValue.match( /vw$/ ) ) {
+							const visualEl = doc.querySelector( '.edit-post-visual-editor' )
+							if ( visualEl && assertType === 'Backend' && viewport !== 'Desktop' ) {
+								const currEditorWidth = win.getComputedStyle( visualEl ).width
+								return `${ parseFloat( ( parseInt( expectedValue ) ) / 100 * currEditorWidth ) }px`
+							}
+						}
+						return expectedValue
+					}
 
-	keys( _cssObject ).forEach( key => {
-		const computedStyle = computedStyles[ camelCase( key ) ]
-		const expectedStyle = expectedStyles[ camelCase( key ) ]
-		assert.equal( computedStyle, expectedStyle, `'${ camelCase( key ) }' expected to be ${ expectedStyle }. Found '${ computedStyle }'.` )
+					// Remove animations.
+					element.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
+					element.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
+					parentEl.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
+
+					const computedStyles = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )
+					const expectedStylesToEnqueue = keys( _cssObject ).map( key =>
+						`${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` )
+
+					element.setAttribute( 'style', `${ [ ...removeAnimationStyles, ...expectedStylesToEnqueue ].join( '; ' ) }` )
+					const expectedStyles = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )
+
+					keys( _cssObject ).forEach( key => {
+						const computedStyle = computedStyles[ camelCase( key ) ]
+						const expectedStyle = expectedStyles[ camelCase( key ) ]
+						assert.equal(
+							computedStyle,
+							expectedStyle,
+							`'${ camelCase( key ) }' expected to be ${ expectedStyle }. Found '${ computedStyle }'.`
+						)
+					} )
+				} )
+		} )
 	} )
 }
 
@@ -895,15 +916,12 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 			keys( cssObject ).forEach( _selector => {
 				const selector = _selector.split( ':' )
 
-				cy.window().then( win => {
-					cy.document().then( doc => {
-						cy
-							.get( `.is-selected${ ` ${ first( selector ) }` }` )
-							.then( $block => {
-								_assertComputedStyle( win, doc, first( $block ), cssObject[ _selector ], selector.length === 2 && selector[ 1 ], doc.querySelector( '.edit-post-visual-editor' ), 'Backend', viewport )
-							} )
-					} )
-				} )
+				_assertComputedStyle(
+					`.is-selected${ ` ${ first( selector ) }` }`,
+					cssObject[ _selector ],
+					'Backend',
+					viewport
+				)
 			} )
 		},
 		// Assertion in the frontend.
@@ -916,17 +934,16 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 				const [ , ...restOfTheSelectors ] = [ ...selectorWithSpace ]
 
 				const documentSelector = `${ parsedClassList }${ first( selectorWithSpace ).match( /\./ )
-					?	( parsedClassList.match( first( selectorWithSpace ) ) ? ` ${ restOfTheSelectors.join( ' ' ) }` : ` ${ first( selector ) }` )
+					?	( parsedClassList.match( first( selectorWithSpace ) )
+						? ` ${ restOfTheSelectors.join( ' ' ) }`
+						: ` ${ first( selector ) }` )
 					: ` ${ first( selector ) }` }`.trim()
 
-				cy.window().then( win => {
-					cy.document().then( doc => {
-						const willAssertElement = doc.querySelector( documentSelector )
-						if ( willAssertElement ) {
-							_assertComputedStyle( win, doc, willAssertElement, cssObject[ _selector ], selector.length === 2 && selector[ 1 ], doc.querySelector( 'body' ), 'Frontend', viewport )
-						}
-					} )
-				} )
+				_assertComputedStyle(
+					documentSelector,
+					cssObject[ _selector ],
+					'Frontend',
+					viewport )
 			} )
 		},
 		options )
@@ -954,7 +971,10 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 						.invoke( 'attr', 'class' )
 						.then( $classNames => {
 							const parsedClassNames = $classNames.split( ' ' )
-							assert.isTrue( parsedClassNames.includes( expectedValue ), `${ expectedValue } must be present in block #${ id }` )
+							assert.isTrue(
+								parsedClassNames.includes( expectedValue ),
+								`${ expectedValue } must be present in block #${ id }`
+							)
 						} )
 				} )
 		},
@@ -966,11 +986,14 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 				const willAssertElement = doc.querySelector( `${ parsedClassList }${ parsedClassList.match( customSelector ) ? '' : ` ${ customSelector }` }` )
 				if ( willAssertElement ) {
 					( parsedClassList.includes( customSelector )
-						? 					cy.get( parsedClassList ).invoke( 'attr', 'class' )
-						: 					cy.get( parsedClassList ).find( customSelector ).invoke( 'attr', 'class' )
+						? cy.get( parsedClassList ).invoke( 'attr', 'class' )
+						: cy.get( parsedClassList ).find( customSelector ).invoke( 'attr', 'class' )
 					).then( $classNames => {
 						const parsedClassNames = $classNames.split( ' ' )
-						assert.isTrue( parsedClassNames.includes( expectedValue ), `${ expectedValue } must be present in block` )
+						assert.isTrue(
+							parsedClassNames.includes( expectedValue ),
+							`${ expectedValue } must be present in block`
+						)
 					} )
 				}
 			} )
@@ -994,14 +1017,21 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 			cy
 				.get( subject )
 				.then( $block => {
-					assert.isTrue( ! isEmpty( $block.find( `${ expectedValue }${ customSelector }` ) ), `${ customSelector } must have HTML tag '${ expectedValue }'` )
+					assert.isTrue(
+						! isEmpty( $block.find( `${ expectedValue }${ customSelector }` ) ),
+						`${ customSelector } must have HTML tag '${ expectedValue }'`
+					)
 				} )
 		},
 		( { parsedClassList } ) => {
 			cy
 				.get( parsedClassList )
 				.then( $block => {
-					assert.isTrue( ! isEmpty( parsedClassList.match( customSelector ) ? Cypress.$( `${ expectedValue }${ parsedClassList }` ) : $block.find( `${ expectedValue }${ customSelector }` ) ), `${ customSelector } must have HTML tag '${ expectedValue }'` )
+					assert.isTrue(
+						! isEmpty( parsedClassList.match( customSelector )
+							?	Cypress.$( `${ expectedValue }${ parsedClassList }` )
+							: $block.find( `${ expectedValue }${ customSelector }` ) ),
+						`${ customSelector } must have HTML tag '${ expectedValue }'` )
 				} )
 		},
 		options

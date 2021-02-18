@@ -27,14 +27,16 @@ function blockError() {
 }
 
 function innerBlocks() {
-	it( 'should allow adding inner blocks inside Advanced Columns and Grid', () => {
+	it( 'should allow adding inner blocks inside Container', () => {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'ugb/container' )
 
 		blocks
 			.filter( blockName => blockName !== 'ugb/container' )
-			.forEach( blockName => cy.appendBlock( blockName ) )
+			.forEach( blockName => cy.addInnerBlock( 'ugb/container', blockName ) )
+
+		cy.publish()
 	} )
 }
 
@@ -271,7 +273,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Link Color', '#642c2c' )
 		cy.adjust( 'Link Hover Color', '#ba89df' )
 
-		cy.addInnerBlock( 'ugb/card' )
+		cy.addInnerBlock( 'ugb/container', 'ugb/card' )
 		cy.openInspector( 'ugb/card', 'Style' )
 		cy.collapse( 'Button' )
 		cy.adjust( 'Button Design', {
