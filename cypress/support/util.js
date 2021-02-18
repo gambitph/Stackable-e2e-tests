@@ -1,8 +1,7 @@
 /**
  * External dependencies
  */
-import config from 'root/cypress.json'
-import { lowerCase } from 'lodash'
+import { lowerCase, escapeRegExp } from 'lodash'
 
 /**
  * Function for getting the base control
@@ -11,10 +10,9 @@ import { lowerCase } from 'lodash'
  * @return {*} generated cypress getter
  */
 export function getBaseControl( isInPopover = false ) {
-	const baseControlEl = ! isInPopover
+	return ! isInPopover
 		? cy.get( '.components-panel__body.is-opened>.components-base-control', { log: false } )
 		: cy.get( '.components-popover__content', { log: false } ).find( '.components-base-control', { log: false } )
-	return baseControlEl
 }
 
 /**
@@ -25,7 +23,7 @@ export function getBaseControl( isInPopover = false ) {
  * @return {RegExp} generated RegExp
  */
 export function containsRegExp( name = '' ) {
-	return new RegExp( `^${ ( typeof name !== 'string' ? '' : name ).replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` )
+	return new RegExp( `^${ escapeRegExp( ( typeof name !== 'string' ? '' : name ) ) }$` )
 }
 
 /**
@@ -54,38 +52,6 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
 }
 
 /**
- * Function that returns the original link address and preview address
- *
- * @param {Function} callback
- */
-export function getAddresses( callback = () => {} ) {
-	cy.window().then( _win => {
-		const _currUrl = _win.location.href
-		const parsedPostID = _currUrl.match( /post=([0-9]*)/g )[ 0 ].split( '=' )[ 1 ]
-		const previewUrl = `/?page_id=${ parsedPostID }&preview=true`
-		const currUrl = _currUrl.replace( config.baseUrl, '/' )
-		callback( {
-			currUrl, previewUrl, postID: parsedPostID,
-		} )
-	} )
-}
-
-/**
- * Function that returns the current editor's preview mode.
- *
- * @param {Function} callback
- */
-export function getPreviewMode( callback = () => {} ) {
-	select( _select => {
-		const previewMode =
-			_select( 'core/edit-post' ).__experimentalGetPreviewDeviceType
-				?	_select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
-				: 'Desktop'
-		callback( previewMode )
-	} )
-}
-
-/**
  * Function used to generate a parsed class names to be
  * used as a selector.
  *
@@ -105,40 +71,11 @@ export function parseClassList( classList = [] ) {
 	return parsedClassList
 }
 
-/*
-* Function used for getting the `wp` object.
-*
-* @param {Function} callback
-*/
-export function wp( callback = () => {} ) {
-	cy.window( { log: false } ).then( win => {
-		callback( win.wp )
-	} )
-}
-
-/**
- * Function used for getting the `wp.data.dispatch` function
- *
- * @param {Function} callback
- */
-export function dispatch( callback = () => {} ) {
-	wp( _wp => callback( _wp.data.dispatch ) )
-}
-
-/**
- * Function used for getting the `wp.data.select` function
- *
- * @param {Function} callback
- */
-export function select( callback = () => {} ) {
-	wp( _wp => callback( _wp.data.select ) )
-}
-
 /**
  * Function for getting the active tab
  * in inspector.
  *
- * @param {*} callback callback function
+ * @param {Function} callback callback function
  */
 export function getActiveTab( callback = () => {} ) {
 	cy
@@ -150,4 +87,35 @@ export function getActiveTab( callback = () => {} ) {
 
 			callback( tab )
 		} )
+}
+
+/**
+ * Function for getting all blocks recursively.
+ *
+ * @param {Array} blocks
+ */
+export function getBlocksRecursive( blocks ) {
+	const allBlocks = []
+	const _getBlocksRecursive = _blocks => {
+		_blocks.forEach( _block => {
+			allBlocks.push( _block )
+			if ( _block.innerBlocks.length ) {
+				_getBlocksRecursive( _block.innerBlocks )
+			}
+		} )
+	}
+	_getBlocksRecursive( blocks )
+	return allBlocks
+}
+
+/**
+ * Create our own resolver with setTimeout
+ * since gutenberg promise resolver can be unstable.
+ *
+ * @param {Function} resolver
+ */
+export function dispatchResolver( resolver = () => {} ) {
+	return () => setTimeout( () => {
+		resolver()
+	}, 1 )
 }

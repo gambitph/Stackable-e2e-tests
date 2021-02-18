@@ -12,9 +12,6 @@ import {
 import {
 	containsRegExp,
 } from '../util'
-import {
-	adjust, openSidebar, collapse,
-} from './index'
 
 /**
  * Register functions to Cypress Commands.
@@ -36,8 +33,8 @@ function addGlobalColor( options = {} ) {
 		color = '',
 	} = options
 
-	openSidebar( 'Stackable Settings' )
-	collapse( 'Global Color Palette' )
+	cy.openSidebar( 'Stackable Settings' )
+	cy.collapse( 'Global Color Palette' )
 
 	cy
 		.get( '.components-panel__body-toggle' )
@@ -89,8 +86,8 @@ function addGlobalColor( options = {} ) {
  * Command for resetting the global color palette.
  */
 function resetGlobalColor() {
-	openSidebar( 'Stackable Settings' )
-	collapse( 'Global Color Palette' )
+	cy.openSidebar( 'Stackable Settings' )
+	cy.collapse( 'Global Color Palette' )
 
 	const selector = () => cy
 		.get( '.ugb-global-settings-color-picker__reset-button' )
@@ -121,8 +118,8 @@ function resetGlobalColor() {
  * @param {number} selector
  */
 function deleteGlobalColor( selector = 0 ) {
-	openSidebar( 'Stackable Settings' )
-	collapse( 'Global Color Palette' )
+	cy.openSidebar( 'Stackable Settings' )
+	cy.collapse( 'Global Color Palette' )
 
 	if ( typeof selector === 'number' ) {
 		// Delete a global color by index number.
@@ -168,8 +165,8 @@ function adjustGlobalTypography( selector = 'h1', options = {} ) {
 		'p',
 	]
 
-	openSidebar( 'Stackable Settings' )
-	collapse( 'Global Typography' )
+	cy.openSidebar( 'Stackable Settings' )
+	cy.collapse( 'Global Typography' )
 
 	const clickEditButton = () => cy
 		.get( '.ugb-global-settings-typography-control' )
@@ -201,11 +198,11 @@ function adjustGlobalTypography( selector = 'h1', options = {} ) {
 						value = '',
 					} = options[ key ]
 
-					adjust( key, value, {
+					cy.adjust( key, value, {
 						viewport, unit, isInPopover: true,
 					} )
 				} else {
-					adjust( key, options[ key ], { isInPopover: true } )
+					cy.adjust( key, options[ key ], { isInPopover: true } )
 				}
 			} )
 
@@ -229,8 +226,8 @@ function resetGlobalTypography( selector = 'h1' ) {
 		'p',
 	]
 
-	openSidebar( 'Stackable Settings' )
-	collapse( 'Global Typography' )
+	cy.openSidebar( 'Stackable Settings' )
+	cy.collapse( 'Global Typography' )
 
 	// Click the reset button.
 	cy
