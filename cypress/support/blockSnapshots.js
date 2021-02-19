@@ -8,7 +8,9 @@
 /**
  * Internal dependencies
  */
-import { createElementFromHTMLString, parseClassList } from './util'
+import {
+	createElementFromHTMLString, parseClassList,
+} from './util'
 import { _assertComputedStyle } from './commands/styles'
 import config from '../../cypress.json'
 
@@ -151,21 +153,26 @@ export const registerBlockSnapshots = alias => {
 	const blockSnapshots = new BlockSnapshots()
 	blockSnapshots.registerAlias( alias )
 
-	const overwriteAssertionCommand = ( name, argCount ) => {
-		Cypress.Commands.overwrite( name, ( originalFn, ...args ) => {
-			if ( args.length === argCount ) {
-				const options = args.pop()
-				options.blockSnapshots = blockSnapshots
-				return originalFn( ...[ ...args, options ] )
-			}
-			return originalFn( ...[ ...args, { blockSnapshots } ] )
-		} )
-	}
-
 	/**
 	 * Overwrite `assertComputedStyle` by passing `blockSnapshots` option
 	 */
-	overwriteAssertionCommand( 'assertComputedStyle', 3 )
+	Cypress.Commands.overwrite( 'assertComputedStyle', ( originalFn, ...args ) => {
+		function modifiedFn( ...passedArgs ) {
+			cy.getPreviewMode().then( viewport => {
+				blockSnapshots.createContentSnapshot()
+				const options = passedArgs.pop()
+				options.blockSnapshots = blockSnapshots
+				options.assertFrontend = false
+				blockSnapshots.stubStyles( passedArgs[ 1 ], options.viewportFrontend || viewport )
+				originalFn( ...[ ...passedArgs, options ] )
+			} )
+		}
+
+		if ( args.length === 3 ) {
+			return modifiedFn( ...args )
+		}
+		return modifiedFn( ...[ ...args, {} ] )
+	} )
 
 	return blockSnapshots
 }
