@@ -53,10 +53,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/count-up' )
+	cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
+	const countUpBlock = registerBlockSnapshots( 'countUpBlock' )
 	cy.openInspector( 'ugb/count-up', 'Style' )
 
 	cy.collapse( 'General' )
@@ -64,6 +65,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Columns', 4 )
 			.assertClassName( '.ugb-count-up', 'ugb-countup--columns-4' )
 	} )
+
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
 	cy.collapse( 'Icon' )
@@ -71,8 +73,6 @@ function styleTab( viewport, desktopOnly ) {
 	cy.waitFA()
 	cy.adjust( 'Icon #1', 'info' )
 	cy.adjust( 'Icon #2', 'info' )
-	cy.adjust( 'Icon #3', 'info' )
-	cy.adjust( 'Icon #4', 'info' )
 
 	desktopOnly( () => {
 		cy.adjust( 'Icon Color Type', 'single' )
@@ -262,4 +262,5 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-count-up', { viewport } )
 	assertSeparators( { viewport } )
+	countUpBlock.assertFrontendStyles()
 }
