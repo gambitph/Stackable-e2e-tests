@@ -88,7 +88,7 @@ class BlockSnapshots {
 	}
 
 	/**
-	 * Enqueue all stubbed html content to the frontend.
+	 * Enqueue all stubbed html contents to the frontend.
 	 * Individually assert its computed style.
 	 */
 	assertFrontendStyles() {
