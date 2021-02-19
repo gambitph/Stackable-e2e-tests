@@ -409,15 +409,6 @@ function dropdownControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 	} = options
 
-	// Compatibility for default values
-	const defaultValues = [
-		'none',
-	]
-
-	if ( defaultValues.includes( value ) ) {
-		value = ''
-	}
-
 	beforeAdjust( name, value, options )
 	getBaseControl( isInPopover )
 		.contains( containsRegExp( name ) )
@@ -933,13 +924,12 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	} = options
 
 	cy.wp().then( wp => {
+		cy.publish()
+		cy.wait( delay )
+
 		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
 		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
-
-		cy.publish()
-
-		cy.wait( delay )
 
 		cy.getPreviewMode().then( previewMode => {
 			if ( assertBackend ) {
@@ -1024,13 +1014,13 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 	} = options
 
 	cy.wp().then( wp => {
+		cy.publish()
+		cy.wait( delay )
+
 		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
 		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
 		const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 
-		cy.publish()
-
-		cy.wait( delay )
 		cy
 			.get( subject )
 			.then( $block => {
@@ -1079,13 +1069,13 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 	} = options
 
 	cy.wp().then( wp => {
+		cy.publish()
+		cy.wait( delay )
+
 		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
 		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
 		const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 
-		cy.publish()
-
-		cy.wait( delay )
 		cy
 			.get( subject )
 			.then( $block => {
@@ -1133,13 +1123,13 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 	} = options
 
 	cy.wp().then( wp => {
+		cy.publish()
+		cy.wait( delay )
+
 		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
 		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
 		const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 
-		cy.publish()
-
-		cy.wait( delay )
 		cy
 			.get( subject )
 			.find( customSelector )

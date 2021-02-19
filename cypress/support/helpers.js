@@ -219,23 +219,6 @@ export const assertTypography = ( selector, options = {}, assertOptions = {} ) =
 	cy.adjust( 'Typography', {
 		'Size': {
 			viewport,
-			value: 2,
-			unit: 'em',
-		},
-		'Line-Height': {
-			viewport,
-			value: 24,
-			unit: 'px',
-		},
-	} ).assertComputedStyle( {
-		[ selector ]: {
-			'font-size': '2em',
-			'line-height': '24px',
-		},
-	}, assertOptions )
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
 			value: 50,
 			unit: 'px',
 		},
@@ -248,6 +231,23 @@ export const assertTypography = ( selector, options = {}, assertOptions = {} ) =
 		[ selector ]: {
 			'font-size': '50px',
 			'line-height': '4em',
+		},
+	}, assertOptions )
+	cy.adjust( 'Typography', {
+		'Size': {
+			viewport,
+			value: 5,
+			unit: 'em',
+		},
+		'Line-Height': {
+			viewport,
+			value: 24,
+			unit: 'px',
+		},
+	} ).assertComputedStyle( {
+		[ selector ]: {
+			'font-size': '5em',
+			'line-height': '24px',
 		},
 	}, assertOptions )
 }
