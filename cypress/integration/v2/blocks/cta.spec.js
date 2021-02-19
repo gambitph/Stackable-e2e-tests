@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockBackground, assertSeparators, assertTypography,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockBackground, assertSeparators, assertTypography, assertContainer,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -81,10 +81,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/cta' )
+	cy.addBlock( 'ugb/cta' ).as( 'ctaBlock' )
+	const ctaBlock = registerBlockSnapshots( 'ctaBlock' )
 	cy.openInspector( 'ugb/cta', 'Style' )
 
 	// Test General options
@@ -93,112 +94,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Container options
 	cy.collapse( 'Container' )
-
-	desktopOnly( () => {
-		cy.adjust( 'Background', {
-			'Color Type': 'single',
-			'Background Color': '#000000',
-			'Background Color Opacity': 0.7,
-		} ).assertComputedStyle( {
-			'.ugb-cta__item': {
-				'background-color': 'rgba(0, 0, 0, 0.7)',
-			},
-		} )
-		cy.setBlockAttribute( {
-			'columnBackgroundMediaUrl': Cypress.env( 'DUMMY_IMAGE_URL' ),
-		} )
-		cy.adjust( 'Background', {
-			'Background Media Tint Strength': 7,
-			'Fixed Background': true,
-		} ).assertComputedStyle( {
-			'.ugb-cta__item': {
-				'background-image': `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
-				'background-attachment': 'fixed',
-			},
-			'.ugb-cta__item:before': {
-				'opacity': '0.7',
-			},
-		} )
-		cy.adjust( 'Background', {
-			'Adv. Background Image Settings': {
-				'Image Blend Mode': 'hue',
-			},
-		} ).assertComputedStyle( {
-			'.ugb-cta__item': {
-				'background-blend-mode': 'hue',
-			},
-		} )
-	} )
-
-	const mobileTabletViewports = [ 'Tablet', 'Mobile' ]
-	cy.setBlockAttribute( { [ `column${ mobileTabletViewports.some( _viewport => _viewport === viewport ) ? viewport : '' }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ) } )
-
-	cy.adjust( 'Background', {
-		'Adv. Background Image Settings': {
-			'Image Position': {
-				viewport,
-				value: 'top left',
-			},
-			'Image Repeat': {
-				viewport,
-				value: 'no-repeat',
-			},
-			'Image Size': {
-				viewport,
-				value: 'cover',
-			},
-		},
-	} ).assertComputedStyle( {
-		'.ugb-cta__item': {
-			'background-size': 'cover',
-		},
-	} )
-
-	desktopOnly( () => {
-		// Test Container Gradient
-		cy.adjust( 'Background', {
-			'Color Type': 'gradient',
-			'Background Color #1': '#000000',
-			'Background Color #2': '#ff0000',
-			'Adv. Gradient Color Settings': {
-				'Gradient Direction (degrees)': '160deg',
-				'Color 1 Location': '30%',
-				'Color 2 Location': '83%',
-				'Background Gradient Blend Mode': 'difference',
-			},
-		} ).assertComputedStyle( {
-			'.ugb-cta__item:before': {
-				'background-image': 'linear-gradient(160deg, #000000 30%, #ff0000 83%)',
-				'mix-blend-mode': 'difference',
-			},
-		} )
-
-		cy.adjust( 'Borders', 'solid' )
-		cy.adjust( 'Border Width', 4 )
-		cy.adjust( 'Border Color', '#ff0000' )
-		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
-			'.ugb-cta__item': {
-				'border-top-left-radius': '26px',
-				'border-top-right-radius': '26px',
-				'border-bottom-left-radius': '26px',
-				'border-bottom-right-radius': '26px',
-				'border-top-width': '4px',
-				'border-right-width': '4px',
-				'border-bottom-width': '4px',
-				'border-left-width': '4px',
-				'border-top-style': 'solid',
-				'border-right-style': 'solid',
-				'border-bottom-style': 'solid',
-				'border-left-style': 'solid',
-				'border-top-color': '#ff0000',
-				'border-right-color': '#ff0000',
-				'border-bottom-color': '#ff0000',
-				'border-left-color': '#ff0000',
-			},
-		} )
-		cy.adjust( 'Shadow / Outline', 2 )
-			.assertClassName( '.ugb-cta__item', 'ugb--shadow-2' )
-	} )
+	assertContainer( '.ugb-cta__item', { viewport }, 'column%sBackgroundMediaUrl' )
 
 	// Test Spacing options
 	cy.collapse( 'Spacing' )
@@ -380,4 +276,5 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-cta', { viewport } )
 
 	assertSeparators( { viewport } )
+	ctaBlock.assertFrontendStyles()
 }

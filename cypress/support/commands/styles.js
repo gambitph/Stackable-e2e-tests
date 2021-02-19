@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys, camelCase, isEmpty, first,
+	kebabCase, keys, camelCase, isEmpty, first, pick, toUpper, last, startCase, get,
 } from 'lodash'
 
 /**
@@ -12,8 +12,10 @@ import {
 	getBaseControl,
 	containsRegExp,
 	changeUnit,
+	createElementFromHTMLString,
+	getActiveTab,
+	getBlockStringPath,
 } from '../util'
-import { assertFunction } from '../helpers'
 
 /**
  * Register functions to Cypress Commands.
@@ -80,6 +82,22 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 	}
 
 	return originalFn( ...[ ...args, optionsToPass ] )
+} )
+
+Cypress.Commands.overwrite( 'assertComputedStyle', ( originalFn, ...args ) => {
+	getActiveTab( tab => {
+		originalFn( ...args )
+
+		// This is for Stackable only.
+		// After asserting the frontend, go back to the previous editor state.
+		if ( ( args.length === 3 &&
+				( last( args ).assertFrontend === undefined ||
+				last( args ).assertFrontend ) ) ||
+			args.length === 2 ) {
+			cy.openSidebar( 'Settings' )
+			cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
+		}
+	} )
 } )
 
 /**
@@ -240,7 +258,7 @@ function colorControl( name, value, options = {} ) {
 			.click( { force: true } )
 
 		cy
-			.get( '.components-popover__content' )
+			.get( '.components-popover__content .components-color-picker' )
 			.find( 'input[type="text"]' )
 			.type( `{selectall}${ value }{enter}`, { force: true } )
 
@@ -841,9 +859,7 @@ export function adjustDesign( option = '' ) {
 	cy.waitLoader( '.ugb-design-library-item span.components-spinner' )
 }
 
-function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Desktop' ) {
-	const pseudoEl = selector.length === 2 && selector[ 1 ]
-
+export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop' ) {
 	const removeAnimationStyles = [
 		'-webkit-transition: none !important',
 		'-moz-transition: none !important',
@@ -859,7 +875,7 @@ function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Des
 				.then( $block => {
 					const element = first( $block )
 
-					const parentEl = assertType === 'Backend'
+					const parentEl = assertType === 'Editor'
 						? doc.querySelector( '.edit-post-visual-editor' )
 						: doc.querySelector( 'body' )
 
@@ -867,8 +883,8 @@ function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Des
 						// Handle conversion of vw to px.
 						if ( expectedValue.match( /vw$/ ) ) {
 							const visualEl = doc.querySelector( '.edit-post-visual-editor' )
-							if ( visualEl && assertType === 'Backend' && viewport !== 'Desktop' ) {
-								const currEditorWidth = win.getComputedStyle( visualEl ).width
+							if ( visualEl && assertType === 'Editor' && viewport !== 'Desktop' ) {
+								const currEditorWidth = pick( win.getComputedStyle( visualEl ), 'width' ).width
 								return `${ parseFloat( ( parseInt( expectedValue ) ) / 100 * currEditorWidth ) }px`
 							}
 						}
@@ -880,12 +896,12 @@ function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Des
 					element.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
 					parentEl.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
 
-					const computedStyles = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )
+					const computedStyles = pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) )
 					const expectedStylesToEnqueue = keys( _cssObject ).map( key =>
 						`${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` )
 
 					element.setAttribute( 'style', `${ [ ...removeAnimationStyles, ...expectedStylesToEnqueue ].join( '; ' ) }` )
-					const expectedStyles = win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined )
+					const expectedStyles = pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) )
 
 					keys( _cssObject ).forEach( key => {
 						const computedStyle = computedStyles[ camelCase( key ) ]
@@ -893,7 +909,7 @@ function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Des
 						assert.equal(
 							computedStyle,
 							expectedStyle,
-							`'${ camelCase( key ) }' expected to be ${ expectedStyle }. Found '${ computedStyle }'.`
+							`'${ camelCase( key ) }' expected to be ${ expectedStyle } in ${ assertType }. Found '${ computedStyle }'.`
 						)
 					} )
 				} )
@@ -909,44 +925,87 @@ function _assertComputedStyle( selector, _cssObject, assertType, viewport = 'Des
  * @param {Object} options
  */
 export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
-	assertFunction(
-		subject,
-		// Assertion in the editor.
-		( { viewport } ) => {
-			keys( cssObject ).forEach( _selector => {
-				const selector = _selector.split( ':' )
+	const {
+		assertFrontend = true,
+		assertBackend = true,
+		delay = 0,
+		viewportFrontend = false,
+	} = options
 
-				_assertComputedStyle(
-					`.is-selected${ ` ${ first( selector ) }` }`,
-					cssObject[ _selector ],
-					'Backend',
-					viewport
-				)
+	cy.wp().then( wp => {
+		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
+
+		cy.publish()
+
+		cy.wait( delay )
+
+		cy.getPreviewMode().then( previewMode => {
+			if ( assertBackend ) {
+				keys( cssObject ).forEach( _selector => {
+					const selector = _selector.split( ':' )
+
+					// Assert editor computed style.
+					_assertComputedStyle(
+						`.is-selected${ ` ${ first( selector ) }` }`,
+						selector.length === 2 && last( selector ),
+						cssObject[ _selector ],
+						'Editor',
+						previewMode
+					)
+				} )
+			}
+		} )
+
+		if ( assertFrontend ) {
+			const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
+			cy.getPreviewMode().then( previewMode => {
+				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+					cy.visit( previewUrl )
+					if ( viewportFrontend && viewportFrontend !== 'Desktop' ) {
+						cy.viewport(
+							Cypress.config( `viewport${ viewportFrontend }Width` ) || Cypress.config( 'viewportWidth' ),
+							Cypress.config( 'viewportHeight' )
+						)
+					} else if ( previewMode !== 'Desktop' ) {
+						cy.viewport(
+							Cypress.config( `viewport${ previewMode }Width` ) || Cypress.config( 'viewportWidth' ),
+							Cypress.config( 'viewportHeight' )
+						)
+					}
+
+					// Assert frontend computed style.
+					cy.wait( delay )
+					keys( cssObject ).forEach( _selector => {
+						const selector = _selector.split( ':' )
+						const selectorWithSpace = first( selector ).split( ' ' )
+						const [ , ...restOfTheSelectors ] = [ ...selectorWithSpace ]
+
+						const documentSelector = `${ parsedClassList }${ first( selectorWithSpace ).match( /\./ )
+							?	( parsedClassList.match( first( selectorWithSpace ) )
+								? ` ${ restOfTheSelectors.join( ' ' ) }`
+								: ` ${ first( selector ) }` )
+							: ` ${ first( selector ) }` }`.trim()
+
+						_assertComputedStyle(
+							documentSelector,
+							selector.length === 2 && last( selector ),
+							cssObject[ _selector ],
+							'Frontend'
+						)
+					} )
+
+					cy.viewport( Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
+					cy.visit( editorUrl )
+					cy.wp().then( _wp => {
+						const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
+						cy.selectBlock( name, { clientId } )
+					} )
+				} )
 			} )
-		},
-		// Assertion in the frontend.
-		( {
-			parsedClassList, viewport,
-		} ) => {
-			keys( cssObject ).forEach( _selector => {
-				const selector = _selector.split( ':' )
-				const selectorWithSpace = first( selector ).split( ' ' )
-				const [ , ...restOfTheSelectors ] = [ ...selectorWithSpace ]
-
-				const documentSelector = `${ parsedClassList }${ first( selectorWithSpace ).match( /\./ )
-					?	( parsedClassList.match( first( selectorWithSpace ) )
-						? ` ${ restOfTheSelectors.join( ' ' ) }`
-						: ` ${ first( selector ) }` )
-					: ` ${ first( selector ) }` }`.trim()
-
-				_assertComputedStyle(
-					documentSelector,
-					cssObject[ _selector ],
-					'Frontend',
-					viewport )
-			} )
-		},
-		options )
+		}
+	} )
 }
 
 /**
@@ -958,48 +1017,50 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
  * @param {Object} options
  */
 export function assertClassName( subject, customSelector = '', expectedValue = '', options = {} ) {
-	assertFunction(
-		subject,
-		// Assertion in the editor.
-		() => {
-			cy
-				.get( subject )
-				.invoke( 'attr', 'id' )
-				.then( id => {
-					const block = cy.get( `#${ id }${ ` ${ customSelector }` || '' }` )
-					block
-						.invoke( 'attr', 'class' )
-						.then( $classNames => {
-							const parsedClassNames = $classNames.split( ' ' )
-							assert.isTrue(
-								parsedClassNames.includes( expectedValue ),
-								`${ expectedValue } must be present in block #${ id }`
-							)
-						} )
-				} )
-		},
-		// Assertion in the frontend.
-		( {
-			parsedClassList,
-		} ) => {
-			cy.document().then( doc => {
-				const willAssertElement = doc.querySelector( `${ parsedClassList }${ parsedClassList.match( customSelector ) ? '' : ` ${ customSelector }` }` )
-				if ( willAssertElement ) {
-					( parsedClassList.includes( customSelector )
-						? cy.get( parsedClassList ).invoke( 'attr', 'class' )
-						: cy.get( parsedClassList ).find( customSelector ).invoke( 'attr', 'class' )
-					).then( $classNames => {
-						const parsedClassNames = $classNames.split( ' ' )
+	const {
+		assertBackend = true,
+		assertFrontend = true,
+		delay = 0,
+	} = options
+
+	cy.wp().then( wp => {
+		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+		const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
+
+		cy.publish()
+
+		cy.wait( delay )
+		cy
+			.get( subject )
+			.then( $block => {
+				// Assert editor classes.
+				if ( assertBackend ) {
+					assert.isTrue(
+						!! $block.find( `${ customSelector }.${ expectedValue }` ).length,
+						`${ expectedValue } class must be present in ${ customSelector } in Editor`
+					)
+				}
+
+				// Assert frontend classes.
+				// Check if we're asserting the parent element.
+				if ( assertFrontend ) {
+					if ( parsedClassList.match( customSelector ) ) {
 						assert.isTrue(
-							parsedClassNames.includes( expectedValue ),
-							`${ expectedValue } must be present in block`
+							!! parsedClassList.match( expectedValue ),
+							`${ expectedValue } class must be present in ${ customSelector } in Editor`
 						)
-					} )
+					} else {
+						// Otherwise, search the element
+						cy.log( '2', Array.from( saveElement.querySelector( customSelector ).classList ).includes( expectedValue ) )
+						assert.isTrue(
+							!! Array.from( saveElement.querySelector( customSelector ).classList ).includes( expectedValue ),
+							`${ expectedValue } class must be present in ${ customSelector } in Editor`
+						)
+					}
 				}
 			} )
-		},
-		options
-	)
+	} )
 }
 
 /**
@@ -1011,31 +1072,48 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
  * @param {Object} options
  */
 export function assertHtmlTag( subject, customSelector = '', expectedValue = '', options = {} ) {
-	assertFunction(
-		subject,
-		() => {
-			cy
-				.get( subject )
-				.then( $block => {
+	const {
+		assertBackend = true,
+		assertFrontend = true,
+		delay = 0,
+	} = options
+
+	cy.wp().then( wp => {
+		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+		const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
+
+		cy.publish()
+
+		cy.wait( delay )
+		cy
+			.get( subject )
+			.then( $block => {
+				// Assert editor HTML tag.
+				if ( assertBackend ) {
 					assert.isTrue(
 						! isEmpty( $block.find( `${ expectedValue }${ customSelector }` ) ),
-						`${ customSelector } must have HTML tag '${ expectedValue }'`
+						`${ customSelector } must have HTML tag '${ expectedValue } in Editor'`
 					)
-				} )
-		},
-		( { parsedClassList } ) => {
-			cy
-				.get( parsedClassList )
-				.then( $block => {
-					assert.isTrue(
-						! isEmpty( parsedClassList.match( customSelector )
-							?	Cypress.$( `${ expectedValue }${ parsedClassList }` )
-							: $block.find( `${ expectedValue }${ customSelector }` ) ),
-						`${ customSelector } must have HTML tag '${ expectedValue }'` )
-				} )
-		},
-		options
-	)
+				}
+
+				// Check if we're asserting the parent element.
+				if ( assertFrontend ) {
+					if ( parsedClassList.match( customSelector ) ) {
+						assert.isTrue(
+							saveElement.tagName === toUpper( expectedValue ),
+							`${ customSelector } must have HTML tag '${ expectedValue } in Frontend'`
+						)
+					} else {
+						// Otherwise, search the element
+						assert.isTrue(
+							saveElement.querySelector( customSelector ).tagName === toUpper( expectedValue ),
+							`${ customSelector } must have HTML tag '${ expectedValue } in Frontend'`
+						)
+					}
+				}
+			} )
+	} )
 }
 
 /**
@@ -1048,40 +1126,58 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
  * @param {Object} options
  */
 export function assertHtmlAttribute( subject, customSelector = '', attribute = '', expectedValue = '', options = {} ) {
-	assertFunction(
-		subject,
-		() => {
-			cy
-				.get( subject )
-				.find( customSelector )
-				.invoke( 'attr', attribute )
-				.then( $attribute => {
+	const {
+		assertBackend = true,
+		assertFrontend = true,
+		delay = 0,
+	} = options
+
+	cy.wp().then( wp => {
+		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+		const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
+
+		cy.publish()
+
+		cy.wait( delay )
+		cy
+			.get( subject )
+			.find( customSelector )
+			.invoke( 'attr', attribute )
+			.then( $attribute => {
+				// Assert editor HTML attributes.
+				if ( assertBackend ) {
 					if ( typeof expectedValue === 'string' ) {
-						assert.isTrue( $attribute === expectedValue, `${ customSelector } must have a ${ attribute } = "${ expectedValue }"` )
+						assert.isTrue(
+							$attribute === expectedValue,
+							`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor`
+						)
+					} else if ( expectedValue instanceof RegExp ) {
+						assert.isTrue(
+							( $attribute || '' ).match( expectedValue ),
+							`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor` )
 					}
-					if ( expectedValue instanceof RegExp ) {
-						assert.isTrue( ( $attribute || '' ).match( expectedValue ), `${ customSelector } must have a ${ attribute } = "${ expectedValue }"` )
+				}
+
+				// Check if we're asserting the parent element.
+				if ( assertFrontend ) {
+					if ( parsedClassList.match( customSelector ) ) {
+						assert.isTrue(
+							attribute instanceof RegExp
+								? !! saveElement.getAttribute( attribute ).match( expectedValue )
+								: saveElement.getAttribute( attribute ) === expectedValue,
+							`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+						)
+					} else {
+						// Otherwise, search the element
+						assert.isTrue(
+							attribute instanceof RegExp
+								? !! saveElement.querySelector( customSelector ).getAttribute( attribute ).match( expectedValue )
+								: saveElement.querySelector( customSelector ).getAttribute( attribute ) === expectedValue,
+							`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+						)
 					}
-				} )
-		},
-		( { parsedClassList } ) => {
-			cy
-				.get( parsedClassList )
-				.then( $block => {
-					if ( typeof expectedValue === 'string' ) {
-						assert.isTrue( ( parsedClassList.match( customSelector )
-							?	 Cypress.$( parsedClassList ).attr( attribute )
-							: $block.find( customSelector ).attr( attribute ) || '' ) === expectedValue
-						, `${ customSelector } must have a ${ attribute } = "${ expectedValue }"` )
-					}
-					if ( expectedValue instanceof RegExp ) {
-						assert.isTrue( ( parsedClassList.match( customSelector )
-							?	 Cypress.$( parsedClassList ).attr( attribute )
-							: $block.find( customSelector ).attr( attribute ) || '' ).match( expectedValue )
-						, `${ customSelector } must have a ${ attribute } = "${ expectedValue }"` )
-					}
-				} )
-		},
-		options
-	)
+				}
+			} )
+	} )
 }

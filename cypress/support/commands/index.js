@@ -11,12 +11,13 @@ Cypress.Commands.overwrite( 'window', modifyLogFunc() )
 Cypress.Commands.overwrite( 'trigger', modifyLogFunc() )
 Cypress.Commands.overwrite( 'parent', modifyLogFunc() )
 Cypress.Commands.overwrite( 'parentsUntil', modifyLogFunc() )
-Cypress.Commands.overwrite( 'invoke', modifyLogFunc( 'first' ) )
+Cypress.Commands.overwrite( 'invoke', modifyLogFunc( { position: 'first' } ) )
 Cypress.Commands.overwrite( 'eq', modifyLogFunc() )
 Cypress.Commands.overwrite( 'first', modifyLogFunc() )
 Cypress.Commands.overwrite( 'wait', modifyLogFunc() )
 Cypress.Commands.overwrite( 'contains', modifyLogFunc() )
 Cypress.Commands.overwrite( 'last', modifyLogFunc() )
+Cypress.Commands.overwrite( 'wrap', modifyLogFunc( { argumentLength: 2 } ) )
 
 /**
  * Register functions to Cypress Commands.
@@ -45,29 +46,10 @@ import './attributes'
  * Internal dependencies
  */
 import {
-	containsRegExp, getBlocksRecursive, dispatchResolver,
+	containsRegExp, getBlocksRecursive, dispatchResolver, modifyLogFunc,
 } from '../util'
 import { last, first } from 'lodash'
 import config from 'root/cypress.json'
-
-/**
- * Function for overwriting log argument.
- *
- * @param {string} position
- */
-function modifyLogFunc( position = 'last' ) {
-	return function( originalFn, ...args ) {
-		const firstOrLast = position === 'last' ? last : first
-		if ( typeof firstOrLast( args ) === 'object' && ! Array.isArray( firstOrLast( args ) ) ) {
-			const options = args[ position === 'last' ? 'pop' : 'shift' ]()
-			options.log = Cypress.env( 'DEBUG' ) === 'true'
-			return position === 'last' ? originalFn( ...args, options ) : originalFn( options, ...args )
-		}
-		return position === 'last'
-			? 			originalFn( ...args, { log: Cypress.env( 'DEBUG' ) === 'true' } )
-			: 			originalFn( { log: Cypress.env( 'DEBUG' ) === 'true' }, ...args )
-	}
-}
 
 /**
  * Command for adding a specific block in the inserter button.
@@ -76,10 +58,10 @@ function modifyLogFunc( position = 'last' ) {
  */
 export function addBlock( blockName = 'ugb/accordion' ) {
 	cy.wp().then( wp => {
-		return new Cypress.Promise( ( resolve, reject ) => {
-			wp.data.dispatch( 'core/editor' ).insertBlock( wp.blocks.createBlock( blockName ) )
-				.then( dispatchResolver( resolve ) )
-				.catch( reject )
+		return new Cypress.Promise( resolve => {
+			const block = wp.blocks.createBlock( blockName )
+			wp.data.dispatch( 'core/editor' ).insertBlock( block )
+				.then( dispatchResolver( () => resolve( last( wp.data.select( 'core/block-editor' ).getBlocks() ) ) ) )
 		} )
 	} )
 }
@@ -88,9 +70,12 @@ export function addBlock( blockName = 'ugb/accordion' ) {
  * Command for selecting a specific block.
  *
  * @param {string} subject
- * @param {string} selector
+ * @param {*} selector
  */
 export function selectBlock( subject, selector ) {
+	if ( selector === '' ) {
+		selector = undefined
+	}
 	cy.wp().then( wp => {
 		cy.get( 'body' ).then( $body => {
 			return new Cypress.Promise( resolve => {
@@ -114,6 +99,14 @@ export function selectBlock( subject, selector ) {
 					wp.data.dispatch( 'core/block-editor' )
 						.selectBlock( willSelectBlock[ selector ].clientId )
 						.then( dispatchResolver( () => resolve( $body.find( `.wp-block[data-block="${ willSelectBlock[ selector ].clientId }"]` ) ) ) )
+				} else if ( typeof selector === 'object' ) {
+					const {
+						clientId,
+					} = selector
+					const resolveCallback = $body.find( `[data-block="${ clientId }"]` )
+					wp.data.dispatch( 'core/block-editor' )
+						.selectBlock( clientId )
+						.then( dispatchResolver( () => resolve( resolveCallback ) ) )
 				} else {
 					wp.data.dispatch( 'core/block-editor' )
 						.selectBlock( ( first( willSelectBlock ) || {} ).clientId )

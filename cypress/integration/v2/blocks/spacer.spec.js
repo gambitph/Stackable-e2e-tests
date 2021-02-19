@@ -27,10 +27,11 @@ function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/spacer' ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/spacer' )
+	cy.addBlock( 'ugb/spacer' ).as( 'spacerBlock' )
+	const spacerBlock = registerBlockSnapshots( 'spacerBlock' )
 	cy.openInspector( 'ugb/spacer', 'Style' )
 
 	cy.collapse( 'General' )
@@ -156,4 +157,5 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	assertSeparators( { viewport } )
+	spacerBlock.assertFrontendStyles()
 }

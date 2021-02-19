@@ -1,7 +1,9 @@
 /**
  * External dependencies
  */
-import { lowerCase, escapeRegExp } from 'lodash'
+import {
+	lowerCase, escapeRegExp, first, last,
+} from 'lodash'
 
 /**
  * Function for getting the base control
@@ -49,27 +51,6 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
 				}
 			} )
 	}
-}
-
-/**
- * Function used to generate a parsed class names to be
- * used as a selector.
- *
- * @param {Array} classList
- */
-export function parseClassList( classList = [] ) {
-	const excludedClassNames = [
-		'ugb-accordion--open',
-		'ugb-icon-list__left-align',
-		'ugb-icon-list__center-align',
-		'ugb-icon-list__right-align',
-		'alignfull',
-	]
-	const parsedClassList = classList.split( ' ' )
-		.filter( className => ! className.match( /ugb-(.......)$/ ) && ! excludedClassNames.includes( className ) )
-		.map( className => `.${ className }` )
-		.join( '' )
-	return parsedClassList
 }
 
 /**
@@ -133,4 +114,79 @@ export function dispatchResolver( resolver = () => {} ) {
 	return () => setTimeout( () => {
 		resolver()
 	}, 1 )
+}
+
+/**
+ * Function for returning a stringified path location of the block from
+ * `wp.data.select('core/block-editor').getBlocks()` by clientId
+ *
+ * e.g. [0].innerBlocks[2]
+ *
+ * @param {Array} blocks
+ * @param {string} clientId
+ *
+ * @return {string} stringified path
+ */
+export function getBlockStringPath( blocks = [], clientId = '' ) {
+	const paths = []
+	let found = false
+
+	function getBlockStringPathRecursive( _blocks, clientId ) {
+		_blocks.forEach( ( _block, index ) => {
+			if ( ! found ) {
+				paths.push( `[${ index }]` )
+			}
+			if ( ! found && _block.clientId === clientId ) {
+				found = true
+			}
+			if ( ! found && _block.innerBlocks.length ) {
+				paths.push( '.innerBlocks' )
+				getBlockStringPathRecursive( _block.innerBlocks, clientId )
+				if ( ! found ) {
+					paths.pop()
+				}
+			}
+			if ( ! found ) {
+				paths.pop()
+			}
+		} )
+	}
+
+	getBlockStringPathRecursive( blocks, clientId )
+	return paths.join( '' )
+}
+
+/**
+ * Function for overwriting log argument.
+ *
+ * @param {Object} options
+ */
+export function modifyLogFunc( options = {} ) {
+	const {
+		position = 'last',
+		argumentLength = false,
+	} = options
+
+	if ( argumentLength ) {
+		return function( originalFn, ...args ) {
+			if ( args.length === argumentLength ) {
+				const options = args.pop()
+				options.log = Cypress.env( 'DEBUG' ) === 'true'
+				originalFn( ...args, options )
+			}
+			return originalFn( ...args, { log: Cypress.env( 'DEBUG' ) === 'true' } )
+		}
+	}
+
+	return function( originalFn, ...args ) {
+		const firstOrLast = position === 'last' ? last : first
+		if ( typeof firstOrLast( args ) === 'object' && ! Array.isArray( firstOrLast( args ) ) ) {
+			const options = args[ position === 'last' ? 'pop' : 'shift' ]()
+			options.log = Cypress.env( 'DEBUG' ) === 'true'
+			return position === 'last' ? originalFn( ...args, options ) : originalFn( options, ...args )
+		}
+		return position === 'last'
+			? 			originalFn( ...args, { log: Cypress.env( 'DEBUG' ) === 'true' } )
+			: 			originalFn( { log: Cypress.env( 'DEBUG' ) === 'true' }, ...args )
+	}
 }
