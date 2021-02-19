@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys, camelCase, isEmpty, first, pick, toUpper, last, startCase,
+	kebabCase, keys, camelCase, isEmpty, first, pick, toUpper, last, startCase, get,
 } from 'lodash'
 
 /**
@@ -14,6 +14,7 @@ import {
 	changeUnit,
 	createElementFromHTMLString,
 	getActiveTab,
+	getBlockStringPath,
 } from '../util'
 
 /**
@@ -93,13 +94,6 @@ Cypress.Commands.overwrite( 'assertComputedStyle', ( originalFn, ...args ) => {
 				( last( args ).assertFrontend === undefined ||
 				last( args ).assertFrontend ) ) ||
 			args.length === 2 ) {
-			let parsedClassList =	Array
-				.from( args[ 0 ][ 0 ].classList )
-				.map( _class => `.${ _class }` )
-				.join( '' )
-				.replace( '.is-selected', '' )
-			parsedClassList = `${ parsedClassList }[data-type="${ args[ 0 ][ 0 ].getAttribute( 'data-type' ) }"]`
-			cy.get( parsedClassList ).click( { force: true } )
 			cy.openSidebar( 'Settings' )
 			cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
 		}
@@ -941,6 +935,8 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	cy.wp().then( wp => {
 		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
 		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
+
 		cy.publish()
 
 		cy.wait( delay )
@@ -1002,6 +998,10 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 
 					cy.viewport( Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
 					cy.visit( editorUrl )
+					cy.wp().then( _wp => {
+						const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
+						cy.selectBlock( name, { clientId } )
+					} )
 				} )
 			} )
 		}

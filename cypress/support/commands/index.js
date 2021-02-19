@@ -88,9 +88,12 @@ export function addBlock( blockName = 'ugb/accordion' ) {
  * Command for selecting a specific block.
  *
  * @param {string} subject
- * @param {string} selector
+ * @param {*} selector
  */
 export function selectBlock( subject, selector ) {
+	if ( selector === '' ) {
+		selector = undefined
+	}
 	cy.wp().then( wp => {
 		cy.get( 'body' ).then( $body => {
 			return new Cypress.Promise( resolve => {
@@ -114,6 +117,14 @@ export function selectBlock( subject, selector ) {
 					wp.data.dispatch( 'core/block-editor' )
 						.selectBlock( willSelectBlock[ selector ].clientId )
 						.then( dispatchResolver( () => resolve( $body.find( `.wp-block[data-block="${ willSelectBlock[ selector ].clientId }"]` ) ) ) )
+				} else if ( typeof selector === 'object' ) {
+					const {
+						clientId,
+					} = selector
+					const resolveCallback = $body.find( `[data-block="${ clientId }"]` )
+					wp.data.dispatch( 'core/block-editor' )
+						.selectBlock( clientId )
+						.then( dispatchResolver( () => resolve( resolveCallback ) ) )
 				} else {
 					wp.data.dispatch( 'core/block-editor' )
 						.selectBlock( ( first( willSelectBlock ) || {} ).clientId )
