@@ -1,8 +1,23 @@
 /**
- * `wp.blocks.getBlockContent` can be used to generate
- * save block HTML content. With this, we can overwrite
- *`getComputedStyle` to stub all generated HTML contents and
- * CSS objects for future assertions.
+ * Block Snapshots
+ * `wp.blocks.getBlockContent` can be used to generate block HTML content. With this,
+ * we can overwrite `getComputedStyle` to stub all generated HTML contents and CSS objects for future assertions.
+ *
+ * Usage:
+ * function desktopStyles( viewport, desktopOnly, registerBlockSnapshots ) {
+ *   cy.setupWP()
+ *   cy.newPage()
+ *   cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
+ *   const accordionBlock = registerBlockSnapshots( 'accordionBlock' )
+ *
+ *   // More tests...
+ *   // assertComputedStyle will no longer assert the frontend
+ *   // every call. Instead, block snapshots will be stubbed and
+ *   // can be enqueued before the end of the test.
+ *
+ *   // Enqueue all block snapshots and assert frontend styles.
+ *   accordionBlock.assertFrontendStyles()
+ * }
  */
 
 /**
