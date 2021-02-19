@@ -258,7 +258,7 @@ function colorControl( name, value, options = {} ) {
 			.click( { force: true } )
 
 		cy
-			.get( '.components-popover__content' )
+			.get( '.components-popover__content .components-color-picker' )
 			.find( 'input[type="text"]' )
 			.type( `{selectall}${ value }{enter}`, { force: true } )
 
