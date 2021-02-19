@@ -908,7 +908,7 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
  */
 export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	const {
-		__experimentalBlockSnapshots = null,
+		blockSnapshots = null,
 		assertBackend = true,
 		assertFrontend = true,
 		viewportFrontend = false,
@@ -920,9 +920,9 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		( { viewport } ) => {
 			// Stub the block's HTML content and styles. Only do assertions
 			// before the end of responsiveAssertion tests.
-			if ( __experimentalBlockSnapshots && assertFrontend ) {
-				__experimentalBlockSnapshots.createContentSnapshot()
-				__experimentalBlockSnapshots.stubStyles( cssObject, viewportFrontend ? viewportFrontend : viewport )
+			if ( blockSnapshots && assertFrontend ) {
+				blockSnapshots.createContentSnapshot()
+				blockSnapshots.stubStyles( cssObject, viewportFrontend ? viewportFrontend : viewport )
 			}
 
 			if ( assertBackend ) {
@@ -940,7 +940,6 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 			}
 		},
 		// Assertion in the frontend.
-		// Frontend callback may soon be deprecated in favor of BlockSnapshots.
 		( {
 			parsedClassList, viewport,
 		} ) => {

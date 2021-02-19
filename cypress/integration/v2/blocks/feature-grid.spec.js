@@ -72,11 +72,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, __experimentalRegisterBlockSnapshots ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
-	const featureGridBlock = __experimentalRegisterBlockSnapshots( 'featureGridBlock' )
+	const featureGridBlock = registerBlockSnapshots( 'featureGridBlock' )
 
 	cy.openInspector( 'ugb/feature-grid', 'Style' )
 

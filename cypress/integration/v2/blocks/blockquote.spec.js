@@ -54,11 +54,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, __experimentalRegisterBlockSnapshots ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/blockquote' ).as( 'blockquoteBlock' )
-	const blockquoteBlock = __experimentalRegisterBlockSnapshots( 'blockquoteBlock' )
+	const blockquoteBlock = registerBlockSnapshots( 'blockquoteBlock' )
 	cy.openInspector( 'ugb/blockquote', 'Style' )
 
 	// Test General Alignment

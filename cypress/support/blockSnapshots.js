@@ -1,4 +1,11 @@
 /**
+ * `wp.blocks.getBlockContent` can be used to generate
+ * save block html content. With this, we can overwrite
+ *``getComputedStyle` to stub all generated HTML content and
+ * css object for future assertions.
+ */
+
+/**
  * Internal dependencies
  */
 import { createElementFromHTMLString, parseClassList } from './util'
@@ -18,12 +25,23 @@ class BlockSnapshots {
 		this.alias = null
 	}
 
+	/**
+	 * Asynchronously initialize contentSnapshots and stubbedStyles
+	 * using Cypress alias.
+	 *
+	 * @param {string} alias
+	 * @see https://docs.cypress.io/guides/core-concepts/variables-and-aliases.html
+	 */
 	registerAlias( alias ) {
 		this.alias = alias
 		cy.wrap( [] ).as( `${ alias }.contentSnapshots` )
 		cy.wrap( [] ).as( `${ alias }.stubbedStyles` )
 	}
 
+	/**
+	 * Asynchronously stub the current block snapshot and save its
+	 * stringified HTML content using `wp.blocks.getBlockContent`.
+	 */
 	createContentSnapshot() {
 		const self = this
 		cy.wp().then( wp => {
@@ -37,6 +55,12 @@ class BlockSnapshots {
 		} )
 	}
 
+	/**
+	 * Asynchronously stub the current cssObject.
+	 *
+	 * @param {Object} style
+	 * @param {string} viewport
+	 */
 	stubStyles( style, viewport ) {
 		const self = this
 		cy.get( `@${ self.alias }.stubbedStyles` ).then( $stubbedStyles => {
@@ -46,10 +70,15 @@ class BlockSnapshots {
 		} )
 	}
 
+	/**
+	 * Enqueue all stubbed html content to the frontend.
+	 * Individually assert its computed style.
+	 */
 	assertFrontendStyles() {
 		const self = this
 		cy.get( `@${ self.alias }.stubbedStyles` ).then( $stubbedStyles => {
 			cy.get( `@${ self.alias }.contentSnapshots` ).then( $contentSnapshots => {
+				// Combine all stubbed styles and content snapshots into one array.
 				const combinedStubbed = $contentSnapshots.map( ( htmlContent, index ) => {
 					return {
 						htmlContent,
@@ -67,14 +96,19 @@ class BlockSnapshots {
 								viewport, htmlContent, style,
 							} = combinedStubbedContent
 
+							// Create a DOMElement based on the HTML string.
 							const blockElement = createElementFromHTMLString( htmlContent )
+							// Get the class selector.
 							const classList = parseClassList( Array.from( blockElement.classList ).join( ' ' ) )
+							// Remove all blocks inside .entry-content.
 							doc.querySelector( '.entry-content' ).innerHTML = ''
 
+							// Change the viewport.
 							if ( viewport !== 'Desktop' ) {
 								cy.viewport( config[ `viewport${ viewport }Width` ] || config.viewportWidth, config.viewportHeight )
 							}
 
+							// Append the stubbed block in .entry-content
 							doc.querySelector( '.entry-content' ).appendChild( blockElement )
 
 							keys( style ).forEach( _selector => {
@@ -88,6 +122,7 @@ class BlockSnapshots {
 										: ` ${ first( selector ) }` )
 									: ` ${ first( selector ) }` }`.trim()
 
+								// Assert computed style.
 								_assertComputedStyle(
 									documentSelector,
 									selector.length && last( selector ),
@@ -96,6 +131,7 @@ class BlockSnapshots {
 									viewport )
 							} )
 
+							// Revert the viewport
 							cy.viewport( config.viewportWidth, config.viewportHeight )
 						} )
 					} )
@@ -105,42 +141,33 @@ class BlockSnapshots {
 	}
 }
 
+/**
+ * Function used to register block snapshots in
+ * block tests. It also overwrites assertion commands.
+ *
+ * @param {string} alias
+ */
 export const registerBlockSnapshots = alias => {
-	const blockSnapshot = new BlockSnapshots()
-	blockSnapshot.registerAlias( alias )
+	const blockSnapshots = new BlockSnapshots()
+	blockSnapshots.registerAlias( alias )
 
-	const overwriteAssertionCommands = ( name, argCount ) => {
+	const overwriteAssertionCommand = ( name, argCount ) => {
 		Cypress.Commands.overwrite( name, ( originalFn, ...args ) => {
 			if ( args.length === argCount ) {
 				const options = args.pop()
-				options.__experimentalBlockSnapshots = blockSnapshot
+				options.blockSnapshots = blockSnapshots
 				return originalFn( ...[ ...args, options ] )
 			}
-			return originalFn( ...[ ...args, { __experimentalBlockSnapshots: blockSnapshot } ] )
+			return originalFn( ...[ ...args, { blockSnapshots } ] )
 		} )
 	}
 
 	/**
-	 * Overwrite `assertComputedStyle` by passing `__experimentalBlockSnapshots` option
+	 * Overwrite `assertComputedStyle` by passing `blockSnapshots` option
 	 */
-	overwriteAssertionCommands( 'assertComputedStyle', 3 )
+	overwriteAssertionCommand( 'assertComputedStyle', 3 )
 
-	/**
-	 * Overwrite `asserHtmlTag` by passing `__experimentalBlockSnapshots` option
-	 */
-	overwriteAssertionCommands( 'assertHtmlTag', 4 )
-
-	/**
-	 * Overwrite `assertClassName` by passing `__experimentalBlockSnapshots` option
-	 */
-	overwriteAssertionCommands( 'assertClassName', 4 )
-
-	/**
-	 * Overwrite `assertHtmlAttribute` by passing `__experimentalBlockSnapshots` option
-	 */
-	overwriteAssertionCommands( 'assertHtmlAttribute', 4 )
-
-	return blockSnapshot
+	return blockSnapshots
 }
 
 export default BlockSnapshots

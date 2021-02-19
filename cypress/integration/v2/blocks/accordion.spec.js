@@ -61,7 +61,7 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, __experimentalRegisterBlockSnapshots ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
 
@@ -131,7 +131,7 @@ function styleTab( viewport, desktopOnly, __experimentalRegisterBlockSnapshots )
 	} )
 
 	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
-	const accordionBlock = __experimentalRegisterBlockSnapshots( 'accordionBlock' )
+	const accordionBlock = registerBlockSnapshots( 'accordionBlock' )
 
 	// Test General Alignment
 	cy.openInspector( 'ugb/accordion', 'Style' )

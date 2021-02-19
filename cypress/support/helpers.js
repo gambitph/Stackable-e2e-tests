@@ -7,7 +7,7 @@ import {
 } from './util'
 import config from '../../cypress.json'
 import { collapse, openSidebar } from './commands/inspector'
-import { registerBlockSnapshots as __experimentalRegisterBlockSnapshots } from './blockSnapshots'
+import { registerBlockSnapshots } from './blockSnapshots'
 
 /**
  * External dependencies
@@ -133,7 +133,7 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 		assertFrontend = true,
 		wait = 0,
 		viewportFrontend = false,
-		__experimentalBlockSnapshots = false,
+		blockSnapshots = false,
 	} = options
 
 	getActiveTab( tab => {
@@ -155,10 +155,10 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 				} )
 
 				/**
-				 * Not assert frontend when __experimentalBlockSnapshots is defined.
+				 * Not assert frontend when blockSnapshots is defined.
 				 * We will only do assertions before the end of responsiveAssertion tests.
 				 */
-				if ( ! __experimentalBlockSnapshots && assertFrontend && frontendCallback ) {
+				if ( ! blockSnapshots && assertFrontend && frontendCallback ) {
 					cy.getPreviewMode().then( previewMode => {
 						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 							cy.visit( previewUrl )
@@ -250,11 +250,11 @@ export const responsiveAssertHelper = ( callback = () => {}, options = {} ) => {
 	const responsiveAssertFunctions = viewports.map( viewport => {
 		const assertDesktopOnlyFunction = generateAssertDesktopOnlyFunction( viewport )
 		if ( disableItAssertion ) {
-			return () => callback( viewport, assertDesktopOnlyFunction, __experimentalRegisterBlockSnapshots )
+			return () => callback( viewport, assertDesktopOnlyFunction, registerBlockSnapshots )
 		}
 		return () => {
 			it( `should adjust ${ lowerCase( viewport ) } options inside ${ lowerCase( tab ) } tab`, () => {
-				callback( viewport, assertDesktopOnlyFunction, __experimentalRegisterBlockSnapshots )
+				callback( viewport, assertDesktopOnlyFunction, registerBlockSnapshots )
 			} )
 		}
 	} )

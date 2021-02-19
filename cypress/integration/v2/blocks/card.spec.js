@@ -63,11 +63,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, __experimentalRegisterBlockSnapshots ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
-	const cardBlock = __experimentalRegisterBlockSnapshots( 'cardBlock' )
+	const cardBlock = registerBlockSnapshots( 'cardBlock' )
 	cy.openInspector( 'ugb/card', 'Style' )
 
 	cy.collapse( 'General' )

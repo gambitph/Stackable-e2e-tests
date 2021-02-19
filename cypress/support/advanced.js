@@ -25,7 +25,6 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 		enablePaddingRight = true,
 		enablePaddingBottom = true,
 		enablePaddingLeft = true,
-		__experimentalBlockSnapshots = false,
 	} = options
 
 	const MAIN_SELECTOR = '.ugb-main-block'
@@ -51,7 +50,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 			.then( $panel => {
 				if ( $panel.text().includes( adjustName ) ) {
 					if ( args.length ) {
-						cy.adjust( adjustName, value, options )[ assertionFunc ]( ... [ ...args, { __experimentalBlockSnapshots } ] )
+						cy.adjust( adjustName, value, options )[ assertionFunc ]( ... args )
 					} else {
 						cy.adjust( adjustName, value, options )
 					}

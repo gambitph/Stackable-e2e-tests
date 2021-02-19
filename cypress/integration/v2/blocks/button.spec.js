@@ -46,11 +46,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, __experimentalRegisterBlockSnapshots ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/button' ).as( 'buttonBlock' )
-	const buttonBlock = __experimentalRegisterBlockSnapshots( 'buttonBlock' )
+	const buttonBlock = registerBlockSnapshots( 'buttonBlock' )
 	cy.openInspector( 'ugb/button', 'Style' )
 
 	cy.collapse( 'General' )
