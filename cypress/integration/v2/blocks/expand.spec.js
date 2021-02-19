@@ -23,10 +23,11 @@ function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/expand' ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/expand' )
+	cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )
+	const expandBlock = registerBlockSnapshots( 'expandBlock' )
 	cy.openInspector( 'ugb/expand', 'Style' )
 
 	// Test General options
@@ -87,5 +88,6 @@ function styleTab( viewport, desktopOnly ) {
 			'margin-bottom': '39px',
 		},
 	} )
+	expandBlock.assertFrontendStyles()
 }
 
