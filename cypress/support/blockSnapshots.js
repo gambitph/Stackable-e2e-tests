@@ -18,7 +18,7 @@ import config from '../../cypress.json'
  * External dependencies
  */
 import {
-	first, keys, last,
+	first, keys, last, isBoolean,
 } from 'lodash'
 
 class BlockSnapshots {
@@ -159,11 +159,13 @@ export const registerBlockSnapshots = alias => {
 	Cypress.Commands.overwrite( 'assertComputedStyle', ( originalFn, ...args ) => {
 		function modifiedFn( ...passedArgs ) {
 			cy.getPreviewMode().then( viewport => {
-				blockSnapshots.createContentSnapshot()
 				const options = passedArgs.pop()
 				options.blockSnapshots = blockSnapshots
+				if ( options.assertFrontend === undefined || ( isBoolean( options.assertFrontend ) && options.assertFrontend ) ) {
+					blockSnapshots.stubStyles( passedArgs[ 1 ], options.viewportFrontend || viewport )
+					blockSnapshots.createContentSnapshot()
+				}
 				options.assertFrontend = false
-				blockSnapshots.stubStyles( passedArgs[ 1 ], options.viewportFrontend || viewport )
 				originalFn( ...[ ...passedArgs, options ] )
 			} )
 		}

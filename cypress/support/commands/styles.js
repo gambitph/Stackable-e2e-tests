@@ -883,7 +883,7 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 						// Handle conversion of vw to px.
 						if ( expectedValue.match( /vw$/ ) ) {
 							const visualEl = doc.querySelector( '.edit-post-visual-editor' )
-							if ( visualEl && assertType === 'Backend' && viewport !== 'Desktop' ) {
+							if ( visualEl && assertType === 'Editor' && viewport !== 'Desktop' ) {
 								const currEditorWidth = pick( win.getComputedStyle( visualEl ), 'width' ).width
 								return `${ parseFloat( ( parseInt( expectedValue ) ) / 100 * currEditorWidth ) }px`
 							}

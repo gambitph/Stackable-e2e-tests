@@ -276,7 +276,7 @@ export const assertTypography = ( selector, options = {}, assertOptions = {} ) =
 
 	if ( viewport === 'Desktop' ) {
 		cy.adjust( 'Typography', {
-			'Size': 50,
+			'Size': { value: 50, unit: 'px' },
 			'Weight': '700',
 			'Transform': 'lowercase',
 			'Line-Height': 4,
