@@ -24,10 +24,11 @@ function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/heading' ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/heading' )
+	cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
+	const headingBlock = registerBlockSnapshots( 'headingBlock' )
 	cy.openInspector( 'ugb/heading', 'Style' )
 
 	// Test General Alignment
@@ -161,4 +162,5 @@ function styleTab( viewport, desktopOnly ) {
 			'margin-bottom': '12px',
 		},
 	} )
+	headingBlock.assertFrontendStyles()
 }

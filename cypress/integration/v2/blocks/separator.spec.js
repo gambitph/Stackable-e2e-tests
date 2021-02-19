@@ -41,10 +41,11 @@ function switchLayout() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/separator' )
+	cy.addBlock( 'ugb/separator' ).as( 'separatorBlock' )
+	const separatorBlock = registerBlockSnapshots( 'separatorBlock' )
 	cy.openInspector( 'ugb/separator', 'Style' )
 
 	desktopOnly( () => {
@@ -264,4 +265,5 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
+	separatorBlock.assertFrontendStyles()
 }

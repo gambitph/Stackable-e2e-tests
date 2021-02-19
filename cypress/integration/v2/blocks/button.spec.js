@@ -46,10 +46,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/button' )
+	cy.addBlock( 'ugb/button' ).as( 'buttonBlock' )
+	const buttonBlock = registerBlockSnapshots( 'buttonBlock' )
 	cy.openInspector( 'ugb/button', 'Style' )
 
 	cy.collapse( 'General' )
@@ -385,4 +386,5 @@ function styleTab( viewport, desktopOnly ) {
 
 	assertBlockBackground( '.ugb-button-wrapper', { viewport } )
 	assertSeparators( { viewport } )
+	buttonBlock.assertFrontendStyles()
 }

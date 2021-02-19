@@ -5,7 +5,7 @@
 import { range } from 'lodash'
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertTypography,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertContainer,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -61,7 +61,7 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
 
@@ -129,7 +129,9 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 		cy.deleteBlock( 'ugb/accordion', 'Accordion 1' )
 	} )
-	cy.addBlock( 'ugb/accordion' )
+
+	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
+	const accordionBlock = registerBlockSnapshots( 'accordionBlock' )
 
 	// Test General Alignment
 	cy.openInspector( 'ugb/accordion', 'Style' )
@@ -139,110 +141,8 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.collapse( 'Container' )
 
-	// Test Single Background Color
-	desktopOnly( () => {
-		cy.adjust( 'Background', {
-			'Color Type': 'single',
-			'Background Color': '#000000',
-			'Background Color Opacity': '0.5',
-		} ).assertComputedStyle( {
-			'.ugb-accordion__heading': {
-				'background-color': 'rgba(0, 0, 0, 0.5)',
-			},
-		} )
-	} )
-	cy.setBlockAttribute( {
-		[ `container${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-	} )
-
-	// Test Gradient Background Color
-	desktopOnly( () => {
-		cy.adjust( 'Background', {
-			'Color Type': 'gradient',
-			'Background Color #1': '#f00069',
-			'Background Color #2': '#000000',
-			'Adv. Gradient Color Settings': {
-				'Gradient Direction (degrees)': '180deg',
-				'Color 1 Location': '11%',
-				'Color 2 Location': '80%',
-				'Background Gradient Blend Mode': 'hard-light',
-			},
-			'Background Media Tint Strength': 6,
-			'Fixed Background': true,
-			'Adv. Background Image Settings': {
-				'Image Blend Mode': 'hue',
-			},
-		} ).assertComputedStyle( {
-			'.ugb-accordion__heading:before': {
-				'background-image': 'linear-gradient(#f00069 11%, #000000 80%)',
-				'mix-blend-mode': 'hard-light',
-				'opacity': '0.6',
-			},
-			'.ugb-accordion__heading': {
-				'background-blend-mode': 'hue',
-				'background-attachment': 'fixed',
-			},
-		} )
-	} )
-
-	cy.adjust( 'Background', {
-		'Adv. Background Image Settings': {
-			'Image Position': {
-				viewport,
-				value: 'center center',
-			},
-			'Image Repeat': {
-				viewport,
-				value: 'repeat-x',
-			},
-			'Image Size': {
-				viewport,
-				value: 'custom',
-			},
-			'Custom Size': {
-				viewport,
-				value: 19,
-				unit: '%',
-			},
-		},
-	} ).assertComputedStyle( {
-		'.ugb-accordion__heading': {
-			'background-position': '50% 50%',
-			'background-repeat': 'repeat-x',
-			'background-size': '19%',
-		},
-	} )
-
-	// Test Border Radius
-	desktopOnly( () => {
-		cy.adjust( 'Border Radius', 30 ).assertComputedStyle( {
-			'.ugb-accordion__heading': {
-				'border-radius': '30px',
-			},
-		} )
-	} )
-
-	// Test Border Options
-	desktopOnly( () => {
-		cy.adjust( 'Borders', 'solid' )
-		cy.adjust( 'Border Width', 3 )
-		cy.adjust( 'Border Color', '#f1f1f1' ).assertComputedStyle( {
-			'.ugb-accordion__heading': {
-				'border-style': 'solid',
-				'border-color': '#f1f1f1',
-				'border-top-width': '3px',
-				'border-bottom-width': '3px',
-				'border-left-width': '3px',
-				'border-right-width': '3px',
-			},
-		} )
-	} )
-
-	// Test Shadow / Outline
-	desktopOnly( () => {
-		cy.adjust( 'Shadow / Outline', 9 )
-			.assertClassName( '.ugb-accordion__heading', 'ugb--shadow-9' )
-	} )
+	// Test Container
+	assertContainer( '.ugb-accordion__heading', { viewport }, 'container%sBackgroundMediaUrl' )
 
 	cy.collapse( 'Spacing' )
 	// Test Padding options
@@ -299,4 +199,6 @@ function styleTab( viewport, desktopOnly ) {
 				},
 			} )
 	} )
+
+	accordionBlock.assertFrontendStyles()
 }

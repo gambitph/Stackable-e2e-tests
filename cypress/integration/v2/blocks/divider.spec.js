@@ -33,10 +33,11 @@ function switchLayout() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/divider' )
+	cy.addBlock( 'ugb/divider' ).as( 'dividerBlock' )
+	const dividerBlock = registerBlockSnapshots( 'dividerBlock' )
 	cy.openInspector( 'ugb/divider', 'Style' )
 
 	// Test General options
@@ -61,4 +62,5 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
+	dividerBlock.assertFrontendStyles()
 }

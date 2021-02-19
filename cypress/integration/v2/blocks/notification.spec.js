@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground, assertContainer,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -49,10 +49,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/notification' )
+	cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
+	const notificationBlock = registerBlockSnapshots( 'notificationBlock' )
 	cy.openInspector( 'ugb/notification', 'Style' )
 
 	// Test General options
@@ -73,123 +74,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Container options
 	cy.collapse( 'Container' )
-	cy.setBlockAttribute( {
-		[ `column${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-	} )
-	desktopOnly( () => {
-		cy.adjust( 'Background', {
-			'Color Type': 'gradient',
-			'Background Color #1': '#ff5c5c',
-			'Background Color #2': '#7bff5a',
-			'Adv. Gradient Color Settings': {
-				'Gradient Direction (degrees)': 160,
-				'Color 1 Location': 28,
-				'Color 2 Location': 75,
-				'Background Gradient Blend Mode': 'multiply',
-			},
-			'Background Media Tint Strength': 6,
-			'Fixed Background': true,
-			'Adv. Background Image Settings': {
-				'Image Blend Mode': 'exclusion',
-			},
-		} ).assertComputedStyle( {
-			'.ugb-notification__item:before': {
-				'background-image': 'linear-gradient(160deg, #ff5c5c 28%, #7bff5a 75%)',
-				'opacity': '0.6',
-				'mix-blend-mode': 'multiply',
-			},
-			'.ugb-notification__item': {
-				'background-color': '#ff5c5c',
-				'background-attachment': 'fixed',
-				'background-blend-mode': 'exclusion',
-			},
-		} )
-	} )
-	cy.adjust( 'Background', {
-		'Adv. Background Image Settings': {
-			'Image Position': {
-				viewport,
-				value: 'center center',
-			},
-			'Image Repeat': {
-				viewport,
-				value: 'repeat-x',
-			},
-			'Image Size': {
-				viewport,
-				value: 'custom',
-			},
-			'Custom Size': {
-				viewport,
-				value: 19,
-				unit: '%',
-			},
-		},
-	} ).assertComputedStyle( {
-		'.ugb-notification__item': {
-			'background-position': '50% 50%',
-			'background-repeat': 'repeat-x',
-			'background-size': '19%',
-		},
-	} )
-
-	cy.adjust( 'Background', {
-		'Adv. Background Image Settings': {
-			'Image Size': {
-				viewport,
-				value: 'custom',
-			},
-			'Custom Size': {
-				viewport,
-				value: 160,
-				unit: 'px',
-			},
-		},
-	} ).assertComputedStyle( {
-		'.ugb-notification__item': {
-			'background-size': '160px',
-		},
-	} )
-
-	cy.adjust( 'Background', {
-		'Adv. Background Image Settings': {
-			'Image Size': {
-				viewport,
-				value: 'custom',
-			},
-			'Custom Size': {
-				viewport,
-				value: 8,
-				unit: 'vw',
-			},
-		},
-	} ).assertComputedStyle( {
-		'.ugb-notification__item': {
-			'background-size': '8vw',
-		},
-	} )
-
-	cy.adjust( 'Borders', 'dashed' )
-	desktopOnly( () => {
-		cy.adjust( 'Border Color', '#3f3f3f' )
-		cy.adjust( 'Border Radius', 23 ).assertComputedStyle( {
-			'.ugb-notification__item': {
-				'border-color': '#3f3f3f',
-				'border-radius': '23px',
-			},
-		} )
-		cy.adjust( 'Shadow / Outline', 7 )
-			.assertClassName( '.ugb-notification__item', 'ugb--shadow-7' )
-	} )
-	cy.adjust( 'Border Width', 23, { viewport } ).assertComputedStyle( {
-		'.ugb-notification__item': {
-			'border-style': 'dashed',
-			'border-top-width': '23px',
-			'border-right-width': '23px',
-			'border-bottom-width': '23px',
-			'border-left-width': '23px',
-		},
-	} )
+	assertContainer( '.ugb-notification__item', { viewport }, 'column%sBackgroundMediaUrl' )
 
 	// Test Dismissible
 	cy.collapse( 'Dismissible' )
@@ -442,4 +327,5 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Block Background
 	assertBlockBackground( '.ugb-notification', { viewport } )
+	notificationBlock.assertFrontendStyles()
 }
