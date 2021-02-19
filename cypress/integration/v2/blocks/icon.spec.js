@@ -34,11 +34,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/icon' )
-
+	cy.addBlock( 'ugb/icon' ).as( 'iconBlock' )
+	const iconBlock = registerBlockSnapshots( 'iconBlock' )
 	cy.openInspector( 'ugb/icon', 'Style' )
 
 	// Test General options
@@ -201,5 +201,6 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Top and Bottom Separator
 	assertSeparators( { viewport } )
+	iconBlock.assertFrontendStyles()
 }
 

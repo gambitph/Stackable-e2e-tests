@@ -55,10 +55,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/text' )
+	cy.addBlock( 'ugb/text' ).as( 'textBlock' )
+	const textBlock = registerBlockSnapshots( 'textBlock' )
 	cy.openInspector( 'ugb/text', 'Style' )
 
 	// Test General options
@@ -205,4 +206,5 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Top and Bottom Separator
 	assertSeparators( { viewport } )
+	textBlock.assertFrontendStyles()
 }

@@ -52,12 +52,12 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
 
-	cy.addBlock( 'ugb/icon-list' )
-
+	cy.addBlock( 'ugb/icon-list' ).as( 'iconListBlock' )
+	const iconListBlock = registerBlockSnapshots( 'iconListBlock' )
 	cy.openInspector( 'ugb/icon-list', 'Style' )
 	cy.collapse( 'General' )
 	cy.adjust( 'Columns', 4, { viewport } ).assertComputedStyle( {
@@ -114,4 +114,5 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-icon-list', { viewport } )
 	assertSeparators( { viewport } )
+	iconListBlock.assertFrontendStyles()
 }
