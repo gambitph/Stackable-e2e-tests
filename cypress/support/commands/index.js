@@ -11,12 +11,13 @@ Cypress.Commands.overwrite( 'window', modifyLogFunc() )
 Cypress.Commands.overwrite( 'trigger', modifyLogFunc() )
 Cypress.Commands.overwrite( 'parent', modifyLogFunc() )
 Cypress.Commands.overwrite( 'parentsUntil', modifyLogFunc() )
-Cypress.Commands.overwrite( 'invoke', modifyLogFunc( 'first' ) )
+Cypress.Commands.overwrite( 'invoke', modifyLogFunc( { position: 'first' } ) )
 Cypress.Commands.overwrite( 'eq', modifyLogFunc() )
 Cypress.Commands.overwrite( 'first', modifyLogFunc() )
 Cypress.Commands.overwrite( 'wait', modifyLogFunc() )
 Cypress.Commands.overwrite( 'contains', modifyLogFunc() )
 Cypress.Commands.overwrite( 'last', modifyLogFunc() )
+Cypress.Commands.overwrite( 'wrap', modifyLogFunc( { argumentLength: 2 } ) )
 
 /**
  * Register functions to Cypress Commands.
@@ -45,29 +46,10 @@ import './attributes'
  * Internal dependencies
  */
 import {
-	containsRegExp, getBlocksRecursive, dispatchResolver,
+	containsRegExp, getBlocksRecursive, dispatchResolver, modifyLogFunc,
 } from '../util'
 import { last, first } from 'lodash'
 import config from 'root/cypress.json'
-
-/**
- * Function for overwriting log argument.
- *
- * @param {string} position
- */
-function modifyLogFunc( position = 'last' ) {
-	return function( originalFn, ...args ) {
-		const firstOrLast = position === 'last' ? last : first
-		if ( typeof firstOrLast( args ) === 'object' && ! Array.isArray( firstOrLast( args ) ) ) {
-			const options = args[ position === 'last' ? 'pop' : 'shift' ]()
-			options.log = Cypress.env( 'DEBUG' ) === 'true'
-			return position === 'last' ? originalFn( ...args, options ) : originalFn( options, ...args )
-		}
-		return position === 'last'
-			? 			originalFn( ...args, { log: Cypress.env( 'DEBUG' ) === 'true' } )
-			: 			originalFn( { log: Cypress.env( 'DEBUG' ) === 'true' }, ...args )
-	}
-}
 
 /**
  * Command for adding a specific block in the inserter button.

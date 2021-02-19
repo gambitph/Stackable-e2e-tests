@@ -1,7 +1,9 @@
 /**
  * External dependencies
  */
-import { lowerCase, escapeRegExp } from 'lodash'
+import {
+	lowerCase, escapeRegExp, first, last,
+} from 'lodash'
 
 /**
  * Function for getting the base control
@@ -174,4 +176,39 @@ export function getBlockStringPath( blocks = [], clientId = '' ) {
 
 	getBlockStringPathRecursive( blocks, clientId )
 	return paths.join( '' )
+}
+
+/**
+ * Function for overwriting log argument.
+ *
+ * @param {Object} options
+ */
+export function modifyLogFunc( options = {} ) {
+	const {
+		position = 'last',
+		argumentLength = false,
+	} = options
+
+	if ( argumentLength ) {
+		return function( originalFn, ...args ) {
+			if ( args.length === argumentLength ) {
+				const options = args.pop()
+				options.log = Cypress.env( 'DEBUG' ) === 'true'
+				originalFn( ...args, options )
+			}
+			return originalFn( ...args, { log: Cypress.env( 'DEBUG' ) === 'true' } )
+		}
+	}
+
+	return function( originalFn, ...args ) {
+		const firstOrLast = position === 'last' ? last : first
+		if ( typeof firstOrLast( args ) === 'object' && ! Array.isArray( firstOrLast( args ) ) ) {
+			const options = args[ position === 'last' ? 'pop' : 'shift' ]()
+			options.log = Cypress.env( 'DEBUG' ) === 'true'
+			return position === 'last' ? originalFn( ...args, options ) : originalFn( options, ...args )
+		}
+		return position === 'last'
+			? 			originalFn( ...args, { log: Cypress.env( 'DEBUG' ) === 'true' } )
+			: 			originalFn( { log: Cypress.env( 'DEBUG' ) === 'true' }, ...args )
+	}
 }
