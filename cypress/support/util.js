@@ -54,28 +54,6 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
 }
 
 /**
- * Function used to generate a parsed class names to be
- * used as a selector.
- *
- * @param {string} classList
- */
-export function parseClassList( classList = '' ) {
-	const excludedClassNames = [
-		'ugb-accordion--open',
-		'ugb-accordion--single-open',
-		'ugb-icon-list__left-align',
-		'ugb-icon-list__center-align',
-		'ugb-icon-list__right-align',
-		'alignfull',
-	]
-	const parsedClassList = classList.split( ' ' )
-		.filter( className => ! className.match( /ugb-(.......)$/ ) && ! excludedClassNames.includes( className ) )
-		.map( className => `.${ className }` )
-		.join( '' )
-	return parsedClassList
-}
-
-/**
  * Function for getting the active tab
  * in inspector.
  *

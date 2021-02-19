@@ -1,19 +1,13 @@
 /**
  * Internal dependencies
  */
-import { publish } from './commands'
-import {
-	getActiveTab, parseClassList, createElementFromHTMLString,
-} from './util'
-import config from '../../cypress.json'
-import { collapse, openSidebar } from './commands/inspector'
 import { registerBlockSnapshots } from './blockSnapshots'
 
 /**
  * External dependencies
  */
 import {
-	startCase, lowerCase,
+	lowerCase,
 } from 'lodash'
 
 /**
@@ -118,75 +112,6 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 
 	cy.assertBlockError()
 	cy.publish()
-}
-
-/**
- * Helper function for generating assertion commands
- *
- * @param {*} subject
- * @param {Function} editorCallback
- * @param {Function} frontendCallback
- * @param {Object} options
- */
-export const assertFunction = ( subject, editorCallback = () => {}, frontendCallback = null, options = {} ) => {
-	const {
-		assertFrontend = true,
-		wait = 0,
-		viewportFrontend = false,
-		blockSnapshots = false,
-	} = options
-
-	getActiveTab( tab => {
-		cy.document().then( doc => {
-			const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
-
-			cy.wp().then( wp => {
-				const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
-				const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
-				const parsedClassList = parseClassList( Array.from( saveElement.classList ).join( ' ' ) )
-				publish()
-
-				cy.wait( wait )
-
-				cy.getPreviewMode().then( previewMode => {
-					editorCallback( {
-						parsedClassList, viewport: previewMode, blockContent: saveElement,
-					} )
-				} )
-
-				/**
-				 * Not assert frontend when blockSnapshots is defined.
-				 * We will only do assertions before the end of responsiveAssertion tests.
-				 */
-				if ( ! blockSnapshots && assertFrontend && frontendCallback ) {
-					cy.getPreviewMode().then( previewMode => {
-						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-							cy.visit( previewUrl )
-							if ( viewportFrontend && viewportFrontend !== 'Desktop' ) {
-								cy.viewport( config[ `viewport${ viewportFrontend }Width` ] || config.viewportWidth, config.viewportHeight )
-							} else if ( previewMode !== 'Desktop' ) {
-								cy.viewport( config[ `viewport${ previewMode }Width` ] || config.viewportWidth, config.viewportHeight )
-							}
-
-							cy.wait( wait )
-
-							frontendCallback( {
-								parsedClassList, viewport: previewMode,
-							} )
-
-							cy.viewport( config.viewportWidth, config.viewportHeight )
-
-							cy.visit( editorUrl )
-							cy.get( parsedClassList ).click( { force: true } )
-							openSidebar( 'Settings' )
-							cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
-							collapse( activePanel )
-						} )
-					} )
-				}
-			} )
-		} )
-	} )
 }
 
 /*

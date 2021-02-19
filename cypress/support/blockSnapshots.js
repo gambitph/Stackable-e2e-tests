@@ -9,7 +9,7 @@
  * Internal dependencies
  */
 import {
-	createElementFromHTMLString, parseClassList,
+	createElementFromHTMLString,
 } from './util'
 import { _assertComputedStyle } from './commands/styles'
 import config from '../../cypress.json'
@@ -101,7 +101,7 @@ class BlockSnapshots {
 							// Create a DOMElement based on the HTML string.
 							const blockElement = createElementFromHTMLString( htmlContent )
 							// Get the class selector.
-							const classList = parseClassList( Array.from( blockElement.classList ).join( ' ' ) )
+							const classList = Array.from( blockElement.classList ).map( _class => `.${ _class }` ).join( '' )
 							// Remove all blocks inside .entry-content.
 							doc.querySelector( '.entry-content' ).innerHTML = ''
 
