@@ -1,8 +1,8 @@
 /**
  * `wp.blocks.getBlockContent` can be used to generate
- * save block html content. With this, we can overwrite
- *``getComputedStyle` to stub all generated HTML content and
- * css object for future assertions.
+ * save block HTML content. With this, we can overwrite
+ *`getComputedStyle` to stub all generated HTML contents and
+ * CSS objects for future assertions.
  */
 
 /**
