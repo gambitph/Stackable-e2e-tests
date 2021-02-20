@@ -28,13 +28,8 @@ Cypress.Commands.add( 'typeBlock', typeBlock )
 Cypress.Commands.add( 'changePreviewMode', changePreviewMode )
 Cypress.Commands.add( 'deleteBlock', deleteBlock )
 Cypress.Commands.add( 'publish', publish )
-Cypress.Commands.add( 'changeIcon', changeIcon )
-Cypress.Commands.add( 'assertPluginError', assertPluginError )
-Cypress.Commands.add( 'assertBlockError', assertBlockError )
 Cypress.Commands.add( 'addInnerBlock', addInnerBlock )
 Cypress.Commands.add( 'wp', wp )
-Cypress.Commands.add( 'getPostUrls', getPostUrls )
-Cypress.Commands.add( 'getPreviewMode', getPreviewMode )
 
 import './styles'
 import './global-settings'
@@ -49,7 +44,6 @@ import {
 	containsRegExp, getBlocksRecursive, dispatchResolver, modifyLogFunc,
 } from '../util'
 import { last, first } from 'lodash'
-import config from 'root/cypress.json'
 
 /**
  * Command for adding a specific block in the inserter button.
@@ -225,42 +219,6 @@ export function publish() {
 }
 
 /**
- * Stackable Command for changing the icon in icon block.
- *
- * @param {number} index
- * @param {string} keyword
- * @param {string} icon
- */
-export function changeIcon( index = 1, keyword = '', icon ) {
-	cy
-		.get( '.block-editor-block-list__block.is-selected' )
-		.find( '.ugb-svg-icon-placeholder__button' )
-		.eq( index - 1 )
-		.click( { force: true } )
-
-	cy
-		.get( 'input[placeholder="Type to search icon"]' )
-		.click( { force: true } )
-		.type( keyword )
-
-	// Wait until the loader disappears.
-	cy.waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
-
-	cy
-		.get( `.ugb-icon-popover__iconlist>button${ icon ? `.${ icon }` : '' }` )
-		.first()
-		.click( { force: true } )
-}
-
-/**
- * Command for asserting an error due to
- * plugin activation.
- */
-export function assertPluginError() {
-	cy.get( '.xdebug-error' ).should( 'not.exist' )
-}
-
-/**
  * Command for adding inner block using block appender
  *
  * @param {string} blockName
@@ -278,13 +236,6 @@ export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/ac
 	} )
 }
 
-/**
- * Command for asserting block error.
- */
-export function assertBlockError() {
-	cy.get( '.block-editor-warning' ).should( 'not.exist' )
-}
-
 /*
 * Command for getting the gutenberg `wp` object.
 *
@@ -294,34 +245,3 @@ export function wp() {
 	return cy.window().then( win => win.wp )
 }
 
-/**
- * Command that returns the original link address and preview address
- */
-export function getPostUrls() {
-	return cy.window().then( _win => {
-		const _currUrl = _win.location.href
-		const parsedPostID = _currUrl.match( /post=([0-9]*)/g )[ 0 ].split( '=' )[ 1 ]
-		const previewUrl = `/?page_id=${ parsedPostID }&preview=true`
-		const editorUrl = _currUrl.replace( config.baseUrl, '/' )
-		return new Cypress.Promise( resolve => {
-			resolve( {
-				editorUrl, previewUrl, postID: parsedPostID,
-			} )
-		} )
-	} )
-}
-
-/**
- * Command that returns the current editor's preview mode.
- *
- */
-export function getPreviewMode() {
-	return cy.wp().then( wp => {
-		return new Cypress.Promise( resolve => {
-			const previewMode = wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType
-				?	wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
-				: 'Desktop'
-			resolve( previewMode )
-		} )
-	} )
-}

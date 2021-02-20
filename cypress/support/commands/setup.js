@@ -10,6 +10,9 @@ Cypress.Commands.add( 'activatePlugin', activatePlugin )
 Cypress.Commands.add( 'waitUntil', waitUntil )
 Cypress.Commands.add( 'waitFA', waitFA )
 Cypress.Commands.add( 'waitLoader', waitLoader )
+Cypress.Commands.add( 'getPostUrls', getPostUrls )
+Cypress.Commands.add( 'assertPluginError', assertPluginError )
+Cypress.Commands.add( 'assertBlockError', assertBlockError )
 
 /**
  * Command for running the initial setup for the test.
@@ -134,5 +137,37 @@ export function waitLoader( selector = '', interval = 100 ) {
 	return waitUntil( done => cy.document().then( doc => {
 		done( ! doc.querySelector( selector ) )
 	} ), { interval } )
+}
+
+/**
+ * Command that returns the original link address and preview address
+ */
+export function getPostUrls() {
+	return cy.window().then( _win => {
+		const _currUrl = _win.location.href
+		const parsedPostID = _currUrl.match( /post=([0-9]*)/g )[ 0 ].split( '=' )[ 1 ]
+		const previewUrl = `/?page_id=${ parsedPostID }&preview=true`
+		const editorUrl = _currUrl.replace( Cypress.config( 'baseUrl' ), '/' )
+		return new Cypress.Promise( resolve => {
+			resolve( {
+				editorUrl, previewUrl, postID: parsedPostID,
+			} )
+		} )
+	} )
+}
+
+/**
+ * Command for asserting an error due to
+ * plugin activation.
+ */
+export function assertPluginError() {
+	cy.get( '.xdebug-error' ).should( 'not.exist' )
+}
+
+/**
+ * Command for asserting block error.
+ */
+export function assertBlockError() {
+	cy.get( '.block-editor-warning' ).should( 'not.exist' )
 }
 

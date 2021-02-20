@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys, camelCase, isEmpty, first, pick, toUpper, last, startCase, get,
+	kebabCase, keys, camelCase, isEmpty, first, pick, toUpper, last, startCase, get, omit,
 } from 'lodash'
 
 /**
@@ -21,6 +21,7 @@ import {
  * Register functions to Cypress Commands.
  */
 // Controls
+Cypress.Commands.add( 'changeIcon', changeIcon )
 Cypress.Commands.add( 'iconControlReset', iconControlReset )
 Cypress.Commands.add( 'fourRangeControlReset', fourRangeControlReset )
 Cypress.Commands.add( 'suggestionControlClear', suggestionControlClear )
@@ -41,6 +42,7 @@ Cypress.Commands.add( 'toggleControl', toggleControl )
 
 // Adjust Styles
 Cypress.Commands.add( 'adjust', adjust )
+Cypress.Commands.add( 'adjust2', adjust2 )
 Cypress.Commands.add( 'resetStyle', resetStyle )
 Cypress.Commands.add( 'adjustLayout', adjustLayout )
 Cypress.Commands.add( 'adjustDesign', adjustDesign )
@@ -64,6 +66,40 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		} = options
 		cy.changePreviewMode( viewport )
 		changeUnit( unit, name, isInPopover )
+	}
+
+	return originalFn( ...[ ...args, optionsToPass ] )
+} )
+
+Cypress.Commands.overwrite( 'adjust2', ( originalFn, ...args ) => {
+	const optionsToPass = args.length === 3 ? args.pop() : {}
+	const label = first( args )
+
+	// Handle options with no label
+	if ( label === 'Color Type' ) {
+		args.shift()
+		return cy.toolbarControl( 'Single|Gradient', ...args, optionsToPass )
+	}
+
+	const customOptions = {
+		'.ugb-icon-control__wrapper': 'iconControl',
+		'.ugb-four-range-control': 'fourRangeControl',
+		'.react-autosuggest__input': 'suggestionControl',
+		'.ugb-button-icon-control': 'popoverControl',
+		'.ugb-columns-width-control': 'columnControl',
+		'.ugb-design-separator-control': 'designControl',
+		'.ugb-design-control': 'designControl',
+		'.ugb-image-shape-control': 'designControl',
+		'.ugb-icon-control': 'iconControl',
+	}
+
+	if ( optionsToPass.customOptions ) {
+		optionsToPass.customOptions = Object.assign(
+			optionsToPass.customOptions,
+			customOptions
+		)
+	} else {
+		optionsToPass.customOptions = customOptions
 	}
 
 	return originalFn( ...[ ...args, optionsToPass ] )
@@ -99,6 +135,34 @@ Cypress.Commands.overwrite( 'assertComputedStyle', ( originalFn, ...args ) => {
 		}
 	} )
 } )
+
+/**
+ * Stackable Command for changing the icon in icon block.
+ *
+ * @param {number} index
+ * @param {string} keyword
+ * @param {string} icon
+ */
+export function changeIcon( index = 1, keyword = '', icon ) {
+	cy
+		.get( '.block-editor-block-list__block.is-selected' )
+		.find( '.ugb-svg-icon-placeholder__button' )
+		.eq( index - 1 )
+		.click( { force: true } )
+
+	cy
+		.get( 'input[placeholder="Type to search icon"]' )
+		.click( { force: true } )
+		.type( keyword )
+
+	// Wait until the loader disappears.
+	cy.waitLoader( '.ugb-icon-popover__iconlist>span.components-spinner' )
+
+	cy
+		.get( `.ugb-icon-popover__iconlist>button${ icon ? `.${ icon }` : '' }` )
+		.first()
+		.click( { force: true } )
+}
 
 /**
  * Command for enabling/disabling a toggle control.
@@ -182,9 +246,8 @@ function rangeControlReset( name, options = {} ) {
  * @param {string} name
  * @param {*} value
  * @param {Object} options
- * @param {string} customRegExp
  */
-function toolbarControl( name, value, options = {}, customRegExp = '' ) {
+function toolbarControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
@@ -201,7 +264,7 @@ function toolbarControl( name, value, options = {}, customRegExp = '' ) {
 
 	beforeAdjust( name, value, options )
 	getBaseControl( isInPopover )
-		.contains( customRegExp ? new RegExp( customRegExp ) : containsRegExp( name ) )
+		.contains( containsRegExp( name ) )
 		.parentsUntil( '.components-panel__body>.components-base-control' )
 		.parent()
 		.find( `button[value="${ value }"]` )
@@ -1170,4 +1233,59 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 				}
 			} )
 	} )
+}
+
+export function adjust2( name, value, options ) {
+	const {
+		// overwrite selector options.
+		customOptions = {},
+		// overwrite parent element selector used to locate option labels.
+		parentElement = '.components-base-control',
+		// if the option has no label, pass custom regex to find the control
+	} = options
+	const baseControlSelector = () => cy
+		.get( parentElement )
+		.contains( containsRegExp( name ) )
+		.last()
+		.parentsUntil( parentElement )
+		.parent()
+
+	/**
+	 * Specific selector to trigger one
+	 * of the control options available.
+	 */
+	const baseControlHandler = Object.assign( {
+		// Populate defualt selectors.
+		'.components-circular-option-picker__dropdown-link-action': 'colorControl',
+		'.components-select-control__input': 'dropdownControl',
+		'.components-input-control__input': 'rangeControl',
+		'.components-button-group': 'toolbarControl',
+		'.components-form-toggle__input': 'toggleControl',
+
+		/**
+		 * TODO: Support native blocks.
+		 * .block-editor-block-styles -> stylesConrol
+		 * .components-text-control__input[type=number] -> rangeControl
+		 * .components-text-control__input[type=text] -> rangeControl
+		 * .components-font-size-picker__number
+		 */
+	}, customOptions )
+
+	baseControlSelector()
+		.then( $baseControl => {
+			const executeCommand = key => {
+				if ( $baseControl.find( key ).length || first( $baseControl ).classList.includes( key.replace( '.', '' ) ) ) {
+					cy[ baseControlHandler[ key ] ]( name, value, omit( options, 'customOptions' ) )
+					return true
+				}
+				return false
+			}
+
+			if ( ! keys( baseControlHandler ).map( executeCommand ).some( value => value ) ) {
+				// Selector not found.
+				throw new Error(
+					'The `cy.adjust` function could not handle this option or the label provided is not found inside .components-base-control element. You may overwrite `cy.adjust` by passing customOptions and parentElement to find the right control.'
+				)
+			}
+		} )
 }

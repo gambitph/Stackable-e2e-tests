@@ -14,6 +14,7 @@ Cypress.Commands.add( 'closeSidebar', closeSidebar )
 Cypress.Commands.add( 'openInspector', openInspector )
 Cypress.Commands.add( 'collapse', collapse )
 Cypress.Commands.add( 'toggleStyle', toggleStyle )
+Cypress.Commands.add( 'getPreviewMode', getPreviewMode )
 
 /**
  * Command for toggling a sidebar
@@ -151,4 +152,19 @@ export function toggleStyle( name = 'Block Title', enabled = true ) {
 					.click( { force: true } )
 			}
 		} )
+}
+
+/**
+ * Command that returns the current editor's preview mode.
+ *
+ */
+export function getPreviewMode() {
+	return cy.wp().then( wp => {
+		return new Cypress.Promise( resolve => {
+			const previewMode = wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType
+				?	wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
+				: 'Desktop'
+			resolve( previewMode )
+		} )
+	} )
 }
