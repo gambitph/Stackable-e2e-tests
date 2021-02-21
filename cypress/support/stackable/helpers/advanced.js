@@ -89,10 +89,8 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 			if ( viewport === 'Desktop' ) {
 				const tags = [ 'div', 'blockquote', 'section', 'article', 'aside', 'main', 'header', 'footer', 'nav', 'address', 'hgroup' ]
 				tags.forEach( tag => {
-					_adjust( 'Block HTML Tag', tag, { viewport }, 'assertHtmlTag', [
-						MAIN_SELECTOR,
-						tag,
-					] )
+					_adjust( 'Block HTML Tag', tag, { viewport }, 'assertHtmlTag', MAIN_SELECTOR,
+						tag )
 				} )
 			}
 

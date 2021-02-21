@@ -25,9 +25,8 @@
  */
 import {
 	createElementFromHTMLString,
-} from './util'
-import { _assertComputedStyle } from './commands/styles'
-import config from '../../cypress.json'
+} from '../util'
+import { _assertComputedStyle } from '../commands/assertions'
 
 /**
  * External dependencies
@@ -46,8 +45,7 @@ class BlockSnapshots {
 	 * Asynchronously initialize contentSnapshots and stubbedStyles
 	 * using Cypress alias.
 	 *
-	 * @param {string} alias
-	 * @see https://docs.cypress.io/guides/core-concepts/variables-and-aliases.html
+	 * @param {string} alias @see https://docs.cypress.io/guides/core-concepts/variables-and-aliases.html
 	 */
 	registerAlias( alias ) {
 		this.alias = alias
@@ -122,7 +120,7 @@ class BlockSnapshots {
 
 							// Change the viewport.
 							if ( viewport !== 'Desktop' ) {
-								cy.viewport( config[ `viewport${ viewport }Width` ] || config.viewportWidth, config.viewportHeight )
+								cy.viewport( Cypress.config( `viewport${ viewport }Width` ) || Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
 							}
 
 							// Append the stubbed block in .entry-content
@@ -149,7 +147,7 @@ class BlockSnapshots {
 							} )
 
 							// Revert the viewport
-							cy.viewport( config.viewportWidth, config.viewportHeight )
+							cy.viewport( Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
 						} )
 					} )
 				} )

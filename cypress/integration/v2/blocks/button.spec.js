@@ -94,7 +94,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.typeBlock( 'ugb/button', '.ugb-button1 .ugb-button--inner', 'Button 1' )
 	cy.waitFA()
 	desktopOnly( () => {
-		cy.adjust( 'Button Color Type', 'gradient' )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
 		cy.adjust( 'Button Color #2', '#4e59d4' )
 		cy.adjust( 'Gradient Direction (degrees)', 138 )
@@ -193,7 +193,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.typeBlock( 'ugb/button', '.ugb-button2 .ugb-button--inner', 'Button 2' )
 	cy.waitFA()
 	desktopOnly( () => {
-		cy.adjust( 'Button Color Type', 'gradient' )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
 		cy.adjust( 'Button Color #2', '#4e59d4' )
 		cy.adjust( 'Gradient Direction (degrees)', 138 )
@@ -291,7 +291,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.typeBlock( 'ugb/button', '.ugb-button3 .ugb-button--inner', 'Button 3' )
 	cy.waitFA()
 	desktopOnly( () => {
-		cy.adjust( 'Button Color Type', 'gradient' )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
 		cy.adjust( 'Button Color #2', '#4e59d4' )
 		cy.adjust( 'Gradient Direction (degrees)', 138 )

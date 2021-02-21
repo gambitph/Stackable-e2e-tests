@@ -1,49 +1,30 @@
-/**
- * Overwrite Cypress Commands
- */
-Cypress.Commands.overwrite( 'get', modifyLogFunc() )
-Cypress.Commands.overwrite( 'click', modifyLogFunc() )
-Cypress.Commands.overwrite( 'type', modifyLogFunc() )
-Cypress.Commands.overwrite( 'visit', modifyLogFunc() )
-Cypress.Commands.overwrite( 'reload', modifyLogFunc() )
-Cypress.Commands.overwrite( 'document', modifyLogFunc() )
-Cypress.Commands.overwrite( 'window', modifyLogFunc() )
-Cypress.Commands.overwrite( 'trigger', modifyLogFunc() )
-Cypress.Commands.overwrite( 'parent', modifyLogFunc() )
-Cypress.Commands.overwrite( 'parentsUntil', modifyLogFunc() )
-Cypress.Commands.overwrite( 'invoke', modifyLogFunc( { position: 'first' } ) )
-Cypress.Commands.overwrite( 'eq', modifyLogFunc() )
-Cypress.Commands.overwrite( 'first', modifyLogFunc() )
-Cypress.Commands.overwrite( 'wait', modifyLogFunc() )
-Cypress.Commands.overwrite( 'contains', modifyLogFunc() )
-Cypress.Commands.overwrite( 'last', modifyLogFunc() )
-Cypress.Commands.overwrite( 'wrap', modifyLogFunc( { argumentLength: 2 } ) )
 
 /**
- * Register functions to Cypress Commands.
+ * External dependencies
  */
-Cypress.Commands.add( 'addBlock', addBlock )
-Cypress.Commands.add( 'selectBlock', selectBlock )
-Cypress.Commands.add( 'typeBlock', typeBlock )
-Cypress.Commands.add( 'changePreviewMode', changePreviewMode )
-Cypress.Commands.add( 'deleteBlock', deleteBlock )
-Cypress.Commands.add( 'publish', publish )
-Cypress.Commands.add( 'addInnerBlock', addInnerBlock )
-Cypress.Commands.add( 'wp', wp )
-
-import './styles'
-import './global-settings'
-import './setup'
-import './inspector'
-import './attributes'
+import { last, first } from 'lodash'
 
 /**
  * Internal dependencies
  */
-import {
-	containsRegExp, getBlocksRecursive, dispatchResolver, modifyLogFunc,
-} from '../util'
-import { last, first } from 'lodash'
+import { getBlocksRecursive, dispatchResolver } from '~common/util'
+
+/**
+ * Register functions to Cypress Commands.
+ */
+Cypress.Commands.add( 'assertBlockError', assertBlockError )
+Cypress.Commands.add( 'addBlock', addBlock )
+Cypress.Commands.add( 'selectBlock', selectBlock )
+Cypress.Commands.add( 'typeBlock', typeBlock )
+Cypress.Commands.add( 'deleteBlock', deleteBlock )
+Cypress.Commands.add( 'addInnerBlock', addInnerBlock )
+
+/**
+ * Command for asserting block error.
+ */
+export function assertBlockError() {
+	cy.get( '.block-editor-warning' ).should( 'not.exist' )
+}
 
 /**
  * Command for adding a specific block in the inserter button.
@@ -136,33 +117,6 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
 }
 
 /**
- * Command for changing the preview mode.
- *
- * @param {string} mode
- */
-export function changePreviewMode( mode = 'Desktop' ) {
-	return cy.wp().then( wp => {
-		return new Cypress.Promise( ( resolve, reject ) => {
-			const { __experimentalSetPreviewDeviceType } = wp.data.dispatch( 'core/edit-post' )
-			const { __experimentalGetPreviewDeviceType } = wp.data.select( 'core/edit-post' )
-			if ( __experimentalSetPreviewDeviceType && __experimentalGetPreviewDeviceType ) {
-				if ( __experimentalGetPreviewDeviceType() !== mode ) {
-					__experimentalSetPreviewDeviceType( mode )
-						.then( dispatchResolver( resolve ) )
-						.catch( reject )
-				} else {
-					resolve( null )
-				}
-			} else {
-				// Handle WP 5.4 preview mode.
-				// TODO: Handle WP 5.4 editor
-				dispatchResolver( resolve )()
-			}
-		} )
-	} )
-}
-
-/**
  * Command for deleting a specific block.
  *
  * @param {*} subject
@@ -177,44 +131,6 @@ export function deleteBlock( subject, selector ) {
 					wp.data.dispatch( 'core/block-editor' ).removeBlock( clientId ).then( dispatchResolver( resolve ) )
 				} )
 			} )
-		} )
-}
-
-/**
- * Command for publishing a page.
- */
-export function publish() {
-	const selector = () => cy
-		.get( 'button.editor-post-publish-button__button' )
-
-	selector()
-		.invoke( 'attr', 'aria-disabled' )
-		.then( ariaDisabled => {
-			if ( ariaDisabled === 'false' ) {
-				selector()
-					.click( { force: true } )
-			}
-
-			cy
-				.get( '.interface-interface-skeleton__actions' )
-				.then( $actions => {
-					// Click the publish button in publish panel
-					// when necessary.
-					if ( $actions.find( '.editor-post-publish-panel' ).length ) {
-						cy
-							.get( '.editor-post-publish-panel' )
-							.contains( containsRegExp( 'Publish' ) )
-							.click( { force: true } )
-
-						if ( $actions.find( 'button[aria-label="Close panel"]' ).length ) {
-							cy
-								.get( 'button[aria-label="Close panel"]' )
-								.click( { force: true } )
-						}
-					}
-
-					cy.waitLoader( '.editor-post-publish-button.is-busy' )
-				} )
 		} )
 }
 
@@ -235,13 +151,3 @@ export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/ac
 		} )
 	} )
 }
-
-/*
-* Command for getting the gutenberg `wp` object.
-*
-*/
-export function wp() {
-	cy.wait( 1 )
-	return cy.window().then( win => win.wp )
-}
-

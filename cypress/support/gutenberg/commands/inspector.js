@@ -1,9 +1,7 @@
 /**
- * Internal dependencies
+ * External dependencies
  */
-import {
-	containsRegExp,
-} from '../util'
+import { containsRegExp } from '~common/util'
 
 /**
  * Register functions to Cypress Commands.
@@ -14,7 +12,7 @@ Cypress.Commands.add( 'closeSidebar', closeSidebar )
 Cypress.Commands.add( 'openInspector', openInspector )
 Cypress.Commands.add( 'collapse', collapse )
 Cypress.Commands.add( 'toggleStyle', toggleStyle )
-Cypress.Commands.add( 'getPreviewMode', getPreviewMode )
+Cypress.Commands.add( 'getBaseControl', getBaseControl )
 
 /**
  * Command for toggling a sidebar
@@ -107,8 +105,7 @@ export function collapse( name = 'General', toggle = true ) {
 				return cy
 					.get( '.components-panel__body .components-panel__body-title' )
 					.contains( containsRegExp( name ) )
-					.parentsUntil( '.components-panel__body' )
-					.parent()
+					.closest( '.components-panel__body' )
 					.find( 'button.components-panel__body-toggle' )
 					.invoke( 'attr', 'aria-expanded' )
 					.then( ariaExpanded => {
@@ -117,8 +114,7 @@ export function collapse( name = 'General', toggle = true ) {
 							cy
 								.get( '.components-panel__body .components-panel__body-title' )
 								.contains( containsRegExp( name ) )
-								.parentsUntil( '.components-panel__body' )
-								.parent()
+								.closest( '.components-panel__body' )
 								.find( 'button.components-panel__body-toggle' )
 								.click( { force: true } )
 						}
@@ -139,8 +135,7 @@ export function toggleStyle( name = 'Block Title', enabled = true ) {
 	const selector = () => 	cy
 		.get( '.components-panel__body' )
 		.contains( containsRegExp( name ) )
-		.parentsUntil( '.components-panel__body' )
-		.parent()
+		.closest( '.components-panel__body' )
 		.find( '.components-form-toggle.ugb-toggle-panel-form-toggle' )
 
 	selector()
@@ -155,16 +150,20 @@ export function toggleStyle( name = 'Block Title', enabled = true ) {
 }
 
 /**
- * Command that returns the current editor's preview mode.
+ * Command for getting the base control
+ * element that matches the label or regex
  *
+ * @param {string | RegExp} matches
+ * @param {Object} options
  */
-export function getPreviewMode() {
-	return cy.wp().then( wp => {
-		return new Cypress.Promise( resolve => {
-			const previewMode = wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType
-				?	wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
-				: 'Desktop'
-			resolve( previewMode )
-		} )
-	} )
+export function getBaseControl( matches, options = {} ) {
+	const {
+		isInPopover = false,
+		customParentSelector = '.components-panel__body',
+	} = options
+	return ( ! isInPopover
+		? cy.get( `${ customParentSelector }>.components-base-control` )
+		: cy.get( '.components-popover__content' ).find( '.components-base-control' ) )
+		.contains( containsRegExp( matches ) )
+		.closest( `${ customParentSelector }>.components-base-control` )
 }
