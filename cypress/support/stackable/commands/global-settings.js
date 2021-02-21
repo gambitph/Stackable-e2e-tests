@@ -10,7 +10,7 @@ import {
  */
 import {
 	containsRegExp,
-} from '../util'
+} from '~common/util'
 
 /**
  * Register functions to Cypress Commands.
