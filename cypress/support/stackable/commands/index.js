@@ -26,7 +26,9 @@ Cypress.Commands.overwrite( 'closest', modifyLogFunc() )
 /**
  * Custom Comands for Stackable.
  */
-import './editor'
+import './assertions'
 import './controls'
+import './editor'
 import './global-settings'
+import './inspector'
 
