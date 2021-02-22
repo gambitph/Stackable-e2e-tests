@@ -65,10 +65,10 @@ export const assertBlockTitleDescription = ( options = {}, assertOptions = {} ) 
 				}, assertOptions )
 			} )
 			assertTypography( typographySelector, { viewport } )
-			assertAligns( 'Align', typographySelector, { viewport } )
+			assertAligns( 'Text Align', typographySelector, { viewport } )
 
 			cy.collapse( 'Spacing' )
-			cy.adjust( `Block ${ typographySelector }`, 41, { viewport } ).assertComputedStyle( {
+			cy.adjust( `Block ${ typographyAssertion }`, 41, { viewport } ).assertComputedStyle( {
 				[ typographySelector ]: {
 					'margin-bottom': '41px',
 				},
