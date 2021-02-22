@@ -1,7 +1,14 @@
 /**
  * Internal dependencies
  */
-import { assertAligns, responsiveAssertHelper } from './index'
+import {
+	assertAligns, responsiveAssertHelper, assertTypography,
+} from './index'
+
+/**
+ * External dependencies
+ */
+import { lowerCase } from 'lodash'
 
 /**
  * Assertion function for Block Title and Block Description.
@@ -15,174 +22,58 @@ export const assertBlockTitleDescription = ( options = {}, assertOptions = {} ) 
 	} = options
 
 	const _assertBlockTitleDescription = ( viewport, desktopOnly ) => {
-		desktopOnly( () => {
-			cy.collapse( 'Block Title' )
-			cy.toggleStyle( 'Block Title' )
-			cy.adjust( 'Title HTML Tag', 'h2' )
-				.assertHtmlTag( '.ugb-block-title', 'h2', assertOptions )
-			cy.adjust( 'Typography', {
-				'Font Family': 'Sans-Serif',
-				'Size': 31,
-				'Weight': '700',
-				'Transform': 'uppercase',
-				'Line-Height': {
-					value: 46,
-					unit: 'px',
-				},
-				'Letter Spacing': 1.3,
-			} )
-			cy.adjust( 'Size', 46 )
-			cy.adjust( 'Title Color', '#636363' )
-			cy.adjust( 'Max Width', 748 ).assertComputedStyle( {
-				'.ugb-block-title': {
-					'font-size': '46px',
-					'font-weight': '700',
-					'text-transform': 'uppercase',
-					'letter-spacing': '1.3px',
-					'color': '#636363',
-					'max-width': '748px',
-					'line-height': '46px',
-				},
-			}, assertOptions )
-			cy.adjust( 'Horizontal Align', 'flex-start' ).assertComputedStyle( {
-				'.ugb-block-title': {
-					'margin-left': '0px',
-				},
-			}, assertOptions )
-			cy.adjust( 'Horizontal Align', 'center' )
-			cy.adjust( 'Horizontal Align', 'flex-end' ).assertComputedStyle( {
-				'.ugb-block-title': {
-					'margin-right': '0px',
-				},
-			} )
-			assertAligns( 'Text Align', '.ugb-block-title', {}, assertOptions )
+		const typographyAssertions = [ 'Title', 'Description' ]
 
-			cy.collapse( 'Block Description' )
-			cy.toggleStyle( 'Block Description' )
-			cy.adjust( 'Typography', {
-				'Font Family': 'Serif',
-				'Size': 25,
-				'Weight': '300',
-				'Transform': 'lowercase',
-				'Line-Height': {
-					value: 36,
-					unit: 'px',
-				},
-				'Letter Spacing': 1.3,
+		typographyAssertions.forEach( typographyAssertion => {
+			const typographySelector = `.ugb-block-${ lowerCase( typographyAssertion ) }`
+			cy.collapse( `Block ${ typographyAssertion }` )
+			cy.toggleStyle( `Block ${ typographyAssertion }` )
+			desktopOnly( () => {
+				if ( typographyAssertion === 'Title' ) {
+					cy.adjust( 'Title HTML Tag', 'h2' )
+						.assertHtmlTag( typographySelector, 'h2', assertOptions )
+				}
+				cy.adjust( `${ typographyAssertion } Color`, '#636363' ).assertComputedStyle( {
+					[ typographySelector ]: {
+						'color': '#636363',
+					},
+				}, assertOptions )
 			} )
-			cy.adjust( 'Size', 31 )
-			cy.adjust( 'Description Color', '#636363' )
-			cy.adjust( 'Max Width', 734 ).assertComputedStyle( {
-				'.ugb-block-description': {
-					'font-size': '31px',
-					'font-weight': '300',
-					'text-transform': 'lowercase',
-					'letter-spacing': '1.3px',
-					'color': '#636363',
-					'max-width': '734px',
-					'line-height': '36px',
+			cy.adjust( 'Max Width', 300, { viewport } ).assertComputedStyle( {
+				[ typographySelector ]: {
+					'max-width': '300px',
 				},
 			}, assertOptions )
-			cy.adjust( 'Horizontal Align', 'flex-start' ).assertComputedStyle( {
-				'.ugb-block-description': {
-					'margin-left': '0px',
-				},
-			}, assertOptions )
-			cy.adjust( 'Horizontal Align', 'center' )
-			cy.adjust( 'Horizontal Align', 'flex-end' ).assertComputedStyle( {
-				'.ugb-block-description': {
-					'margin-right': '0px',
-				},
-			}, assertOptions )
-
-			// Test Block Description Alignment
-			assertAligns( 'Text Align', '.ugb-block-description', {}, assertOptions )
+			desktopOnly( () => {
+				cy.adjust( 'Horizontal Align', 'flex-start' ).assertComputedStyle( {
+					[ typographySelector ]: {
+						'margin-left': '0px',
+						'margin-right': 'auto',
+					},
+				}, assertOptions )
+				cy.adjust( 'Horizontal Align', 'center' ).assertComputedStyle( {
+					[ typographySelector ]: {
+						'margin-left': 'auto',
+						'margin-right': 'auto',
+					},
+				}, assertOptions )
+				cy.adjust( 'Horizontal Align', 'flex-end' ).assertComputedStyle( {
+					[ typographySelector ]: {
+						'margin-right': '0px',
+						'margin-left': 'auto',
+					},
+				}, assertOptions )
+			} )
+			assertTypography( typographySelector, { viewport } )
+			assertAligns( 'Align', typographySelector, { viewport } )
 
 			cy.collapse( 'Spacing' )
-			cy.adjust( 'Block Title', 35, {} )
-			cy.adjust( 'Block Description', 41, {} ).assertComputedStyle( {
-				'.ugb-block-title': {
-					'margin-bottom': '35px',
-				},
-				'.ugb-block-description': {
+			cy.adjust( `Block ${ typographySelector }`, 41, { viewport } ).assertComputedStyle( {
+				[ typographySelector ]: {
 					'margin-bottom': '41px',
 				},
 			}, assertOptions )
 		} )
-
-		const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
-		if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
-			cy.collapse( 'Block Title' )
-			cy.toggleStyle( 'Block Title' )
-			cy.adjust( 'Typography', {
-				'Font Family': 'Sans-Serif',
-				'Size': 31,
-				'Weight': '700',
-				'Transform': 'uppercase',
-				'Line-Height': {
-					viewport,
-					value: 42,
-					unit: 'px',
-				},
-				'Letter Spacing': 1.3,
-			} )
-			cy.adjust( 'Size', 46, { viewport } )
-			cy.adjust( 'Title Color', '#636363' )
-			cy.adjust( 'Max Width', 748, { viewport } ).assertComputedStyle( {
-				'.ugb-block-title': {
-					'font-size': '46px',
-					'font-weight': '700',
-					'text-transform': 'uppercase',
-					'letter-spacing': '1.3px',
-					'color': '#636363',
-					'max-width': '748px',
-					'line-height': '42px',
-				},
-			}, assertOptions )
-
-			assertAligns( 'Text Align', '.ugb-block-title', { viewport }, assertOptions )
-
-			cy.collapse( 'Block Description' )
-			cy.toggleStyle( 'Block Description' )
-			cy.adjust( 'Typography', {
-				'Font Family': 'Sans-Serif',
-				'Size': 21,
-				'Weight': '700',
-				'Transform': 'uppercase',
-				'Line-Height': {
-					viewport,
-					value: 38,
-					unit: 'px',
-				},
-				'Letter Spacing': 1.3,
-			} )
-			cy.adjust( 'Size', 36, { viewport } )
-			cy.adjust( 'Description Color', '#636363' )
-			cy.adjust( 'Max Width', 748, { viewport } ).assertComputedStyle( {
-				'.ugb-block-description': {
-					'font-size': '36px',
-					'font-weight': '700',
-					'text-transform': 'uppercase',
-					'letter-spacing': '1.3px',
-					'color': '#636363',
-					'max-width': '748px',
-					'line-height': '38px',
-				},
-			}, assertOptions )
-
-			assertAligns( 'Text Align', '.ugb-block-description', { viewport }, assertOptions )
-
-			cy.collapse( 'Spacing' )
-			cy.adjust( 'Block Title', 35, { viewport } )
-			cy.adjust( 'Block Description', 41, { viewport } ).assertComputedStyle( {
-				'.ugb-block-title': {
-					'margin-bottom': '35px',
-				},
-				'.ugb-block-description': {
-					'margin-bottom': '41px',
-				},
-			}, assertOptions )
-		}
 	}
 
 	const [ Desktop, Tablet, Mobile ] = responsiveAssertHelper( _assertBlockTitleDescription, { disableItAssertion: true } )
