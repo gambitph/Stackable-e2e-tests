@@ -110,23 +110,24 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/feature' )
+	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
+	const featureBlock = registerBlockSnapshots( 'featureBlock' )
 	cy.openInspector( 'ugb/feature', 'Style' )
 
 	// General Tab
 	cy.collapse( 'General' )
 
-	const desktopTabletViewports = [ 'Desktop', 'Tablet' ]
-	if ( desktopTabletViewports.some( _viewport => _viewport === viewport ) ) {
-		cy.adjust( 'Image Column Width', 45, { viewport } ).assertComputedStyle( {
-			'.ugb-feature__item': {
-				'grid-template-columns': '1.10fr 0.90fr',
-			},
-		} )
-	}
+	// const desktopTabletViewports = [ 'Desktop', 'Tablet' ]
+	// if ( desktopTabletViewports.some( _viewport => _viewport === viewport ) ) {
+	// 	cy.adjust( 'Image Column Width', 45, { viewport } ).assertComputedStyle( {
+	// 		'.ugb-feature__item': {
+	// 			'grid-template-columns': '1.10fr 0.90fr',
+	// 		},
+	// 	} )
+	// }
 
 	// ISSUE: Reverse Horizontally updates in the back end but not in the front end
 	desktopOnly( () => {
@@ -184,46 +185,38 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	// Title Tab and Description Tab
-	cy.collapse( 'Title' )
-
-	desktopOnly( () => {
-		cy.adjust( 'Title HTML Tag', 'h4' ).assertHtmlTag( '.ugb-feature__title', 'h4' )
-	} )
-
-	const titleDescriptionTabs = [
-		{
-			name: 'Title',
-			class: '.ugb-feature__title',
-		},
-		{
-			name: 'Description',
-			class: '.ugb-feature__description',
-		},
-	]
-	titleDescriptionTabs.forEach( tab => {
-		cy.collapse( tab.name )
+	const typographyAssertions = [ 'title', 'description' ]
+	typographyAssertions.forEach( typographyAssertion => {
+		const label = startCase( typographyAssertion )
+		cy.collapse( label )
+		if ( typographyAssertion === 'title' ) {
+			desktopOnly( () => {
+				cy.adjust( 'Title HTML Tag', 'h4' ).assertHtmlTag( '.ugb-feature__title', 'h4' )
+			} )
+		}
 
 		desktopOnly( () => {
-			cy.adjust( `${ tab.name } Color`, '#742f2f' ).assertComputedStyle( {
-				[ `${ tab.class }` ]: {
+			cy.adjust( `${ label } Color`, '#742f2f' ).assertComputedStyle( {
+				[ `.ugb-feature__${ typographyAssertion }` ]: {
 					'color': '#742f2f',
 				},
 			} )
 		} )
 
-		cy.adjust( 'Size', 55, { viewport } ).assertComputedStyle( {
-			[ `${ tab.class }` ]: {
+		cy.adjust( 'Size', 55, { viewport, unit: 'px' } ).assertComputedStyle( {
+			[ `.ugb-feature__${ typographyAssertion }` ]: {
 				'font-size': '55px',
 			},
 		} )
 		cy.adjust( 'Size', 2, { viewport, unit: 'em' } ).assertComputedStyle( {
-			[ `${ tab.class }` ]: {
+
+			[ `.ugb-feature__${ typographyAssertion }` ]: {
 				'font-size': '2em',
 			},
 		} )
 
-		assertTypography( tab.class, { viewport } )
-		assertAligns( 'Align', tab.class, { viewport } )
+		assertTypography( `.ugb-feature__${ typographyAssertion }`, { viewport } )
+		assertAligns( 'Align', `.ugb-feature__${ typographyAssertion }`, { viewport } )
 	} )
 
 	// Test Button
@@ -254,8 +247,6 @@ function styleTab( viewport, desktopOnly ) {
 			'Text Color': '#80194d',
 		} )
 		cy.adjust( 'Typography', {
-			'Font Family': 'Serif',
-			'Size': 31,
 			'Weight': '700',
 			'Transform': 'lowercase',
 			'Letter Spacing': 2.9,
@@ -268,8 +259,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Shadow', 4 )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				'font-family': 'Serif',
-				'font-size': '31px',
 				'font-weight': '700',
 				'text-transform': 'lowercase',
 				'letter-spacing': '2.9px',
@@ -286,17 +275,7 @@ function styleTab( viewport, desktopOnly ) {
 				'border-radius': '40px',
 			},
 		} )
-		cy.adjust( 'Typography', {
-			'Size': {
-				unit: 'em',
-				value: 2,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '2em',
-			},
-		} )
-		cy.waitFA()
+
 		cy.adjust( 'Icon', 'barcode' )
 		cy.adjust( 'Adv. Icon Settings', {
 			'Icon Size': 41,
@@ -314,34 +293,32 @@ function styleTab( viewport, desktopOnly ) {
 		} ).assertClassName( '.ugb-button', 'ugb-button--icon-position-right' )
 	} )
 
-	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
-	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
-		cy.adjust( 'Typography', {
-			'Size': {
-				viewport,
-				value: 31,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '31px',
-			},
-		} )
+	cy.adjust( 'Typography', {
+		'Size': {
+			viewport,
+			value: 31,
+		},
+	} ).assertComputedStyle( {
+		'.ugb-button .ugb-button--inner': {
+			'font-size': '31px',
+		},
+	} )
 
-		cy.adjust( 'Typography', {
-			'Size': {
-				viewport,
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '7em',
-			},
-		} )
-	}
+	cy.adjust( 'Typography', {
+		'Size': {
+			viewport,
+			unit: 'em',
+			value: 7,
+		},
+	} ).assertComputedStyle( {
+		'.ugb-button .ugb-button--inner': {
+			'font-size': '7em',
+		},
+	} )
 
 	assertAligns( 'Align', '.ugb-button-container', { viewport } )
 
 	assertBlockBackground( '.ugb-feature', { viewport } )
 	assertSeparators( { viewport } )
+	featureBlock.assertFrontendStyles()
 }
