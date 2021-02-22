@@ -173,7 +173,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.waitFA()
 
 	desktopOnly( () => {
-		cy.adjust( 'Button Color Type', 'single' )
+		cy.adjust( 'Color Type', 'single' )
 		cy.adjust( 'Button Color', '#ff0000' )
 		cy.adjust( 'Text Color', '#ffffff' ).assertComputedStyle( {
 			'.ugb-button': {
@@ -183,7 +183,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 				'color': '#ffffff',
 			},
 		} )
-		cy.adjust( 'Button Color Type', 'gradient' )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#000000' )
 		cy.adjust( 'Button Color #2', '#ff0000' )
 		cy.adjust( 'Gradient Direction (degrees)', 130 ).assertComputedStyle( {

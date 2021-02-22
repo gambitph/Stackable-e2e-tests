@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { assertAligns, responsiveAssertHelper } from './helpers'
+import { assertAligns, responsiveAssertHelper } from './index'
 
 /**
  * Assertion function for Block Title and Block Description.

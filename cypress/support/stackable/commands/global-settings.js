@@ -1,4 +1,3 @@
-
 /**
  * External dependencies
  */
@@ -11,7 +10,7 @@ import {
  */
 import {
 	containsRegExp,
-} from '../util'
+} from '~common/util'
 
 /**
  * Register functions to Cypress Commands.
@@ -57,7 +56,7 @@ function addGlobalColor( options = {} ) {
 						cy
 							.get( '.components-color-picker__inputs-field' )
 							.contains( containsRegExp( 'Color value in hexadecimal' ) )
-							.parentsUntil( '.components-color-picker__inputs-field' )
+							.closest( '.components-color-picker__inputs-field' )
 							.find( 'input' )
 							.click( { force: true } )
 							.type( `{selectall}${ color }{enter}` )
@@ -68,7 +67,7 @@ function addGlobalColor( options = {} ) {
 						cy
 							.get( '.components-color-picker__input-field' )
 							.contains( containsRegExp( 'Style name' ) )
-							.parentsUntil( '.components-color-picker__input-field' )
+							.closest( '.components-color-picker__input-field' )
 							.find( 'input' )
 							.click( { force: true } )
 							.type( `{selectall}${ name }{enter}` )

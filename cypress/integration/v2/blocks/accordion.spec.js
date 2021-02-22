@@ -5,10 +5,11 @@
 import { range } from 'lodash'
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertContainer,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Accordion Block', registerTests( [
 	blockExist,
@@ -19,6 +20,9 @@ describe( 'Accordion Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -200,5 +204,19 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			} )
 	} )
 
+	accordionBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
+	const accordionBlock = registerBlockSnapshots( 'accordionBlock' )
+
+	cy.openInspector( 'ugb/accordion', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-accordion', { viewport } )
+
+	// Add more block specific tests.
 	accordionBlock.assertFrontendStyles()
 }

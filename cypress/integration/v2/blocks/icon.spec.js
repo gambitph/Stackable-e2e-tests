@@ -83,7 +83,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 				'fill': '#acacac',
 			},
 		} )
-		cy.adjust( 'Icon Color Type', 'gradient' )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Icon Color #1', '#f00069' )
 		cy.adjust( 'Icon Color #2', '#000000' )
 		cy.adjust( 'Gradient Direction (degrees)', 180 )

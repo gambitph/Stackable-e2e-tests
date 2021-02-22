@@ -100,7 +100,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.waitFA()
 	desktopOnly( () => {
 		cy.adjust( 'Icon', 'info' )
-		cy.adjust( 'Icon Color Type', 'gradient' )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Icon Color #1', '#e4dd57' )
 		cy.adjust( 'Icon Color #2', '#34f8ff' )
 		cy.adjust( 'Gradient Direction (degrees)', 123 )
@@ -225,11 +225,11 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.collapse( 'Button' )
 	cy.waitFA()
 	desktopOnly( () => {
-		cy.adjust( 'Button Design', {
+		cy.adjust( 'Design', {
 			label: 'Basic',
 			value: 'basic',
 		} )
-		cy.adjust( 'Button Color Type', 'gradient' )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
 		cy.adjust( 'Button Color #2', '#4e59d4' )
 		cy.adjust( 'Gradient Direction (degrees)', 138 )
