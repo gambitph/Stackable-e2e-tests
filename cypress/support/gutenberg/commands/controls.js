@@ -280,7 +280,10 @@ export function resetStyle( name, options = {} ) {
 		parentElement = '.components-base-control',
 		// if the option has no label, pass custom regex to find the control
 	} = options
-	const baseControlSelector = () => cy.getBaseControl( name, { customParentSelector: parentElement } )
+	const baseControlSelector = () => cy
+		.get( parentElement )
+		.contains( containsRegExp( name ) )
+		.closest( parentElement )
 
 	/**
 	 * Specific selector to trigger one
