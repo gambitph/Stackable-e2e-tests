@@ -72,20 +72,18 @@ export function getBaseControl( matches, options = {} ) {
  * @param {boolean} toggle
  */
 export function collapse( name = 'General', toggle = true ) {
-	return cy
+	const toggleTitleSelector = () => cy
 		.get( '.components-panel__body .components-panel__body-title' )
 		.contains( containsRegExp( name ) )
 		.closest( '.components-panel__body' )
 		.find( 'button.components-panel__body-toggle' )
+
+	toggleTitleSelector()
 		.invoke( 'attr', 'aria-expanded' )
 		.then( ariaExpanded => {
 			// Open the accordion if aria-expanded is false.
 			if ( ariaExpanded !== toggle.toString() ) {
-				cy
-					.get( '.components-panel__body .components-panel__body-title' )
-					.contains( containsRegExp( name ) )
-					.closest( '.components-panel__body' )
-					.find( 'button.components-panel__body-toggle' )
+				toggleTitleSelector()
 					.click( { force: true } )
 			}
 		} )
