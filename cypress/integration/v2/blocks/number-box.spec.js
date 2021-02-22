@@ -106,9 +106,9 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		},
 	} )
 
-	cy.adjust( 'Number', 33 )
-	cy.adjust( 'Title', 43 )
-	cy.adjust( 'Description', 53 )
+	cy.adjust( 'Number', 33, { viewport } )
+	cy.adjust( 'Title', 43, { viewport } )
+	cy.adjust( 'Description', 53, { viewport } )
 		.assertComputedStyle( {
 			'.ugb-number-box__number': {
 				'margin-bottom': '33px',
