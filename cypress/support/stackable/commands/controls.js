@@ -14,17 +14,20 @@ import { changeUnit } from '../util'
 /**
  * register functions to cypress commands.
  */
+// Controls
 Cypress.Commands.add( 'changeIcon', changeIcon )
-Cypress.Commands.add( 'iconControlReset', iconControlReset )
 Cypress.Commands.add( 'designControl', designControl )
 Cypress.Commands.add( 'columnControl', columnControl )
 Cypress.Commands.add( 'fourRangeControl', fourRangeControl )
+Cypress.Commands.add( 'iconControl', iconControl )
+Cypress.Commands.add( 'popoverControl', popoverControl )
+Cypress.Commands.add( 'suggestionControl', suggestionControl )
+
+// Reset
+Cypress.Commands.add( 'iconControlReset', iconControlReset )
 Cypress.Commands.add( 'fourRangeControlReset', fourRangeControlReset )
 Cypress.Commands.add( 'suggestionControlClear', suggestionControlClear )
-Cypress.Commands.add( 'suggestionControl', suggestionControl )
-Cypress.Commands.add( 'iconControl', iconControl )
 Cypress.Commands.add( 'popoverControlReset', popoverControlReset )
-Cypress.Commands.add( 'popoverControl', popoverControl )
 
 // Adjust styles
 Cypress.Commands.add( 'adjustLayout', adjustLayout )
@@ -88,14 +91,36 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 
 Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 	const optionsToPass = args.length === 2 ? args.pop() : {}
-	optionsToPass.beforeAdjust = ( name, value, options ) => {
-		const {
-			isInPopover = false,
-			viewport = 'Desktop',
-			unit = '',
-		} = options
+	const label = first( args )
+	const {
+		isInPopover = false,
+		viewport = 'Desktop',
+		unit = '',
+		beforeAdjust = () => {},
+	} = optionsToPass
+
+	// Function to call before adjusting options
+	optionsToPass.beforeAdjust = () => {
+		beforeAdjust()
 		cy.changePreviewMode( viewport )
-		changeUnit( unit, name, isInPopover )
+		changeUnit( unit, label, isInPopover )
+	}
+
+	const customOptions = {
+		// Pass our own reset controls.
+		 'ugb-button-icon-control': 'popoverControlReset',
+		 'ugb-advanced-autosuggest-control': 'suggestionControlClear',
+		 'ugb-four-range-control': 'fourRangeControlReset',
+		 'ugb-icon-control': 'iconControlReset',
+	}
+
+	if ( optionsToPass.customOptions ) {
+		optionsToPass.customOptions = Object.assign(
+			optionsToPass.customOptions,
+			customOptions
+		)
+	} else {
+		optionsToPass.customOptions = customOptions
 	}
 
 	return originalFn( ...[ ...args, optionsToPass ] )

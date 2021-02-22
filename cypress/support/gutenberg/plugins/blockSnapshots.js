@@ -45,7 +45,8 @@ class BlockSnapshots {
 	 * Asynchronously initialize contentSnapshots and stubbedStyles
 	 * using Cypress alias.
 	 *
-	 * @param {string} alias @see https://docs.cypress.io/guides/core-concepts/variables-and-aliases.html
+	 * @param {string} alias
+	 * @see https://docs.cypress.io/guides/core-concepts/variables-and-aliases.html
 	 */
 	registerAlias( alias ) {
 		this.alias = alias

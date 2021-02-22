@@ -214,11 +214,7 @@ export function adjust( name, value, options ) {
 		parentElement = '.components-base-control',
 		// if the option has no label, pass custom regex to find the control
 	} = options
-	const baseControlSelector = () => cy
-		.get( parentElement )
-		.contains( containsRegExp( name ) )
-		.last()
-		.closest( parentElement )
+	const baseControlSelector = () => cy.getBaseControl( name, { customParentSelector: parentElement } )
 
 	/**
 	 * Specific selector to trigger one
@@ -267,7 +263,6 @@ export function adjust( name, value, options ) {
 	return cy.get( '.block-editor-block-list__block.is-selected' )
 }
 
-// TODO: Make this gutenberg compatible only.
 /**
  * Command for resetting the style.
  *
@@ -275,37 +270,45 @@ export function adjust( name, value, options ) {
  * @param {Object} options
  */
 export function resetStyle( name, options = {} ) {
-	const selector = () => cy
-		.get( '.components-panel__body.is-opened>.components-base-control' )
-		.contains( containsRegExp( name ) )
-		.last()
-		.closest( '.components-panel__body.is-opened>.components-base-control' )
+	const {
+		// overwrite selector options.
+		customOptions = {},
+		// overwrite parent element selector used to locate option labels.
+		parentElement = '.components-base-control',
+		// if the option has no label, pass custom regex to find the control
+	} = options
+	const baseControlSelector = () => cy.getBaseControl( name, { customParentSelector: parentElement } )
 
-	 selector()
-		.invoke( 'attr', 'class' )
-		.then( classNames => {
-			const parsedClassNames = classNames.split( ' ' )
+	/**
+	 * Specific selector to trigger one
+	 * of the control options available.
+	 */
+	const baseControlHandler = {
+		// Populate default selectors.
+		'.components-input-control__input': 'rangeControlReset',
+		'.components-circular-option-picker__dropdown-link-action': 'colorControlClear',
+	}
 
-			/**
-			 * These are the list of selectors
-			 * and their corresponding commands.
-			 */
-			const commandsBasedOnClassName = {
-				 'ugb-advanced-range-control': 'rangeControlReset',
-				 'editor-color-palette-control': 'colorControlClear',
-				 'ugb-button-icon-control': 'popoverControlReset',
-				 'ugb-advanced-autosuggest-control': 'suggestionControlClear',
-				 'ugb-four-range-control': 'fourRangeControlReset',
-				 'ugb-icon-control': 'iconControlReset',
-			}
-
+	baseControlSelector()
+		.then( $baseControl => {
+			const combinedControlHandlers = Object.assign( baseControlHandler, customOptions )
 			const executeCommand = key => {
-				if ( parsedClassNames.includes( key ) ) {
-					cy[ commandsBasedOnClassName[ key ] ]( name, options )
+				if ( $baseControl.find( key ).length || Array.from( first( $baseControl ).classList ).includes( key.replace( '.', '' ) ) ) {
+					cy[ combinedControlHandlers[ key ] ]( name, options )
+					return true
 				}
+				return false
 			}
 
-			keys( commandsBasedOnClassName ).forEach( executeCommand )
+			if (
+				! keys( customOptions ).map( executeCommand ).some( value => value ) &&
+				! keys( baseControlHandler ).map( executeCommand ).some( value => value )
+			) {
+				// Selector not found.
+				throw new Error(
+					'The `cy.reset` function could not handle this option or the label provided is not found inside `.components-base-control element`. You may overwrite `cy.reset` by passing customOptions and parentElement to find the right control.'
+				)
+			}
 		} )
 
 	// Always return the selected block which will be used in functions that require chained wp-block elements.
