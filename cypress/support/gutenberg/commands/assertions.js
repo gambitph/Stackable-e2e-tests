@@ -121,11 +121,18 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 			cy.getPreviewMode().then( previewMode => {
 				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 					cy.visit( previewUrl )
-					if ( viewportFrontend && viewportFrontend !== 'Desktop' ) {
-						cy.viewport(
-							Cypress.config( `viewport${ viewportFrontend }Width` ) || Cypress.config( 'viewportWidth' ),
-							Cypress.config( 'viewportHeight' )
-						)
+					if ( viewportFrontend ) {
+						if ( typeof viewportFrontend === 'string' && viewportFrontend !== 'Desktop' ) {
+							cy.viewport(
+								Cypress.config( `viewport${ viewportFrontend }Width` ) || Cypress.config( 'viewportWidth' ),
+								Cypress.config( 'viewportHeight' )
+							)
+						} else if ( typeof viewportFrontend === 'number' ) {
+							cy.viewport(
+								viewportFrontend,
+								Cypress.config( 'viewportHeight' )
+							)
+						}
 					} else if ( previewMode !== 'Desktop' ) {
 						cy.viewport(
 							Cypress.config( `viewport${ previewMode }Width` ) || Cypress.config( 'viewportWidth' ),
