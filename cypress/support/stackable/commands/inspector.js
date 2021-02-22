@@ -18,11 +18,11 @@ Cypress.Commands.add( 'toggleStyle', toggleStyle )
 /**
  * Overwrite Gutenberg commands.
  */
-Cypress.overwrite( 'openSidebar', ( originalFn, ...args ) => {
+Cypress.Commands.overwrite( 'openSidebar', ( originalFn, ...args ) => {
 	originalFn( SIDEBAR_NAMESPACES( first( args ) ) )
 } )
 
-Cypress.overwrite( 'closeSidebar', ( originalFn, ...args ) => {
+Cypress.Commands.overwrite( 'closeSidebar', ( originalFn, ...args ) => {
 	originalFn( SIDEBAR_NAMESPACES( first( args ) ) )
 } )
 
