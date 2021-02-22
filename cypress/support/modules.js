@@ -7,8 +7,9 @@ import { assertAligns, responsiveAssertHelper } from './helpers'
  * Assertion function for Block Title and Block Description.
  *
  * @param {Object} options
+ * @param {Object} assertOptions
  */
-export const assertBlockTitleDescription = ( options = {} ) => {
+export const assertBlockTitleDescription = ( options = {}, assertOptions = {} ) => {
 	const {
 		viewport = 'Desktop',
 	} = options
@@ -18,7 +19,7 @@ export const assertBlockTitleDescription = ( options = {} ) => {
 			cy.collapse( 'Block Title' )
 			cy.toggleStyle( 'Block Title' )
 			cy.adjust( 'Title HTML Tag', 'h2' )
-				.assertHtmlTag( '.ugb-block-title', 'h2' )
+				.assertHtmlTag( '.ugb-block-title', 'h2', assertOptions )
 			cy.adjust( 'Typography', {
 				'Font Family': 'Sans-Serif',
 				'Size': 31,
@@ -42,19 +43,19 @@ export const assertBlockTitleDescription = ( options = {} ) => {
 					'max-width': '748px',
 					'line-height': '46px',
 				},
-			} )
+			}, assertOptions )
 			cy.adjust( 'Horizontal Align', 'flex-start' ).assertComputedStyle( {
 				'.ugb-block-title': {
 					'margin-left': '0px',
 				},
-			} )
+			}, assertOptions )
 			cy.adjust( 'Horizontal Align', 'center' )
 			cy.adjust( 'Horizontal Align', 'flex-end' ).assertComputedStyle( {
 				'.ugb-block-title': {
 					'margin-right': '0px',
 				},
 			} )
-			assertAligns( 'Text Align', '.ugb-block-title' )
+			assertAligns( 'Text Align', '.ugb-block-title', {}, assertOptions )
 
 			cy.collapse( 'Block Description' )
 			cy.toggleStyle( 'Block Description' )
@@ -81,21 +82,21 @@ export const assertBlockTitleDescription = ( options = {} ) => {
 					'max-width': '734px',
 					'line-height': '36px',
 				},
-			} )
+			}, assertOptions )
 			cy.adjust( 'Horizontal Align', 'flex-start' ).assertComputedStyle( {
 				'.ugb-block-description': {
 					'margin-left': '0px',
 				},
-			} )
+			}, assertOptions )
 			cy.adjust( 'Horizontal Align', 'center' )
 			cy.adjust( 'Horizontal Align', 'flex-end' ).assertComputedStyle( {
 				'.ugb-block-description': {
 					'margin-right': '0px',
 				},
-			} )
+			}, assertOptions )
 
 			// Test Block Description Alignment
-			assertAligns( 'Text Align', '.ugb-block-description' )
+			assertAligns( 'Text Align', '.ugb-block-description', {}, assertOptions )
 		} )
 
 		const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
@@ -126,9 +127,9 @@ export const assertBlockTitleDescription = ( options = {} ) => {
 					'max-width': '748px',
 					'line-height': '42px',
 				},
-			} )
+			}, assertOptions )
 
-			assertAligns( 'Text Align', '.ugb-block-title', { viewport } )
+			assertAligns( 'Text Align', '.ugb-block-title', { viewport }, assertOptions )
 
 			cy.collapse( 'Block Description' )
 			cy.toggleStyle( 'Block Description' )
@@ -156,9 +157,9 @@ export const assertBlockTitleDescription = ( options = {} ) => {
 					'max-width': '748px',
 					'line-height': '38px',
 				},
-			} )
+			}, assertOptions )
 
-			assertAligns( 'Text Align', '.ugb-block-description', { viewport } )
+			assertAligns( 'Text Align', '.ugb-block-description', { viewport }, assertOptions )
 		}
 	}
 
@@ -174,8 +175,9 @@ export const assertBlockTitleDescription = ( options = {} ) => {
  *
  * @param {string} selector
  * @param {Object} options
+ * @param {Object} assertOptions
  */
-export const assertBlockBackground = ( selector, options = {} ) => {
+export const assertBlockBackground = ( selector, options = {}, assertOptions = {} ) => {
 	const {
 		viewport = 'Desktop',
 	} = options
@@ -189,7 +191,7 @@ export const assertBlockBackground = ( selector, options = {} ) => {
 				[ selector ]: {
 					'background-color': 'rgba(255, 255, 255, 0.7)',
 				},
-			} )
+			}, assertOptions )
 		} )
 		cy.setBlockAttribute( { [ `blockBackground${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ) } )
 		desktopOnly( () => {
@@ -217,7 +219,7 @@ export const assertBlockBackground = ( selector, options = {} ) => {
 					'background-attachment': 'fixed',
 					'background-blend-mode': 'multiply',
 				},
-			} )
+			}, assertOptions )
 		} )
 		cy.adjust( 'Adv. Background Image Settings', {
 			'Image Position': {
@@ -243,7 +245,7 @@ export const assertBlockBackground = ( selector, options = {} ) => {
 				'background-repeat': 'repeat-x',
 				'background-size': '19%',
 			},
-		} )
+		}, assertOptions )
 	}
 
 	const [ Desktop, Tablet, Mobile ] = responsiveAssertHelper( _assertBlockBackground, { disableItAssertion: true } )
@@ -257,8 +259,9 @@ export const assertBlockBackground = ( selector, options = {} ) => {
  * Assertion function for Top and Bottom Separator.
  *
  * @param {Object} options
+ * @param {Object} assertOptions
  */
-export const assertSeparators = ( options = {} ) => {
+export const assertSeparators = ( options = {}, assertOptions = {} ) => {
 	const {
 		viewport = 'Desktop',
 	} = options
@@ -283,7 +286,7 @@ export const assertSeparators = ( options = {} ) => {
 			'.ugb-top-separator>.ugb-separator-wrapper': {
 				'height': '191px',
 			},
-		} )
+		}, assertOptions )
 		desktopOnly( () => {
 			cy.adjust( 'Design', 'wave-2' )
 			cy.adjust( 'Color', '#000000' )
@@ -299,7 +302,7 @@ export const assertSeparators = ( options = {} ) => {
 				'.ugb-top-separator': {
 					'z-index': '6',
 				},
-			} ] )
+			}, assertOptions ] )
 			cy.adjust( 'Separator Layer 2', {
 				'Color': '#ffffff',
 				'Layer Height': '1.16',
@@ -314,7 +317,7 @@ export const assertSeparators = ( options = {} ) => {
 					'opacity': '0.3',
 					'mix-blend-mode': 'overlay',
 				},
-			} )
+			}, assertOptions )
 
 			cy.adjust( 'Separator Layer 3', {
 				'Color': '#6d6d6d',
@@ -328,7 +331,7 @@ export const assertSeparators = ( options = {} ) => {
 					'transform': 'matrix(-1.2, 0, 0, 1.03, 0, 0)',
 					'opacity': '0.8',
 				},
-			} )
+			}, assertOptions )
 		} )
 		cy.collapse( 'Bottom Separator' )
 		cy.toggleStyle( 'Bottom Separator' )
@@ -336,7 +339,7 @@ export const assertSeparators = ( options = {} ) => {
 			'.ugb-bottom-separator>.ugb-separator-wrapper': {
 				'height': '150px',
 			},
-		} )
+		}, assertOptions )
 		desktopOnly( () => {
 			cy.adjust( 'Design', 'curve-3' )
 			cy.adjust( 'Color', '#f00069' )
@@ -352,7 +355,7 @@ export const assertSeparators = ( options = {} ) => {
 				'.ugb-top-separator': {
 					'z-index': '6',
 				},
-			} ] )
+			}, assertOptions ] )
 			cy.adjust( 'Separator Layer 2', {
 				'Color': '#ffffff',
 				'Layer Height': '1.16',
@@ -367,7 +370,7 @@ export const assertSeparators = ( options = {} ) => {
 					'opacity': '0.3',
 					'mix-blend-mode': 'saturation',
 				},
-			} )
+			}, assertOptions )
 
 			cy.adjust( 'Separator Layer 3', {
 				'Color': '#6d6d6d',
@@ -381,7 +384,7 @@ export const assertSeparators = ( options = {} ) => {
 					'transform': 'matrix(-1.2, 0, 0, 1.03, 0, 0)',
 					'opacity': '0.8',
 				},
-			} )
+			}, assertOptions )
 		} )
 	}
 

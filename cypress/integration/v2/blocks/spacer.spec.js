@@ -27,10 +27,11 @@ function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/spacer' ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/spacer' )
+	cy.addBlock( 'ugb/spacer' ).as( 'spacerBlock' )
+	const spacerBlock = registerBlockSnapshots( 'spacerBlock' )
 	cy.openInspector( 'ugb/spacer', 'Style' )
 
 	cy.collapse( 'General' )
@@ -75,7 +76,7 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 		cy.adjust( 'Background Media Tint Strength', 6 ).assertComputedStyle( {
 			'.ugb-spacer--inner': {
-				'background-image': 'url("http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg")',
+				'background-image': `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
 			},
 			'.ugb-spacer--inner:before': {
 				'opacity': '0.6',
@@ -156,4 +157,5 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	assertSeparators( { viewport } )
+	spacerBlock.assertFrontendStyles()
 }

@@ -46,10 +46,11 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/button' )
+	cy.addBlock( 'ugb/button' ).as( 'buttonBlock' )
+	const buttonBlock = registerBlockSnapshots( 'buttonBlock' )
 	cy.openInspector( 'ugb/button', 'Style' )
 
 	cy.collapse( 'General' )
@@ -90,6 +91,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	cy.collapse( 'Button #1' )
+	cy.typeBlock( 'ugb/button', '.ugb-button1 .ugb-button--inner', 'Button 1' )
 	cy.waitFA()
 	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )
@@ -188,6 +190,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.collapse( 'Button #2' )
 	cy.toggleStyle( 'Button #2' )
+	cy.typeBlock( 'ugb/button', '.ugb-button2 .ugb-button--inner', 'Button 2' )
 	cy.waitFA()
 	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )
@@ -285,6 +288,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.collapse( 'Button #3' )
 	cy.toggleStyle( 'Button #3' )
+	cy.typeBlock( 'ugb/button', '.ugb-button3 .ugb-button--inner', 'Button 3' )
 	cy.waitFA()
 	desktopOnly( () => {
 		cy.adjust( 'Button Color Type', 'gradient' )
@@ -382,4 +386,5 @@ function styleTab( viewport, desktopOnly ) {
 
 	assertBlockBackground( '.ugb-button-wrapper', { viewport } )
 	assertSeparators( { viewport } )
+	buttonBlock.assertFrontendStyles()
 }

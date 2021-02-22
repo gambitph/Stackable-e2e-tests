@@ -1,8 +1,9 @@
 /**
  * External dependencies
  */
-import config from 'root/cypress.json'
-import { lowerCase } from 'lodash'
+import {
+	lowerCase, escapeRegExp, first, last,
+} from 'lodash'
 
 /**
  * Function for getting the base control
@@ -11,10 +12,9 @@ import { lowerCase } from 'lodash'
  * @return {*} generated cypress getter
  */
 export function getBaseControl( isInPopover = false ) {
-	const baseControlEl = ! isInPopover
+	return ! isInPopover
 		? cy.get( '.components-panel__body.is-opened>.components-base-control', { log: false } )
 		: cy.get( '.components-popover__content', { log: false } ).find( '.components-base-control', { log: false } )
-	return baseControlEl
 }
 
 /**
@@ -25,7 +25,7 @@ export function getBaseControl( isInPopover = false ) {
  * @return {RegExp} generated RegExp
  */
 export function containsRegExp( name = '' ) {
-	return new RegExp( `^${ ( typeof name !== 'string' ? '' : name ).replace( /[!@#$%^&*()+=\-[\]\\';,./{}|":<>?~_]/g, '\\$&' ) }$` )
+	return new RegExp( `^${ escapeRegExp( ( typeof name !== 'string' ? '' : name ) ) }$` )
 }
 
 /**
@@ -54,91 +54,10 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
 }
 
 /**
- * Function that returns the original link address and preview address
- *
- * @param {Function} callback
- */
-export function getAddresses( callback = () => {} ) {
-	cy.window().then( _win => {
-		const _currUrl = _win.location.href
-		const parsedPostID = _currUrl.match( /post=([0-9]*)/g )[ 0 ].split( '=' )[ 1 ]
-		const previewUrl = `/?page_id=${ parsedPostID }&preview=true`
-		const currUrl = _currUrl.replace( config.baseUrl, '/' )
-		callback( {
-			currUrl, previewUrl, postID: parsedPostID,
-		} )
-	} )
-}
-
-/**
- * Function that returns the current editor's preview mode.
- *
- * @param {Function} callback
- */
-export function getPreviewMode( callback = () => {} ) {
-	select( _select => {
-		const previewMode =
-			_select( 'core/edit-post' ).__experimentalGetPreviewDeviceType
-				?	_select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
-				: 'Desktop'
-		callback( previewMode )
-	} )
-}
-
-/**
- * Function used to generate a parsed class names to be
- * used as a selector.
- *
- * @param {Array} classList
- */
-export function parseClassList( classList = [] ) {
-	const excludedClassNames = [
-		'ugb-accordion--open',
-		'ugb-icon-list__left-align',
-		'ugb-icon-list__center-align',
-		'ugb-icon-list__right-align',
-	]
-	const parsedClassList = classList.split( ' ' )
-		.filter( className => ! className.match( /ugb-(.......)$/ ) && ! excludedClassNames.includes( className ) )
-		.map( className => `.${ className }` )
-		.join( '' )
-	return parsedClassList
-}
-
-/*
-* Function used for getting the `wp` object.
-*
-* @param {Function} callback
-*/
-export function wp( callback = () => {} ) {
-	cy.window( { log: false } ).then( win => {
-		callback( win.wp )
-	} )
-}
-
-/**
- * Function used for getting the `wp.data.dispatch` function
- *
- * @param {Function} callback
- */
-export function dispatch( callback = () => {} ) {
-	wp( _wp => callback( _wp.data.dispatch ) )
-}
-
-/**
- * Function used for getting the `wp.data.select` function
- *
- * @param {Function} callback
- */
-export function select( callback = () => {} ) {
-	wp( _wp => callback( _wp.data.select ) )
-}
-
-/**
  * Function for getting the active tab
  * in inspector.
  *
- * @param {*} callback callback function
+ * @param {Function} callback callback function
  */
 export function getActiveTab( callback = () => {} ) {
 	cy
@@ -150,4 +69,124 @@ export function getActiveTab( callback = () => {} ) {
 
 			callback( tab )
 		} )
+}
+
+/**
+ * Create a DOM Element based on HTML string
+ *
+ * @param {string} htmlString
+ *
+ * @return {*} DOM Element
+ */
+export function createElementFromHTMLString( htmlString ) {
+	const parentElement = document.createElement( 'div' )
+	parentElement.innerHTML = htmlString
+
+	return parentElement.firstElementChild
+}
+
+/**
+ * Function for getting all blocks recursively.
+ *
+ * @param {Array} blocks
+ */
+export function getBlocksRecursive( blocks ) {
+	const allBlocks = []
+	const _getBlocksRecursive = _blocks => {
+		_blocks.forEach( _block => {
+			allBlocks.push( _block )
+			if ( _block.innerBlocks.length ) {
+				_getBlocksRecursive( _block.innerBlocks )
+			}
+		} )
+	}
+	_getBlocksRecursive( blocks )
+	return allBlocks
+}
+
+/**
+ * Create our own resolver with setTimeout
+ * since gutenberg promise resolver can be unstable.
+ *
+ * @param {Function} resolver
+ */
+export function dispatchResolver( resolver = () => {} ) {
+	return () => setTimeout( () => {
+		resolver()
+	}, 1 )
+}
+
+/**
+ * Function for returning a stringified path location of the block from
+ * `wp.data.select('core/block-editor').getBlocks()` by clientId
+ *
+ * e.g. [0].innerBlocks[2]
+ *
+ * @param {Array} blocks
+ * @param {string} clientId
+ *
+ * @return {string} stringified path
+ */
+export function getBlockStringPath( blocks = [], clientId = '' ) {
+	const paths = []
+	let found = false
+
+	function getBlockStringPathRecursive( _blocks, clientId ) {
+		_blocks.forEach( ( _block, index ) => {
+			if ( ! found ) {
+				paths.push( `[${ index }]` )
+			}
+			if ( ! found && _block.clientId === clientId ) {
+				found = true
+			}
+			if ( ! found && _block.innerBlocks.length ) {
+				paths.push( '.innerBlocks' )
+				getBlockStringPathRecursive( _block.innerBlocks, clientId )
+				if ( ! found ) {
+					paths.pop()
+				}
+			}
+			if ( ! found ) {
+				paths.pop()
+			}
+		} )
+	}
+
+	getBlockStringPathRecursive( blocks, clientId )
+	return paths.join( '' )
+}
+
+/**
+ * Function for overwriting log argument.
+ *
+ * @param {Object} options
+ */
+export function modifyLogFunc( options = {} ) {
+	const {
+		position = 'last',
+		argumentLength = false,
+	} = options
+
+	if ( argumentLength ) {
+		return function( originalFn, ...args ) {
+			if ( args.length === argumentLength ) {
+				const options = args.pop()
+				options.log = Cypress.env( 'DEBUG' ) === 'true'
+				originalFn( ...args, options )
+			}
+			return originalFn( ...args, { log: Cypress.env( 'DEBUG' ) === 'true' } )
+		}
+	}
+
+	return function( originalFn, ...args ) {
+		const firstOrLast = position === 'last' ? last : first
+		if ( typeof firstOrLast( args ) === 'object' && ! Array.isArray( firstOrLast( args ) ) ) {
+			const options = args[ position === 'last' ? 'pop' : 'shift' ]()
+			options.log = Cypress.env( 'DEBUG' ) === 'true'
+			return position === 'last' ? originalFn( ...args, options ) : originalFn( options, ...args )
+		}
+		return position === 'last'
+			? 			originalFn( ...args, { log: Cypress.env( 'DEBUG' ) === 'true' } )
+			: 			originalFn( { log: Cypress.env( 'DEBUG' ) === 'true' }, ...args )
+	}
 }

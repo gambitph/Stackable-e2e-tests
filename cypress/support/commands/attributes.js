@@ -1,7 +1,7 @@
-/*
-* Interal dependencies
-*/
-import { select, dispatch } from '../util'
+/**
+ * Internal dependencies
+ */
+import { dispatchResolver } from '../util'
 
 /**
  * Register functions to Cypress Commands.
@@ -14,11 +14,15 @@ Cypress.Commands.add( 'setBlockAttribute', setBlockAttribute )
  * @param {Object} attributes
  */
 export function setBlockAttribute( attributes = {} ) {
-	select( _select => {
-		dispatch( _dispatch => {
-			const { clientId = '' } = _select( 'core/block-editor' ).getSelectedBlock() || {}
+	cy.wp().then( wp => {
+		return new Cypress.Promise( ( resolve, reject ) => {
+			const { clientId = '' } = wp.data.select( 'core/block-editor' ).getSelectedBlock() || {}
 			if ( clientId ) {
-				_dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, attributes )
+				wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, attributes )
+					.then( dispatchResolver( resolve ) )
+					.catch( reject )
+			} else {
+				reject( null )
 			}
 		} )
 	} )

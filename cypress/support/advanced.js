@@ -50,7 +50,7 @@ export const assertAdvancedTab = ( name, options = {}, desktopCallback = () => {
 			.then( $panel => {
 				if ( $panel.text().includes( adjustName ) ) {
 					if ( args.length ) {
-						cy.adjust( adjustName, value, options )[ assertionFunc ]( ...args )
+						cy.adjust( adjustName, value, options )[ assertionFunc ]( ... args )
 					} else {
 						cy.adjust( adjustName, value, options )
 					}

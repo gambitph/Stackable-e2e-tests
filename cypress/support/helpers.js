@@ -1,18 +1,13 @@
 /**
  * Internal dependencies
  */
-import { publish } from './commands'
-import {
-	getActiveTab, getAddresses, getPreviewMode, parseClassList,
-} from './util'
-import config from '../../cypress.json'
-import { collapse, openSidebar } from './commands/inspector'
+import { registerBlockSnapshots } from './blockSnapshots'
 
 /**
  * External dependencies
  */
 import {
-	startCase, lowerCase,
+	lowerCase,
 } from 'lodash'
 
 /**
@@ -66,16 +61,15 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 	cy.newPage()
 	designs.forEach( ( design, index ) => {
 		cy.addBlock( blockName )
-		cy.openInspector( blockName, 'Layout' )
-		cy.wait( '@designLibrary' )
-		cy.adjustDesign( design )
-		cy.publish()
-		cy.reload()
-		cy.assertBlockError()
-		if ( index !== designs.length - 1 ) {
-			cy.deleteBlock( blockName )
+		cy.openInspector( blockName, 'Layout', index )
+		if ( ! index ) {
+			cy.wait( '@designLibrary' )
 		}
+		cy.adjustDesign( design )
 	} )
+	cy.publish()
+	cy.reload()
+	cy.assertBlockError()
 	cy.publish()
 }
 
@@ -90,105 +84,34 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 	cy.newPage()
 	layouts.forEach( ( layout, index ) => {
 		cy.addBlock( blockName )
-		cy.openInspector( blockName, 'Layout' )
+		cy.openInspector( blockName, 'Layout', index )
 		if ( typeof layout === 'string' ) {
 			cy.adjustLayout( layout )
-			cy.publish()
-			cy.reload()
-			cy.assertBlockError()
 		}
 		if ( typeof layout === 'object' && ! Array.isArray( layout ) ) {
-			const { selector, value } = layout
+			const { value, selector } = layout
 			cy.adjustLayout( value )
-			cy.publish()
 			if ( selector ) {
-				getAddresses( ( { currUrl, previewUrl } ) => {
-					cy.get( selector ).should( 'exist' )
-					cy.visit( previewUrl )
-					cy.get( selector ).should( 'exist' )
-					cy.visit( currUrl )
-					cy.assertBlockError()
-				} )
-			} else {
-				cy.reload()
-				cy.assertBlockError()
+				cy.get( selector ).should( 'exist' )
 			}
 		}
-
-		if ( index !== layouts.length - 1 ) {
-			cy.deleteBlock( blockName )
-		}
 	} )
+
 	cy.publish()
-}
 
-/**
- * Helper function for generating assertion commands
- *
- * @param {*} subject
- * @param {Function} editorCallback
- * @param {Function} frontendCallback
- * @param {Object} options
- */
-export const assertFunction = ( subject, editorCallback = () => {}, frontendCallback = () => {}, options = {} ) => {
-	const {
-		assertFrontend = true,
-		assertBackend = true,
-		wait = 0,
-		viewportFrontend = false,
-	} = options
-	getActiveTab( tab => {
-		cy.document().then( doc => {
-			const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
-			const blockSelector = Array.from( subject[ 0 ].classList ).includes( 'wp-block' ) ? '.ugb-main-block' : '.wp-block > *'
-			cy
-				.get( subject )
-				.find( blockSelector )
-				.invoke( 'attr', 'class' )
-				.then( classList => {
-					const parsedClassList = parseClassList( classList )
-
-					publish()
-
-					cy.wait( wait )
-
-					if ( assertBackend ) {
-						getPreviewMode( previewMode => {
-							editorCallback( {
-								parsedClassList, viewport: previewMode,
-							} )
-						} )
-					}
-
-					if ( assertFrontend ) {
-						getPreviewMode( previewMode => {
-							getAddresses( ( { currUrl, previewUrl } ) => {
-								cy.visit( previewUrl )
-								if ( viewportFrontend && viewportFrontend !== 'Desktop' ) {
-									cy.viewport( config[ `viewport${ viewportFrontend }Width` ] || config.viewportWidth, config.viewportHeight )
-								} else if ( previewMode !== 'Desktop' ) {
-									cy.viewport( config[ `viewport${ previewMode }Width` ] || config.viewportWidth, config.viewportHeight )
-								}
-
-								cy.wait( wait )
-
-								frontendCallback( {
-									parsedClassList, viewport: previewMode,
-								} )
-
-								cy.viewport( config.viewportWidth, config.viewportHeight )
-
-								cy.visit( currUrl )
-								cy.get( parsedClassList ).click( { force: true } )
-								openSidebar( 'Settings' )
-								cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
-								collapse( activePanel )
-							} )
-						} )
-					}
-				} )
+	cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+		cy.visit( previewUrl )
+		layouts.forEach( layout => {
+			const { selector } = layout
+			if ( selector ) {
+				cy.get( selector ).should( 'exist' )
+			}
 		} )
+		cy.visit( editorUrl )
 	} )
+
+	cy.assertBlockError()
+	cy.publish()
 }
 
 /*
@@ -197,15 +120,16 @@ export const assertFunction = ( subject, editorCallback = () => {}, frontendCall
 * @param {string} name
 * @param {string} selector
 * @param {Object} options
+* @param {Object} assertOptions
 */
-export const assertAligns = ( name, selector, options = {} ) => {
+export const assertAligns = ( name, selector, options = {}, assertOptions = {} ) => {
 	const aligns = [ 'left', 'center', 'right' ]
 	aligns.forEach( align => {
 		cy.adjust( name, align, options ).assertComputedStyle( {
 			[ selector ]: {
 				'text-align': align,
 			},
-		} )
+		}, assertOptions )
 	} )
 }
 
@@ -251,11 +175,11 @@ export const responsiveAssertHelper = ( callback = () => {}, options = {} ) => {
 	const responsiveAssertFunctions = viewports.map( viewport => {
 		const assertDesktopOnlyFunction = generateAssertDesktopOnlyFunction( viewport )
 		if ( disableItAssertion ) {
-			return () => callback( viewport, assertDesktopOnlyFunction )
+			return () => callback( viewport, assertDesktopOnlyFunction, registerBlockSnapshots )
 		}
 		return () => {
 			it( `should adjust ${ lowerCase( viewport ) } options inside ${ lowerCase( tab ) } tab`, () => {
-				callback( viewport, assertDesktopOnlyFunction )
+				callback( viewport, assertDesktopOnlyFunction, registerBlockSnapshots )
 			} )
 		}
 	} )
@@ -268,15 +192,16 @@ export const responsiveAssertHelper = ( callback = () => {}, options = {} ) => {
 *
 * @param {string} selector
 * @param {Object} options
+* @param {Object} assertOptions
 */
-export const assertTypography = ( selector, options = {} ) => {
+export const assertTypography = ( selector, options = {}, assertOptions = {} ) => {
 	const {
 		viewport = 'Desktop',
 	} = options
 
 	if ( viewport === 'Desktop' ) {
 		cy.adjust( 'Typography', {
-			'Size': 50,
+			'Size': { value: 50, unit: 'px' },
 			'Weight': '700',
 			'Transform': 'lowercase',
 			'Line-Height': 4,
@@ -289,25 +214,8 @@ export const assertTypography = ( selector, options = {} ) => {
 				'line-height': '4em',
 				'letter-spacing': '2.9px',
 			},
-		} )
+		}, assertOptions )
 	}
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			value: 2,
-			unit: 'em',
-		},
-		'Line-Height': {
-			viewport,
-			value: 24,
-			unit: 'px',
-		},
-	} ).assertComputedStyle( {
-		[ selector ]: {
-			'font-size': '2em',
-			'line-height': '24px',
-		},
-	} )
 	cy.adjust( 'Typography', {
 		'Size': {
 			viewport,
@@ -324,5 +232,148 @@ export const assertTypography = ( selector, options = {} ) => {
 			'font-size': '50px',
 			'line-height': '4em',
 		},
+	}, assertOptions )
+	cy.adjust( 'Typography', {
+		'Size': {
+			viewport,
+			value: 5,
+			unit: 'em',
+		},
+		'Line-Height': {
+			viewport,
+			value: 24,
+			unit: 'px',
+		},
+	} ).assertComputedStyle( {
+		[ selector ]: {
+			'font-size': '5em',
+			'line-height': '24px',
+		},
+	}, assertOptions )
+}
+
+export const assertContainer = ( selector, options = {}, attrNameTemplate = 'column%sBackgroundMediaUrl' ) => {
+	const {
+		viewport,
+	} = options
+	const desktopOnly = callback => viewport === 'Desktop' && callback()
+	const attributeName = attrNameTemplate.replace( '%s', viewport === 'Desktop' ? '' : viewport )
+
+	// Adjust single container color options.
+	desktopOnly( () => {
+		cy.adjust( 'Background', {
+			'Color Type': 'single',
+			'Background Color': '#632d2d',
+		} ).assertComputedStyle( {
+			[ selector ]: {
+				'background-color': 'rgb(99, 45, 45)',
+			},
+			[ `${ selector }:before` ]: {
+				'background-color': '#632d2d',
+			},
+		} )
+	} )
+
+	// Adjust gradient container color options.
+	desktopOnly( () => {
+		cy.adjust( 'Background', {
+			'Color Type': 'gradient',
+			'Background Color #1': '#a92323',
+			'Background Color #2': '#404633',
+			'Adv. Gradient Color Settings': {
+				'Gradient Direction (degrees)': 180,
+				'Color 1 Location': '11%',
+				'Color 2 Location': '80%',
+				'Background Gradient Blend Mode': 'hard-light',
+			},
+		} ).assertComputedStyle( {
+			[ `${ selector }:before` ]: {
+				'background-image': 'linear-gradient(180deg, #a92323 11%, #404633)',
+				'mix-blend-mode': 'hard-light',
+			},
+		} )
+	} )
+
+	cy.setBlockAttribute( {
+		[ attributeName ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
+	} )
+
+	desktopOnly( () => {
+		cy.adjust( 'Background', {
+			'Background Media Tint Strength': 5,
+			'Fixed Background': true,
+			'Adv. Background Image Settings': {
+				'Image Blend Mode': 'hue',
+			},
+		} ).assertComputedStyle( {
+			[ `${ selector }:before` ]: {
+				'background-blend-mode': 'hue',
+				'background-image': `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
+				'background-attachment': 'fixed',
+			},
+		} )
+	} )
+
+	cy.adjust( 'Background', {
+		'Adv. Background Image Settings': {
+			'Image Position': {
+				viewport,
+				value: 'center center',
+			},
+			'Image Repeat': {
+				viewport,
+				value: 'repeat-x',
+			},
+			'Image Size': {
+				viewport,
+				value: 'custom',
+			},
+			'Custom Size': {
+				viewport,
+				value: 19,
+				unit: '%',
+			},
+		},
+	} ).assertComputedStyle( {
+		[ selector ]: {
+			'background-position': '50% 50%',
+			'background-repeat': 'repeat-x',
+			'background-size': '19%',
+		},
+	} )
+
+	// Test Border Radius
+	desktopOnly( () => {
+		cy.adjust( 'Border Radius', 30 ).assertComputedStyle( {
+			[ selector  ]: {
+				'border-radius': '30px',
+			},
+		} )
+	} )
+
+	// Test Border Options
+	cy.adjust( 'Borders', 'solid' )
+	desktopOnly( () => {
+		cy.adjust( 'Border Color', '#f1f1f1' ).assertComputedStyle( {
+			[ selector ]: {
+				'border-style': 'solid',
+				'border-color': '#f1f1f1',
+			},
+		} )
+	} )
+	cy.adjust( 'Border Width', 3, { viewport } ).assertComputedStyle( {
+		[ selector ]: {
+			'border-top-width': '3px',
+			'border-bottom-width': '3px',
+			'border-left-width': '3px',
+			'border-right-width': '3px',
+		},
+
+	} )
+
+	// Test Shadow / Outline
+	desktopOnly( () => {
+		cy.adjust( 'Shadow / Outline', 9 )
+			.assertClassName( selector, 'ugb--shadow-9' )
 	} )
 }

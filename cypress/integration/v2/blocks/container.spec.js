@@ -3,7 +3,7 @@
  */
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper,
+	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertContainer,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -27,14 +27,16 @@ function blockError() {
 }
 
 function innerBlocks() {
-	it( 'should allow adding inner blocks inside Advanced Columns and Grid', () => {
+	it( 'should allow adding inner blocks inside Container', () => {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'ugb/container' )
 
 		blocks
 			.filter( blockName => blockName !== 'ugb/container' )
-			.forEach( blockName => cy.appendBlock( blockName ) )
+			.forEach( blockName => cy.addInnerBlock( 'ugb/container', blockName ) )
+
+		cy.publish()
 	} )
 }
 
@@ -48,10 +50,11 @@ function switchLayout() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly ) {
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/container' )
+	cy.addBlock( 'ugb/container' ).as( 'containerBlock' )
+	const containerBlock = registerBlockSnapshots( 'containerBlock' )
 	cy.openInspector( 'ugb/container', 'Style' )
 
 	// General Tab
@@ -124,112 +127,7 @@ function styleTab( viewport, desktopOnly ) {
 	// Container Tab
 	cy.collapse( 'Container' )
 
-	// Background Tab
-	desktopOnly( () => {
-		// Test Single
-		cy.adjust( 'Background', {
-			'Color Type': 'single',
-			'Background Color': '#000000',
-			'Background Color Opacity': 0.7,
-		} ).assertComputedStyle( {
-			'.ugb-container__wrapper': {
-				'background-color': 'rgba(0, 0, 0, 0.7)',
-			},
-		} )
-
-		// Test Gradient
-		cy.adjust( 'Background', {
-			'Color Type': 'gradient',
-			'Background Color #1': '#ff5c5c',
-			'Background Color #2': '#7bff5a',
-			'Adv. Gradient Color Settings': {
-				'Gradient Direction (degrees)': 160,
-				'Color 1 Location': 28,
-				'Color 2 Location': 75,
-				'Background Gradient Blend Mode': 'hue',
-			},
-		} ).assertComputedStyle( {
-			'.ugb-container__wrapper:before': {
-				'background-image': 'linear-gradient(160deg, #ff5c5c 28%, #7bff5a 75%)',
-				'mix-blend-mode': 'hue',
-			},
-			'.ugb-container__wrapper': {
-				'background-color': '#ff5c5c',
-			},
-		} )
-	} )
-
-	// Test Image
-	cy.setBlockAttribute( {
-		[ `column${ viewport === 'Desktop' ? '' : viewport }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-	} )
-	cy.adjust( 'Background', {
-		'Adv. Background Image Settings': {
-			'Image Position': {
-				viewport,
-				value: 'top right',
-			},
-			'Image Repeat': {
-				viewport,
-				value: 'repeat-x',
-			},
-			'Image Size': {
-				viewport,
-				value: 'cover',
-			},
-		},
-	} ).assertComputedStyle( {
-		'.ugb-container__wrapper': {
-			'background-position': '100% 0%',
-			'background-repeat': 'repeat-x',
-			'background-size': 'cover',
-		},
-	} )
-
-	desktopOnly( () => {
-		// Test non-responsive image settings
-		cy.adjust( 'Background', {
-			'Background Media Tint Strength': 7,
-			'Fixed Background': true,
-			'Adv. Background Image Settings': {
-				'Image Blend Mode': 'exclusion',
-			},
-		} ).assertComputedStyle( {
-			'.ugb-container__wrapper': {
-				'background-attachment': 'fixed',
-				'background-blend-mode': 'exclusion',
-			},
-			'.ugb-container__wrapper:before': {
-				'opacity': '0.7',
-			},
-		} )
-	} )
-
-	// Test Borders and Shadow Outlines
-	desktopOnly( () => {
-		cy.adjust( 'Borders', 'solid' )
-		cy.adjust( 'Border Color', '#a12222' )
-		cy.adjust( 'Border Radius', 26 ).assertComputedStyle( {
-			'.ugb-container__wrapper': {
-				'border-style': 'solid',
-				'border-color': '#a12222',
-				'border-radius': '26px',
-			},
-		} )
-		cy.adjust( 'Shadow / Outline', 5 )
-			.assertClassName( '.ugb-container__wrapper', 'ugb--shadow-5' )
-	} )
-
-	cy.adjust( 'Borders', 'dashed' )
-	cy.adjust( 'Border Width', 4, { viewport } ).assertComputedStyle( {
-		'.ugb-container__wrapper': {
-			'border-style': 'dashed',
-			'border-top-width': '4px',
-			'border-bottom-width': '4px',
-			'border-left-width': '4px',
-			'border-right-width': '4px',
-		},
-	} )
+	assertContainer( '.ugb-container__wrapper', { viewport }, 'column%sBackgroundMediaUrl' )
 
 	// Spacing Tab
 	cy.collapse( 'Spacing' )
@@ -271,7 +169,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Link Color', '#642c2c' )
 		cy.adjust( 'Link Hover Color', '#ba89df' )
 
-		cy.addInnerBlock( 'ugb/card' )
+		cy.addInnerBlock( 'ugb/container', 'ugb/card' )
 		cy.openInspector( 'ugb/card', 'Style' )
 		cy.collapse( 'Button' )
 		cy.adjust( 'Button Design', {
@@ -296,4 +194,5 @@ function styleTab( viewport, desktopOnly ) {
 	cy.selectBlock( 'ugb/container' )
 	assertBlockBackground( '.ugb-container', { viewport } )
 	assertSeparators( { viewport } )
+	containerBlock.assertFrontendStyles()
 }
