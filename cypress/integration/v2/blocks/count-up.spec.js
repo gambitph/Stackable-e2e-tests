@@ -75,13 +75,13 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.adjust( 'Icon #2', 'info' )
 
 	desktopOnly( () => {
-		cy.adjust( 'Icon Color Type', 'single' )
+		cy.adjust( 'Color Type', 'single' )
 		cy.adjust( 'Icon Color', '#d77777' ).assertComputedStyle( {
 			'.ugb-icon-inner-svg': {
 				'color': '#d77777',
 			},
 		} )
-		cy.adjust( 'Icon Color Type', 'gradient' )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Icon Color #1', '#8f8f8f' )
 		cy.adjust( 'Icon Color #2', '#a43333' )
 		cy.adjust( 'Gradient Direction (degrees)', 135 ).assertComputedStyle( {

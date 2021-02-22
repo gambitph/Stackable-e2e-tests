@@ -158,7 +158,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.collapse( 'Button' )
 	cy.waitFA()
 	desktopOnly( () => {
-		cy.adjust( 'Button Color Type', 'gradient' )
+		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
 		cy.adjust( 'Button Color #2', '#4e59d4' )
 		cy.adjust( 'Gradient Direction (degrees)', 138 )

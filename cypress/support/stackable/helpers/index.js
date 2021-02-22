@@ -1,14 +1,10 @@
 /**
- * Internal dependencies
- */
-import { registerBlockSnapshots } from './blockSnapshots'
-
-/**
  * External dependencies
  */
 import {
 	lowerCase,
 } from 'lodash'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 /**
  * Export Block Module assertions.

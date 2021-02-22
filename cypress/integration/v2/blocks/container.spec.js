@@ -172,7 +172,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.addInnerBlock( 'ugb/container', 'ugb/card' )
 		cy.openInspector( 'ugb/card', 'Style' )
 		cy.collapse( 'Button' )
-		cy.adjust( 'Button Design', {
+		cy.adjust( 'Design', {
 			label: 'Link',
 			value: 'link',
 		} ).assertComputedStyle( {
