@@ -185,18 +185,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	assertBlockTitleDescription( { viewport } )
-
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Block Title', 26, { viewport } )
-	cy.adjust( 'Block Description', 96, { viewport } ).assertComputedStyle( {
-		'.ugb-block-title': {
-			'margin-bottom': '26px',
-		},
-		'.ugb-block-description': {
-			'margin-bottom': '96px',
-		},
-	} )
 	cy.adjust( 'Paddings', 29, { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-testimonial__item': {
 			'padding-top': '29px',
@@ -239,9 +228,8 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		},
 	} )
 
+	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-testimonial', { viewport } )
-
 	assertSeparators( { viewport } )
-
 	testimonialBlock.assertFrontendStyles()
 }
