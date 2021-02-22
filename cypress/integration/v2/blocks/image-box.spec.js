@@ -301,15 +301,6 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Spacing options
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Block Title', 26, { viewport } )
-	cy.adjust( 'Block Description', 96, { viewport } ).assertComputedStyle( {
-		'.ugb-block-title': {
-			'margin-bottom': '26px',
-		},
-		'.ugb-block-description': {
-			'margin-bottom': '96px',
-		},
-	} )
 	cy.adjust( 'Paddings', 29, { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-image-box__item': {
 			'padding-top': '29px',
