@@ -97,6 +97,17 @@ export const assertBlockTitleDescription = ( options = {}, assertOptions = {} ) 
 
 			// Test Block Description Alignment
 			assertAligns( 'Text Align', '.ugb-block-description', {}, assertOptions )
+
+			cy.collapse( 'Spacing' )
+			cy.adjust( 'Block Title', 35, {} )
+			cy.adjust( 'Block Description', 41, {} ).assertComputedStyle( {
+				'.ugb-block-title': {
+					'margin-bottom': '35px',
+				},
+				'.ugb-block-description': {
+					'margin-bottom': '41px',
+				},
+			}, assertOptions )
 		} )
 
 		const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
@@ -160,6 +171,17 @@ export const assertBlockTitleDescription = ( options = {}, assertOptions = {} ) 
 			}, assertOptions )
 
 			assertAligns( 'Text Align', '.ugb-block-description', { viewport }, assertOptions )
+
+			cy.collapse( 'Spacing' )
+			cy.adjust( 'Block Title', 35, { viewport } )
+			cy.adjust( 'Block Description', 41, { viewport } ).assertComputedStyle( {
+				'.ugb-block-title': {
+					'margin-bottom': '35px',
+				},
+				'.ugb-block-description': {
+					'margin-bottom': '41px',
+				},
+			}, assertOptions )
 		}
 	}
 
