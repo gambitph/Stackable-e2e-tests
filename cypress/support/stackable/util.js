@@ -76,7 +76,7 @@ export function getActiveTab( callback = () => {} ) {
 		.invoke( 'attr', 'aria-label' )
 		.then( ariaLabel => {
 			// Get the active tab.
-			const tab = lowerCase( ariaLabel.split( ' ' )[ 0 ] )
+			const tab = lowerCase( first( ariaLabel.split( ' ' ) ) )
 
 			callback( tab )
 		} )
