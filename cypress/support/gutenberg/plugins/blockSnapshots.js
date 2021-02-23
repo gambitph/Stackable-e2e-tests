@@ -32,7 +32,7 @@ import { _assertComputedStyle } from '../commands/assertions'
  * External dependencies
  */
 import {
-	first, keys, last, isBoolean,
+	first, keys, last, isBoolean, cloneDeep,
 } from 'lodash'
 
 class BlockSnapshots {
@@ -174,13 +174,15 @@ export const registerBlockSnapshots = alias => {
 		function modifiedFn( ...passedArgs ) {
 			cy.getPreviewMode().then( viewport => {
 				const options = passedArgs.pop()
-				options.blockSnapshots = blockSnapshots
+				// Since Cypress commands are asynchronous, we need to pass a separate object to originalFn to avoid directly mutating the options argument.
+				const optionsToPass = cloneDeep( options )
+				optionsToPass.assertFrontend = false
 				if ( options.assertFrontend === undefined || ( isBoolean( options.assertFrontend ) && options.assertFrontend ) ) {
 					blockSnapshots.stubStyles( passedArgs[ 1 ], options.viewportFrontend || viewport )
 					blockSnapshots.createContentSnapshot()
+					cy.log( passedArgs[ 1 ] )
 				}
-				options.assertFrontend = false
-				originalFn( ...[ ...passedArgs, options ] )
+				originalFn( ...[ ...passedArgs, optionsToPass ] )
 			} )
 		}
 
