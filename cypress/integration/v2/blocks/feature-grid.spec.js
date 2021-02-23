@@ -315,13 +315,12 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	assertAdvancedTab( '.ugb-feature-grid', { viewport } )
 
-	cy.setBlockAttribute( {
-		'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-		'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-		'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-	} )
-
 	desktopOnly( () => {
+		cy.setBlockAttribute( {
+			'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		} )
 		range( 1, 4 ).forEach( idx => {
 			cy.collapse( `Column #${ idx }` )
 			cy.adjust( 'Column Background', '#a03b3b' ).assertComputedStyle( {
