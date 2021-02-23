@@ -64,6 +64,30 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
 	}
 }
 
+export function changeControlViewport( viewport = 'Desktop', name = '', isInPopover = false ) {
+	const selector = () => cy.getBaseControl( name, { isInPopover } )
+	selector()
+		.then( $baseControl => {
+			if ( $baseControl.find( 'button[aria-label="Desktop"]' ).length ) {
+				const hovered = $baseControl.find( 'button[aria-label="Tablet"]' ).length
+				const hover = () => selector().find( 'button[aria-label="Desktop"]' ).trigger( 'moseover', { force: true } )
+				const selectViewport = () => selector().find( `button[aria-label="${ viewport }"]` ).click( { force: true } )
+				const isActive = () => $baseControl.find( `button.is-active[aria-label="${ viewport }"]` ).length
+				if ( viewport !== 'Desktop' ) {
+					if ( ! hovered ) {
+						hover()
+						selectViewport( viewport )
+					} else if ( ! isActive( viewport ) ) {
+						selectViewport( viewport )
+					}
+				} else if ( hovered ) {
+					selectViewport( viewport )
+				}
+				cy.wait( 1 )
+			}
+		} )
+}
+
 /**
  * Function for getting the active tab
  * in inspector.

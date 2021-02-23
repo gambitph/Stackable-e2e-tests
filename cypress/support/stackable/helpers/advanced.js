@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	keys, compact,
+	keys, compact, lowerCase,
 } from 'lodash'
 
 /**
@@ -27,7 +27,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 		enablePaddingBottom = true,
 		enablePaddingLeft = true,
 		paddingUnits = [ 'px', 'em', '%' ],
-		marginUnits = [ 'px', '%s' ],
+		marginUnits = [ 'px', '%' ],
 		verticalAlignSelector = null,
 		viewport = 'Desktop',
 		mainSelector = null,
@@ -244,14 +244,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 
 	_collapse( 'Responsive' )
 
-	_adjust( `Hide on ${ viewport }`, true, {}, 'assertComputedStyle', {
-		[ MAIN_SELECTOR ]: {
-			'display': 'none',
-		},
-	}, {
-		assertBackend: false,
-		viewportFrontend: viewport,
-	} )
+	_adjust( `Hide on ${ viewport }`, true, {}, 'assertClassName', MAIN_SELECTOR, `ugb--hide-${ lowerCase( viewport ) }` )
 
 	// TODO: Custom CSS
 	// TODO: HTML Anchor
