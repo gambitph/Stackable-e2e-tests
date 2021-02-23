@@ -175,7 +175,7 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
 	const headingBlock = registerBlockSnapshots( 'headingBlock' )
 
-	cy.openInspector( 'ugb/headingBlock', 'Advanced' )
+	cy.openInspector( 'ugb/heading', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-heading', { viewport } )
 
