@@ -281,12 +281,13 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.openInspector( 'ugb/separator', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-separator', {
-		viewport,
 		enableMarginRight: false,
 		enableMarginLeft: false,
 		enablePaddingRight: false,
 		enablePaddingLeft: false,
+		mainSelector: '.ugb-separator',
 		paddingUnits: [ 'px', 'em' ],
+		viewport,
 	 } )
 
 	// Add more block specific tests.

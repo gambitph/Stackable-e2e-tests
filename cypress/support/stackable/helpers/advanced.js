@@ -14,6 +14,8 @@ import {
  */
 export const assertAdvancedTab = ( selector, options = {} ) => {
 	const {
+		disableColumnHeight = false,
+		disableColumnVerticalAlign = false,
 		enableMarginTop = true,
 		enableMarginRight = true,
 		enableMarginBottom = true,
@@ -22,11 +24,13 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 		enablePaddingRight = true,
 		enablePaddingBottom = true,
 		enablePaddingLeft = true,
-		viewport = 'Desktop',
 		paddingUnits = [ 'px', 'em', '%' ],
+		verticalAlignSelector = null,
+		viewport = 'Desktop',
+		mainSelector = null,
 	} = options
 
-	const MAIN_SELECTOR = '.ugb-main-block'
+	const MAIN_SELECTOR = mainSelector || '.ugb-main-block'
 
 	/**
 	 * Only collapse when present.
@@ -198,27 +202,31 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 			} )
 
 			// Test Column Vertical Align.
-			const columnVerticalAligns = [ 'flex-start', 'center', 'flex-end', 'stretch' ]
-			columnVerticalAligns.forEach( align => {
-				_adjust( 'Column Vertical Align', align, { viewport }, 'assertComputedStyle', {
-					'.ugb-block-content': {
-						'align-items': align,
-					},
+			if ( ! disableColumnVerticalAlign ) {
+				const columnVerticalAligns = [ 'flex-start', 'center', 'flex-end', 'stretch' ]
+				columnVerticalAligns.forEach( align => {
+					_adjust( 'Column Vertical Align', align, { viewport }, 'assertComputedStyle', {
+						'.ugb-block-content': {
+							'align-items': align,
+						},
+					} )
 				} )
-			} )
+			}
 
 			// Test Min. Column Height.
-			_adjust( 'Min. Column Height', 161, { viewport }, 'assertComputedStyle', {
-				'.ugb-block-content>*': {
-					'min-height': '161px',
-				},
-			} )
+			if ( ! disableColumnHeight ) {
+				_adjust( 'Min. Column Height', 161, { viewport }, 'assertComputedStyle', {
+					'.ugb-block-content>*': {
+						'min-height': '161px',
+					},
+				} )
+			}
 
 			// Test Content Vertical Align.
 			const contentVerticalAligns = [ 'flex-start', 'center', 'flex-end' ]
 			contentVerticalAligns.forEach( align => {
 				_adjust( 'Content Vertical Align', align, { viewport }, 'assertComputedStyle', {
-					'.ugb-block-content>*': {
+					[ verticalAlignSelector || '.ugb-block-content>*' ]: {
 						'justify-content': align,
 					},
 				} )

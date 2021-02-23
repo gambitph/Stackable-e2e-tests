@@ -343,7 +343,10 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	cy.openInspector( 'ugb/card', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-card', { viewport } )
+	assertAdvancedTab( '.ugb-card', {
+		viewport,
+		verticalAlignSelector: '.ugb-card__content',
+	 } )
 
 	// Add more block specific tests.
 	cardBlock.assertFrontendStyles()

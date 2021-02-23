@@ -344,7 +344,10 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	// Test Block Background
-	assertBlockBackground( '.ugb-image-box', { viewport } )
+	assertBlockBackground( '.ugb-image-box', {
+		viewport,
+		disableColumnHeight: true,
+	 } )
 
 	// Test Separators
 	assertSeparators( { viewport } )

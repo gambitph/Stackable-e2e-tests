@@ -238,7 +238,7 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		range( 1, 3 ).forEach( idx => {
 			cy.collapse( `Column #${ idx }` )
 			cy.adjust( 'Column Background', '#447c94' )
-			cy.adjust( 'Column Background', '#3c464a' ).assertComputedStyle( {
+			cy.adjust( 'Number Background', '#3c464a' ).assertComputedStyle( {
 				[ `.ugb-number-box__item${ idx }` ]: {
 					'background-color': '#447c94',
 				},

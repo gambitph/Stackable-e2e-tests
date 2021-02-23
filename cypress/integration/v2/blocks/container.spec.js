@@ -209,7 +209,10 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	cy.openInspector( 'ugb/container', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-container', { viewport } )
+	assertAdvancedTab( '.ugb-container', {
+		viewport,
+		disableColumnVerticalAlign: true,
+	} )
 
 	// Add more block specific tests.
 	containerBlock.assertFrontendStyles()

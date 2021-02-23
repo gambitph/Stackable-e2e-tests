@@ -401,7 +401,10 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	cy.openInspector( 'ugb/button', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-button', { viewport } )
+	assertAdvancedTab( '.ugb-button', {
+		viewport,
+		mainSelector: '.ugb-button-wrapper',
+	} )
 
 	// Add more block specific tests.
 	buttonBlock.assertFrontendStyles()
