@@ -6,10 +6,11 @@ import {
 } from 'lodash'
 
 import {
-	assertBlockExist, blockErrorTest, assertSeparators, registerTests, responsiveAssertHelper,
+	assertBlockExist, blockErrorTest, assertSeparators, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Spacer Block', registerTests( [
 	blockExist,
@@ -17,6 +18,9 @@ describe( 'Spacer Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -157,5 +161,19 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	} )
 
 	assertSeparators( { viewport } )
+	spacerBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/spacer' ).as( 'spacerBlock' )
+	const spacerBlock = registerBlockSnapshots( 'spacerBlock' )
+
+	cy.openInspector( 'ugb/spacer', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-spacer', { viewport } )
+
+	// Add more block specific tests.
 	spacerBlock.assertFrontendStyles()
 }

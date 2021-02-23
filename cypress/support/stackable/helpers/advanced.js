@@ -23,6 +23,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 		enablePaddingBottom = true,
 		enablePaddingLeft = true,
 		viewport = 'Desktop',
+		paddingUnits = [ 'px', 'em', '%' ],
 	} = options
 
 	const MAIN_SELECTOR = '.ugb-main-block'
@@ -154,24 +155,25 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 				} )
 			} )
 
-			const units = [ 'em', 'px', '%' ]
-			units.forEach( unit => {
-				const values = unit === 'em' ? [ 3, 2, 1, 2 ] : [ 12, 65, 34, 23 ]
-				if ( unit !== 'em' ) {
+			const marginUnits = [ 'px', '%' ]
+			marginUnits.forEach( unit => {
+				const values = [ 12, 65, 34, 23 ]
 				// Test Block Margins.
-					const [ margins, marginAsserts ] = generateFourRangeControlAssertion(
-						enableMarginTop,
-						enableMarginRight,
-						enableMarginBottom,
-						enableMarginLeft,
-						values,
-						'margin',
-						unit
-					)
+				const [ margins, marginAsserts ] = generateFourRangeControlAssertion(
+					enableMarginTop,
+					enableMarginRight,
+					enableMarginBottom,
+					enableMarginLeft,
+					values,
+					'margin',
+					unit
+				)
 
-					_adjust( 'Block Margins', margins, { unit, viewport }, 'assertComputedStyle', { [ selector ]: marginAsserts } )
-				}
+				_adjust( 'Block Margins', margins, { unit, viewport }, 'assertComputedStyle', { [ selector ]: marginAsserts } )
+			} )
 
+			paddingUnits.forEach( unit => {
+				const values = unit === 'em' ? [ 3, 2, 1, 2 ] : [ 12, 65, 34, 23 ]
 				// Test Block Paddings.
 				const [ paddings, paddingAsserts ] = generateFourRangeControlAssertion(
 					enablePaddingTop,

@@ -3,11 +3,12 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { startCase } from 'lodash'
+import { startCase, range } from 'lodash'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Number Box Block', registerTests( [
 	blockExist,
@@ -17,6 +18,9 @@ describe( 'Number Box Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -217,5 +221,32 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-number-box', { viewport } )
 	assertSeparators( { viewport } )
+	numberBoxBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )
+	const numberBoxBlock = registerBlockSnapshots( 'numberBoxBlock' )
+
+	cy.openInspector( 'ugb/number-box', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-number-box', { viewport } )
+
+	desktopOnly( () => {
+		range( 1, 3 ).forEach( idx => {
+			cy.collapse( `Column #${ idx }` )
+			cy.adjust( 'Column Background', '#447c94' )
+			cy.adjust( 'Column Background', '#3c464a' ).assertComputedStyle( {
+				[ `.ugb-number-box__item${ idx }` ]: {
+					'background-color': '#447c94',
+				},
+				[ `.ugb-number-box__item${ idx } .ugb-number-box__number` ]: {
+					'background-color': '#3c464a',
+				},
+			} )
+		} )
+	} )
 	numberBoxBlock.assertFrontendStyles()
 }
