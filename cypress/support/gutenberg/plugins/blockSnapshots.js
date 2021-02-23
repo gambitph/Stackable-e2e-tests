@@ -180,7 +180,6 @@ export const registerBlockSnapshots = alias => {
 				if ( options.assertFrontend === undefined || ( isBoolean( options.assertFrontend ) && options.assertFrontend ) ) {
 					blockSnapshots.stubStyles( passedArgs[ 1 ], options.viewportFrontend || viewport )
 					blockSnapshots.createContentSnapshot()
-					cy.log( passedArgs[ 1 ] )
 				}
 				originalFn( ...[ ...passedArgs, optionsToPass ] )
 			} )
