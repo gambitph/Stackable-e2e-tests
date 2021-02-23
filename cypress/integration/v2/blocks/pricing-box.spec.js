@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { startCase } from 'lodash'
+import { range, startCase } from 'lodash'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertContainer, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
 } from '~stackable-e2e/helpers'
@@ -80,6 +80,12 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	assertContainer( '.ugb-pricing-box__item', { viewport }, 'column%sBackgroundMediaUrl' )
 
+	range( 1, 4 ).forEach( idx => {
+		cy.setBlockAttribute( {
+			[ `image${ idx }Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
+		} )
+	} )
+
 	// Spacing Tab
 	cy.collapse( 'Spacing' )
 
@@ -139,10 +145,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	// Image Tab
 	cy.collapse( 'Image' )
-
-	cy.setBlockAttribute( {
-		'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-	} )
 
 	desktopOnly( () => {
 		cy.adjust( 'Shape', {
