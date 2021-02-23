@@ -66,14 +66,17 @@ export const assertBlockTitleDescription = ( options = {}, assertOptions = {} ) 
 			} )
 			assertTypography( typographySelector, { viewport } )
 			assertAligns( 'Text Align', typographySelector, { viewport } )
-
-			cy.collapse( 'Spacing' )
-			cy.adjust( `Block ${ typographyAssertion }`, 41, { viewport } ).assertComputedStyle( {
-				[ typographySelector ]: {
-					'margin-bottom': '41px',
-				},
-			}, assertOptions )
 		} )
+		cy.collapse( 'Spacing' )
+		cy.adjust( 'Block Title', 41, { viewport } )
+		cy.adjust( 'Block Description', 65, { viewport } ).assertComputedStyle( {
+			'.ugb-block-title': {
+				'margin-bottom': '41px',
+			},
+			'.ugb-block-description': {
+				'margin-bottom': '65px',
+			},
+		}, assertOptions )
 	}
 
 	const [ Desktop, Tablet, Mobile ] = responsiveAssertHelper( _assertBlockTitleDescription, { disableItAssertion: true } )
