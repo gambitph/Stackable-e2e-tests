@@ -311,9 +311,9 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
 	const featureGridBlock = registerBlockSnapshots( 'featureGridBlock' )
 
-	cy.openInspector( 'ugb/accordion', 'Advanced' )
+	cy.openInspector( 'ugb/feature-grid', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-accordion', { viewport } )
+	assertAdvancedTab( '.ugb-feature-grid', { viewport } )
 
 	cy.setBlockAttribute( {
 		'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
