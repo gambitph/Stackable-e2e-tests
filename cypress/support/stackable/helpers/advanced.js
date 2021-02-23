@@ -16,6 +16,8 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 	const {
 		disableColumnHeight = false,
 		disableColumnVerticalAlign = false,
+		disableBlockMargins = false,
+		disableBlockPaddings = false,
 		enableMarginTop = true,
 		enableMarginRight = true,
 		enableMarginBottom = true,
@@ -25,6 +27,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 		enablePaddingBottom = true,
 		enablePaddingLeft = true,
 		paddingUnits = [ 'px', 'em', '%' ],
+		marginUnits = [ 'px', '%s' ],
 		verticalAlignSelector = null,
 		viewport = 'Desktop',
 		mainSelector = null,
@@ -159,38 +162,41 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 				} )
 			} )
 
-			const marginUnits = [ 'px', '%' ]
-			marginUnits.forEach( unit => {
-				const values = [ 12, 65, 34, 23 ]
-				// Test Block Margins.
-				const [ margins, marginAsserts ] = generateFourRangeControlAssertion(
-					enableMarginTop,
-					enableMarginRight,
-					enableMarginBottom,
-					enableMarginLeft,
-					values,
-					'margin',
-					unit
-				)
+			if ( ! disableBlockMargins ) {
+				marginUnits.forEach( unit => {
+					const values = [ 12, 65, 34, 23 ]
+					// Test Block Margins.
+					const [ margins, marginAsserts ] = generateFourRangeControlAssertion(
+						enableMarginTop,
+						enableMarginRight,
+						enableMarginBottom,
+						enableMarginLeft,
+						values,
+						'margin',
+						unit
+					)
 
-				_adjust( 'Block Margins', margins, { unit, viewport }, 'assertComputedStyle', { [ selector ]: marginAsserts } )
-			} )
+					_adjust( 'Block Margins', margins, { unit, viewport }, 'assertComputedStyle', { [ selector ]: marginAsserts } )
+				} )
+			}
 
-			paddingUnits.forEach( unit => {
-				const values = unit === 'em' ? [ 3, 2, 1, 2 ] : [ 12, 65, 34, 23 ]
-				// Test Block Paddings.
-				const [ paddings, paddingAsserts ] = generateFourRangeControlAssertion(
-					enablePaddingTop,
-					enablePaddingRight,
-					enablePaddingBottom,
-					enablePaddingLeft,
-					values,
-					'padding',
-					unit
-				)
+			if ( ! disableBlockPaddings ) {
+				paddingUnits.forEach( unit => {
+					const values = unit === 'em' ? [ 3, 2, 1, 2 ] : [ 12, 65, 34, 23 ]
+					// Test Block Paddings.
+					const [ paddings, paddingAsserts ] = generateFourRangeControlAssertion(
+						enablePaddingTop,
+						enablePaddingRight,
+						enablePaddingBottom,
+						enablePaddingLeft,
+						values,
+						'padding',
+						unit
+					)
 
-				_adjust( 'Block Paddings', paddings, { unit, viewport }, 'assertComputedStyle', { [ selector ]: paddingAsserts } )
-			} )
+					_adjust( 'Block Paddings', paddings, { unit, viewport }, 'assertComputedStyle', { [ selector ]: paddingAsserts } )
+				} )
+			}
 		} )
 
 		_collapse( 'Column / Container Spacing', () => {
