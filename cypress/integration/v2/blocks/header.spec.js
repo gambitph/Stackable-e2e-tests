@@ -126,8 +126,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
-	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
+	if ( viewport !== 'Desktop' ) {
 		cy.adjust( 'Paddings', [ 24, 12, 13, 8 ], { unit: 'px', viewport } ).assertComputedStyle( {
 			'.ugb-header__item': {
 				'padding-top': '24px',
@@ -248,7 +247,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
+	if ( viewport !== 'Desktop' ) {
 		assertTypography( '.ugb-button1 .ugb-button--inner', {
 			viewport,
 			enableWeight: false,
@@ -309,7 +308,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
+	if ( viewport !== 'Desktop' ) {
 		assertTypography( '.ugb-button2 .ugb-button--inner', {
 			viewport,
 			enableWeight: false,

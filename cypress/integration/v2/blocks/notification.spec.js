@@ -280,8 +280,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
-	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
+	if ( viewport !== 'Desktop' ) {
 		assertTypography( '.ugb-button .ugb-button--inner', {
 			viewport,
 			enableWeight: false,
