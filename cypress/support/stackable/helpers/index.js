@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	lowerCase,
+	lowerCase, isEmpty,
 } from 'lodash'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
@@ -248,14 +248,18 @@ export const assertTypography = ( selector, options = {}, assertOptions = {} ) =
 		typographyAssertions[ 2 ].assert[ 'line-height' ] = '24px'
 	}
 
-	if ( viewport === 'Desktop' ) {
+	if ( viewport === 'Desktop' && ! isEmpty( typographyAssertions[ 0 ].adjust ) ) {
 		cy.adjust( 'Typography', typographyAssertions[ 0 ].adjust )
 			.assertComputedStyle( { [ selector ]: typographyAssertions[ 0 ].assert }, assertOptions )
 	}
-	cy.adjust( 'Typography', typographyAssertions[ 1 ].adjust )
-		.assertComputedStyle( { [ selector ]: typographyAssertions[ 1 ].assert }, assertOptions )
-	cy.adjust( 'Typography', typographyAssertions[ 2 ].adjust )
-		.assertComputedStyle( { [ selector ]: typographyAssertions[ 2 ].assert }, assertOptions )
+	if ( ! isEmpty( typographyAssertions[ 1 ].adjust ) ) {
+		cy.adjust( 'Typography', typographyAssertions[ 1 ].adjust )
+			.assertComputedStyle( { [ selector ]: typographyAssertions[ 1 ].assert }, assertOptions )
+	}
+	if ( ! isEmpty( typographyAssertions[ 2 ].adjust ) ) {
+		cy.adjust( 'Typography', typographyAssertions[ 2 ].adjust )
+			.assertComputedStyle( { [ selector ]: typographyAssertions[ 2 ].assert }, assertOptions )
+	}
 }
 
 export const assertContainer = ( selector, options = {}, attrNameTemplate = 'column%sBackgroundMediaUrl' ) => {
