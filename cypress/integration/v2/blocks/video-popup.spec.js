@@ -54,7 +54,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.openInspector( 'ugb/video-popup', 'Style' )
 
 	cy.setBlockAttribute( {
-		'videoLink': Cypress.env( 'DUMMY_VIDEO_URL' ),
+		videoLink: Cypress.env( 'DUMMY_VIDEO_URL' ),
 	} )
 
 	cy.collapse( 'Container' )
