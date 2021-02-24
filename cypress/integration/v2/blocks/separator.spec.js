@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper,
+	assertBlockExist, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Separator Block', registerTests( [
 	blockExist,
@@ -14,6 +15,9 @@ describe( 'Separator Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -233,7 +237,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	}
 
 	desktopOnly( () => {
-	// Test Layer 2
+		// Test Layer 2
 		cy.collapse( 'Layer 2' )
 		cy.toggleStyle( 'Layer 2' )
 		cy.adjust( 'Layer Color', '#000000' )
@@ -265,5 +269,24 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			},
 		} )
 	} )
+	separatorBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/separator' ).as( 'separatorBlock' )
+	const separatorBlock = registerBlockSnapshots( 'separatorBlock' )
+
+	cy.openInspector( 'ugb/separator', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-separator', {
+		disableBlockMargins: true,
+		disableBlockPaddings: true,
+		mainSelector: '.ugb-separator',
+		paddingUnits: [ 'px', 'em' ],
+		viewport,
+	 } )
+
 	separatorBlock.assertFrontendStyles()
 }

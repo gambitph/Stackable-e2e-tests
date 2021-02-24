@@ -3,10 +3,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertAligns, registerTests, responsiveAssertHelper, assertTypography,
+	assertBlockExist, blockErrorTest, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Advanced Heading Block', registerTests( [
 	blockExist,
@@ -14,6 +15,9 @@ describe( 'Advanced Heading Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -162,5 +166,19 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			'margin-bottom': '12px',
 		},
 	} )
+	headingBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
+	const headingBlock = registerBlockSnapshots( 'headingBlock' )
+
+	cy.openInspector( 'ugb/heading', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-heading', { viewport } )
+
+	// Add more block specific tests.
 	headingBlock.assertFrontendStyles()
 }

@@ -2,14 +2,19 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { range } from 'lodash'
 
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 describe( 'Team Member Block', registerTests( [
 	blockExist,
 	blockError,
 	switchLayout,
 	switchDesign,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -52,3 +57,37 @@ function switchDesign() {
 	] ) )
 }
 
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )
+	const teamMemberBlock = registerBlockSnapshots( 'teamMemberBlock' )
+
+	cy.openInspector( 'ugb/team-member', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-team-member', { viewport } )
+
+	desktopOnly( () => {
+		cy.setBlockAttribute( {
+			'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		} )
+		range( 1, 3 ).forEach( idx => {
+			cy.collapse( `Column #${ idx }` )
+			cy.adjust( 'Column Background', '#a03b3b' ).assertComputedStyle( {
+				[ `.ugb-team-member__item${ idx }` ]: {
+					'background-color': '#a03b3b',
+				},
+			} )
+			cy.collapse( `Image #${ idx }` )
+			cy.adjust( 'Shape', {
+				label: 'Blob 3',
+				value: 'blob3',
+			} )
+			cy.adjust( 'Flip Shape Horizontally', true )
+			cy.adjust( 'Flip Shape Vertically', true )
+			cy.adjust( 'Stretch Shape Mask', true ).assertClassName( `.ugb-team-member__item${ idx } img.ugb-img--shape`, 'ugb-image--shape-stretch' )
+		} )
+	} )
+	teamMemberBlock.assertFrontendStyles()
+}

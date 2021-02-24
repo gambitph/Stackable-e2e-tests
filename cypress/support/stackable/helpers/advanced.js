@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	keys, compact,
+	keys, compact, lowerCase,
 } from 'lodash'
 
 /**
@@ -14,6 +14,10 @@ import {
  */
 export const assertAdvancedTab = ( selector, options = {} ) => {
 	const {
+		disableColumnHeight = false,
+		disableColumnVerticalAlign = false,
+		disableBlockMargins = false,
+		disableBlockPaddings = false,
 		enableMarginTop = true,
 		enableMarginRight = true,
 		enableMarginBottom = true,
@@ -22,10 +26,15 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 		enablePaddingRight = true,
 		enablePaddingBottom = true,
 		enablePaddingLeft = true,
+		paddingUnits = [ 'px', 'em', '%' ],
+		marginUnits = [ 'px', '%' ],
+		verticalAlignSelector = null,
 		viewport = 'Desktop',
+		mainSelector = null,
 	} = options
 
-	const MAIN_SELECTOR = '.ugb-main-block'
+	const MAIN_SELECTOR = mainSelector || '.ugb-main-block'
+	selector = mainSelector || selector
 
 	/**
 	 * Only collapse when present.
@@ -102,7 +111,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 			} )
 
 			// Test Z-index
-			_adjust( 'Z-index', 6, { viewport }, 'assertComputedStyle', {
+			_adjust( 'Z-Index', 6, { viewport }, 'assertComputedStyle', {
 				[ MAIN_SELECTOR ]: {
 					'z-index': '6',
 				},
@@ -154,11 +163,10 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 				} )
 			} )
 
-			const units = [ 'em', 'px', '%' ]
-			units.forEach( unit => {
-				const values = unit === 'em' ? [ 3, 2, 1, 2 ] : [ 12, 65, 34, 23 ]
-				if ( unit !== 'em' ) {
-				// Test Block Margins.
+			if ( ! disableBlockMargins ) {
+				marginUnits.forEach( unit => {
+					const values = [ 12, 65, 34, 23 ]
+					// Test Block Margins.
 					const [ margins, marginAsserts ] = generateFourRangeControlAssertion(
 						enableMarginTop,
 						enableMarginRight,
@@ -170,21 +178,26 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 					)
 
 					_adjust( 'Block Margins', margins, { unit, viewport }, 'assertComputedStyle', { [ selector ]: marginAsserts } )
-				}
+				} )
+			}
 
-				// Test Block Paddings.
-				const [ paddings, paddingAsserts ] = generateFourRangeControlAssertion(
-					enablePaddingTop,
-					enablePaddingRight,
-					enablePaddingBottom,
-					enablePaddingLeft,
-					values,
-					'padding',
-					unit
-				)
+			if ( ! disableBlockPaddings ) {
+				paddingUnits.forEach( unit => {
+					const values = unit === 'em' ? [ 3, 2, 1, 2 ] : [ 12, 65, 34, 23 ]
+					// Test Block Paddings.
+					const [ paddings, paddingAsserts ] = generateFourRangeControlAssertion(
+						enablePaddingTop,
+						enablePaddingRight,
+						enablePaddingBottom,
+						enablePaddingLeft,
+						values,
+						'padding',
+						unit
+					)
 
-				_adjust( 'Block Paddings', paddings, { unit, viewport }, 'assertComputedStyle', { [ selector ]: paddingAsserts } )
-			} )
+					_adjust( 'Block Paddings', paddings, { unit, viewport }, 'assertComputedStyle', { [ selector ]: paddingAsserts } )
+				} )
+			}
 		} )
 
 		_collapse( 'Column / Container Spacing', () => {
@@ -196,27 +209,31 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 			} )
 
 			// Test Column Vertical Align.
-			const columnVerticalAligns = [ 'flex-start', 'center', 'flex-end', 'stretch' ]
-			columnVerticalAligns.forEach( align => {
-				_adjust( 'Column Vertical Align', align, { viewport }, 'assertComputedStyle', {
-					'.ugb-block-content': {
-						'align-items': align,
-					},
+			if ( ! disableColumnVerticalAlign ) {
+				const columnVerticalAligns = [ 'flex-start', 'center', 'flex-end', 'stretch' ]
+				columnVerticalAligns.forEach( align => {
+					_adjust( 'Column Vertical Align', align, { viewport }, 'assertComputedStyle', {
+						'.ugb-block-content': {
+							'align-items': align,
+						},
+					} )
 				} )
-			} )
+			}
 
 			// Test Min. Column Height.
-			_adjust( 'Min. Column Height', 161, { viewport }, 'assertComputedStyle', {
-				'.ugb-block-content>*': {
-					'min-height': '161px',
-				},
-			} )
+			if ( ! disableColumnHeight ) {
+				_adjust( 'Min. Column Height', 161, { viewport }, 'assertComputedStyle', {
+					'.ugb-block-content>*': {
+						'min-height': '161px',
+					},
+				} )
+			}
 
 			// Test Content Vertical Align.
 			const contentVerticalAligns = [ 'flex-start', 'center', 'flex-end' ]
 			contentVerticalAligns.forEach( align => {
 				_adjust( 'Content Vertical Align', align, { viewport }, 'assertComputedStyle', {
-					'.ugb-block-content>*': {
+					[ verticalAlignSelector || '.ugb-block-content>*' ]: {
 						'justify-content': align,
 					},
 				} )
@@ -228,14 +245,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 
 	_collapse( 'Responsive' )
 
-	_adjust( `Hide on ${ viewport }`, true, {}, 'assertComputedStyle', {
-		[ MAIN_SELECTOR ]: {
-			'display': 'none',
-		},
-	}, {
-		assertBackend: false,
-		viewportFrontend: viewport,
-	} )
+	_adjust( `Hide on ${ viewport }`, true, {}, 'assertClassName', MAIN_SELECTOR, `ugb--hide-${ lowerCase( viewport ) }` )
 
 	// TODO: Custom CSS
 	// TODO: HTML Anchor
