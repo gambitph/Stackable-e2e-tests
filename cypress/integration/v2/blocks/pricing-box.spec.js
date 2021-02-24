@@ -206,13 +206,11 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			},
 		} )
 
-		let typographySettings = {}
+		const typographySettings = {}
 		// Only for Price Prefix and Price Suffix
 		if ( typographyAssertion.match( '/price-/' ) ) {
-			typographySettings = {
-				enableTransform: false,
-				enableLetterSpacing: false,
-			}
+			typographySettings.enableTransform = false
+			typographySettings.enableLetterSpacing = false
 		}
 		assertTypography( `.ugb-pricing-box__${ textClass }`, { viewport }, typographySettings )
 
@@ -269,11 +267,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			'Gradient Direction (degrees)': 72,
 			'Text Color': '#80194d',
 		} )
-		cy.adjust( 'Typography', {
-			'Weight': '700',
-			'Transform': 'lowercase',
-			'Letter Spacing': 2.9,
-		} )
 		cy.adjust( 'Button Size', 'small' ).assertClassName( '.ugb-button', 'ugb-button--size-small' )
 		cy.adjust( 'Border Radius', 40 )
 		cy.adjust( 'Vertical Padding', 15 )
@@ -281,9 +274,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.adjust( 'Shadow', 4 )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				'font-weight': '700',
-				'text-transform': 'lowercase',
-				'letter-spacing': '2.9px',
 				'color': '#ffa03b',
 			},
 			'.ugb-button': {
@@ -314,29 +304,9 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} ).assertClassName( '.ugb-button', 'ugb-button--icon-position-right' )
 	} )
 
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			value: 31,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-button .ugb-button--inner': {
-			'font-size': '31px',
-		},
+	assertTypography( '.ugb-button .ugb-button--inner', { viewport }, {
+		enableLineHeight: false,
 	} )
-
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-button .ugb-button--inner': {
-			'font-size': '7em',
-		},
-	} )
-
 	assertAligns( 'Align', '.ugb-button-container', { viewport } )
 
 	// Effects Tab
