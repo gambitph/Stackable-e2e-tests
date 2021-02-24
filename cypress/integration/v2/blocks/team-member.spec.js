@@ -162,15 +162,37 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		// We won't be able to assert image size for now since it requires server handling.
 	} )
 
-	cy.adjust( 'Image Width', 300, { viewport } )
-	cy.adjust( 'Force square image', true, { viewport } ).assertComputedStyle( {
+	cy.adjust( 'Image Width', 300, { viewport } ).assertComputedStyle( {
 		'.ugb-img': {
 			'width': '300px',
-			'height': '300px',
 		},
 	} )
+	desktopOnly( () => {
+		cy.adjust( 'Force square image', true, { viewport } ).assertComputedStyle( {
+			'.ugb-img': {
+				'height': '300px',
+			},
+		} )
+	} )
 
-	// TO DO: Make assert align for image
+	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
+		'.ugb-pricing-box__image': {
+			'margin-left': '0px',
+			'margin-right': 'auto',
+		},
+	} )
+	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
+		'.ugb-pricing-box__image': {
+			'margin-left': 'auto',
+			'margin-right': 'auto',
+		},
+	} )
+	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
+		'.ugb-pricing-box__image': {
+			'margin-left': 'auto',
+			'margin-right': '0px',
+		},
+	} )
 
 	// Name, Position and Description Tabs
 	const typographyAssertions = [ 'name', 'position', 'description' ]
@@ -213,6 +235,57 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.adjust( 'Pinterest', true )
 	cy.adjust( 'LinkedIn', true )
 	cy.adjust( 'YouTube', true )
+	cy.get( 'a.ugb-button-pinterest' ).should( 'exist' )
+	cy.get( 'a.ugb-button-linkedin' ).should( 'exist' )
+	cy.get( 'a.ugb-button-youtube' ).should( 'exist' )
+
+	desktopOnly( () => {
+		const buttonDesigns = [ 'ghost', 'plain' ]
+		buttonDesigns.forEach( design => {
+			cy.adjust( 'Design', {
+				label: startCase( design ),
+				value: design,
+			} ).assertClassName( '.ugb-social-button', `ugb-button--design-${ design }` )
+		} )
+		cy.adjust( 'Design', {
+			label: 'Basic',
+			value: 'basic',
+		} )
+		cy.adjust( 'Use social colors', true ).assertClassName( '.ugb-social-button', 'ugb-social-button--social-colors' )
+		cy.adjust( 'Use social colors', false )
+		cy.adjust( 'Color Type', 'gradient' )
+		cy.adjust( 'Button Color #1', '#a13939' )
+		cy.adjust( 'Button Color #2', '#4e59d4' )
+		cy.adjust( 'Gradient Direction (degrees)', 138 )
+		cy.adjust( 'Text Color', '#ffa03b' )
+		cy.adjust( 'Hover Effect', 'scale' ).assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
+		cy.adjust( 'Hover Opacity', 0.6 )
+		cy.adjust( 'Hover Colors', {
+			'Button Color': '#bd8b8b',
+			'Text Color': '#80194d',
+		} )
+		cy.adjust( 'Button Size', 'small' ).assertClassName( '.ugb-button', 'ugb-button--size-small' )
+		cy.adjust( 'Border Radius', 40 )
+		cy.adjust( 'Vertical Padding', 15 )
+		cy.adjust( 'Horizontal Padding', 20 )
+		cy.adjust( 'Shadow', 4 )
+		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
+			'.ugb-button svg:not(.ugb-custom-icon)': {
+				'color': '#ffa03b',
+			},
+			'.ugb-button': {
+				'background-color': '#a13939',
+				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
+				'padding-top': '15px',
+				'padding-right': '20px',
+				'padding-bottom': '15px',
+				'padding-left': '20px',
+				'opacity': '0.6',
+				'border-radius': '40px',
+			},
+		} )
+	} )
+	assertAligns( 'Align', '.ugb-team-member__buttons', { viewport } )
 
 	teamMemberBlock.assertFrontendStyles()
 }
