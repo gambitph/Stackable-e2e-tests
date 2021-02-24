@@ -175,7 +175,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	const typographyAssertions = [ 'title', 'price', 'price-prefix', 'price-suffix', 'subprice', 'description' ]
 	typographyAssertions.forEach( typographyAssertion => {
 		// Handle Sub Price label
-		const label = typographyAssertion === 'subprice' ? 'Sub Price' : typographyAssertion.split( '-' ).map( word => startCase( word ) ).join( ' ' )
+		const label = typographyAssertion === 'subprice' ? 'Sub Price' : startCase( typographyAssertion )
 
 		cy.collapse( label )
 
@@ -186,7 +186,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		}
 
 		desktopOnly( () => {
-			const colorTitle = ( ! typographyAssertion.includes( 'price' ) ) ? label : 'Text'
+			const colorTitle = ( ! typographyAssertion.match( '/price/' ) ) ? label : 'Text'
 			cy.adjust( `${ colorTitle } Color`, '#742f2f' ).assertComputedStyle( {
 				[ `.ugb-pricing-box__${ typographyAssertion }` ]: {
 					'color': '#742f2f',
@@ -201,48 +201,23 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			},
 		} )
 		cy.adjust( 'Size', 2, { viewport, unit: 'em' } ).assertComputedStyle( {
-
 			[ `.ugb-pricing-box__${ textClass }` ]: {
 				'font-size': '2em',
 			},
 		} )
 
-		// Only for Title, Price, Sub Price and Description
-		if ( ! typographyAssertion.includes( 'price-' ) ) {
-			assertTypography( `.ugb-pricing-box__${ textClass }`, { viewport } )
-		} else {
-			desktopOnly( () => {
-				cy.adjust( 'Typography', {
-					'Weight': '700',
-				} ).assertComputedStyle( {
-					[ `.ugb-pricing-box__${ textClass }` ]: {
-						'font-weight': '700',
-					},
-				} )
-			} )
-
-			cy.adjust( 'Typography', {
-				'Size': { value: 50, unit: 'px' },
-				'Line-Height': { value: 40, unit: 'px' },
-			}, { viewport } ).assertComputedStyle( {
-				[ `.ugb-pricing-box__${ textClass }` ]: {
-					'font-size': '50px',
-					'line-height': '40px',
-				},
-			} )
-
-			cy.adjust( 'Typography', {
-				'Size': { value: 3, unit: 'em' },
-				'Line-Height': { value: 2, unit: 'em' },
-			}, { viewport } ).assertComputedStyle( {
-				[ `.ugb-pricing-box__${ textClass }` ]: {
-					'font-size': '3em',
-					'line-height': '2em',
-				},
-			} )
+		let typographySettings = {}
+		// Only for Price Prefix and Price Suffix
+		if ( typographyAssertion.match( '/price-/' ) ) {
+			typographySettings = {
+				enableTransform: false,
+				enableLetterSpacing: false,
+			}
 		}
+		assertTypography( `.ugb-pricing-box__${ textClass }`, { viewport }, typographySettings )
+
 		// Only for Title, Sub Price, and Description
-		if ( ! typographyAssertion.includes( 'price' ) || typographyAssertion === 'subprice' ) {
+		if ( Array( 'title', 'subprice', 'description' ).includes( typographyAssertion ) ) {
 			assertAligns( 'Align', `.ugb-pricing-box__${ typographyAssertion }`, { viewport } )
 
 		// Only for Price
@@ -368,7 +343,22 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.collapse( 'Effects' )
 
 	desktopOnly( () => {
-		cy.adjust( 'Hover Effect', 'lift-more' ).assertClassName( '.ugb-pricing-box__item', 'ugb--hover-lift-more' )
+		const hoverEffects = [
+			'shadow',
+			'lift',
+			'lift-more',
+			'lift-shadow',
+			'lift-staggered',
+			'lift-shadow-staggered',
+			'scale',
+			'scale-more',
+			'scale-shadow',
+			'lower',
+			'lower-more',
+		]
+		hoverEffects.forEach( hoverEffect => {
+			cy.adjust( 'Hover Effect', `${ hoverEffect }` ).assertClassName( '.ugb-pricing-box__item', `ugb--hover-${ hoverEffect }` )
+		} )
 	} )
 
 	assertBlockTitleDescription( { viewport } )
