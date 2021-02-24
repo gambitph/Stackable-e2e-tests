@@ -74,11 +74,11 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 		// TODO: Column Arrangement
 	} )
+	cy.adjust( 'Columns', 2 )
 
 	const desktopTabletViewports = [ 'Desktop', 'Tablet' ]
 	if ( desktopTabletViewports.some( _viewport => _viewport === viewport ) ) {
-		cy.adjust( 'Columns', 2 )
-		cy.adjust( 'Column Widths', { value: '2-2' }, { viewport } ).assertComputedStyle( {
+		cy.adjust( 'Column Widths', [ 67, 33 ], { viewport } ).assertComputedStyle( {
 			'.ugb-columns__item': {
 				'grid-template-columns': '1.34fr 0.66fr',
 			},
@@ -118,10 +118,13 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		},
 	} )
 
-	cy.adjust( 'Column Vertical Align', 'center', { viewport } ).assertComputedStyle( {
-		'.ugb-column': {
-			'align-items': 'center',
-		},
+	const aligns = [ 'flex-start', 'center', 'flex-end', 'stretch' ]
+	aligns.forEach( align => {
+		cy.adjust( 'Column Vertical Align', align, { viewport } ).assertComputedStyle( {
+			'.ugb-column': {
+				'align-items': align,
+			},
+		} )
 	} )
 
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
