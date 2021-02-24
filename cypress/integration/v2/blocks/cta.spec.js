@@ -204,18 +204,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			'Gradient Direction (degrees)': 72,
 			'Text Color': '#000000',
 		} )
-		cy.adjust( 'Typography', {
-			'Font Family': 'Serif',
-			'Weight': '200',
-			'Transform': 'lowercase',
-			'Letter Spacing': 2,
-		} ).assertComputedStyle( {
-			'.ugb-button--inner': {
-				'font-weight': '200',
-				'text-transform': 'lowercase',
-				'letter-spacing': '2px',
-			},
-		} )
+		assertTypography( '.ugb-button--inner', { enableLineHeight: false } )
 		cy.adjust( 'Button Size', 'medium' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-medium' )
 		cy.adjust( 'Border Radius', 35 )
@@ -247,27 +236,12 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			value: 19,
-			unit: 'px',
-		},
-	} ).assertComputedStyle( {
-		'.ugb-button--inner': {
-			'font-size': '19px',
-		},
-	} )
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			value: 1.2,
-			unit: 'em',
-		},
-	} ).assertComputedStyle( {
-		'.ugb-button--inner': {
-			'font-size': '1.2em',
-		},
+	assertTypography( '.ugb-button--inner', {
+		viewport,
+		enableWeight: false,
+		enableTransform: false,
+		enableLineHeight: false,
+		enableLetterSpacing: false,
 	} )
 	assertAligns( 'Align', '.ugb-button-container', { viewport } )
 

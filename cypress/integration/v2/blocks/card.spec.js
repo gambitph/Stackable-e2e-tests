@@ -161,6 +161,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	// Test Button options
 	cy.collapse( 'Button' )
 	cy.waitFA()
+	cy.adjust( 'Icon', 'info' )
 	desktopOnly( () => {
 		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
@@ -176,12 +177,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			'Gradient Direction (degrees)': 72,
 			'Text Color': '#80194d',
 		} )
-		cy.adjust( 'Typography', {
-			'Size': 50,
-			'Weight': '700',
-			'Transform': 'lowercase',
-			'Letter Spacing': 2.9,
-		} )
+		assertTypography( '.ugb-button .ugb-button--inner', { enableLineHeight: false } )
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
 		cy.adjust( 'Border Radius', 40 )
@@ -189,12 +185,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.adjust( 'Horizontal Padding', 43 )
 		cy.adjust( 'Shadow', 4 )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '50px',
-				'font-weight': '700',
-				'text-transform': 'lowercase',
-				'letter-spacing': '2.9px',
-			},
 			'.ugb-button': {
 				'background-color': '#a13939',
 				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
@@ -206,17 +196,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 				'border-radius': '40px',
 			},
 		} )
-		cy.adjust( 'Typography', {
-			'Size': {
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '7em',
-			},
-		} )
-		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
 			'Icon Size': 41,
 			'Icon Spacing': 25,
@@ -229,30 +208,14 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
-	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
-		cy.adjust( 'Typography', {
-			'Size': {
-				viewport,
-				value: 50,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '50px',
-			},
-		} )
-
-		cy.adjust( 'Typography', {
-			'Size': {
-				viewport,
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '7em',
-			},
-		} )
+	if ( viewport !== 'Desktop' ) {
+		assertTypography( '.ugb-button .ugb-button--inner', {
+			viewport,
+			enableWeight: false,
+			enableTransform: false,
+			enableLineHeight: false,
+			enableLetterSpacing: false,
+		 } )
 	}
 
 	assertAligns( 'Align', '.ugb-button-container', { viewport } )
