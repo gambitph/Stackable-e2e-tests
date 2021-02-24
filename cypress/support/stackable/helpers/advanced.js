@@ -111,7 +111,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 			} )
 
 			// Test Z-index
-			_adjust( 'Z-index', 6, { viewport }, 'assertComputedStyle', {
+			_adjust( 'Z-Index', 6, { viewport }, 'assertComputedStyle', {
 				[ MAIN_SELECTOR ]: {
 					'z-index': '6',
 				},

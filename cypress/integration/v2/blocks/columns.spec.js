@@ -137,7 +137,7 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	desktopOnly( () => {
 		cy.collapse( 'Responsive' )
 		cy.adjust( 'Collapsed Row Gap', 500 ).assertComputedStyle( {
-			'.ugb-columns-item': {
+			'.ugb-columns__item': {
 				'grid-row-gap': '500',
 			},
 		}, {

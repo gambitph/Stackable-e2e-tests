@@ -237,7 +237,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	}
 
 	desktopOnly( () => {
-	// Test Layer 2
+		// Test Layer 2
 		cy.collapse( 'Layer 2' )
 		cy.toggleStyle( 'Layer 2' )
 		cy.adjust( 'Layer Color', '#000000' )
@@ -281,28 +281,12 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.openInspector( 'ugb/separator', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-separator', {
+		disableBlockMargins: true,
 		disableBlockPaddings: true,
-		disableBlockmargins: true,
 		mainSelector: '.ugb-separator',
 		paddingUnits: [ 'px', 'em' ],
 		viewport,
 	 } )
-
-	 // TODO: Create our own separator block margins assertions.
-	 cy.collapse( 'Block Spacing' )
-	 cy.adjust( 'Block Margins', 20, { viewport, unit: 'px' } ).assertComputedStyle( {
-		 '.ugb-separator': {
-			'margin-top': '5px',
-			'margin-bottom': '5px',
-		 },
-	 }, { assertFrontend: false } )
-
-	 cy.adjust( 'Block Margins', 20, { viewport, unit: 'px' } ).assertComputedStyle( {
-		 '.ugb-separator': {
-			'margin-top': '19px',
-			'margin-bottom': '19px',
-		 },
-	 }, { assertBackend: false } )
 
 	separatorBlock.assertFrontendStyles()
 }
