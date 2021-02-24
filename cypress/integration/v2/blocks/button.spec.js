@@ -96,6 +96,9 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	Array( 1, 2, 3 ).forEach( index => {
 		cy.collapse( `Button #${ index }` )
+		if ( index !== 1 ) {
+			cy.toggleStyle( `Button #${ index }` )
+		}
 		cy.typeBlock( 'ugb/button', `.ugb-button${ index } .ugb-button--inner`, `Button ${ index }` )
 		cy.waitFA()
 		desktopOnly( () => {
