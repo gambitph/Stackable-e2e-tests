@@ -55,10 +55,10 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	cy.collapse( 'Container' )
 	assertContainer( '.ugb-video-popup__wrapper', { viewport }, 'preview%sBackgroundMediaUrl' )
-	cy.adjust( 'Width', 832, { viewport } )
-	cy.adjust( 'Height', 567, { viewport } ).assertComputedStyles( {
+	cy.adjust( 'Width', 632, { viewport } )
+	cy.adjust( 'Height', 567, { viewport } ).assertComputedStyle( {
 		'.ugb-video-popup__wrapper': {
-			'max-width': '832px',
+			'max-width': '632px',
 			'height': '567px',
 		},
 	} )
@@ -68,14 +68,14 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.adjust( 'Button Style', 'circle' )
 		cy.get( 'svg.ugb-play-button-cirle' ).should( 'exist' )
 		cy.adjust( 'Color', '#19ff00' )
-		cy.adjust( 'Opacity', 0.8 ).assertComputedStyles( {
+		cy.adjust( 'Opacity', 0.8 ).assertComputedStyle( {
 			'.ugb-video-popup__play-button svg': {
 				'fill': '#19ff00',
 				'opacity': '0.8',
 			},
 		} )
 	} )
-	cy.adjust( 'Size', 73, { viewport } ).assertComputedStyles( {
+	cy.adjust( 'Size', 73, { viewport } ).assertComputedStyle( {
 		'.ugb-video-popup__play-button svg': {
 			'height': '73px',
 			'width': '73px',
