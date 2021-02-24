@@ -126,8 +126,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
-	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
+	if ( viewport !== 'Desktop' ) {
 		cy.adjust( 'Paddings', [ 24, 12, 13, 8 ], { unit: 'px', viewport } ).assertComputedStyle( {
 			'.ugb-header__item': {
 				'padding-top': '24px',
@@ -214,12 +213,8 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			'Gradient Direction (degrees)': 72,
 			'Text Color': '#80194d',
 		} )
-		cy.adjust( 'Typography', {
-			'Size': 50,
-			'Weight': '700',
-			'Transform': 'lowercase',
-			'Letter Spacing': 2.9,
-		} )
+
+		assertTypography( '.ugb-button1 .ugb-button--inner', { enableLineHeight: false } )
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button1', 'ugb-button--size-large' )
 		cy.adjust( 'Border Radius', 40 )
@@ -227,12 +222,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.adjust( 'Horizontal Padding', 43 )
 		cy.adjust( 'Shadow', 4 )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
-			'.ugb-button1 .ugb-button--inner': {
-				'font-size': '50px',
-				'font-weight': '700',
-				'text-transform': 'lowercase',
-				'letter-spacing': '2.9px',
-			},
 			'.ugb-button1': {
 				'background-color': '#a13939',
 				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
@@ -242,16 +231,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 				'padding-left': '43px',
 				'opacity': '0.6',
 				'border-radius': '40px',
-			},
-		} )
-		cy.adjust( 'Typography', {
-			'Size': {
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button1 .ugb-button--inner': {
-				'font-size': '7em',
 			},
 		} )
 		cy.waitFA()
@@ -268,28 +247,13 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
-		cy.adjust( 'Typography', {
-			'Size': {
-				viewport,
-				value: 50,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button1 .ugb-button--inner': {
-				'font-size': '50px',
-			},
-		} )
-
-		cy.adjust( 'Typography', {
-			'Size': {
-				viewport,
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button1 .ugb-button--inner': {
-				'font-size': '7em',
-			},
+	if ( viewport !== 'Desktop' ) {
+		assertTypography( '.ugb-button1 .ugb-button--inner', {
+			viewport,
+			enableWeight: false,
+			enableTransform: false,
+			enableLineHeight: false,
+			enableLetterSpacing: false,
 		} )
 	}
 
@@ -311,12 +275,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			'Gradient Direction (degrees)': 72,
 			'Text Color': '#80194d',
 		} )
-		cy.adjust( 'Typography', {
-			'Size': 50,
-			'Weight': '700',
-			'Transform': 'lowercase',
-			'Letter Spacing': 2.9,
-		} )
+		assertTypography( '.ugb-button2 .ugb-button--inner', { enableLineHeight: false } )
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button2', 'ugb-button--size-large' )
 		cy.adjust( 'Border Radius', 40 )
@@ -324,12 +283,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.adjust( 'Horizontal Padding', 43 )
 		cy.adjust( 'Shadow', 4 )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
-			'.ugb-button2 .ugb-button--inner': {
-				'font-size': '50px',
-				'font-weight': '700',
-				'text-transform': 'lowercase',
-				'letter-spacing': '2.9px',
-			},
 			'.ugb-button2': {
 				'background-color': '#a13939',
 				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
@@ -339,16 +292,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 				'padding-left': '43px',
 				'opacity': '0.6',
 				'border-radius': '40px',
-			},
-		} )
-		cy.adjust( 'Typography', {
-			'Size': {
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button2 .ugb-button--inner': {
-				'font-size': '7em',
 			},
 		} )
 		cy.waitFA()
@@ -365,28 +308,13 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
-		cy.adjust( 'Typography', {
-			'Size': {
-				viewport,
-				value: 50,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button2 .ugb-button--inner': {
-				'font-size': '50px',
-			},
-		} )
-
-		cy.adjust( 'Typography', {
-			'Size': {
-				viewport,
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button2 .ugb-button--inner': {
-				'font-size': '7em',
-			},
+	if ( viewport !== 'Desktop' ) {
+		assertTypography( '.ugb-button2 .ugb-button--inner', {
+			viewport,
+			enableWeight: false,
+			enableTransform: false,
+			enableLineHeight: false,
+			enableLetterSpacing: false,
 		} )
 	}
 
