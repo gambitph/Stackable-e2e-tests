@@ -4,10 +4,10 @@
 import { range } from 'lodash'
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
 } from '~stackable-e2e/helpers'
-import config from 'root/cypress.json'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Advanced Columns and Grid Block', registerTests( [
@@ -16,6 +16,8 @@ describe( 'Advanced Columns and Grid Block', registerTests( [
 	innerBlocks,
 	switchLayout,
 	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopAdvanced,
 	tabletAdvanced,
 	mobileAdvanced,
@@ -53,14 +55,16 @@ function switchLayout() {
 	] ) )
 }
 
-function desktopStyle() {
-	it( 'should adjust desktop options inside style tab', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/columns' )
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )
+	const columnsBlock = registerBlockSnapshots( 'columnsBlock' )
+	cy.openInspector( 'ugb/columns', 'Style' )
 
-		cy.openInspector( 'ugb/columns', 'Style' )
-		cy.collapse( 'General' )
+	cy.collapse( 'General' )
+
+	desktopOnly( () => {
 		range( 2, 7 ).forEach( idx => {
 			cy.adjust( 'Columns', idx )
 			cy
@@ -68,61 +72,100 @@ function desktopStyle() {
 				.find( '.ugb-column' )
 				.should( 'have.length', idx )
 		} )
-
 		// TODO: Column Arrangement
+	} )
 
+	const desktopTabletViewports = [ 'Desktop', 'Tablet' ]
+	if ( desktopTabletViewports.some( _viewport => _viewport === viewport ) ) {
 		cy.adjust( 'Columns', 2 )
-		cy.adjust( 'Column Widths', [ 20 ] ).assertComputedStyle( {
+		cy.adjust( 'Column Widths', { value: '2-2' }, { viewport } ).assertComputedStyle( {
 			'.ugb-columns__item': {
-				'grid-template-columns': '0.4fr 1fr',
+				'grid-template-columns': '1.34fr 0.66fr',
 			},
 		}, {
 			assertFrontend: false,
 		} )
+	}
 
-		cy.adjust( 'Column Gap', 115 ).assertComputedStyle( {
-			'.ugb-columns__item': {
-				'grid-column-gap': '115px',
-			},
-		} )
-
-		cy.adjust( 'Height', 'half' ).assertComputedStyle( {
-			'.ugb-columns__item': {
-				'min-height': `${ config.viewportHeight / 2 }px`,
-			},
-		} )
-
-		cy.adjust( 'Height', 'full' ).assertComputedStyle( {
-			'.ugb-columns__item': {
-				'min-height': `${ config.viewportHeight }px`,
-			},
-		} )
-
-		cy.adjust( 'Height', 'custom' )
-		cy.adjust( 'Custom Height', 220 ).assertComputedStyle( {
-			'.ugb-columns__item': {
-				'min-height': '220px',
-			},
-		} )
-
-		cy.adjust( 'Column Vertical Align', 'center' ).assertComputedStyle( {
-			'.ugb-column': {
-				'justify-content': 'center',
-			},
-		} )
-
-		cy.toggleStyle( 'Block Title' )
-		cy.collapse( 'Block Title' )
-		cy.adjust( 'Title HTML Tag', 'h5' )
-		cy.adjust( 'Typography', {
-			'Font Family': 'Monospace',
-			'Size': 75,
-			'Weight': 600,
-			'Transform': 'uppercase',
-			'Line-Height': 1.9,
-			'Letter Spacing': 7.1,
-		} )
+	cy.adjust( 'Column Gap', 115, { viewport } ).assertComputedStyle( {
+		'.ugb-columns__item': {
+			'grid-column-gap': '115px',
+		},
 	} )
+
+	cy.adjust( 'Height', 'half', { viewport } ).assertComputedStyle( {
+		'.ugb-columns__item': {
+			'min-height': '50vh',
+		},
+	} )
+
+	cy.adjust( 'Height', 'full', { viewport } ).assertComputedStyle( {
+		'.ugb-columns__item': {
+			'min-height': '100vh',
+		},
+	} )
+
+	cy.adjust( 'Height', 'custom', { viewport } )
+	cy.adjust( 'Custom Height', 220, { viewport, unit: 'px' } ).assertComputedStyle( {
+		'.ugb-columns__item': {
+			'min-height': '220px',
+		},
+	} )
+	cy.adjust( 'Height', 'custom', { viewport } )
+	cy.adjust( 'Custom Height', 31, { viewport, unit: 'vh' } ).assertComputedStyle( {
+		'.ugb-columns__item': {
+			'min-height': '31vh',
+		},
+	} )
+
+	cy.adjust( 'Column Vertical Align', 'center', { viewport } ).assertComputedStyle( {
+		'.ugb-column': {
+			'align-items': 'center',
+		},
+	} )
+
+	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
+
+	desktopOnly( () => {
+		// Set the text colors in ugb/columns
+		cy.collapse( 'Text Colors' )
+		cy.adjust( 'Heading Color', '#8e8ee0' )
+		cy.adjust( 'Text Color', '#24b267' )
+		cy.adjust( 'Link Color', '#642c2c' )
+		cy.adjust( 'Link Hover Color', '#ba89df' )
+
+		// Add a ugb/card block inside the first column
+		cy.addInnerBlock( 'ugb/card' )
+		cy.openInspector( 'ugb/card', 'Style' )
+		cy.collapse( 'Button' )
+		cy.adjust( 'Button Design', {
+			label: 'Link',
+			value: 'link',
+		} ).assertComputedStyle( {
+			'.ugb-card__title': {
+				'color': '#8e8ee0',
+			},
+			'.ugb-card__subtitle': {
+				'color': '#24b267',
+			},
+			'.ugb-card__description': {
+				'color': '#24b267',
+			},
+			'.ugb-button': {
+				'color': '#642c2c',
+			},
+		} )
+
+		// Go back to ugb/columns
+		cy.selectBlock( 'ugb/columns' )
+	} )
+
+	assertBlockTitleDescription( { viewport } )
+	assertBlockBackground( '.ugb-columns', { viewport } )
+	assertSeparators( { viewport } )
+
+	columnsBlock.assertFrontendStyles()
+	// TODO: Add style assertion for one column
 }
 
 function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
@@ -149,5 +192,7 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	// Add more block specific tests.
 	columnsBlock.assertFrontendStyles()
+
+	// TODO: Add advanced assertion for one column
 }
 
