@@ -3,10 +3,11 @@
  */
 import { range } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Image Box Block', registerTests( [
 	blockExist,
@@ -16,6 +17,9 @@ describe( 'Image Box Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -344,8 +348,28 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	// Test Block Background
-	assertBlockBackground( '.ugb-image-box', { viewport } )
+	assertBlockBackground( '.ugb-image-box', {
+		viewport,
+		disableColumnHeight: true,
+	 } )
 
 	// Test Separators
 	assertSeparators( { viewport } )
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/image-box' ).as( 'imageBoxBlock' )
+	const imageBoxBlock = registerBlockSnapshots( 'imageBoxBlock' )
+
+	cy.openInspector( 'ugb/image-box', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-image-box', {
+		viewport,
+		disableColumnHeight: true,
+	} )
+
+	// Add more block specific tests.
+	imageBoxBlock.assertFrontendStyles()
 }
