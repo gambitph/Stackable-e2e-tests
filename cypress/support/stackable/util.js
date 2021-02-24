@@ -76,12 +76,12 @@ export function changeControlViewport( viewport = 'Desktop', name = '', isInPopo
 				if ( viewport !== 'Desktop' ) {
 					if ( ! hovered ) {
 						hover()
-						selectViewport( viewport )
-					} else if ( ! isActive( viewport ) ) {
-						selectViewport( viewport )
+						selectViewport()
+					} else if ( ! isActive() ) {
+						selectViewport()
 					}
 				} else if ( hovered ) {
-					selectViewport( viewport )
+					selectViewport()
 				}
 				cy.wait( 1 )
 			}
