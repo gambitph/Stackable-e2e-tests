@@ -3,13 +3,18 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, registerTests,
+	assertBlockExist, blockErrorTest, switchDesigns, registerTests, responsiveAssertHelper, assertContainer, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
 } from '~stackable-e2e/helpers'
+
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 
 describe( 'Video Popup Block', registerTests( [
 	blockExist,
 	blockError,
 	switchDesign,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 ] ) )
 
 function blockExist() {
@@ -37,3 +42,69 @@ function switchDesign() {
 	] ) )
 }
 
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/video-popup' ).as( 'videoPopupBlock' )
+	const videoPopupBlock = registerBlockSnapshots( 'videoPopupBlock' )
+	cy.openInspector( 'ugb/video-popup', 'Style' )
+
+	cy.setBlockAttribute( {
+		'videoLink': Cypress.env( 'DUMMY_VIDEO_URL' ),
+	} )
+
+	cy.collapse( 'Container' )
+	assertContainer( '.ugb-video-popup__wrapper', { viewport }, 'preview%sBackgroundMediaUrl' )
+	cy.adjust( 'Width', 832, { viewport } )
+	cy.adjust( 'Height', 567, { viewport } ).assertComputedStyles( {
+		'.ugb-video-popup__wrapper': {
+			'max-width': '832px',
+			'height': '567px',
+		},
+	} )
+
+	cy.collapse( 'Play Button' )
+	desktopOnly( () => {
+		cy.adjust( 'Button Style', 'circle' )
+		cy.get( 'svg.ugb-play-button-cirle' ).should( 'exist' )
+		cy.adjust( 'Color', '#19ff00' )
+		cy.adjust( 'Opacity', 0.8 ).assertComputedStyles( {
+			'.ugb-video-popup__play-button svg': {
+				'fill': '#19ff00',
+				'opacity': '0.8',
+			},
+		} )
+	} )
+	cy.adjust( 'Size', 73, { viewport } ).assertComputedStyles( {
+		'.ugb-video-popup__play-button svg': {
+			'height': '73px',
+			'width': '73px',
+		},
+	} )
+
+	desktopOnly( () => {
+		cy.collapse( 'Effects' )
+		const hoverEffects = [
+			'shadow',
+			'lift',
+			'lift-more',
+			'lift-shadow',
+			'lift-staggered',
+			'lift-shadow-staggered',
+			'scale',
+			'scale-more',
+			'scale-shadow',
+			'lower',
+			'lower-more',
+		]
+		hoverEffects.forEach( effect => {
+			cy.adjust( 'Hover Effect', effect )
+				.assertClassName( '.ugb-video-popup__wrapper', `ugb--hover-${ effect }` )
+		} )
+	} )
+
+	assertBlockTitleDescription( { viewport } )
+	assertBlockBackground( '.ugb-video-popup', { viewport } )
+	assertSeparators( { viewport } )
+	videoPopupBlock.assertFrontendStyles()
+}
