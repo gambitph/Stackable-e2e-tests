@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	lowerCase,
+	lowerCase, isEmpty,
 } from 'lodash'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
@@ -193,59 +193,73 @@ export const responsiveAssertHelper = ( callback = () => {}, options = {} ) => {
 export const assertTypography = ( selector, options = {}, assertOptions = {} ) => {
 	const {
 		viewport = 'Desktop',
+		enableSize = true,
+		enableWeight = true,
+		enableTransform = true,
+		enableLineHeight = true,
+		enableLetterSpacing = true,
 	} = options
 
-	if ( viewport === 'Desktop' ) {
-		cy.adjust( 'Typography', {
-			'Size': { value: 50, unit: 'px' },
-			'Weight': '700',
-			'Transform': 'lowercase',
-			'Line-Height': 4,
-			'Letter Spacing': 2.9,
-		} ).assertComputedStyle( {
-			[ selector ]: {
-				'font-size': '50px',
-				'font-weight': '700',
-				'text-transform': 'lowercase',
-				'line-height': '4em',
-				'letter-spacing': '2.9px',
-			},
-		}, assertOptions )
+	// Initialize assertion objects.
+	const typographyAssertions = {
+		0: { adjust: {}, assert: {} },
+		1: { adjust: {}, assert: {} },
+		2: { adjust: {}, assert: {} },
 	}
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			value: 50,
-			unit: 'px',
-		},
-		'Line-Height': {
-			viewport,
-			value: 4,
-			unit: 'em',
-		},
-	} ).assertComputedStyle( {
-		[ selector ]: {
-			'font-size': '50px',
-			'line-height': '4em',
-		},
-	}, assertOptions )
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			value: 5,
-			unit: 'em',
-		},
-		'Line-Height': {
-			viewport,
-			value: 24,
-			unit: 'px',
-		},
-	} ).assertComputedStyle( {
-		[ selector ]: {
-			'font-size': '5em',
-			'line-height': '24px',
-		},
-	}, assertOptions )
+
+	if ( enableSize ) {
+		typographyAssertions[ 0 ].adjust.Size = { value: 50, unit: 'px' }
+		typographyAssertions[ 1 ].adjust.Size = {
+			viewport, value: 50, unit: 'px',
+		}
+		typographyAssertions[ 2 ].adjust.Size = {
+			viewport, value: 5, unit: 'em',
+		}
+		typographyAssertions[ 0 ].assert[ 'font-size' ] = '50px'
+		typographyAssertions[ 1 ].assert[ 'font-size' ] = '50px'
+		typographyAssertions[ 2 ].assert[ 'font-size' ] = '5em'
+	}
+
+	if ( enableWeight ) {
+		typographyAssertions[ 0 ].adjust.Weight = '700'
+		typographyAssertions[ 0 ].assert[ 'font-weight' ] = '700'
+	}
+
+	if ( enableTransform ) {
+		typographyAssertions[ 0 ].adjust.Transform = 'lowercase'
+		typographyAssertions[ 0 ].assert[ 'text-transform' ] = 'lowercase'
+	}
+
+	if ( enableLetterSpacing ) {
+		typographyAssertions[ 0 ].adjust[ 'Letter Spacing' ] = 2.9
+		typographyAssertions[ 0 ].assert[ 'letter-spacing' ] = '2.9px'
+	}
+
+	if ( enableLineHeight ) {
+		typographyAssertions[ 0 ].adjust[ 'Line-Height' ] = 4
+		typographyAssertions[ 1 ].adjust[ 'Line-Height' ] = {
+			viewport, value: 4, unit: 'em',
+		}
+		typographyAssertions[ 2 ].adjust[ 'Line-Height' ] = {
+			viewport, value: 24, unit: 'px',
+		}
+		typographyAssertions[ 0 ].assert[ 'line-height' ] = '4em'
+		typographyAssertions[ 1 ].assert[ 'line-height' ] = '4em'
+		typographyAssertions[ 2 ].assert[ 'line-height' ] = '24px'
+	}
+
+	if ( viewport === 'Desktop' && ! isEmpty( typographyAssertions[ 0 ].adjust ) ) {
+		cy.adjust( 'Typography', typographyAssertions[ 0 ].adjust )
+			.assertComputedStyle( { [ selector ]: typographyAssertions[ 0 ].assert }, assertOptions )
+	}
+	if ( ! isEmpty( typographyAssertions[ 1 ].adjust ) ) {
+		cy.adjust( 'Typography', typographyAssertions[ 1 ].adjust )
+			.assertComputedStyle( { [ selector ]: typographyAssertions[ 1 ].assert }, assertOptions )
+	}
+	if ( ! isEmpty( typographyAssertions[ 2 ].adjust ) ) {
+		cy.adjust( 'Typography', typographyAssertions[ 2 ].adjust )
+			.assertComputedStyle( { [ selector ]: typographyAssertions[ 2 ].assert }, assertOptions )
+	}
 }
 
 export const assertContainer = ( selector, options = {}, attrNameTemplate = 'column%sBackgroundMediaUrl' ) => {
