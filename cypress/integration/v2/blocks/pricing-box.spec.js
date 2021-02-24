@@ -169,7 +169,25 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			'height': '300px',
 		},
 	} )
-	// TO DO: Make assert align for image
+
+	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
+		'.ugb-pricing-box__image': {
+			'margin-left': '0px',
+			'margin-right': 'auto',
+		},
+	} )
+	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
+		'.ugb-pricing-box__image': {
+			'margin-left': 'auto',
+			'margin-right': 'auto',
+		},
+	} )
+	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
+		'.ugb-pricing-box__image': {
+			'margin-left': 'auto',
+			'margin-right': '0px',
+		},
+	} )
 
 	// Title, Price, Price Prefix, Price Suffix, Sub Price and Description Tabs
 	const typographyAssertions = [ 'title', 'price', 'price-prefix', 'price-suffix', 'subprice', 'description' ]
