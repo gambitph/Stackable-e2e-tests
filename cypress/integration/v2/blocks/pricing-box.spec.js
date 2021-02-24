@@ -70,7 +70,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	const pricingBoxBlock = registerBlockSnapshots( 'pricingBoxBlock' )
 	cy.openInspector( 'ugb/pricing-box', 'Style' )
 
-	//General Tab
+	// General Tab
 	cy.collapse( 'General' )
 
 	desktopOnly( () => {
@@ -162,12 +162,17 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		// We won't be able to assert image size for now since it requires server handling.
 	} )
 
-	cy.adjust( 'Image Width', 300, { viewport } )
-	cy.adjust( 'Force square image', true, { viewport } ).assertComputedStyle( {
+	cy.adjust( 'Image Width', 300, { viewport } ).assertComputedStyle( {
 		'.ugb-img': {
 			'width': '300px',
-			'height': '300px',
 		},
+	} )
+	desktopOnly( () => {
+		cy.adjust( 'Force square image', true, { viewport } ).assertComputedStyle( {
+			'.ugb-img': {
+				'height': '300px',
+			},
+		} )
 	} )
 
 	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
@@ -327,10 +332,10 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	} )
 	assertAligns( 'Align', '.ugb-button-container', { viewport } )
 
-	// Effects Tab
-	cy.collapse( 'Effects' )
-
 	desktopOnly( () => {
+		// Effects Tab
+		cy.collapse( 'Effects' )
+
 		const hoverEffects = [
 			'shadow',
 			'lift',
