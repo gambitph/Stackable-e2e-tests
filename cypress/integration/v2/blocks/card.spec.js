@@ -161,6 +161,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	// Test Button options
 	cy.collapse( 'Button' )
 	cy.waitFA()
+	cy.adjust( 'Icon', 'info' )
 	desktopOnly( () => {
 		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
@@ -176,7 +177,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			'Gradient Direction (degrees)': 72,
 			'Text Color': '#80194d',
 		} )
-		assertTypography( '.ugb-button .ugb-button--iner', { enableLineHeight: false } )
+		assertTypography( '.ugb-button .ugb-button--inner', { enableLineHeight: false } )
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
 		cy.adjust( 'Border Radius', 40 )
@@ -195,7 +196,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 				'border-radius': '40px',
 			},
 		} )
-		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
 			'Icon Size': 41,
 			'Icon Spacing': 25,
