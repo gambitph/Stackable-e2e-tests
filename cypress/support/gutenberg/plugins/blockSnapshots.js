@@ -103,6 +103,10 @@ class BlockSnapshots {
 					}
 				} )
 
+				if ( ! combinedStubbed.length ) {
+					return
+				}
+
 				cy.publish()
 				cy.getPostUrls().then( ( { previewUrl } ) => {
 					cy.visit( previewUrl )

@@ -3,10 +3,11 @@
  */
 import { range, startCase } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertContainer, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertContainer, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Pricing Box Block', registerTests( [
 	blockExist,
@@ -16,6 +17,9 @@ describe( 'Pricing Box Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -371,5 +375,40 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	assertBlockBackground( '.ugb-pricing-box', { viewport } )
 	assertSeparators( { viewport } )
 
+	pricingBoxBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/pricing-box' ).as( 'pricingBoxBlock' )
+	const pricingBoxBlock = registerBlockSnapshots( 'pricingBoxBlock' )
+
+	cy.openInspector( 'ugb/pricing-box', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-pricing-box', { viewport } )
+
+	desktopOnly( () => {
+		cy.setBlockAttribute( {
+			'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		} )
+		range( 1, 3 ).forEach( idx => {
+			cy.collapse( `Column #${ idx }` )
+			cy.adjust( 'Column Background', '#a03b3b' ).assertComputedStyle( {
+				[ `.ugb-pricing-box__item${ idx }` ]: {
+					'background-color': '#a03b3b',
+				},
+			} )
+			cy.collapse( `Image #${ idx }` )
+			cy.adjust( 'Shape', {
+				label: 'Blob 3',
+				value: 'blob3',
+			} )
+			cy.adjust( 'Flip Shape Horizontally', true )
+			cy.adjust( 'Flip Shape Vertically', true )
+			cy.adjust( 'Stretch Shape Mask', true ).assertClassName( `.ugb-pricing-box__item${ idx } img.ugb-img--shape`, 'ugb-image--shape-stretch' )
+		} )
+	} )
 	pricingBoxBlock.assertFrontendStyles()
 }
