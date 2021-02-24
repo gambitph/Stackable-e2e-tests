@@ -70,7 +70,7 @@ export function changeControlViewport( viewport = 'Desktop', name = '', isInPopo
 		.then( $baseControl => {
 			if ( $baseControl.find( 'button[aria-label="Desktop"]' ).length ) {
 				const hovered = $baseControl.find( 'button[aria-label="Tablet"]' ).length
-				const hover = () => selector().find( 'button[aria-label="Desktop"]' ).trigger( 'moseover', { force: true } )
+				const hover = () => selector().find( 'button[aria-label="Desktop"]' ).trigger( 'mouseover', { force: true } )
 				const selectViewport = () => selector().find( `button[aria-label="${ viewport }"]` ).click( { force: true } )
 				const isActive = () => $baseControl.find( `button.is-active[aria-label="${ viewport }"]` ).length
 				if ( viewport !== 'Desktop' ) {
