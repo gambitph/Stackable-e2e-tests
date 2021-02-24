@@ -39,18 +39,17 @@ Cypress.Commands.add( 'adjustDesign', adjustDesign )
 Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 	const optionsToPass = args.length === 3 ? args.pop() : {}
 	const label = first( args )
-	const {
-		isInPopover = false,
-		viewport = 'Desktop',
-		unit = '',
-		beforeAdjust = () => {},
-	} = optionsToPass
 
 	// Function to call before adjusting options
-	optionsToPass.beforeAdjust = () => {
-		beforeAdjust()
-		changeControlViewport( viewport, label, isInPopover )
-		changeUnit( unit, label, isInPopover )
+	optionsToPass.beforeAdjust = ( name, value, options ) => {
+		const {
+			viewport = 'Desktop',
+			isInPopover = false,
+			unit = '',
+		} = options
+
+		changeControlViewport( viewport, name, isInPopover )
+		changeUnit( unit, name, isInPopover )
 	}
 
 	// Handle options with no label
