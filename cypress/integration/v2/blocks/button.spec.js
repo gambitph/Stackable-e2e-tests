@@ -125,7 +125,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 					'color': '#ffa03b',
 				},
 				[ `.ugb-button${ index }` ]: {
-					'background-color': '#a13939',
+					'background-color': '#4e59d4',
 					'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
 					'padding-top': '15px',
 					'padding-right': '43px',
