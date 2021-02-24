@@ -2,14 +2,19 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Feature Block', registerTests( [
 	blockExist,
 	blockError,
 	switchLayout,
 	switchDesign,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -104,3 +109,16 @@ function switchDesign() {
 	] ) )
 }
 
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
+	const featureBlock = registerBlockSnapshots( 'featureBlock' )
+
+	cy.openInspector( 'ugb/feature', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-feature', { viewport } )
+
+	// Add more block specific tests.
+	featureBlock.assertFrontendStyles()
+}

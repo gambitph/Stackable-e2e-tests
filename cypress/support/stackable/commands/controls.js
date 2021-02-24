@@ -9,7 +9,7 @@ import { containsRegExp } from '~common/util'
 /**
  * Internal dependencies
  */
-import { changeUnit } from '../util'
+import { changeControlViewport, changeUnit } from '../util'
 
 /**
  * register functions to cypress commands.
@@ -49,7 +49,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 	// Function to call before adjusting options
 	optionsToPass.beforeAdjust = () => {
 		beforeAdjust()
-		cy.changePreviewMode( viewport )
+		changeControlViewport( viewport, label, isInPopover )
 		changeUnit( unit, label, isInPopover )
 	}
 

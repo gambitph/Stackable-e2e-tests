@@ -2,10 +2,12 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { range } from 'lodash'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Feature Grid Block', registerTests( [
 	blockExist,
@@ -15,6 +17,9 @@ describe( 'Feature Grid Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -274,6 +279,42 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-feature-grid', { viewport } )
 	assertSeparators( { viewport } )
+	featureGridBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
+	const featureGridBlock = registerBlockSnapshots( 'featureGridBlock' )
+
+	cy.openInspector( 'ugb/feature-grid', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-feature-grid', { viewport } )
+
+	desktopOnly( () => {
+		cy.setBlockAttribute( {
+			'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		} )
+		range( 1, 4 ).forEach( idx => {
+			cy.collapse( `Column #${ idx }` )
+			cy.adjust( 'Column Background', '#a03b3b' ).assertComputedStyle( {
+				[ `.ugb-feature-grid__item${ idx }` ]: {
+					'background-color': '#a03b3b',
+				},
+			} )
+			cy.collapse( `Image #${ idx }` )
+			cy.adjust( 'Shape', {
+				label: 'Blob 3',
+				value: 'blob3',
+			} )
+			cy.adjust( 'Flip Shape Horizontally', true )
+			cy.adjust( 'Flip Shape Vertically', true )
+			cy.adjust( 'Stretch Shape Mask', true ).assertClassName( `.ugb-feature-grid__item${ idx } img.ugb-img--shape`, 'ugb-image--shape-stretch' )
+		} )
+	} )
 	featureGridBlock.assertFrontendStyles()
 }
 

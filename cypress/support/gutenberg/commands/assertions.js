@@ -210,7 +210,6 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 						)
 					} else {
 						// Otherwise, search the element
-						cy.log( '2', Array.from( saveElement.querySelector( customSelector ).classList ).includes( expectedValue ) )
 						assert.isTrue(
 							!! Array.from( saveElement.querySelector( customSelector ).classList ).includes( expectedValue ),
 							`${ expectedValue } class must be present in ${ customSelector } in Editor`

@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, switchDesigns, assertAligns, assertBlockBackground, assertSeparators, registerTests, responsiveAssertHelper, assertTypography,
+	assertBlockExist, blockErrorTest, switchLayouts, switchDesigns, assertAligns, assertBlockBackground, assertSeparators, registerTests, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Advanced Text Block', registerTests( [
 	blockExist,
@@ -15,6 +16,9 @@ describe( 'Advanced Text Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -206,5 +210,19 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	// Test Top and Bottom Separator
 	assertSeparators( { viewport } )
+	textBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/text' ).as( 'textBlock' )
+	const textBlock = registerBlockSnapshots( 'textBlock' )
+
+	cy.openInspector( 'ugb/text', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-text', { viewport } )
+
+	// Add more block specific tests.
 	textBlock.assertFrontendStyles()
 }

@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground, assertContainer,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Notification Block', registerTests( [
 	blockExist,
@@ -15,6 +16,9 @@ describe( 'Notification Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -291,5 +295,19 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	// Test Block Background
 	assertBlockBackground( '.ugb-notification', { viewport } )
+	notificationBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
+	const notificationBlock = registerBlockSnapshots( 'notificationBlock' )
+
+	cy.openInspector( 'ugb/notification', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-notification', { viewport } )
+
+	// Add more block specific tests.
 	notificationBlock.assertFrontendStyles()
 }
