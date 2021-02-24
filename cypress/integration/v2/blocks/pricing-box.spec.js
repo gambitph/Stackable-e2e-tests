@@ -209,7 +209,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		}
 
 		desktopOnly( () => {
-			const colorTitle = ( ! typographyAssertion.match( '/price/' ) ) ? label : 'Text'
+			const colorTitle = ( ! typographyAssertion.match( /price/ ) ) ? label : 'Text'
 			cy.adjust( `${ colorTitle } Color`, '#742f2f' ).assertComputedStyle( {
 				[ `.ugb-pricing-box__${ typographyAssertion }` ]: {
 					'color': '#742f2f',
@@ -229,13 +229,16 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			},
 		} )
 
-		const typographySettings = {}
 		// Only for Price Prefix and Price Suffix
-		if ( typographyAssertion.match( '/price-/' ) ) {
-			typographySettings.enableTransform = false
-			typographySettings.enableLetterSpacing = false
+		if ( typographyAssertion.match( /price-/ ) ) {
+			assertTypography( `.ugb-pricing-box__${ textClass }`, {
+				viewport,
+				enableTransform: false,
+				enableLetterSpacing: false,
+			} )
+		} else {
+			assertTypography( `.ugb-pricing-box__${ textClass }`, { viewport } )
 		}
-		assertTypography( `.ugb-pricing-box__${ textClass }`, { viewport }, typographySettings )
 
 		// Only for Title, Sub Price, and Description
 		if ( Array( 'title', 'subprice', 'description' ).includes( typographyAssertion ) ) {
@@ -327,8 +330,12 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} ).assertClassName( '.ugb-button', 'ugb-button--icon-position-right' )
 	} )
 
-	assertTypography( '.ugb-button .ugb-button--inner', { viewport }, {
+	assertTypography( '.ugb-button .ugb-button--inner', {
+		viewport,
+		enableWeight: false,
+		enableTransform: false,
 		enableLineHeight: false,
+		enableLetterSpacing: false,
 	} )
 	assertAligns( 'Align', '.ugb-button-container', { viewport } )
 
