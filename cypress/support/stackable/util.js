@@ -64,6 +64,13 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
 	}
 }
 
+/**
+ * Function for changing the viewport in control
+ *
+ * @param {string} viewport desired viewport
+ * @param {string} name selector name
+ * @param {boolean} isInPopover if the control is in popover
+ */
 export function changeControlViewport( viewport = 'Desktop', name = '', isInPopover = false ) {
 	const selector = () => cy.getBaseControl( name, { isInPopover } )
 	selector()
