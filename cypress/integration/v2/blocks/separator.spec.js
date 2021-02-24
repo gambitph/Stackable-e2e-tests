@@ -290,14 +290,14 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	 // TODO: Create our own separator block margins assertions.
 	 cy.collapse( 'Block Spacing' )
-	 cy.adjust( 'Block Margins', [ 20, 20 ], { viewport, unit: 'px' } ).assertComputedStyle( {
+	 cy.adjust( 'Block Margins', 20, { viewport, unit: 'px' } ).assertComputedStyle( {
 		 '.ugb-separator': {
 			'margin-top': '5px',
 			'margin-bottom': '5px',
 		 },
 	 }, { assertFrontend: false } )
 
-	 cy.adjust( 'Block Margins', [ 20, 20 ], { viewport, unit: 'px' } ).assertComputedStyle( {
+	 cy.adjust( 'Block Margins', 20, { viewport, unit: 'px' } ).assertComputedStyle( {
 		 '.ugb-separator': {
 			'margin-top': '19px',
 			'margin-bottom': '19px',

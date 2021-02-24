@@ -34,6 +34,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 	} = options
 
 	const MAIN_SELECTOR = mainSelector || '.ugb-main-block'
+	selector = mainSelector || selector
 
 	/**
 	 * Only collapse when present.
