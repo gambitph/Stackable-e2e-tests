@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, assertAligns, registerTests, responsiveAssertHelper,
+	assertBlockExist, blockErrorTest, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Divider Block', registerTests( [
 	blockExist,
@@ -14,6 +15,9 @@ describe( 'Divider Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -62,5 +66,19 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	} )
 
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
+	dividerBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/divider' ).as( 'dividerBlock' )
+	const dividerBlock = registerBlockSnapshots( 'dividerBlock' )
+
+	cy.openInspector( 'ugb/divider', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-divider', { viewport } )
+
+	// Add more block specific tests.
 	dividerBlock.assertFrontendStyles()
 }

@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Card Block', registerTests( [
 	blockExist,
@@ -15,6 +16,9 @@ describe( 'Card Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -280,16 +284,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	// Test Spacing options
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Block Title', 35, { viewport } ).assertComputedStyle( {
-		'.ugb-block-title': {
-			'margin-bottom': '35px',
-		},
-	} )
-	cy.adjust( 'Block Description', 41, { viewport } ).assertComputedStyle( {
-		'.ugb-block-description': {
-			'margin-bottom': '41px',
-		},
-	} )
 	cy.adjust( 'Paddings', 21, { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-card__content': {
 			'padding-top': '21px',
@@ -338,5 +332,22 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	// Test Block Background
 	assertBlockBackground( '.ugb-card', { viewport } )
 	assertSeparators( { viewport } )
+	cardBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
+	const cardBlock = registerBlockSnapshots( 'cardBlock' )
+
+	cy.openInspector( 'ugb/card', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-card', {
+		viewport,
+		verticalAlignSelector: '.ugb-card__content',
+	 } )
+
+	// Add more block specific tests.
 	cardBlock.assertFrontendStyles()
 }

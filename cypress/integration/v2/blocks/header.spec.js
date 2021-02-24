@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, assertBlockBackground, assertSeparators, responsiveAssertHelper, assertTypography, assertContainer,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, assertBlockBackground, assertSeparators, responsiveAssertHelper, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Header', registerTests( [
 	blockExist,
@@ -15,6 +16,9 @@ describe( 'Header', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -404,5 +408,19 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	assertBlockBackground( '.ugb-header', { viewport } )
 	assertSeparators( { viewport } )
+	headerBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/header' ).as( 'headerBlock' )
+	const headerBlock = registerBlockSnapshots( 'headerBlock' )
+
+	cy.openInspector( 'ugb/header', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-header', { viewport } )
+
+	// Add more block specific tests.
 	headerBlock.assertFrontendStyles()
 }

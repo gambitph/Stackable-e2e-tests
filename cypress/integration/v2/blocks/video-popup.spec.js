@@ -3,13 +3,18 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, registerTests,
+	assertBlockExist, blockErrorTest, switchDesigns, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Video Popup Block', registerTests( [
 	blockExist,
 	blockError,
 	switchDesign,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -35,5 +40,19 @@ function switchDesign() {
 		'Peplum Video Popup',
 		'Speck Video Popup',
 	] ) )
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/video-popup' ).as( 'videoPopupBlock' )
+	const videoPopupBlock = registerBlockSnapshots( 'videoPopupBlock' )
+
+	cy.openInspector( 'ugb/video-popup', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-video-popup', { viewport } )
+
+	// Add more block specific tests.
+	videoPopupBlock.assertFrontendStyles()
 }
 

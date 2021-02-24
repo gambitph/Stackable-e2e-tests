@@ -3,10 +3,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, registerTests, responsiveAssertHelper, assertTypography,
+	assertBlockExist, blockErrorTest, switchDesigns, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, registerTests, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Icon Block', registerTests( [
 	blockExist,
@@ -15,6 +16,9 @@ describe( 'Icon Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -201,6 +205,20 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	// Test Top and Bottom Separator
 	assertSeparators( { viewport } )
+	iconBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/icon' ).as( 'iconBlock' )
+	const iconBlock = registerBlockSnapshots( 'iconBlock' )
+
+	cy.openInspector( 'ugb/icon', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-icon', { viewport } )
+
+	// Add more block specific tests.
 	iconBlock.assertFrontendStyles()
 }
 

@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertBlockBackground, assertSeparators, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Button Block', registerTests( [
 	blockExist,
@@ -15,6 +16,9 @@ describe( 'Button Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -386,5 +390,22 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	assertBlockBackground( '.ugb-button-wrapper', { viewport } )
 	assertSeparators( { viewport } )
+	buttonBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/button' ).as( 'buttonBlock' )
+	const buttonBlock = registerBlockSnapshots( 'buttonBlock' )
+
+	cy.openInspector( 'ugb/button', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-button', {
+		viewport,
+		mainSelector: '.ugb-button-wrapper',
+	} )
+
+	// Add more block specific tests.
 	buttonBlock.assertFrontendStyles()
 }

@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertBlockBackground, assertSeparators, assertTypography,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Blockquote Block', registerTests( [
 	blockExist,
@@ -15,6 +16,9 @@ describe( 'Blockquote Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -135,6 +139,20 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	assertBlockBackground( '.ugb-blockquote', { viewport } )
 
 	assertSeparators( { viewport } )
+	blockquoteBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/blockquote' ).as( 'blockquoteBlock' )
+	const blockquoteBlock = registerBlockSnapshots( 'blockquoteBlock' )
+
+	cy.openInspector( 'ugb/blockquote', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-blockquote', { viewport } )
+
+	// Add more block specific tests.
 	blockquoteBlock.assertFrontendStyles()
 }
 
