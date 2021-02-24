@@ -168,7 +168,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		},
 	} )
 	desktopOnly( () => {
-		cy.adjust( 'Force square image', true, { viewport } ).assertComputedStyle( {
+		cy.adjust( 'Force square image', true ).assertComputedStyle( {
 			'.ugb-img': {
 				'height': '300px',
 			},
