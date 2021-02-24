@@ -18,6 +18,7 @@ Cypress.Commands.add( 'toolbarControl', toolbarControl )
 Cypress.Commands.add( 'toggleControl', toggleControl )
 Cypress.Commands.add( 'textAreaControl', textAreaControl )
 Cypress.Commands.add( 'stylesControl', stylesControl )
+Cypress.Commands.add( 'fontsizeControl', fontsizeControl )
 
 // Adjust Styles
 Cypress.Commands.add( 'adjust', adjust )
@@ -250,6 +251,37 @@ function stylesControl( name, value, options = {} ) {
 }
 
 /**
+ * Command for changing the font size in native blocks.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ */
+function fontsizeControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+	} = options
+
+	// TO DO
+
+	const selector = () => cy.getBaseControl( name, { isInPopover } )
+
+	selector()
+		.find( `div.block-editor-block-styles__item[aria-label=${ value }` )
+		.invoke( 'attr', 'class' )
+		.then( classNames => {
+			const parsedClassNames = classNames.split( ' ' )
+			if ( value && ! parsedClassNames.includes( 'is-active' ) ) {
+				beforeAdjust( name, value, options )
+				selector()
+					.find( `div.block-editor-block-styles__item[aria-label=${ value }` )
+					.click( { force: true } )
+			}
+		} )
+}
+
+/**
  * Command for adjusting settings.
  *
  * @param {string} name
@@ -282,12 +314,12 @@ export function adjust( name, value, options ) {
 		'.components-form-toggle__input': 'toggleControl',
 		'.components-textarea-control__input': 'textAreaControl',
 		'.block-editor-block-styles': 'stylesControl',
+		'.components-font-size-picker__number': 'fontsizeControl',
 
 		/**
 		 * TODO: Support native blocks.
 		 * .components-text-control__input[type=number] -> rangeControl
 		 * .components-text-control__input[type=text] -> rangeControl
-		 * .components-font-size-picker__number
 		 */
 	}
 
