@@ -71,7 +71,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	desktopOnly( () => {
 		cy.adjust( 'Columns', 2 )
-			.assertClassName( '.ugb-text', 'ugb-text--columns-2' )
+		cy.get( '.ugb-text__text' ).should( 'have.length', 2 )
 	} )
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
