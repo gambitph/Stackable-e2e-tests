@@ -3,8 +3,7 @@
  */
 import { range, startCase } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertContainer, assertTypography, assertAdvancedTab,
-	// assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertContainer, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -290,6 +289,10 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 	assertAligns( 'Align', '.ugb-team-member__buttons', { viewport } )
+
+	assertBlockTitleDescription( { viewport } )
+	assertBlockBackground( '.ugb-team-member', { viewport } )
+	assertSeparators( { viewport } )
 
 	teamMemberBlock.assertFrontendStyles()
 }
