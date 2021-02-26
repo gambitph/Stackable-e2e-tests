@@ -16,6 +16,7 @@ Cypress.Commands.add( 'colorControl', colorControl )
 Cypress.Commands.add( 'rangeControl', rangeControl )
 Cypress.Commands.add( 'toolbarControl', toolbarControl )
 Cypress.Commands.add( 'toggleControl', toggleControl )
+Cypress.Commands.add( 'textControl', textControl )
 Cypress.Commands.add( 'textAreaControl', textAreaControl )
 Cypress.Commands.add( 'stylesControl', stylesControl )
 Cypress.Commands.add( 'fontsizeControl', fontsizeControl )
@@ -203,6 +204,25 @@ function toggleControl( name, value, options = {} ) {
 }
 
 /**
+ * Command for adjusting the advanced range control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ */
+function textControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+	} = options
+
+	beforeAdjust( name, value, options )
+	cy.getBaseControl( name, { isInPopover } )
+		.find( 'input.components-text-control__input' )
+		.type( `{selectall}${ value }`, { force: true } )
+}
+
+/**
  * Command for typing into a text area control.
  *
  * @param {string} name
@@ -231,20 +251,24 @@ function textAreaControl( name, value, options = {} ) {
 function stylesControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
-		beforeAdjust = () => {},
+		// beforeAdjust = () => {},
 	} = options
 
-	const selector = () => cy.getBaseControl( name, { isInPopover } )
+	const selector = () => {
+		return ( ! isInPopover
+			? cy.get( '.block-editor-block-styles' )
+			: cy.get( '.components-popover__content' ).find( '.block-editor-block-styles' ) )
+	}
 
 	selector()
-		.find( `div.block-editor-block-styles__item[aria-label=${ value }` )
+		.find( `div.block-editor-block-styles__item[aria-label=${ value }]` )
 		.invoke( 'attr', 'class' )
 		.then( classNames => {
 			const parsedClassNames = classNames.split( ' ' )
 			if ( value && ! parsedClassNames.includes( 'is-active' ) ) {
-				beforeAdjust( name, value, options )
+				// beforeAdjust( name, value, options )
 				selector()
-					.find( `div.block-editor-block-styles__item[aria-label=${ value }` )
+					.find( `div.block-editor-block-styles__item[aria-label=${ value }]` )
 					.click( { force: true } )
 			}
 		} )
@@ -260,25 +284,24 @@ function stylesControl( name, value, options = {} ) {
 function fontsizeControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
-		beforeAdjust = () => {},
+		// beforeAdjust = () => {},
 	} = options
 
-	// TO DO
+	const selector = () => {
+		return ( ! isInPopover
+			? cy.get( '.components-font-size-picker__select' )
+			: cy.get( '.components-popover__content' ).find( '.components-font-size-picker__select' ) )
+	}
 
-	const selector = () => cy.getBaseControl( name, { isInPopover } )
+	cy.get( '.components-font-size-picker__select' )
+		.find( '.components-custom-select-control__button' )
+		.click( { force: true } )
 
+	// beforeAdjust( name, value, options )
 	selector()
-		.find( `div.block-editor-block-styles__item[aria-label=${ value }` )
-		.invoke( 'attr', 'class' )
-		.then( classNames => {
-			const parsedClassNames = classNames.split( ' ' )
-			if ( value && ! parsedClassNames.includes( 'is-active' ) ) {
-				beforeAdjust( name, value, options )
-				selector()
-					.find( `div.block-editor-block-styles__item[aria-label=${ value }` )
-					.click( { force: true } )
-			}
-		} )
+		.find( '.components-custom-select-control__item' )
+		.contains( value )
+		.click( { force: true } )
 }
 
 /**
@@ -296,6 +319,13 @@ export function adjust( name, value, options ) {
 		parentElement = '.components-base-control',
 		// if the option has no label, pass custom regex to find the control
 	} = options
+
+	// Handle options with no label
+	if ( name === 'Block Design' ) {
+		cy.stylesControl( name, value, options )
+		return cy.get( '.block-editor-block-list__block.is-selected' )
+	}
+
 	const baseControlSelector = () => cy
 		.get( parentElement )
 		.contains( containsRegExp( name ) )
@@ -312,15 +342,10 @@ export function adjust( name, value, options ) {
 		'.components-input-control__input': 'rangeControl',
 		'.components-button-group': 'toolbarControl',
 		'.components-form-toggle__input': 'toggleControl',
+		'.components-text-control__input': 'textControl',
 		'.components-textarea-control__input': 'textAreaControl',
-		'.block-editor-block-styles': 'stylesControl',
-		'.components-font-size-picker__number': 'fontsizeControl',
-
-		/**
-		 * TODO: Support native blocks.
-		 * .components-text-control__input[type=number] -> rangeControl
-		 * .components-text-control__input[type=text] -> rangeControl
-		 */
+		// Need to use parentElement: '.components-custom-select-control' as an option
+		'.components-custom-select-control__button': 'fontsizeControl',
 	}
 
 	baseControlSelector()

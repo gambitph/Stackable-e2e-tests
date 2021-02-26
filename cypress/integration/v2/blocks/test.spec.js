@@ -10,14 +10,10 @@ function blockTest() {
 	it( 'should properly select control', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'core/image' )
-		cy.openInspector( 'core/image', 'Block' )
+		cy.addBlock( 'core/heading' )
+		cy.openInspector( 'core/heading', 'Block' )
 
-		cy.setBlockAttribute( {
-			'url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-		} )
-
-		cy.collapse( 'Styles' )
-		// cy.adjust( '' )
+		cy.collapse( 'Typography' )
+		cy.adjust( 'Font size', 'Gigantic', { parentElement: '.components-custom-select-control' } )
 	} )
 }

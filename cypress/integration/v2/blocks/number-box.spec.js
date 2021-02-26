@@ -128,8 +128,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	// Number
 	cy.collapse( 'Number' )
 
-	// TO DO: Add test for Number Input
-
 	assertTypography( '.ugb-number-box__number', { viewport } )
 	cy.adjust( 'Size', 47, { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-number-box__number': {
@@ -149,6 +147,13 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	} )
 
 	desktopOnly( () => {
+		cy.adjust( 'Number 1 Label', '10' )
+		cy.adjust( 'Number 2 Label', '20' )
+		cy.adjust( 'Number 3 Label', '30' )
+		cy.get( 'div.ugb-number-box__number' ).contains( '10' ).should( 'exist' )
+		cy.get( 'div.ugb-number-box__number' ).contains( '20' ).should( 'exist' )
+		cy.get( 'div.ugb-number-box__number' ).contains( '30' ).should( 'exist' )
+
 		cy.adjust( 'Number Shape', 'none' ).assertClassName( '.ugb-number-box', 'ugb-number-box--number-style-none' )
 		cy.adjust( 'Number Shape', 'square' ).assertClassName( '.ugb-number-box', 'ugb-number-box--number-style-square' )
 
