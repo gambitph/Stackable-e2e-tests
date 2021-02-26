@@ -175,19 +175,19 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	} )
 
 	cy.adjust( 'Align', 'left', { viewport } ).assertComputedStyle( {
-		'.ugb-pricing-box__image': {
+		'.ugb-team-member__image': {
 			'margin-left': '0px',
 			'margin-right': 'auto',
 		},
 	} )
 	cy.adjust( 'Align', 'center', { viewport } ).assertComputedStyle( {
-		'.ugb-pricing-box__image': {
+		'.ugb-team-member__image': {
 			'margin-left': 'auto',
 			'margin-right': 'auto',
 		},
 	} )
 	cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
-		'.ugb-pricing-box__image': {
+		'.ugb-team-member__image': {
 			'margin-left': 'auto',
 			'margin-right': '0px',
 		},
