@@ -175,18 +175,11 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.adjust( 'Hover Colors', {
 			'Button Color': '#371010',
 		} )
-		cy.adjust( 'Typography', {
-			'Weight': '700',
-			'Transform': 'lowercase',
-			'Letter Spacing': 2.9,
-		} )
+		assertTypography( '.ugb-button--inner', { enableLineHeight: false, enableSize: false } )
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
 		cy.adjust( 'Opacity', 0.2 ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				'font-weight': '700',
-				'text-transform': 'lowercase',
-				'letter-spacing': '2.9px',
 				'color': '#4e2e2e',
 			},
 		} )
@@ -203,29 +196,13 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			value: 50,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-button .ugb-button--inner': {
-			'font-size': '50px',
-		},
+	assertTypography( '.ugb-button--inner', {
+		viewport,
+		enableWeight: false,
+		enableTransform: false,
+		enableLineHeight: false,
+		enableLetterSpacing: false,
 	} )
-
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-button .ugb-button--inner': {
-			'font-size': '7em',
-		},
-	} )
-
 	cy.collapse( 'Spacing' )
 
 	cy.adjust( 'Paddings', 24, { viewport, unit: 'px' } ).assertComputedStyle( {

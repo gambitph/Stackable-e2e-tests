@@ -100,8 +100,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	const mobileTabletViewports = [ 'Tablet', 'Mobile' ]
-	cy.setBlockAttribute( { [ `${ mobileTabletViewports.some( _viewport => _viewport === viewport ) ? `${ lowerCase( viewport ) }` : '' }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ) } )
+	cy.setBlockAttribute( { [ `${ viewport !== 'Desktop' ? `${ lowerCase( viewport ) }` : '' }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ) } )
 
 	// Test Custom size px unit
 	cy.adjust( 'Adv. Background Image Settings', {
