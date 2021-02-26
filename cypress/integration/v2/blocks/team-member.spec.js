@@ -168,7 +168,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		},
 	} )
 	desktopOnly( () => {
-		cy.adjust( 'Force square image', true, { viewport } ).assertComputedStyle( {
+		cy.adjust( 'Force square image', true ).assertComputedStyle( {
 			'.ugb-img': {
 				'height': '300px',
 			},
@@ -232,14 +232,16 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	// Social Tab
 	cy.collapse( 'Social' )
 
-	cy.adjust( 'Pinterest', true )
-	cy.adjust( 'LinkedIn', true )
-	cy.adjust( 'YouTube', true )
-	cy.get( 'a.ugb-button-pinterest' ).should( 'exist' )
-	cy.get( 'a.ugb-button-linkedin' ).should( 'exist' )
-	cy.get( 'a.ugb-button-youtube' ).should( 'exist' )
-
 	desktopOnly( () => {
+		cy.adjust( 'Social Buttons', {
+			'Pinterest': true,
+			'LinkedIn': true,
+			'YouTube': true,
+		} )
+		cy.get( 'a.ugb-button-pinterest' ).should( 'exist' )
+		cy.get( 'a.ugb-button-linkedin' ).should( 'exist' )
+		cy.get( 'a.ugb-button-youtube' ).should( 'exist' )
+
 		const buttonDesigns = [ 'ghost', 'plain' ]
 		buttonDesigns.forEach( design => {
 			cy.adjust( 'Design', {
@@ -261,7 +263,9 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.adjust( 'Hover Effect', 'scale' ).assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
-			'Button Color': '#bd8b8b',
+			'Button Color #1': '#bd8b8b',
+			'Button Color #2': '#3fa35b',
+			'Gradient Direction (degrees)': 72,
 			'Text Color': '#80194d',
 		} )
 		cy.adjust( 'Button Size', 'small' ).assertClassName( '.ugb-button', 'ugb-button--size-small' )

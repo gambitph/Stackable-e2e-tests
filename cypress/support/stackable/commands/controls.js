@@ -64,6 +64,15 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		cy.popoverControl( label, ...args, optionsToPass )
 		return cy.get( '.block-editor-block-list__block.is-selected' )
 	}
+	if ( label === 'Social Buttons' ) {
+		args.shift()
+		const socialButtons = args[ 0 ]
+		Object.keys( socialButtons ).forEach( key => {
+			optionsToPass.isNestledToggle = true
+			cy.toggleControl( key, socialButtons[ key ], optionsToPass )
+		} )
+		return cy.get( '.block-editor-block-list__block.is-selected' )
+	}
 
 	const customOptions = {
 		// Pass our own adjust controls.
