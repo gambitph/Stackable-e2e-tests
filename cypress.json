@@ -12,6 +12,7 @@
 		"INCLUDED_V2_TEST_FILES": [
 			"accordion",
 			"blockquote",
+			"blog-posts",
 			"button",
 			"card",
 			"container",
