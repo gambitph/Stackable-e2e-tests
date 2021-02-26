@@ -251,7 +251,6 @@ function textAreaControl( name, value, options = {} ) {
 function stylesControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
-		// beforeAdjust = () => {},
 	} = options
 
 	const selector = () => {
@@ -266,7 +265,6 @@ function stylesControl( name, value, options = {} ) {
 		.then( classNames => {
 			const parsedClassNames = classNames.split( ' ' )
 			if ( value && ! parsedClassNames.includes( 'is-active' ) ) {
-				// beforeAdjust( name, value, options )
 				selector()
 					.find( `div.block-editor-block-styles__item[aria-label=${ value }]` )
 					.click( { force: true } )
@@ -284,7 +282,6 @@ function stylesControl( name, value, options = {} ) {
 function fontsizeControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
-		// beforeAdjust = () => {},
 	} = options
 
 	const selector = () => {
@@ -297,7 +294,6 @@ function fontsizeControl( name, value, options = {} ) {
 		.find( '.components-custom-select-control__button' )
 		.click( { force: true } )
 
-	// beforeAdjust( name, value, options )
 	selector()
 		.find( '.components-custom-select-control__item' )
 		.contains( value )
