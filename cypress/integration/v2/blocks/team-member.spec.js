@@ -71,8 +71,8 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	// General Tab
 	cy.collapse( 'General' )
 
+	cy.adjust( 'Columns', 3 )
 	desktopOnly( () => {
-		cy.adjust( 'Columns', 3 )
 		cy.get( '.ugb-team-member__item3' ).should( 'exist' )
 	} )
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
