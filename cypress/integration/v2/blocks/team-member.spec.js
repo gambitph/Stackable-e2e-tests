@@ -218,7 +218,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			},
 		} )
 		cy.adjust( 'Size', 2, { viewport, unit: 'em' } ).assertComputedStyle( {
-
 			[ `.ugb-team-member__${ typographyAssertion }` ]: {
 				'font-size': '2em',
 			},
