@@ -204,7 +204,7 @@ function toggleControl( name, value, options = {} ) {
 }
 
 /**
- * Command for adjusting the advanced range control.
+ * Command for adjusting the text control.
  *
  * @param {string} name
  * @param {*} value
@@ -250,7 +250,7 @@ function textAreaControl( name, value, options = {} ) {
  */
 function stylesControl( name, value, options = {} ) {
 	const {
-
+		beforeAdjust = () => {},
 	} = options
 
 	cy.get( '.block-editor-block-styles' )
@@ -259,6 +259,7 @@ function stylesControl( name, value, options = {} ) {
 		.then( classNames => {
 			const parsedClassNames = classNames.split( ' ' )
 			if ( value && ! parsedClassNames.includes( 'is-active' ) ) {
+				beforeAdjust( name, value, options )
 				cy.get( '.block-editor-block-styles' )
 					.find( `div.block-editor-block-styles__item[aria-label=${ value }]` )
 					.click( { force: true } )
@@ -275,9 +276,10 @@ function stylesControl( name, value, options = {} ) {
  */
 function fontSizeControl( name, value, options = {} ) {
 	const {
-
+		beforeAdjust = () => {},
 	} = options
 
+	beforeAdjust( name, value, options )
 	if ( typeof value === 'string' ) {
 		cy.get( '.components-font-size-picker__select' )
 			.find( '.components-custom-select-control__button' )
@@ -316,6 +318,15 @@ export function adjust( name, value, options ) {
 		return cy.get( '.block-editor-block-list__block.is-selected' )
 	}
 
+	// Handle deprecated controls.
+	if ( name === 'Font size' ) {
+		// Handle gutenberg core heading font size.
+		if ( Cypress.$( '.components-custom-select-control:contains(Font size)' ) ) {
+			cy.fontSizeControl( name, value, options )
+			return cy.get( '.block-editor-block-list__block.is-selected' )
+		}
+	}
+
 	const baseControlSelector = () => cy
 		.get( parentElement )
 		.contains( containsRegExp( name ) )
@@ -334,8 +345,6 @@ export function adjust( name, value, options ) {
 		'.components-form-toggle__input': 'toggleControl',
 		'.components-text-control__input': 'textControl',
 		'.components-textarea-control__input': 'textAreaControl',
-		// Need to use parentElement: '.components-custom-select-control' as an option
-		'.components-custom-select-control__button': 'fontSizeControl',
 	}
 
 	baseControlSelector()
