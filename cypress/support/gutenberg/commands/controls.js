@@ -253,18 +253,10 @@ function stylesControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 	} = options
 
+	beforeAdjust( name, value, options )
 	cy.get( '.block-editor-block-styles' )
 		.find( `div.block-editor-block-styles__item[aria-label=${ value }]` )
-		.invoke( 'attr', 'class' )
-		.then( classNames => {
-			const parsedClassNames = classNames.split( ' ' )
-			if ( value && ! parsedClassNames.includes( 'is-active' ) ) {
-				beforeAdjust( name, value, options )
-				cy.get( '.block-editor-block-styles' )
-					.find( `div.block-editor-block-styles__item[aria-label=${ value }]` )
-					.click( { force: true } )
-			}
-		} )
+		.click( { force: true } )
 }
 
 /**
