@@ -76,7 +76,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	cy.collapse( 'General' )
 	cy.adjust( 'Columns', 3 )
-		.assertClassName( '.ugb-card', 'ugb-card--columns-3' )
+	cy.get( '.ugb-card__item3' ).should( 'exist' )
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
 	cy.collapse( 'Container' )
