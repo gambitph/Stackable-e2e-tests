@@ -122,7 +122,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 					cy.visit( previewUrl )
 					const selectedViewport = viewportFrontend || previewMode
-					if ( typeof selectedViewport === 'string' && selectedViewport !== 'Desktop' ) {
+					if ( typeof selectedViewport === 'string' ) {
 						if ( selectedViewport !== 'Desktop' ) {
 						// Change viewport based on preferred preview mode.
 							cy.viewport(
