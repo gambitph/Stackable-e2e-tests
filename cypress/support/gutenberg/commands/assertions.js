@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	 keys, camelCase, isEmpty, first, pick, toUpper, last, get,
+	keys, camelCase, isEmpty, first, pick, toUpper, last, get, startCase,
 } from 'lodash'
 
 /**
@@ -17,6 +17,32 @@ Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, assertC
 Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, assertClassName )
 Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, assertHtmlTag )
 Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, assertHtmlAttribute )
+
+// Temporary overwrite fix. @see stackable/commands/assertions.js
+Cypress.Commands.overwrite( 'assertComputedStyle', ( originalFn, ...args ) => {
+	function modifiedFn( ...newArgs ) {
+		cy.getActiveTab().then( tab => {
+			cy.document().then( doc => {
+				const optionsToPass = newArgs.length === 3 ? args.pop() : {}
+				const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
+				// This is for stackable only.
+				// After asserting the frontend, go back to the previous state.
+				if ( ( args.length === 3 &&
+				( last( args ).assertFrontend === undefined ||
+				last( args ).assertFrontend ) ) || args.length === 2 ) {
+					optionsToPass.afterFrontendAssert = () => {
+						cy.openSidebar( 'Settings' )
+						cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
+						cy.collapse( activePanel )
+					}
+				}
+				return originalFn( ...[ ...args, optionsToPass ] )
+			} )
+		} )
+	}
+
+	return modifiedFn( ...args )
+} )
 
 export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop' ) {
 	const removeAnimationStyles = [
@@ -89,6 +115,8 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		assertBackend = true,
 		delay = 0,
 		viewportFrontend = false,
+		afterFrontendAssert = () => {},
+		afterBackendAssert = () => {},
 	} = options
 
 	cy.wp().then( wp => {
@@ -113,6 +141,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 						previewMode
 					)
 				} )
+				afterBackendAssert()
 			}
 		} )
 
@@ -159,6 +188,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 					cy.wp().then( _wp => {
 						const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
 						cy.selectBlock( name, { clientId } )
+						afterFrontendAssert()
 					} )
 				} )
 			} )

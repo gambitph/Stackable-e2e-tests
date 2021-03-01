@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { range } from 'lodash'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
 } from '~stackable-e2e/helpers'
@@ -78,12 +79,12 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 		cy.adjust( 'Columns', 2 )
 		cy.adjust( 'Shadow / Outline', 7 )
-			.assertClassName( '.ugb-blog-posts__featured-image', 'ugb--shadow-7' )
+			.assertClassName( '.ugb-blog-posts__featured-image', 'ugb--shadow-7', { assertFrontend: false } )
 		cy.adjust( 'Content Order', 'category,title,meta,excerpt' ).assertComputedStyle( {
 			'.ugb-blog-posts__category': {
 				'order': '1',
 			},
-			'ugb-blog-posts__title': {
+			'.ugb-blog-posts__title': {
 				'order': '4',
 			},
 			'.ugb-blog-posts__meta': {
@@ -100,37 +101,60 @@ function styleTab( viewport, desktopOnly ) {
 
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
-	// TODO: Post Settings Assertion
+	desktopOnly( () => {
+		cy.collapse( 'Posts Settings' )
+		range( 1, 5 ).forEach( idx => {
+			cy.adjust( 'Number of items', idx )
+			cy
+				.get( '.ugb-block-content' )
+				.find( '.ugb-blog-posts__item' )
+				.should( 'have.length', idx )
+		} )
+
+		cy.adjust( 'Offset', 1 )
+		cy
+			.get( '.ugb-block-content' )
+			.find( '.ugb-blog-posts__item' )
+			.should( 'have.length', 3 )
+
+		/**
+		 * TODOs:
+		 * - Order by
+		 * - Post Type
+		 * - Filter by Taxonomy
+		 * - Taxonomy Filter Type
+		 * - Categories / Tags
+		 * - Exclude Post IDs
+		 * - Display Specific Post IDs
+		 */
+	} )
 
 	cy.toggleStyle( 'Load More Button' )
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', [ 21, 22, 23, 24 ], { viewport, unit: 'px' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', 29, { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-blog-posts__item': {
-			'padding-top': '21px',
-			'padding-bottom': '23px',
-			'padding-right': '22px',
-			'padding-left': '24px',
+			'padding-top': '29px',
+			'padding-bottom': '29px',
+			'padding-right': '29px',
+			'padding-left': '29px',
 		},
 	} )
-	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', [ 1, 2, 3, 4 ], { viewport, unit: 'em' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', 3, { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-blog-posts__item': {
-			'padding-top': '1em',
+			'padding-top': '3em',
 			'padding-bottom': '3em',
-			'padding-right': '2em',
-			'padding-left': '4em',
+			'padding-right': '3em',
+			'padding-left': '3em',
 		},
 	} )
-	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', [ 13, 14, 15, 16 ], { viewport, unit: '%' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', 14, { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-blog-posts__item': {
-			'padding-top': '13%',
-			'padding-bottom': '15%',
+			'padding-top': '14%',
+			'padding-bottom': '14%',
 			'padding-right': '14%',
-			'padding-left': '16%',
+			'padding-left': '14%',
 		},
 	} )
-	cy.collapse( 'Spacing' )
 	cy.adjust( 'Image', 37, { viewport } )
 	cy.adjust( 'Category', 6, { viewport } )
 	cy.adjust( 'Title', 29, { viewport } )
@@ -170,7 +194,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	cy.collapse( 'Category' )
-	assertTypography( '.ugb-blog-posts__category a', { viewport } )
+	assertTypography( '.ugb-blog-posts__category', { viewport } )
 	desktopOnly( () => {
 		cy.adjust( 'Color', '#7689d5' ).assertComputedStyle( {
 			'.ugb-blog-posts__category a': {
@@ -178,7 +202,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 		cy.adjust( 'Highlighted', true )
-			.assertClassName( '.ugb-blog-posts', 'ugb-blog-posts--cat-highlighted' )
+			.assertClassName( '.ugb-blog-posts', 'ugb-blog-posts--cat-highlighted', { assertFrontend: false } )
 		cy.adjust( 'Color', '#d57575' ).assertComputedStyle( {
 			'.ugb-blog-posts__category a': {
 				'background-color': '#d57575',
@@ -186,13 +210,13 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 		cy.adjust( 'Hover Color', '#ffffff' )
 	} )
-	assertAligns( 'Align', '.ugb-blog-posts__category a', { viewport } )
+	assertAligns( 'Align', '.ugb-blog-posts__category', { viewport } )
 
 	cy.collapse( 'Title' )
-	assertTypography( '.ugb-blog-posts__title a', { viewport } )
+	assertTypography( '.ugb-blog-posts__title', { viewport } )
 	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h5' )
-			.assertHtmlTag( '.ugb-blog-posts__title', 'h5' )
+			.assertHtmlTag( '.ugb-blog-posts__title', 'h5', { assertFrontend: false } )
 		cy.adjust( 'Text Color', '#5d5af3' ).assertComputedStyle( {
 			'.ugb-blog-posts__title a': {
 				'color': '#5d5af3',
@@ -200,19 +224,19 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 		cy.adjust( 'Hover Color', '#ffffff' )
 	} )
-	assertAligns( 'Align', '.ugb-blog-posts__title a', { viewport } )
+	assertAligns( 'Align', '.ugb-blog-posts__title', { viewport } )
 
 	cy.collapse( 'Excerpt' )
-	assertTypography( '.ugb-blog-posts__excerpt p', { viewport } )
+	assertTypography( '.ugb-blog-posts__excerpt', { viewport } )
 	desktopOnly( () => {
 		cy.adjust( 'Excerpt Length', 43 )
 		cy.adjust( 'Text Color', '#7f40d1' ).assertComputedStyle( {
-			'.ugb-blog-posts__excerpt p': {
+			'.ugb-blog-posts__excerpt': {
 				'color': '#7f40d1',
 			},
 		} )
 	} )
-	assertAligns( 'Align', '.ugb-blog-posts__excerpt p', { viewport } )
+	assertAligns( 'Align', '.ugb-blog-posts__excerpt', { viewport } )
 
 	cy.collapse( 'Meta' )
 	assertTypography( '.ugb-blog-posts__meta', { viewport } )
@@ -228,15 +252,12 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Separator', 'comma' )
 		cy
 			.get( '.ugb-blog-posts__content' )
-			.then( content => {
-				content.find( '.ugb-blog-posts__meta' )
-				expect( '.ugb-blog-posts__meta' ).to.contain( ',' )
-			} )
+			.find( '.ugb-blog-posts__meta' ).contains( ',' ).should( 'exist' )
 	} )
 	assertAligns( 'Align', '.ugb-blog-posts__meta', { viewport } )
 
 	cy.collapse( 'Read More Link' )
-	assertTypography( '.ugb-blog-posts__readmore a', { viewport } )
+	assertTypography( '.ugb-blog-posts__readmore', { viewport } )
 	desktopOnly( () => {
 		// TODO: Add assertion for Read More text
 		cy.adjust( 'Text Color', '#ff6a6a' ).assertComputedStyle( {
@@ -246,10 +267,12 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 		cy.adjust( 'Hover Color', '#ffffff' )
 	} )
-	assertAligns( 'Align', '.ugb-blog-posts__readmore a', { viewport } )
+	assertAligns( 'Align', '.ugb-blog-posts__readmore', { viewport } )
 
 	cy.typeBlock( 'ugb/blog-posts', '.ugb-button .ugb-button--inner', 'More Posts' )
 	cy.collapse( 'Load More Button' )
+	cy.waitFA()
+	cy.adjust( 'Icon', 'info' )
 	desktopOnly( () => {
 		// TODO; Add assertion for Number of items
 		cy.adjust( 'Color Type', 'gradient' )
@@ -258,7 +281,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Gradient Direction (degrees)', 138 )
 		cy.adjust( 'Text Color', '#ffa03b' )
 		cy.adjust( 'Hover Effect', 'scale' )
-			.assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
+			.assertClassName( '.ugb-button', 'ugb--hover-effect-scale', { assertFrontend: false } )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
 			'Button Color #1': '#bd8b8b',
@@ -269,7 +292,7 @@ function styleTab( viewport, desktopOnly ) {
 
 		assertTypography( '.ugb-button .ugb-button--inner', { enableLineHeight: false } )
 		cy.adjust( 'Button Size', 'large' )
-			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
+			.assertClassName( '.ugb-button', 'ugb-button--size-large', { assertFrontend: false } )
 		cy.adjust( 'Border Radius', 40 )
 		cy.adjust( 'Vertical Padding', 15 )
 		cy.adjust( 'Horizontal Padding', 43 )
@@ -286,8 +309,6 @@ function styleTab( viewport, desktopOnly ) {
 				'border-radius': '40px',
 			},
 		} )
-		cy.waitFA()
-		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
 			'Icon Size': 41,
 			'Icon Spacing': 25,
