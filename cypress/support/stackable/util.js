@@ -49,7 +49,7 @@ export function modifyLogFunc( options = {} ) {
  * @param {boolean} isInPopover if the control is in popover
  */
 export function changeUnit( unit = '', name = '', isInPopover = false ) {
-	if ( ! Cypress.$( '.components-base-control' ).filter( () => {
+	if ( ! Cypress.$( '.components-base-control' ).filter( function() {
 		return containsRegExp( name ).test( Cypress.$( this ).text() )
 	} )[ 0 ] ) {
 		return
@@ -78,7 +78,7 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
  * @param {boolean} isInPopover if the control is in popover
  */
 export function changeControlViewport( viewport = 'Desktop', name = '', isInPopover = false ) {
-	if ( ! Cypress.$( '.components-base-control' ).filter( () => {
+	if ( ! Cypress.$( '.components-base-control' ).filter( function() {
 		return containsRegExp( name ).test( Cypress.$( this ).text() )
 	} )[ 0 ] ) {
 		return
