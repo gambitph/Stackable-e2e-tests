@@ -186,8 +186,6 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 		cy.wait( delay )
 
 		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
-		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
-		const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 
 		cy
 			.get( subject )
@@ -203,6 +201,8 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 				// Assert frontend classes.
 				// Check if we're asserting the parent element.
 				if ( assertFrontend ) {
+					const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+					const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 					if ( parsedClassList.match( customSelector ) ) {
 						assert.isTrue(
 							!! parsedClassList.match( expectedValue ),
@@ -240,8 +240,6 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 		cy.wait( delay )
 
 		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
-		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
-		const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 
 		cy
 			.get( subject )
@@ -256,6 +254,8 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 
 				// Check if we're asserting the parent element.
 				if ( assertFrontend ) {
+					const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+					const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 					if ( parsedClassList.match( customSelector ) ) {
 						assert.isTrue(
 							saveElement.tagName === toUpper( expectedValue ),
@@ -294,8 +294,6 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 		cy.wait( delay )
 
 		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
-		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
-		const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 
 		cy
 			.get( subject )
@@ -318,6 +316,8 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 
 				// Check if we're asserting the parent element.
 				if ( assertFrontend ) {
+					const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+					const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 					if ( parsedClassList.match( customSelector ) ) {
 						assert.isTrue(
 							attribute instanceof RegExp
