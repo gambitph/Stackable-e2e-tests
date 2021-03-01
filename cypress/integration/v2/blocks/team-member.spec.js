@@ -231,11 +231,9 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.collapse( 'Social' )
 
 	desktopOnly( () => {
-		cy.adjust( 'Social Buttons', {
-			'Pinterest': true,
-			'LinkedIn': true,
-			'YouTube': true,
-		} )
+		cy.adjust( 'Pinterest', true )
+		cy.adjust( 'LinkedIn', true )
+		cy.adjust( 'YouTube', true )
 		cy.get( 'a.ugb-button-pinterest' ).should( 'exist' )
 		cy.get( 'a.ugb-button-linkedin' ).should( 'exist' )
 		cy.get( 'a.ugb-button-youtube' ).should( 'exist' )

@@ -181,12 +181,9 @@ function toggleControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
-		isNestledToggle = false,
 	} = options
 
-	const selectorOptions = ! isNestledToggle ? { isInPopover } : { isInPopover, customParentSelector: '.components-base-control' }
-
-	const selector = () => cy.getBaseControl( name, selectorOptions )
+	const selector = () => cy.getBaseControl( name, { isInPopover, customParentSelector: '' } )
 
 	selector()
 		.find( 'span.components-form-toggle' )
