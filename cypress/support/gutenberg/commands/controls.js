@@ -19,7 +19,7 @@ Cypress.Commands.add( 'toggleControl', toggleControl )
 Cypress.Commands.add( 'textControl', textControl )
 Cypress.Commands.add( 'textAreaControl', textAreaControl )
 Cypress.Commands.add( 'stylesControl', stylesControl )
-Cypress.Commands.add( 'fontsizeControl', fontsizeControl )
+Cypress.Commands.add( 'fontSizeControl', fontSizeControl )
 
 // Adjust Styles
 Cypress.Commands.add( 'adjust', adjust )
@@ -250,22 +250,16 @@ function textAreaControl( name, value, options = {} ) {
  */
 function stylesControl( name, value, options = {} ) {
 	const {
-		isInPopover = false,
+
 	} = options
 
-	const selector = () => {
-		return ( ! isInPopover
-			? cy.get( '.block-editor-block-styles' )
-			: cy.get( '.components-popover__content' ).find( '.block-editor-block-styles' ) )
-	}
-
-	selector()
+	cy.get( '.block-editor-block-styles' )
 		.find( `div.block-editor-block-styles__item[aria-label=${ value }]` )
 		.invoke( 'attr', 'class' )
 		.then( classNames => {
 			const parsedClassNames = classNames.split( ' ' )
 			if ( value && ! parsedClassNames.includes( 'is-active' ) ) {
-				selector()
+				cy.get( '.block-editor-block-styles' )
 					.find( `div.block-editor-block-styles__item[aria-label=${ value }]` )
 					.click( { force: true } )
 			}
@@ -279,25 +273,25 @@ function stylesControl( name, value, options = {} ) {
  * @param {*} value
  * @param {Object} options
  */
-function fontsizeControl( name, value, options = {} ) {
+function fontSizeControl( name, value, options = {} ) {
 	const {
-		isInPopover = false,
+
 	} = options
 
-	const selector = () => {
-		return ( ! isInPopover
-			? cy.get( '.components-font-size-picker__select' )
-			: cy.get( '.components-popover__content' ).find( '.components-font-size-picker__select' ) )
+	if ( typeof value === 'string' ) {
+		cy.get( '.components-font-size-picker__select' )
+			.find( '.components-custom-select-control__button' )
+			.click( { force: true } )
+
+		cy.get( '.components-font-size-picker__select' )
+			.find( '.components-custom-select-control__item' )
+			.contains( value )
+			.click( { force: true } )
+	} else if ( typeof value === 'number' ) {
+		cy.get( '.components-font-size-picker__number-container' )
+			.find( 'input.components-font-size-picker__number' )
+			.type( `{selectall}${ value }`, { force: true } )
 	}
-
-	cy.get( '.components-font-size-picker__select' )
-		.find( '.components-custom-select-control__button' )
-		.click( { force: true } )
-
-	selector()
-		.find( '.components-custom-select-control__item' )
-		.contains( value )
-		.click( { force: true } )
 }
 
 /**
@@ -341,7 +335,7 @@ export function adjust( name, value, options ) {
 		'.components-text-control__input': 'textControl',
 		'.components-textarea-control__input': 'textAreaControl',
 		// Need to use parentElement: '.components-custom-select-control' as an option
-		'.components-custom-select-control__button': 'fontsizeControl',
+		'.components-custom-select-control__button': 'fontSizeControl',
 	}
 
 	baseControlSelector()
