@@ -49,9 +49,7 @@ export function modifyLogFunc( options = {} ) {
  * @param {boolean} isInPopover if the control is in popover
  */
 export function changeUnit( unit = '', name = '', isInPopover = false ) {
-	if ( ! Cypress.$( '.components-base-control' ).filter( function() {
-		return containsRegExp( name ).test( Cypress.$( this ).text() )
-	} )[ 0 ] ) {
+	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
 
@@ -78,9 +76,7 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
  * @param {boolean} isInPopover if the control is in popover
  */
 export function changeControlViewport( viewport = 'Desktop', name = '', isInPopover = false ) {
-	if ( ! Cypress.$( '.components-base-control' ).filter( function() {
-		return containsRegExp( name ).test( Cypress.$( this ).text() )
-	} )[ 0 ] ) {
+	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
 
@@ -123,4 +119,28 @@ export function getActiveTab( callback = () => {} ) {
 
 			callback( tab )
 		} )
+}
+
+/**
+ * Function for checking if text exists within a DOM element in a recursive manner
+ *
+ * @param {jQuery} $parentElement DOM element to be searched
+ * @param {string} textToMatch text being searched in element
+ * @return {boolean} true if it contains text to be matched and false if it doesn't
+ */
+export function elementContainsText( $parentElement = Cypress.$( 'body' ), textToMatch = '' ) {
+	function _compareTextsRecursive( $parentElement ) {
+		if ( ! $parentElement.children().length ) {
+			return $parentElement.text().trim().match( containsRegExp( textToMatch ) )
+		}
+		return !! $parentElement.children().filter( function() {
+			const childEl = Cypress.$( this )
+			const childElText = childEl.clone().children().remove().end().text().trim()
+			return childElText.match( containsRegExp( textToMatch ) ) || _compareTextsRecursive( childEl )
+		} ).length
+	}
+
+	return !! $parentElement.filter( function() {
+		return _compareTextsRecursive( Cypress.$( this ) )
+	} ).length
 }
