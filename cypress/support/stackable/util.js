@@ -126,14 +126,15 @@ export function getActiveTab( callback = () => {} ) {
  *
  * @param {jQuery} $parentElement DOM element to be searched
  * @param {string} textToMatch text being searched in element
+ *
  * @return {boolean} true if it contains text to be matched and false if it doesn't
  */
 export function elementContainsText( $parentElement = Cypress.$( 'body' ), textToMatch = '' ) {
-	function _compareTextsRecursive( $parentElement ) {
-		if ( ! $parentElement.children().length ) {
-			return $parentElement.text().trim().match( containsRegExp( textToMatch ) )
+	function _compareTextsRecursive( element ) {
+		if ( ! element.children().length ) {
+			return element.text().trim().match( containsRegExp( textToMatch ) )
 		}
-		return !! $parentElement.children().filter( function() {
+		return !! element.children().filter( function() {
 			const childEl = Cypress.$( this )
 			const childElText = childEl.clone().children().remove().end().text().trim()
 			return childElText.match( containsRegExp( textToMatch ) ) || _compareTextsRecursive( childEl )
