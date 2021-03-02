@@ -67,7 +67,8 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.collapse( 'General' )
 	desktopOnly( () => {
 		cy.adjust( 'Columns', 4 )
-			.assertClassName( '.ugb-count-up', 'ugb-countup--columns-4' )
+		cy.get( '.ugb-countup__item4' ).should( 'exist' )
+		cy.adjust( 'Columns', 2 )
 	} )
 
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )

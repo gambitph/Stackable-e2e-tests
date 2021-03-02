@@ -74,7 +74,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	desktopOnly( () => {
 		range( 1, 4 ).forEach( idx => {
 			cy.adjust( 'Columns', idx )
-				.assertClassName( '.ugb-testimonial', `ugb-testimonial--columns-${ idx }` )
+			cy.get( `.ugb-testimonial__item${ idx }` ).should( 'exist' )
 		} )
 		cy.adjust( 'Columns', 2 )
 	} )

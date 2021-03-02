@@ -183,7 +183,7 @@ function toggleControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 	} = options
 
-	const selector = () => cy.getBaseControl( name, { isInPopover } )
+	const selector = () => cy.getBaseControl( name, { isInPopover, customParentSelector: '' } )
 
 	selector()
 		.find( 'span.components-form-toggle' )
