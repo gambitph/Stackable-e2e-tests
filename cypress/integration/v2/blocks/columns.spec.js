@@ -87,6 +87,9 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	}
 
+	// TODO: Change tablet settings for frontend assertion of Column Widths
+	// as it's only for viewportWidth: 1025, not 780
+
 	cy.adjust( 'Column Gap', 115, { viewport } ).assertComputedStyle( {
 		'.ugb-columns__item': {
 			'grid-column-gap': '115px',
@@ -121,9 +124,11 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	const aligns = [ 'flex-start', 'center', 'flex-end', 'stretch' ]
 	aligns.forEach( align => {
 		cy.adjust( 'Column Vertical Align', align, { viewport } ).assertComputedStyle( {
-			'.ugb-column': {
-				'align-items': align,
+			'.ugb-columns__item .wp-block': {
+				'justify-content': align,
 			},
+		}, {
+			assertFrontend: false,
 		} )
 	} )
 
@@ -138,13 +143,10 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.adjust( 'Link Hover Color', '#ba89df' )
 
 		// Add a ugb/card block inside the first column
-		cy.addInnerBlock( 'ugb/card' )
+		cy.addInnerBlock( 'ugb/column', 'ugb/card' )
 		cy.openInspector( 'ugb/card', 'Style' )
 		cy.collapse( 'Button' )
-		cy.adjust( 'Button Design', {
-			label: 'Link',
-			value: 'link',
-		} ).assertComputedStyle( {
+		cy.adjust( 'Design', 'link' ).assertComputedStyle( {
 			'.ugb-card__title': {
 				'color': '#8e8ee0',
 			},
@@ -163,7 +165,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.selectBlock( 'ugb/columns' )
 	} )
 
-	assertBlockTitleDescription( { viewport } )
+	assertBlockTitleDescription( { viewport, enableSpacing: false } )
 	assertBlockBackground( '.ugb-columns', { viewport } )
 	assertSeparators( { viewport } )
 
