@@ -124,8 +124,15 @@ class BlockSnapshots {
 							doc.querySelector( '.entry-content' ).innerHTML = ''
 
 							// Change the viewport.
-							if ( viewport !== 'Desktop' ) {
-								cy.viewport( Cypress.config( `viewport${ viewport }Width` ) || Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
+							if ( typeof viewport === 'string' ) {
+								if ( viewport !== 'Desktop' ) {
+									cy.viewport( Cypress.config( `viewport${ viewport }Width` ) || Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
+								}
+							} else {
+								cy.viewport(
+									viewport,
+									Cypress.config( 'viewportHeight' )
+								)
 							}
 
 							// Append the stubbed block in .entry-content
