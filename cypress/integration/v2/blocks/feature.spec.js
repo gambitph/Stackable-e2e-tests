@@ -3,10 +3,11 @@
  */
 import { startCase } from 'lodash'
 import {
-	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper,
+	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Feature Block', registerTests( [
 	blockExist,
@@ -16,6 +17,9 @@ describe( 'Feature Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -115,6 +119,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.newPage()
 	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
 	const featureBlock = registerBlockSnapshots( 'featureBlock' )
+
 	cy.openInspector( 'ugb/feature', 'Style' )
 
 	// General Tab
@@ -320,5 +325,21 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	assertBlockBackground( '.ugb-feature', { viewport } )
 	assertSeparators( { viewport } )
+
+	featureBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
+	const featureBlock = registerBlockSnapshots( 'featureBlock' )
+
+	cy.openInspector( 'ugb/feature', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-feature', { viewport } )
+
+	// Add more block specific tests.
+
 	featureBlock.assertFrontendStyles()
 }

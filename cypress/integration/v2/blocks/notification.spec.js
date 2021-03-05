@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground, assertContainer,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Notification Block', registerTests( [
 	blockExist,
@@ -15,6 +16,9 @@ describe( 'Notification Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -243,12 +247,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			'Gradient Direction (degrees)': 72,
 			'Text Color': '#80194d',
 		} )
-		cy.adjust( 'Typography', {
-			'Size': 50,
-			'Weight': '700',
-			'Transform': 'lowercase',
-			'Letter Spacing': 2.9,
-		} )
+		assertTypography( '.ugb-button .ugb-button--inner', { enableLineHeight: false } )
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
 		cy.adjust( 'Border Radius', 40 )
@@ -257,12 +256,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.adjust( 'Shadow', 4 )
 			.assertClassName( '.ugb-button', 'ugb--shadow-4' )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '50px',
-				'font-weight': '700',
-				'text-transform': 'lowercase',
-				'letter-spacing': '2.9px',
-			},
 			'.ugb-button': {
 				'background-color': '#a13939',
 				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
@@ -272,16 +265,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 				'padding-left': '43px',
 				'opacity': '0.6',
 				'border-radius': '40px',
-			},
-		} )
-		cy.adjust( 'Typography', {
-			'Size': {
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '7em',
 			},
 		} )
 		cy.adjust( 'Icon', 'info' )
@@ -297,29 +280,13 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
-	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
-		cy.adjust( 'Typography', {
-			'Size': {
-				viewport,
-				value: 50,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '50px',
-			},
-		} )
-
-		cy.adjust( 'Typography', {
-			'Size': {
-				viewport,
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '7em',
-			},
+	if ( viewport !== 'Desktop' ) {
+		assertTypography( '.ugb-button .ugb-button--inner', {
+			viewport,
+			enableWeight: false,
+			enableTransform: false,
+			enableLineHeight: false,
+			enableLetterSpacing: false,
 		} )
 	}
 
@@ -327,5 +294,19 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	// Test Block Background
 	assertBlockBackground( '.ugb-notification', { viewport } )
+	notificationBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
+	const notificationBlock = registerBlockSnapshots( 'notificationBlock' )
+
+	cy.openInspector( 'ugb/notification', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-notification', { viewport } )
+
+	// Add more block specific tests.
 	notificationBlock.assertFrontendStyles()
 }

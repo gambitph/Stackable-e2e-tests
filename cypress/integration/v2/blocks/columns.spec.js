@@ -4,9 +4,11 @@
 import { range } from 'lodash'
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, registerTests,
+	assertBlockExist, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import config from 'root/cypress.json'
+
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Advanced Columns and Grid Block', registerTests( [
 	blockExist,
@@ -14,6 +16,9 @@ describe( 'Advanced Columns and Grid Block', registerTests( [
 	innerBlocks,
 	switchLayout,
 	desktopStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -118,5 +123,31 @@ function desktopStyle() {
 			'Letter Spacing': 7.1,
 		} )
 	} )
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )
+	const columnsBlock = registerBlockSnapshots( 'columnsBlock' )
+
+	cy.openInspector( 'ugb/columns', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-columns', { viewport } )
+	desktopOnly( () => {
+		cy.collapse( 'Responsive' )
+		cy.adjust( 'Collapsed Row Gap', 500 ).assertComputedStyle( {
+			'.ugb-columns__item': {
+				'grid-row-gap': '500',
+			},
+		}, {
+			assertBackend: false,
+			viewportFrontend: 'Mobile',
+		} )
+		// TODO: Collapsed Col. Arrangement
+	} )
+
+	// Add more block specific tests.
+	columnsBlock.assertFrontendStyles()
 }
 

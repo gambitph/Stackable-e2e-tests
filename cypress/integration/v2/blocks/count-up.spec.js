@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, registerTests, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, registerTests, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Count Up Block', registerTests( [
 	blockExist,
@@ -15,6 +16,9 @@ describe( 'Count Up Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -63,7 +67,8 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.collapse( 'General' )
 	desktopOnly( () => {
 		cy.adjust( 'Columns', 4 )
-			.assertClassName( '.ugb-count-up', 'ugb-countup--columns-4' )
+		cy.get( '.ugb-countup__item4' ).should( 'exist' )
+		cy.adjust( 'Columns', 2 )
 	} )
 
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
@@ -169,8 +174,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			},
 		} )
 	} )
-	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
-	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
+	if ( viewport !== 'Desktop' ) {
 		cy.adjust( 'Paddings', [ 24, 12, 13, 8 ], { unit: 'px', viewport } ).assertComputedStyle( {
 			'.ugb-countup__item': {
 				'padding-top': '24px',
@@ -262,5 +266,19 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-count-up', { viewport } )
 	assertSeparators( { viewport } )
+	countUpBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
+	const countUpBlock = registerBlockSnapshots( 'countUpBlock' )
+
+	cy.openInspector( 'ugb/count-up', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-count-up', { viewport } )
+
+	// Add more block specific tests.
 	countUpBlock.assertFrontendStyles()
 }

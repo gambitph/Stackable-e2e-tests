@@ -6,10 +6,11 @@ import {
 } from 'lodash'
 
 import {
-	assertBlockExist, blockErrorTest, assertSeparators, registerTests, responsiveAssertHelper,
+	assertBlockExist, blockErrorTest, assertSeparators, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Spacer Block', registerTests( [
 	blockExist,
@@ -17,6 +18,9 @@ describe( 'Spacer Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -96,8 +100,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	const mobileTabletViewports = [ 'Tablet', 'Mobile' ]
-	cy.setBlockAttribute( { [ `${ mobileTabletViewports.some( _viewport => _viewport === viewport ) ? `${ lowerCase( viewport ) }` : '' }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ) } )
+	cy.setBlockAttribute( { [ `${ viewport !== 'Desktop' ? `${ lowerCase( viewport ) }` : '' }BackgroundMediaUrl` ]: Cypress.env( 'DUMMY_IMAGE_URL' ) } )
 
 	// Test Custom size px unit
 	cy.adjust( 'Adv. Background Image Settings', {
@@ -157,5 +160,19 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	} )
 
 	assertSeparators( { viewport } )
+	spacerBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/spacer' ).as( 'spacerBlock' )
+	const spacerBlock = registerBlockSnapshots( 'spacerBlock' )
+
+	cy.openInspector( 'ugb/spacer', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-spacer', { viewport } )
+
+	// Add more block specific tests.
 	spacerBlock.assertFrontendStyles()
 }

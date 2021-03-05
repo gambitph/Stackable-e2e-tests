@@ -49,6 +49,10 @@ export function modifyLogFunc( options = {} ) {
  * @param {boolean} isInPopover if the control is in popover
  */
 export function changeUnit( unit = '', name = '', isInPopover = false ) {
+	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
+		return
+	}
+
 	const selector = () => cy.getBaseControl( name, { isInPopover } )
 
 	if ( unit ) {
@@ -62,6 +66,41 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
 				}
 			} )
 	}
+}
+
+/**
+ * Function for changing the viewport in control
+ *
+ * @param {string} viewport desired viewport
+ * @param {string} name selector name
+ * @param {boolean} isInPopover if the control is in popover
+ */
+export function changeControlViewport( viewport = 'Desktop', name = '', isInPopover = false ) {
+	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
+		return
+	}
+
+	const selector = () => cy.getBaseControl( name, { isInPopover } )
+	selector()
+		.then( $baseControl => {
+			if ( $baseControl.find( 'button[aria-label="Desktop"]' ).length ) {
+				const hovered = $baseControl.find( 'button[aria-label="Tablet"]' ).length
+				const hover = () => selector().find( 'button[aria-label="Desktop"]' ).trigger( 'mouseover', { force: true } )
+				const selectViewport = () => selector().find( `button[aria-label="${ viewport }"]` ).click( { force: true } )
+				const isActive = () => $baseControl.find( `button.is-active[aria-label="${ viewport }"]` ).length
+				if ( viewport !== 'Desktop' ) {
+					if ( ! hovered ) {
+						hover()
+						selectViewport()
+					} else if ( ! isActive() ) {
+						selectViewport()
+					}
+				} else if ( hovered ) {
+					selectViewport()
+				}
+				cy.wait( 1 )
+			}
+		} )
 }
 
 /**
@@ -80,4 +119,29 @@ export function getActiveTab( callback = () => {} ) {
 
 			callback( tab )
 		} )
+}
+
+/**
+ * Function for checking if text exists within a DOM element in a recursive manner
+ *
+ * @param {jQuery} $parentElement DOM element to be searched
+ * @param {string} textToMatch text being searched in element
+ *
+ * @return {boolean} true if it contains text to be matched and false if it doesn't
+ */
+export function elementContainsText( $parentElement = Cypress.$( 'body' ), textToMatch = '' ) {
+	function _compareTextsRecursive( element ) {
+		if ( ! element.children().length ) {
+			return element.text().trim().match( containsRegExp( textToMatch ) )
+		}
+		return !! element.children().filter( function() {
+			const childEl = Cypress.$( this )
+			const childElText = childEl.clone().children().remove().end().text().trim()
+			return childElText.match( containsRegExp( textToMatch ) ) || _compareTextsRecursive( childEl )
+		} ).length
+	}
+
+	return !! $parentElement.filter( function() {
+		return _compareTextsRecursive( Cypress.$( this ) )
+	} ).length
 }

@@ -32,7 +32,7 @@ import { _assertComputedStyle } from '../commands/assertions'
  * External dependencies
  */
 import {
-	first, keys, last, isBoolean,
+	first, keys, last, isBoolean, cloneDeep,
 } from 'lodash'
 
 class BlockSnapshots {
@@ -103,6 +103,10 @@ class BlockSnapshots {
 					}
 				} )
 
+				if ( ! combinedStubbed.length ) {
+					return
+				}
+
 				cy.publish()
 				cy.getPostUrls().then( ( { previewUrl } ) => {
 					cy.visit( previewUrl )
@@ -120,8 +124,15 @@ class BlockSnapshots {
 							doc.querySelector( '.entry-content' ).innerHTML = ''
 
 							// Change the viewport.
-							if ( viewport !== 'Desktop' ) {
-								cy.viewport( Cypress.config( `viewport${ viewport }Width` ) || Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
+							if ( typeof viewport === 'string' ) {
+								if ( viewport !== 'Desktop' ) {
+									cy.viewport( Cypress.config( `viewport${ viewport }Width` ) || Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
+								}
+							} else {
+								cy.viewport(
+									viewport,
+									Cypress.config( 'viewportHeight' )
+								)
 							}
 
 							// Append the stubbed block in .entry-content
@@ -174,13 +185,14 @@ export const registerBlockSnapshots = alias => {
 		function modifiedFn( ...passedArgs ) {
 			cy.getPreviewMode().then( viewport => {
 				const options = passedArgs.pop()
-				options.blockSnapshots = blockSnapshots
+				// Since Cypress commands are asynchronous, we need to pass a separate object to originalFn to avoid directly mutating the options argument.
+				const optionsToPass = cloneDeep( options )
+				optionsToPass.assertFrontend = false
 				if ( options.assertFrontend === undefined || ( isBoolean( options.assertFrontend ) && options.assertFrontend ) ) {
 					blockSnapshots.stubStyles( passedArgs[ 1 ], options.viewportFrontend || viewport )
 					blockSnapshots.createContentSnapshot()
 				}
-				options.assertFrontend = false
-				originalFn( ...[ ...passedArgs, options ] )
+				originalFn( ...[ ...passedArgs, optionsToPass ] )
 			} )
 		}
 

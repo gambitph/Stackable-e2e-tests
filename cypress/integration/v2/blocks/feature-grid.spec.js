@@ -2,10 +2,12 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { range } from 'lodash'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Feature Grid Block', registerTests( [
 	blockExist,
@@ -15,6 +17,9 @@ describe( 'Feature Grid Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -170,18 +175,11 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.adjust( 'Hover Colors', {
 			'Button Color': '#371010',
 		} )
-		cy.adjust( 'Typography', {
-			'Weight': '700',
-			'Transform': 'lowercase',
-			'Letter Spacing': 2.9,
-		} )
+		assertTypography( '.ugb-button--inner', { enableLineHeight: false, enableSize: false } )
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
 		cy.adjust( 'Opacity', 0.2 ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
-				'font-weight': '700',
-				'text-transform': 'lowercase',
-				'letter-spacing': '2.9px',
 				'color': '#4e2e2e',
 			},
 		} )
@@ -198,29 +196,13 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			value: 50,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-button .ugb-button--inner': {
-			'font-size': '50px',
-		},
+	assertTypography( '.ugb-button--inner', {
+		viewport,
+		enableWeight: false,
+		enableTransform: false,
+		enableLineHeight: false,
+		enableLetterSpacing: false,
 	} )
-
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			unit: 'em',
-			value: 7,
-		},
-	} ).assertComputedStyle( {
-		'.ugb-button .ugb-button--inner': {
-			'font-size': '7em',
-		},
-	} )
-
 	cy.collapse( 'Spacing' )
 
 	cy.adjust( 'Paddings', 24, { viewport, unit: 'px' } ).assertComputedStyle( {
@@ -297,6 +279,42 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-feature-grid', { viewport } )
 	assertSeparators( { viewport } )
+	featureGridBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
+	const featureGridBlock = registerBlockSnapshots( 'featureGridBlock' )
+
+	cy.openInspector( 'ugb/feature-grid', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-feature-grid', { viewport } )
+
+	desktopOnly( () => {
+		cy.setBlockAttribute( {
+			'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		} )
+		range( 1, 4 ).forEach( idx => {
+			cy.collapse( `Column #${ idx }` )
+			cy.adjust( 'Column Background', '#a03b3b' ).assertComputedStyle( {
+				[ `.ugb-feature-grid__item${ idx }` ]: {
+					'background-color': '#a03b3b',
+				},
+			} )
+			cy.collapse( `Image #${ idx }` )
+			cy.adjust( 'Shape', {
+				label: 'Blob 3',
+				value: 'blob3',
+			} )
+			cy.adjust( 'Flip Shape Horizontally', true )
+			cy.adjust( 'Flip Shape Vertically', true )
+			cy.adjust( 'Stretch Shape Mask', true ).assertClassName( `.ugb-feature-grid__item${ idx } img.ugb-img--shape`, 'ugb-image--shape-stretch' )
+		} )
+	} )
 	featureGridBlock.assertFrontendStyles()
 }
 

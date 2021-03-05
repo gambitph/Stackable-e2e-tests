@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockBackground, assertSeparators, assertTypography, assertContainer,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Call To Action Block', registerTests( [
 	blockExist,
@@ -15,6 +16,9 @@ describe( 'Call To Action Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -200,18 +204,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			'Gradient Direction (degrees)': 72,
 			'Text Color': '#000000',
 		} )
-		cy.adjust( 'Typography', {
-			'Font Family': 'Serif',
-			'Weight': '200',
-			'Transform': 'lowercase',
-			'Letter Spacing': 2,
-		} ).assertComputedStyle( {
-			'.ugb-button--inner': {
-				'font-weight': '200',
-				'text-transform': 'lowercase',
-				'letter-spacing': '2px',
-			},
-		} )
+		assertTypography( '.ugb-button--inner', { enableLineHeight: false } )
 		cy.adjust( 'Button Size', 'medium' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-medium' )
 		cy.adjust( 'Border Radius', 35 )
@@ -243,27 +236,12 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			value: 19,
-			unit: 'px',
-		},
-	} ).assertComputedStyle( {
-		'.ugb-button--inner': {
-			'font-size': '19px',
-		},
-	} )
-	cy.adjust( 'Typography', {
-		'Size': {
-			viewport,
-			value: 1.2,
-			unit: 'em',
-		},
-	} ).assertComputedStyle( {
-		'.ugb-button--inner': {
-			'font-size': '1.2em',
-		},
+	assertTypography( '.ugb-button--inner', {
+		viewport,
+		enableWeight: false,
+		enableTransform: false,
+		enableLineHeight: false,
+		enableLetterSpacing: false,
 	} )
 	assertAligns( 'Align', '.ugb-button-container', { viewport } )
 
@@ -276,5 +254,19 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	assertBlockBackground( '.ugb-cta', { viewport } )
 
 	assertSeparators( { viewport } )
+	ctaBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/cta' ).as( 'ctaBlock' )
+	const ctaBlock = registerBlockSnapshots( 'ctaBlock' )
+
+	cy.openInspector( 'ugb/cta', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-cta', { viewport } )
+
+	// Add more block specific tests.
 	ctaBlock.assertFrontendStyles()
 }

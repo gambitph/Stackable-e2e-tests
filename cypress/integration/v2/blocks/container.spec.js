@@ -3,10 +3,11 @@
  */
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertContainer,
+	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Container Block', registerTests( [
 	blockExist,
@@ -16,6 +17,9 @@ describe( 'Container Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -194,5 +198,22 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.selectBlock( 'ugb/container' )
 	assertBlockBackground( '.ugb-container', { viewport } )
 	assertSeparators( { viewport } )
+	containerBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/container' ).as( 'containerBlock' )
+	const containerBlock = registerBlockSnapshots( 'containerBlock' )
+
+	cy.openInspector( 'ugb/container', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-container', {
+		viewport,
+		disableColumnVerticalAlign: true,
+	} )
+
+	// Add more block specific tests.
 	containerBlock.assertFrontendStyles()
 }

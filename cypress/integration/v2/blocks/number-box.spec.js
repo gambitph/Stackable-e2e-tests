@@ -3,11 +3,12 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { startCase } from 'lodash'
+import { startCase, range } from 'lodash'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Number Box Block', registerTests( [
 	blockExist,
@@ -17,6 +18,9 @@ describe( 'Number Box Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -106,9 +110,9 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		},
 	} )
 
-	cy.adjust( 'Number', 33 )
-	cy.adjust( 'Title', 43 )
-	cy.adjust( 'Description', 53 )
+	cy.adjust( 'Number', 33, { viewport } )
+	cy.adjust( 'Title', 43, { viewport } )
+	cy.adjust( 'Description', 53, { viewport } )
 		.assertComputedStyle( {
 			'.ugb-number-box__number': {
 				'margin-bottom': '33px',
@@ -123,8 +127,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	// Number
 	cy.collapse( 'Number' )
-
-	// TO DO: Add test for Number Input
 
 	assertTypography( '.ugb-number-box__number', { viewport } )
 	cy.adjust( 'Size', 47, { viewport, unit: 'px' } ).assertComputedStyle( {
@@ -145,6 +147,22 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	} )
 
 	desktopOnly( () => {
+		cy.adjust( 'Number 1 Label', '10' )
+		cy.adjust( 'Number 2 Label', '20' )
+		cy.adjust( 'Number 3 Label', '30' )
+		cy.get( '.ugb-number-box__item1' )
+			.find( 'div.ugb-number-box__number' )
+			.contains( '10' )
+			.should( 'exist' )
+		cy.get( '.ugb-number-box__item2' )
+			.find( 'div.ugb-number-box__number' )
+			.contains( '20' )
+			.should( 'exist' )
+		cy.get( '.ugb-number-box__item3' )
+			.find( 'div.ugb-number-box__number' )
+			.contains( '30' )
+			.should( 'exist' )
+
 		cy.adjust( 'Number Shape', 'none' ).assertClassName( '.ugb-number-box', 'ugb-number-box--number-style-none' )
 		cy.adjust( 'Number Shape', 'square' ).assertClassName( '.ugb-number-box', 'ugb-number-box--number-style-square' )
 
@@ -217,5 +235,32 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-number-box', { viewport } )
 	assertSeparators( { viewport } )
+	numberBoxBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )
+	const numberBoxBlock = registerBlockSnapshots( 'numberBoxBlock' )
+
+	cy.openInspector( 'ugb/number-box', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-number-box', { viewport } )
+
+	desktopOnly( () => {
+		range( 1, 3 ).forEach( idx => {
+			cy.collapse( `Column #${ idx }` )
+			cy.adjust( 'Column Background', '#447c94' )
+			cy.adjust( 'Number Background', '#3c464a' ).assertComputedStyle( {
+				[ `.ugb-number-box__item${ idx }` ]: {
+					'background-color': '#447c94',
+				},
+				[ `.ugb-number-box__item${ idx } .ugb-number-box__number` ]: {
+					'background-color': '#3c464a',
+				},
+			} )
+		} )
+	} )
 	numberBoxBlock.assertFrontendStyles()
 }

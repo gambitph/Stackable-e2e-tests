@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Card Block', registerTests( [
 	blockExist,
@@ -15,6 +16,9 @@ describe( 'Card Block', registerTests( [
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 ] ) )
 
 function blockExist() {
@@ -72,7 +76,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	cy.collapse( 'General' )
 	cy.adjust( 'Columns', 3 )
-		.assertClassName( '.ugb-card', 'ugb-card--columns-3' )
+	cy.get( '.ugb-card__item3' ).should( 'exist' )
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
 	cy.collapse( 'Container' )
@@ -157,6 +161,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	// Test Button options
 	cy.collapse( 'Button' )
 	cy.waitFA()
+	cy.adjust( 'Icon', 'info' )
 	desktopOnly( () => {
 		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
@@ -172,12 +177,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			'Gradient Direction (degrees)': 72,
 			'Text Color': '#80194d',
 		} )
-		cy.adjust( 'Typography', {
-			'Size': 50,
-			'Weight': '700',
-			'Transform': 'lowercase',
-			'Letter Spacing': 2.9,
-		} )
+		assertTypography( '.ugb-button .ugb-button--inner', { enableLineHeight: false } )
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
 		cy.adjust( 'Border Radius', 40 )
@@ -185,12 +185,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.adjust( 'Horizontal Padding', 43 )
 		cy.adjust( 'Shadow', 4 )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '50px',
-				'font-weight': '700',
-				'text-transform': 'lowercase',
-				'letter-spacing': '2.9px',
-			},
 			'.ugb-button': {
 				'background-color': '#a13939',
 				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
@@ -202,17 +196,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 				'border-radius': '40px',
 			},
 		} )
-		cy.adjust( 'Typography', {
-			'Size': {
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '7em',
-			},
-		} )
-		cy.adjust( 'Icon', 'info' )
 		cy.adjust( 'Adv. Icon Settings', {
 			'Icon Size': 41,
 			'Icon Spacing': 25,
@@ -225,30 +208,14 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	} )
 
-	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
-	if ( tabletMobileViewports.some( _viewport => _viewport === viewport ) ) {
-		cy.adjust( 'Typography', {
-			'Size': {
-				viewport,
-				value: 50,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '50px',
-			},
-		} )
-
-		cy.adjust( 'Typography', {
-			'Size': {
-				viewport,
-				unit: 'em',
-				value: 7,
-			},
-		} ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'font-size': '7em',
-			},
-		} )
+	if ( viewport !== 'Desktop' ) {
+		assertTypography( '.ugb-button .ugb-button--inner', {
+			viewport,
+			enableWeight: false,
+			enableTransform: false,
+			enableLineHeight: false,
+			enableLetterSpacing: false,
+		 } )
 	}
 
 	assertAligns( 'Align', '.ugb-button-container', { viewport } )
@@ -280,16 +247,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	// Test Spacing options
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Block Title', 35, { viewport } ).assertComputedStyle( {
-		'.ugb-block-title': {
-			'margin-bottom': '35px',
-		},
-	} )
-	cy.adjust( 'Block Description', 41, { viewport } ).assertComputedStyle( {
-		'.ugb-block-description': {
-			'margin-bottom': '41px',
-		},
-	} )
 	cy.adjust( 'Paddings', 21, { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-card__content': {
 			'padding-top': '21px',
@@ -338,5 +295,22 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	// Test Block Background
 	assertBlockBackground( '.ugb-card', { viewport } )
 	assertSeparators( { viewport } )
+	cardBlock.assertFrontendStyles()
+}
+
+function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
+	const cardBlock = registerBlockSnapshots( 'cardBlock' )
+
+	cy.openInspector( 'ugb/card', 'Advanced' )
+
+	assertAdvancedTab( '.ugb-card', {
+		viewport,
+		verticalAlignSelector: '.ugb-card__content',
+	 } )
+
+	// Add more block specific tests.
 	cardBlock.assertFrontendStyles()
 }

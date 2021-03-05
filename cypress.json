@@ -27,12 +27,17 @@
 			"icon-list",
 			"notification",
 			"number-box",
+			"pricing-box",
 			"separator",
 			"spacer",
-			"text"
+			"team-member",
+			"testimonial",
+			"text",
+			"video-popup"
 		],
 		"INCLUDED_V3_TEST_FILES": [],
 		"FORCE_INCLUDE_ALL_TESTS": "false",
-		"DUMMY_IMAGE_URL": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg"
+		"DUMMY_IMAGE_URL": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
+		"DUMMY_VIDEO_URL": "https://youtu.be/nc5Lj90BzSQ"
 	}
 }
