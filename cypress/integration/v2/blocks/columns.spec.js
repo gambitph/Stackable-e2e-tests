@@ -76,8 +76,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	} )
 	cy.adjust( 'Columns', 2 )
 
-	const desktopTabletViewports = [ 'Desktop', 'Tablet' ]
-	if ( desktopTabletViewports.some( _viewport => _viewport === viewport ) ) {
+	if ( viewport !== 'Mobile' ) {
 		cy.adjust( 'Column Widths', [ 67, 33 ], { viewport } ).assertComputedStyle( {
 			'.ugb-columns__item': {
 				'grid-template-columns': '1.34fr 0.66fr',
