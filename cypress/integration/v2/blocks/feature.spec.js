@@ -125,16 +125,16 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	// General Tab
 	cy.collapse( 'General' )
 
-	const desktopTabletViewports = [ 'Desktop', 'Tablet' ]
-	if ( desktopTabletViewports.some( _viewport => _viewport === viewport ) ) {
+	if ( viewport !== 'Mobile' ) {
+		const assertionOptions = viewport === 'Tablet' ? { viewportFrontend: 783 } : {}
+
 		cy.adjust( 'Image Column Width', 45, { viewport } ).assertComputedStyle( {
 			'.ugb-feature__item': {
 				'grid-template-columns': '1.10fr 0.90fr',
 			},
-		} )
+		}, assertionOptions )
 	}
 
-	// ISSUE: Reverse Horizontally updates in the back end but not in the front end
 	desktopOnly( () => {
 		cy.adjust( 'Reverse Horizontally', true ).assertClassName( '.ugb-feature', 'ugb-feature--invert' )
 	} )
@@ -229,7 +229,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.waitFA()
 
 	desktopOnly( () => {
-		// ISSUE: Button design test updates in the backend but doesn't update in the front end
 		const buttonDesigns = [ 'ghost', 'plain', 'link' ]
 		buttonDesigns.forEach( design => {
 			cy.adjust( 'Design', {
@@ -237,12 +236,15 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 				value: design,
 			} ).assertClassName( '.ugb-button', `ugb-button--design-${ design }` )
 		} )
+		cy.adjust( 'Design', {
+			label: 'Basic',
+			value: 'basic',
+		} )
 		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
 		cy.adjust( 'Button Color #2', '#4e59d4' )
 		cy.adjust( 'Gradient Direction (degrees)', 138 )
 		cy.adjust( 'Text Color', '#ffa03b' )
-		// ISSUE: Hover Effect test updates in the backend but doesn't update in the front end
 		cy.adjust( 'Hover Effect', 'scale' ).assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
@@ -256,7 +258,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 			'Transform': 'lowercase',
 			'Letter Spacing': 2.9,
 		} )
-		// ISSUE: Button Size test updates in the backend but doesn't update in the front end
 		cy.adjust( 'Button Size', 'small' ).assertClassName( '.ugb-button', 'ugb-button--size-small' )
 		cy.adjust( 'Border Radius', 40 )
 		cy.adjust( 'Vertical Padding', 15 )
@@ -292,7 +293,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 				'margin-right': '25px',
 			},
 		} )
-		// ISSUE: Icon Position test updates in the backend but doesn't update in the front end
 		cy.adjust( 'Adv. Icon Settings', {
 			'Icon Position': 'Right',
 		} ).assertClassName( '.ugb-button', 'ugb-button--icon-position-right' )
