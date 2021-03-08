@@ -87,9 +87,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 	}
 
-	// TODO: Change tablet settings for frontend assertion of Column Widths
-	// as it's only for viewportWidth: 1025, not 780
-
 	cy.adjust( 'Column Gap', 115, { viewport } ).assertComputedStyle( {
 		'.ugb-columns__item': {
 			'grid-column-gap': '115px',
