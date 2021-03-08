@@ -2,7 +2,9 @@
 /**
  * External dependencies
  */
-import { last, first } from 'lodash'
+import {
+	last, first, uniqueId,
+} from 'lodash'
 
 /**
  * Internal dependencies
@@ -36,7 +38,12 @@ export function addBlock( blockName = 'ugb/accordion' ) {
 		return new Cypress.Promise( resolve => {
 			const block = wp.blocks.createBlock( blockName )
 			wp.data.dispatch( 'core/editor' ).insertBlock( block )
-				.then( dispatchResolver( () => resolve( last( wp.data.select( 'core/block-editor' ).getBlocks() ) ) ) )
+				.then( dispatchResolver( () => {
+					const addedBlock = last( wp.data.select( 'core/block-editor' ).getBlocks() )
+					cy.selectBlock( blockName, addedBlock.clientId )
+					cy.setBlockAttributes( { className: `e2etest-block-${ uniqueId() }` } )
+					resolve( addedBlock )
+				} ) )
 		} )
 	} )
 }
