@@ -16,6 +16,10 @@ Cypress.Commands.add( 'colorControl', colorControl )
 Cypress.Commands.add( 'rangeControl', rangeControl )
 Cypress.Commands.add( 'toolbarControl', toolbarControl )
 Cypress.Commands.add( 'toggleControl', toggleControl )
+Cypress.Commands.add( 'textControl', textControl )
+Cypress.Commands.add( 'textAreaControl', textAreaControl )
+Cypress.Commands.add( 'stylesControl', stylesControl )
+Cypress.Commands.add( 'fontSizeControl', fontSizeControl )
 
 // Adjust Styles
 Cypress.Commands.add( 'adjust', adjust )
@@ -200,6 +204,91 @@ function toggleControl( name, value, options = {} ) {
 }
 
 /**
+ * Command for adjusting the text control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ */
+function textControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+	} = options
+
+	beforeAdjust( name, value, options )
+	cy.getBaseControl( name, { isInPopover } )
+		.find( 'input.components-text-control__input' )
+		.type( `{selectall}${ value }`, { force: true } )
+}
+
+/**
+ * Command for typing into a text area control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ */
+function textAreaControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+	} = options
+
+	beforeAdjust( name, value, options )
+	cy.getBaseControl( name, { isInPopover } )
+		.find( 'textarea.components-textarea-control__input' )
+		.type( `{selectall}${ value }`, { force: true } )
+}
+
+/**
+ * Command for changing the block style control in native blocks.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ */
+function stylesControl( name, value, options = {} ) {
+	const {
+		beforeAdjust = () => {},
+	} = options
+
+	beforeAdjust( name, value, options )
+	cy.get( '.block-editor-block-styles' )
+		.find( `div.block-editor-block-styles__item[aria-label=${ value }]` )
+		.click( { force: true } )
+}
+
+/**
+ * Command for changing the font size in native blocks.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ */
+function fontSizeControl( name, value, options = {} ) {
+	const {
+		beforeAdjust = () => {},
+	} = options
+
+	beforeAdjust( name, value, options )
+	if ( typeof value === 'string' ) {
+		cy.get( '.components-font-size-picker__select' )
+			.find( '.components-custom-select-control__button' )
+			.click( { force: true } )
+
+		cy.get( '.components-font-size-picker__select' )
+			.find( '.components-custom-select-control__item' )
+			.contains( value )
+			.click( { force: true } )
+	} else if ( typeof value === 'number' ) {
+		cy.get( '.components-font-size-picker__number-container' )
+			.find( 'input.components-font-size-picker__number' )
+			.type( `{selectall}${ value }`, { force: true } )
+	}
+}
+
+/**
  * Command for adjusting settings.
  *
  * @param {string} name
@@ -214,6 +303,22 @@ export function adjust( name, value, options ) {
 		parentElement = '.components-base-control',
 		// if the option has no label, pass custom regex to find the control
 	} = options
+
+	// Handle options with no label
+	if ( name === 'Block Design' ) {
+		cy.stylesControl( name, value, options )
+		return cy.get( '.block-editor-block-list__block.is-selected' )
+	}
+
+	// Handle deprecated controls.
+	if ( name === 'Font size' ) {
+		// Handle gutenberg core heading font size.
+		if ( Cypress.$( '.components-custom-select-control:contains(Font size)' ) ) {
+			cy.fontSizeControl( name, value, options )
+			return cy.get( '.block-editor-block-list__block.is-selected' )
+		}
+	}
+
 	const baseControlSelector = () => cy
 		.get( parentElement )
 		.contains( containsRegExp( name ) )
@@ -230,14 +335,8 @@ export function adjust( name, value, options ) {
 		'.components-input-control__input': 'rangeControl',
 		'.components-button-group': 'toolbarControl',
 		'.components-form-toggle__input': 'toggleControl',
-
-		/**
-		 * TODO: Support native blocks.
-		 * .block-editor-block-styles -> stylesConrol
-		 * .components-text-control__input[type=number] -> rangeControl
-		 * .components-text-control__input[type=text] -> rangeControl
-		 * .components-font-size-picker__number
-		 */
+		'.components-text-control__input': 'textControl',
+		'.components-textarea-control__input': 'textAreaControl',
 	}
 
 	baseControlSelector()
