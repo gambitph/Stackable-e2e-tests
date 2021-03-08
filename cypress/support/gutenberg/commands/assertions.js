@@ -8,7 +8,9 @@ import {
 /**
  * Internal dependencies
  */
-import { getBlockStringPath, createElementFromHTMLString } from '../util'
+import {
+	getBlockStringPath, createElementFromHTMLString, parseClassList,
+} from '../util'
 
 /**
  * Register Cypress Commands
@@ -209,6 +211,9 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 		assertBackend = true,
 		assertFrontend = true,
 		delay = 0,
+		isDynamicContent = false,
+		afterFrontendAssert = () => {},
+		afterBackendAssert = () => {},
 	} = options
 
 	cy.wp().then( wp => {
@@ -216,6 +221,8 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 		cy.wait( delay )
 
 		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
 		cy
 			.get( subject )
@@ -226,12 +233,39 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 						!! $block.find( `${ customSelector }.${ expectedValue }` ).length,
 						`${ expectedValue } class must be present in ${ customSelector } in Editor`
 					)
+					afterBackendAssert()
 				}
 
-				// Assert frontend classes.
-				// Check if we're asserting the parent element.
-				if ( assertFrontend ) {
-					const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+				// Assert class name of Dynamic Blocks in Frontend
+				if ( assertFrontend && isDynamicContent ) {
+					const parsedClassList = parseClassList( Array.from( saveElement.classList ).join( ' ' ) )
+					cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+						cy.visit( previewUrl )
+						cy.document().then( doc => {
+							const willAssertElement = doc.querySelector( `${ parsedClassList }${ parsedClassList.match( customSelector ) ? '' : ` ${ customSelector }` }` )
+							if ( willAssertElement ) {
+								( parsedClassList.includes( customSelector )
+									? cy.get( parsedClassList ).invoke( 'attr', 'class' )
+									: cy.get( parsedClassList ).find( customSelector ).invoke( 'attr', 'class' )
+								).then( $classNames => {
+									const parsedClassNames = $classNames.split( ' ' )
+									assert.isTrue(
+										parsedClassNames.includes( expectedValue ),
+										`${ expectedValue } class must be present in ${ customSelector } in Frontend`
+									)
+								} )
+							}
+						} )
+						cy.visit( editorUrl )
+						cy.wp().then( _wp => {
+							const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
+							cy.selectBlock( name, { clientId } )
+							afterFrontendAssert()
+						} )
+					} )
+				} else if ( assertFrontend ) {
+					// Assert frontend classes.
+					// Check if we're asserting the parent element.
 					const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 					if ( parsedClassList.match( customSelector ) ) {
 						assert.isTrue(

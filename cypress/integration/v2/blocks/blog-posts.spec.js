@@ -79,7 +79,7 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 		cy.adjust( 'Columns', 2 )
 		cy.adjust( 'Shadow / Outline', 7 )
-			.assertClassName( '.ugb-blog-posts__featured-image', 'ugb--shadow-7', { assertFrontend: false } )
+			.assertClassName( '.ugb-blog-posts__featured-image', 'ugb--shadow-7', { isDynamicContent: true } )
 		cy.adjust( 'Content Order', 'category,title,meta,excerpt' ).assertComputedStyle( {
 			'.ugb-blog-posts__category': {
 				'order': '1',
