@@ -172,8 +172,6 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		} )
 		cy.adjust( 'Flip Shape Horizontally', true )
 		cy.adjust( 'Flip Shape Vertically', true )
-
-		// ISSUE: Stretch Shape Mask updates in the back end but not in the front end
 		cy.adjust( 'Stretch Shape Mask', true ).assertClassName( 'img.ugb-img--shape', 'ugb-image--shape-stretch' )
 
 		// We won't be able to assert image size for now since it requires server handling.
@@ -181,12 +179,17 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		cy.adjust( 'Alt Text (Alternative Text)', 'Hello World!' ).assertHtmlAttribute( '.ugb-img', 'alt', 'Hello World!' )
 	} )
 
-	cy.adjust( 'Image Width', 87, { viewport } )
-	cy.adjust( 'Force square image', true, { viewport } ).assertComputedStyle( {
+	cy.adjust( 'Image Width', 300, { viewport } ).assertComputedStyle( {
 		'.ugb-img': {
-			'width': '87px',
-			'height': '87px',
+			'width': '300px',
 		},
+	} )
+	desktopOnly( () => {
+		cy.adjust( 'Force square image', true ).assertComputedStyle( {
+			'.ugb-img': {
+				'height': '300px',
+			},
+		} )
 	} )
 
 	// Title Tab and Description Tab
