@@ -1,10 +1,12 @@
 /**
  * External dependencies
  */
+import { startCase } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
+	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 describe( 'Feature Block', registerTests( [
@@ -12,6 +14,9 @@ describe( 'Feature Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopAdvanced,
 	tabletAdvanced,
 	mobileAdvanced,
@@ -109,6 +114,197 @@ function switchDesign() {
 	] ) )
 }
 
+function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
+	const featureBlock = registerBlockSnapshots( 'featureBlock' )
+
+	cy.openInspector( 'ugb/feature', 'Style' )
+
+	// General Tab
+	cy.collapse( 'General' )
+
+	if ( viewport !== 'Mobile' ) {
+		const assertionOptions = viewport === 'Tablet' ? { viewportFrontend: 783 } : {}
+
+		cy.adjust( 'Image Column Width', 45, { viewport } ).assertComputedStyle( {
+			'.ugb-feature__item': {
+				'grid-template-columns': '1.10fr 0.90fr',
+			},
+		}, assertionOptions )
+	}
+
+	desktopOnly( () => {
+		cy.adjust( 'Reverse Horizontally', true ).assertClassName( '.ugb-feature', 'ugb-feature--invert' )
+	} )
+
+	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
+
+	// Spacing Tab
+	cy.collapse( 'Spacing' )
+
+	cy.adjust( 'Title', 50, { viewport } )
+	cy.adjust( 'Description', 33, { viewport } )
+	cy.adjust( 'Button', 10, { viewport } ).assertComputedStyle( {
+		'.ugb-feature__title': {
+			'margin-bottom': '50px',
+		},
+		'.ugb-feature__description': {
+			'margin-bottom': '33px',
+		},
+		'.ugb-button-container': {
+			'margin-bottom': '10px',
+		},
+	} )
+
+	// Image Tab
+	cy.collapse( 'Image' )
+
+	cy.setBlockAttribute( {
+		'imageUrl': Cypress.env( 'DUMMY_IMAGE_URL' ),
+	} )
+
+	desktopOnly( () => {
+		cy.adjust( 'Shape', {
+			label: 'Blob 1',
+			value: 'blob1',
+		} )
+		cy.adjust( 'Flip Shape Horizontally', true )
+		cy.adjust( 'Flip Shape Vertically', true )
+		cy.adjust( 'Stretch Shape Mask', true ).assertClassName( 'img.ugb-img--shape', 'ugb-image--shape-stretch' )
+
+		// We won't be able to assert image size for now since it requires server handling.
+
+		cy.adjust( 'Alt Text (Alternative Text)', 'Hello World!' ).assertHtmlAttribute( '.ugb-img', 'alt', 'Hello World!' )
+	} )
+
+	cy.adjust( 'Image Width', 300, { viewport } ).assertComputedStyle( {
+		'.ugb-img': {
+			'width': '300px',
+		},
+	} )
+	desktopOnly( () => {
+		cy.adjust( 'Force square image', true ).assertComputedStyle( {
+			'.ugb-img': {
+				'height': '300px',
+			},
+		} )
+	} )
+
+	// Title Tab and Description Tab
+	const typographyAssertions = [ 'title', 'description' ]
+	typographyAssertions.forEach( typographyAssertion => {
+		const label = startCase( typographyAssertion )
+		cy.collapse( label )
+		if ( typographyAssertion === 'title' ) {
+			desktopOnly( () => {
+				cy.adjust( 'Title HTML Tag', 'h4' ).assertHtmlTag( '.ugb-feature__title', 'h4' )
+			} )
+		}
+
+		desktopOnly( () => {
+			cy.adjust( `${ label } Color`, '#742f2f' ).assertComputedStyle( {
+				[ `.ugb-feature__${ typographyAssertion }` ]: {
+					'color': '#742f2f',
+				},
+			} )
+		} )
+
+		cy.adjust( 'Size', 55, { viewport, unit: 'px' } ).assertComputedStyle( {
+			[ `.ugb-feature__${ typographyAssertion }` ]: {
+				'font-size': '55px',
+			},
+		} )
+		cy.adjust( 'Size', 2, { viewport, unit: 'em' } ).assertComputedStyle( {
+
+			[ `.ugb-feature__${ typographyAssertion }` ]: {
+				'font-size': '2em',
+			},
+		} )
+
+		assertTypography( `.ugb-feature__${ typographyAssertion }`, { viewport } )
+		assertAligns( 'Align', `.ugb-feature__${ typographyAssertion }`, { viewport } )
+	} )
+
+	// Test Button
+	cy.collapse( 'Button' )
+	cy.waitFA()
+
+	desktopOnly( () => {
+		const buttonDesigns = [ 'ghost', 'plain', 'link' ]
+		buttonDesigns.forEach( design => {
+			cy.adjust( 'Design', {
+				label: startCase( design ),
+				value: design,
+			} ).assertClassName( '.ugb-button', `ugb-button--design-${ design }` )
+		} )
+		cy.adjust( 'Design', {
+			label: 'Basic',
+			value: 'basic',
+		} )
+		cy.adjust( 'Color Type', 'gradient' )
+		cy.adjust( 'Button Color #1', '#a13939' )
+		cy.adjust( 'Button Color #2', '#4e59d4' )
+		cy.adjust( 'Gradient Direction (degrees)', 138 )
+		cy.adjust( 'Text Color', '#ffa03b' )
+		cy.adjust( 'Hover Effect', 'scale' ).assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
+		cy.adjust( 'Hover Opacity', 0.6 )
+		cy.adjust( 'Hover Colors', {
+			'Button Color #1': '#bd8b8b',
+			'Button Color #2': '#3fa35b',
+			'Gradient Direction (degrees)': 72,
+			'Text Color': '#80194d',
+		} )
+		cy.adjust( 'Button Size', 'small' ).assertClassName( '.ugb-button', 'ugb-button--size-small' )
+		cy.adjust( 'Border Radius', 40 )
+		cy.adjust( 'Vertical Padding', 15 )
+		cy.adjust( 'Horizontal Padding', 43 )
+		cy.adjust( 'Shadow', 4 )
+		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
+			'.ugb-button .ugb-button--inner': {
+				'color': '#ffa03b',
+			},
+			'.ugb-button': {
+				'background-color': '#a13939',
+				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
+				'padding-top': '15px',
+				'padding-right': '43px',
+				'padding-bottom': '15px',
+				'padding-left': '43px',
+				'opacity': '0.6',
+				'border-radius': '40px',
+			},
+		} )
+
+		cy.adjust( 'Icon', 'barcode' )
+		cy.adjust( 'Adv. Icon Settings', {
+			'Icon Size': 41,
+			'Icon Spacing': 25,
+		} ).assertComputedStyle( {
+			'.ugb-button svg': {
+				'height': '41px',
+				'width': '41px',
+				'margin-right': '25px',
+			},
+		} )
+		cy.adjust( 'Adv. Icon Settings', {
+			'Icon Position': 'Right',
+		} ).assertClassName( '.ugb-button', 'ugb-button--icon-position-right' )
+	} )
+
+	assertTypography( '.ugb-button .ugb-button--inner', {
+		viewport,
+		enableLineHeight: false,
+	} )
+	assertAligns( 'Align', '.ugb-button-container', { viewport } )
+
+	assertBlockBackground( '.ugb-feature', { viewport } )
+	assertSeparators( { viewport } )
+
+	featureBlock.assertFrontendStyles()
+}
+
 function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cy.setupWP()
 	cy.newPage()
@@ -120,5 +316,6 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	assertAdvancedTab( '.ugb-feature', { viewport } )
 
 	// Add more block specific tests.
+
 	featureBlock.assertFrontendStyles()
 }

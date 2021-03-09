@@ -76,7 +76,7 @@ function styleTab( viewport, desktopOnly ) {
 	desktopOnly( () => {
 		range( 1, 5 ).forEach( idx => {
 			cy.adjust( 'Columns', idx )
-				.assertClassName( '.ugb-image-box', `ugb-image-box--columns-${ idx }` )
+			cy.get( `.ugb-image-box__item${ idx }` ).should( 'exist' )
 		} )
 		cy.adjust( 'Columns', 3 )
 	} )
