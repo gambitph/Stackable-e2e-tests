@@ -202,6 +202,46 @@ export const registerBlockSnapshots = alias => {
 		return modifiedFn( ...[ ...args, {} ] )
 	} )
 
+	Cypress.Commands.overwrite( 'assertClassName', ( originalFn, ...args ) => {
+		function modifiedFn( ...passedArgs ) {
+			const options = passedArgs.pop()
+			const subject = passedArgs.shift()
+			const customSelector = passedArgs.shift()
+			const expectedValue = passedArgs.shift()
+			// Since Cypress commands are asynchronous, we need to pass a separate object to originalFn to avoid directly mutating the options argument.
+			const optionsToPass = cloneDeep( options )
+			optionsToPass.assertFrontend = false
+			if ( options.assertFrontend === undefined || ( isBoolean( options.assertFrontend ) && options.assertFrontend ) ) {
+				cy.wp().then( wp => {
+					cy.publish()
+					const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+					const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+					// Assert frontend classes.
+					// Check if we're asserting the parent element.
+					const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
+					if ( parsedClassList.match( customSelector ) ) {
+						assert.isTrue(
+							!! parsedClassList.match( expectedValue ),
+							`${ expectedValue } class must be present in ${ customSelector } in Frontend`
+						)
+					} else {
+						// Otherwise, search the element
+						assert.isTrue(
+							!! Array.from( saveElement.querySelector( customSelector ).classList ).includes( expectedValue ),
+							`${ expectedValue } class must be present in ${ customSelector } in Frontend`
+						)
+					}
+				} )
+			}
+			originalFn( ...[ subject, customSelector, expectedValue, optionsToPass ] )
+		}
+
+		if ( args.length === 4 ) {
+			return modifiedFn( ...args )
+		}
+		return modifiedFn( ...[ ...args, {} ] )
+	} )
+
 	return blockSnapshots
 }
 

@@ -79,7 +79,7 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 		cy.adjust( 'Columns', 2 )
 		cy.adjust( 'Shadow / Outline', 7 )
-			.assertClassName( '.ugb-blog-posts__featured-image', 'ugb--shadow-7', { isDynamicContent: true } )
+			.assertClassName( '.ugb-blog-posts__featured-image', 'ugb--shadow-7' )
 		cy.adjust( 'Content Order', 'category,title,meta,excerpt' ).assertComputedStyle( {
 			'.ugb-blog-posts__category': {
 				'order': '1',
@@ -202,7 +202,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 		cy.adjust( 'Highlighted', true )
-			.assertClassName( '.ugb-blog-posts', 'ugb-blog-posts--cat-highlighted', { isDynamicContent: true } )
+			.assertClassName( '.ugb-blog-posts', 'ugb-blog-posts--cat-highlighted' )
 		cy.adjust( 'Color', '#d57575' ).assertComputedStyle( {
 			'.ugb-blog-posts__category a': {
 				'background-color': '#d57575',
@@ -281,7 +281,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Gradient Direction (degrees)', 138 )
 		cy.adjust( 'Text Color', '#ffa03b' )
 		cy.adjust( 'Hover Effect', 'scale' )
-			.assertClassName( '.ugb-button', 'ugb--hover-effect-scale', { isDynamicContent: true } )
+			.assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
 		cy.adjust( 'Hover Opacity', 0.6 )
 		cy.adjust( 'Hover Colors', {
 			'Button Color #1': '#bd8b8b',
@@ -292,7 +292,7 @@ function styleTab( viewport, desktopOnly ) {
 
 		assertTypography( '.ugb-button .ugb-button--inner', { enableLineHeight: false } )
 		cy.adjust( 'Button Size', 'large' )
-			.assertClassName( '.ugb-button', 'ugb-button--size-large', { isDynamicContent: true } )
+			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
 		cy.adjust( 'Border Radius', 40 )
 		cy.adjust( 'Vertical Padding', 15 )
 		cy.adjust( 'Horizontal Padding', 43 )

@@ -53,24 +53,3 @@ export function getBlockStringPath( blocks = [], clientId = '' ) {
 	return paths.join( '' )
 }
 
-/**
- * Function used to generate a parsed class names to be
- * used as a selector.
- *
- * @param {Array} classList
- */
-export function parseClassList( classList = [] ) {
-	const excludedClassNames = [
-		'ugb-accordion--open',
-		'ugb-icon-list__left-align',
-		'ugb-icon-list__center-align',
-		'ugb-icon-list__right-align',
-		'alignfull',
-	]
-	const parsedClassList = classList.split( ' ' )
-		.filter( className => ! className.match( /ugb-(.......)$/ ) && ! excludedClassNames.includes( className ) )
-		.map( className => `.${ className }` )
-		.join( '' )
-	return parsedClassList
-}
-

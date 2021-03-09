@@ -44,7 +44,7 @@ export function getBlockAttributes( clientId = '' ) {
 				clientId = ( wp.data.select( 'core/block-editor' ).getSelectedBlock() || {} ).clientId
 			}
 			if ( clientId ) {
-				const attributes = wp.data.dispatch( 'core/block-editor' ).getBlockAttributes( clientId )
+				const attributes = wp.data.select( 'core/block-editor' ).getBlockAttributes( clientId )
 				resolve( attributes )
 			} else {
 				reject( null )
