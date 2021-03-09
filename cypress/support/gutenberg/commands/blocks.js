@@ -148,7 +148,7 @@ export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/ac
 	cy.wp().then( wp => {
 		return new Cypress.Promise( resolve => {
 			const selectedBlockClientId = wp.data.select( 'core/block-editor' ).getSelectedBlockClientId()
-			const newBlock = wp.blocks.createBlock( blockToAdd )
+			const newBlock = wp.blocks.createBlock( blockToAdd, { className: `e2etest-block-${ uniqueId() }` } )
 			wp.data.dispatch( 'core/editor' ).insertBlock( newBlock, 0, selectedBlockClientId ).then( dispatchResolver( resolve ) )
 		} )
 	} )
