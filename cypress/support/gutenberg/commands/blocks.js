@@ -36,14 +36,9 @@ export function assertBlockError() {
 export function addBlock( blockName = 'ugb/accordion' ) {
 	cy.wp().then( wp => {
 		return new Cypress.Promise( resolve => {
-			const block = wp.blocks.createBlock( blockName )
+			const block = wp.blocks.createBlock( blockName, { className: `e2etest-block-${ uniqueId() }` } )
 			wp.data.dispatch( 'core/editor' ).insertBlock( block )
-				.then( dispatchResolver( () => {
-					const addedBlock = last( wp.data.select( 'core/block-editor' ).getBlocks() )
-					cy.selectBlock( blockName, addedBlock.clientId )
-					cy.setBlockAttributes( { className: `e2etest-block-${ uniqueId() }` } )
-					resolve( addedBlock )
-				} ) )
+				.then( dispatchResolver( () => resolve( last( wp.data.select( 'core/block-editor' ).getBlocks() ) ) ) )
 		} )
 	} )
 }
