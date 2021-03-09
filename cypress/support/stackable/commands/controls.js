@@ -64,12 +64,6 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		cy.popoverControl( label, ...args, optionsToPass )
 		return cy.get( '.block-editor-block-list__block.is-selected' )
 	}
-	if ( label === 'Column Widths' ) {
-		// Column Widths should use columnControl instead of designControl
-		args.shift()
-		cy.columnControl( label, ...args, optionsToPass )
-		return cy.get( '.block-editor-block-list__block.is-selected' )
-	}
 
 	const customOptions = {
 		// Pass our own adjust controls.
@@ -170,6 +164,10 @@ function designControl( name, value, options = {} ) {
 		isInPopover = false,
 		beforeAdjust = () => {},
 	} = options
+
+	if ( name === 'Column Widths' ) {
+		return
+	}
 
 	beforeAdjust( name, value, options )
 	cy.getBaseControl( typeof value === 'object' ? value.label : name, { isInPopover } )
