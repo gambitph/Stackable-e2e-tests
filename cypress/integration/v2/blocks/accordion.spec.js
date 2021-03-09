@@ -73,6 +73,11 @@ function typeContent() {
 		cy.addBlock( 'ugb/accordion' )
 		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', 'Hello World! 1234' )
 		cy.typeBlock( 'ugb/accordion', '.block-editor-block-list__block', 'Hello World! 1234' )
+		cy.get( '.ugb-accordion' )
+			.find( '.block-editor-block-list__block' )
+			.then( $textBlock => {
+				$textBlock.addClass( 'e2e-paragraph' )
+			} )
 
 		cy.publish()
 		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
@@ -82,7 +87,7 @@ function typeContent() {
 				.contains( 'Hello World! 1234' )
 				.should( 'exist' )
 			cy.get( '.ugb-accordion' )
-				.find( '.block-editor-block-list__block' )
+				.find( '.e2e-paragraph' )
 				.contains( 'Hello World! 1234' )
 				.should( 'exist' )
 			cy.visit( editorUrl )
