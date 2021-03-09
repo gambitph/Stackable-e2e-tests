@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	keys, camelCase, isEmpty, first, pick, toUpper, last, get, startCase,
+	keys, camelCase, isEmpty, first, pick, last, get, startCase,
 } from 'lodash'
 
 /**
@@ -20,6 +20,9 @@ Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, assertClass
 Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, assertHtmlTag )
 Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, assertHtmlAttribute )
 
+// TODO: Add a function for overwriting assertions to be reused by
+// assertComputedStyle, assertClassName, assertHtmlTag, assertHtmlAttribute
+
 // Temporary overwrite fix. @see stackable/commands/assertions.js
 Cypress.Commands.overwrite( 'assertComputedStyle', ( originalFn, ...args ) => {
 	function modifiedFn( ...newArgs ) {
@@ -32,6 +35,58 @@ Cypress.Commands.overwrite( 'assertComputedStyle', ( originalFn, ...args ) => {
 				if ( ( args.length === 3 &&
 				( last( args ).assertFrontend === undefined ||
 				last( args ).assertFrontend ) ) || args.length === 2 ) {
+					optionsToPass.afterFrontendAssert = () => {
+						cy.openSidebar( 'Settings' )
+						cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
+						cy.collapse( activePanel )
+					}
+				}
+				return originalFn( ...[ ...args, optionsToPass ] )
+			} )
+		} )
+	}
+
+	return modifiedFn( ...args )
+} )
+
+// Temporary overwrite fix for assertClassName
+Cypress.Commands.overwrite( 'assertClassName', ( originalFn, ...args ) => {
+	function modifiedFn( ...newArgs ) {
+		cy.getActiveTab().then( tab => {
+			cy.document().then( doc => {
+				const optionsToPass = newArgs.length === 4 ? args.pop() : {}
+				const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
+				// This is for stackable only.
+				// After asserting the frontend, go back to the previous state.
+				if ( ( args.length === 4 &&
+				( last( args ).assertFrontend === undefined ||
+				last( args ).assertFrontend ) ) || args.length === 3 ) {
+					optionsToPass.afterFrontendAssert = () => {
+						cy.openSidebar( 'Settings' )
+						cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
+						cy.collapse( activePanel )
+					}
+				}
+				return originalFn( ...[ ...args, optionsToPass ] )
+			} )
+		} )
+	}
+
+	return modifiedFn( ...args )
+} )
+
+// Temporary overwrite fix for assertHtmlTag
+Cypress.Commands.overwrite( 'assertHtmlTag', ( originalFn, ...args ) => {
+	function modifiedFn( ...newArgs ) {
+		cy.getActiveTab().then( tab => {
+			cy.document().then( doc => {
+				const optionsToPass = newArgs.length === 4 ? args.pop() : {}
+				const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
+				// This is for stackable only.
+				// After asserting the frontend, go back to the previous state.
+				if ( ( args.length === 4 &&
+				( last( args ).assertFrontend === undefined ||
+				last( args ).assertFrontend ) ) || args.length === 3 ) {
 					optionsToPass.afterFrontendAssert = () => {
 						cy.openSidebar( 'Settings' )
 						cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
@@ -240,7 +295,6 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 					}
 
 					// Assert frontend classes
-					// Check if we're asserting the parent element
 					if ( assertFrontend ) {
 						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 							cy.visit( previewUrl )
@@ -292,43 +346,54 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 		assertBackend = true,
 		assertFrontend = true,
 		delay = 0,
+		afterFrontendAssert = () => {},
+		afterBackendAssert = () => {},
 	} = options
 
 	cy.wp().then( wp => {
 		cy.publish()
 		cy.wait( delay )
+		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
-		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
-
-		cy
-			.get( subject )
-			.then( $block => {
-				// Assert editor HTML tag.
-				if ( assertBackend ) {
-					assert.isTrue(
-						! isEmpty( $block.find( `${ expectedValue }${ customSelector }` ) ),
-						`${ customSelector } must have HTML tag '${ expectedValue }' in Editor'`
-					)
-				}
-
-				// Check if we're asserting the parent element.
-				if ( assertFrontend ) {
-					const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
-					const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
-					if ( parsedClassList.match( customSelector ) ) {
+		cy.getBlockAttributes().then( attributes => {
+			const selector = `${ attributes.className }`
+			cy
+				.get( subject )
+				.then( $block => {
+					// Assert editor classes.
+					if ( assertBackend ) {
 						assert.isTrue(
-							saveElement.tagName === toUpper( expectedValue ),
-							`${ customSelector } must have HTML tag '${ expectedValue }' in Frontend'`
+							! isEmpty( $block.find( `${ expectedValue }${ customSelector }` ) ),
+							`${ customSelector } must have HTML tag '${ expectedValue }' in Editor'`
 						)
-					} else {
-						// Otherwise, search the element
-						assert.isTrue(
-							saveElement.querySelector( customSelector ).tagName === toUpper( expectedValue ),
-							`${ customSelector } must have HTML tag '${ expectedValue }' in Frontend'`
-						)
+						afterBackendAssert()
 					}
-				}
-			} )
+
+					// Assert frontend classes
+					if ( assertFrontend ) {
+						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+							cy.visit( previewUrl )
+							cy.document().then( doc => {
+								const element = doc.querySelector( `.${ selector }` )
+								if ( element ) {
+									cy.get( `.${ selector }` ).then( $frontendBlock => {
+										assert.isTrue(
+											! isEmpty( $frontendBlock.find( `${ expectedValue }${ customSelector }` ) ),
+											`${ customSelector } must have HTML tag '${ expectedValue }' in Frontend'`
+										)
+									} )
+								}
+							} )
+							cy.visit( editorUrl )
+							cy.wp().then( _wp => {
+								const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
+								cy.selectBlock( name, { clientId } )
+								afterFrontendAssert()
+							} )
+						} )
+					}
+				} )
+		} )
 	} )
 }
 

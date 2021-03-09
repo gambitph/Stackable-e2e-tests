@@ -216,7 +216,7 @@ function styleTab( viewport, desktopOnly ) {
 	assertTypography( '.ugb-blog-posts__title', { viewport } )
 	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h5' )
-			.assertHtmlTag( '.ugb-blog-posts__title', 'h5', { assertFrontend: false } )
+			.assertHtmlTag( '.ugb-blog-posts__title', 'h5' )
 		cy.adjust( 'Text Color', '#5d5af3' ).assertComputedStyle( {
 			'.ugb-blog-posts__title a': {
 				'color': '#5d5af3',

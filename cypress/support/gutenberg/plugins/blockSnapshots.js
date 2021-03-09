@@ -32,7 +32,7 @@ import { _assertComputedStyle } from '../commands/assertions'
  * External dependencies
  */
 import {
-	first, keys, last, isBoolean, cloneDeep,
+	first, keys, last, isBoolean, cloneDeep, toUpper,
 } from 'lodash'
 
 class BlockSnapshots {
@@ -229,6 +229,45 @@ export const registerBlockSnapshots = alias => {
 						assert.isTrue(
 							!! Array.from( saveElement.querySelector( customSelector ).classList ).includes( expectedValue ),
 							`${ expectedValue } class must be present in ${ customSelector } in Frontend`
+						)
+					}
+				} )
+			}
+			originalFn( ...[ subject, customSelector, expectedValue, optionsToPass ] )
+		}
+
+		if ( args.length === 4 ) {
+			return modifiedFn( ...args )
+		}
+		return modifiedFn( ...[ ...args, {} ] )
+	} )
+
+	Cypress.Commands.overwrite( 'assertHtmlTag', ( originalFn, ...args ) => {
+		function modifiedFn( ...passedArgs ) {
+			const options = passedArgs.pop()
+			const subject = passedArgs.shift()
+			const customSelector = passedArgs.shift()
+			const expectedValue = passedArgs.shift()
+			// Since Cypress commands are asynchronous, we need to pass a separate object to originalFn to avoid directly mutating the options argument.
+			const optionsToPass = cloneDeep( options )
+			optionsToPass.assertFrontend = false
+			if ( options.assertFrontend === undefined || ( isBoolean( options.assertFrontend ) && options.assertFrontend ) ) {
+				cy.wp().then( wp => {
+					cy.publish()
+					const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+					const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+					const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
+					// Check if we're asserting the parent element.
+					if ( parsedClassList.match( customSelector ) ) {
+						assert.isTrue(
+							saveElement.tagName === toUpper( expectedValue ),
+							`${ customSelector } must have HTML tag '${ expectedValue }' in Frontend'`
+						)
+					} else {
+						// Otherwise, search the element
+						assert.isTrue(
+							saveElement.querySelector( customSelector ).tagName === toUpper( expectedValue ),
+							`${ customSelector } must have HTML tag '${ expectedValue }' in Frontend'`
 						)
 					}
 				} )
