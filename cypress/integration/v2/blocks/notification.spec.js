@@ -13,6 +13,7 @@ describe( 'Notification Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -51,6 +52,35 @@ function switchDesign() {
 		'Upland Notification',
 		'Yule Notification',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/notification' )
+		cy.typeBlock( 'ugb/notification', '.ugb-notification__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/notification', '.ugb-notification__description', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/notification', '.ugb-button--inner', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-notification' )
+				.find( '.ugb-notification__title' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-notification' )
+				.find( '.ugb-notification__description' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-notification' )
+				.find( '.ugb-button--inner' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

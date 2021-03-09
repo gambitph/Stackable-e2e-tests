@@ -15,6 +15,7 @@ describe( 'Number Box Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -57,6 +58,35 @@ function switchDesign() {
 		'Propel Number Box',
 		'Speck Number Box',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/number-box' )
+
+		cy.openInspector( 'ugb/number-box', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 1 )
+
+		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__description', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-number-box' )
+				.find( '.ugb-number-box__title' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-number-box' )
+				.find( '.ugb-number-box__description' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

@@ -13,6 +13,7 @@ describe( 'Header', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -77,6 +78,35 @@ function switchDesign() {
 		'Upland Header',
 		'Yule Header',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/header' )
+		cy.typeBlock( 'ugb/header', '.ugb-header__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/header', '.ugb-header__subtitle', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/header', '.ugb-button--inner', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-header' )
+				.find( '.ugb-header__title' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-header' )
+				.find( '.ugb-header__subtitle' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-header' )
+				.find( '.ugb-button--inner' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

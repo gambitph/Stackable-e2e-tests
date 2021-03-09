@@ -13,6 +13,7 @@ describe( 'Team Member Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -59,6 +60,40 @@ function switchDesign() {
 		'Seren Team Member 2',
 		'Upland Team Member',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/team-member' )
+
+		cy.openInspector( 'ugb/team-member', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 1 )
+
+		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__name', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__position', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__description', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-team-member' )
+				.find( '.ugb-team-member__name' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-team-member' )
+				.find( '.ugb-team-member__position' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-team-member' )
+				.find( '.ugb-team-member__description' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

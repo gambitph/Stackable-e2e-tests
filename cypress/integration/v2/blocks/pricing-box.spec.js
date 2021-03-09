@@ -14,6 +14,7 @@ describe( 'Pricing Box Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -61,6 +62,60 @@ function switchDesign() {
 		'Upland Pricing Box',
 		'Yule Pricing Box',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/pricing-box' )
+
+		cy.openInspector( 'ugb/pricing-box', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 1 )
+
+		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__price-prefix', 'P' )
+		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__price', '1234' )
+		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__price-suffix', '1234' )
+		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__subprice', '1234' )
+		cy.typeBlock( 'ugb/pricing-box', '.ugb-button--inner', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__description', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-pricing-box' )
+				.find( '.ugb-pricing-box__title' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-pricing-box' )
+				.find( '.ugb-pricing-box__price-prefix' )
+				.contains( 'P' )
+				.should( 'exist' )
+			cy.get( '.ugb-pricing-box' )
+				.find( '.ugb-pricing-box__price' )
+				.contains( '1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-pricing-box' )
+				.find( '.ugb-pricing-box__price-suffix' )
+				.contains( '1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-pricing-box' )
+				.find( '.ugb-pricing-box__subprice' )
+				.contains( '1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-pricing-box' )
+				.find( '.ugb-button--inner' )
+				.contains( '1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-pricing-box' )
+				.find( '.ugb-pricing-box__description' )
+				.contains( '1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

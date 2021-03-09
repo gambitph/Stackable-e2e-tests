@@ -13,6 +13,7 @@ describe( 'Call To Action Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -83,6 +84,35 @@ function switchDesign() {
 		'Upland Call to Action',
 		'Yule Call to Action',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/cta' )
+		cy.typeBlock( 'ugb/cta', '.ugb-cta__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/cta', '.ugb-cta__description', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/cta', '.ugb-button--inner', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-cta' )
+				.find( '.ugb-cta__title' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-cta' )
+				.find( '.ugb-cta__description' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-cta' )
+				.find( '.ugb-button--inner' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

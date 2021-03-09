@@ -14,6 +14,7 @@ describe( 'Feature Grid Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -75,6 +76,40 @@ function switchDesign() {
 		'Upland Feature Grid',
 		'Yule Feature Grid',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/feature-grid' )
+
+		cy.openInspector( 'ugb/feature-grid', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 1 )
+
+		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__description', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/feature-grid', '.ugb-button--inner', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-feature-grid' )
+				.find( '.ugb-feature-grid__title' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-feature-grid' )
+				.find( '.ugb-feature-grid__description' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-feature-grid' )
+				.find( '.ugb-button--inner' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

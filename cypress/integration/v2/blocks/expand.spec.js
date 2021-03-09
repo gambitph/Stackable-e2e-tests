@@ -11,6 +11,7 @@ const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelp
 describe( 'Expand Block', registerTests( [
 	blockExist,
 	blockError,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -25,6 +26,45 @@ function blockExist() {
 
 function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/expand' ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/expand' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-text', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-toggle-text', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-text', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-toggle-text', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-expand' )
+				.find( '.ugb-expand__title' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-expand' )
+				.find( '.ugb-expand__less-text' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-expand' )
+				.find( '.ugb-expand__more-toggle-text' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-expand' )
+				.find( '.ugb-expand__more-text' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-expand' )
+				.find( '.ugb-expand__less-toggle-text' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

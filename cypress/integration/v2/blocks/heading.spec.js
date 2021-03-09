@@ -12,6 +12,7 @@ const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelp
 describe( 'Advanced Heading Block', registerTests( [
 	blockExist,
 	blockError,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -26,6 +27,30 @@ function blockExist() {
 
 function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/heading' ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/heading' )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-heading' )
+				.find( '.ugb-heading__title' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-heading' )
+				.find( '.ugb-heading__subtitle' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

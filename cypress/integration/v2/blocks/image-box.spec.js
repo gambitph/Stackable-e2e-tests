@@ -14,6 +14,7 @@ describe( 'Image Box Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -64,6 +65,40 @@ function switchDesign() {
 		'Upland Image Box 1',
 		'Upland Image Box 2',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/image-box' )
+
+		cy.openInspector( 'ugb/image-box', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 1 )
+
+		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__subtitle', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__description', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-image-box' )
+				.find( '.ugb-image-box__subtitle' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-image-box' )
+				.find( '.ugb-image-box__title' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-image-box' )
+				.find( '.ugb-image-box__description' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly ) {

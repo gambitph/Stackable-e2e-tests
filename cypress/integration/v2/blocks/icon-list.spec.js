@@ -12,6 +12,7 @@ describe( 'Icon List Block', registerTests( [
 	blockExist,
 	blockError,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -54,6 +55,24 @@ function switchDesign() {
 		'Speck Icon List',
 		'Yule Icon List',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/icon-list' )
+		cy.typeBlock( 'ugb/icon-list', '.block-editor-rich-text__editable', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-icon-list' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

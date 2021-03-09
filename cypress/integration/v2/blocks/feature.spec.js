@@ -14,6 +14,7 @@ describe( 'Feature Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -112,6 +113,35 @@ function switchDesign() {
 		'Speck Feature',
 		'Upland Feature',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/feature' )
+		cy.typeBlock( 'ugb/feature', '.ugb-feature__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/feature', '.ugb-feature__description', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/feature', '.ugb-button--inner', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-feature' )
+				.find( '.ugb-feature__title' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-feature' )
+				.find( '.ugb-feature__description' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-feature' )
+				.find( '.ugb-button--inner' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

@@ -14,6 +14,7 @@ describe( 'Testimonial Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -61,6 +62,40 @@ function switchDesign() {
 		'Upland Testimonial',
 		'Yule Testimonial',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/testimonial' )
+
+		cy.openInspector( 'ugb/testimonial', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 1 )
+
+		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__body', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__name', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__position', 'Hello World! 1234' )
+
+		cy.publish()
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.get( '.ugb-testimonial' )
+				.find( '.ugb-testimonial__body' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-testimonial' )
+				.find( '.ugb-testimonial__name' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.get( '.ugb-testimonial' )
+				.find( '.ugb-testimonial__position' )
+				.contains( 'Hello World! 1234' )
+				.should( 'exist' )
+			cy.visit( editorUrl )
+		} )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
