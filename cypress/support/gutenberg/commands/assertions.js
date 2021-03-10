@@ -17,6 +17,7 @@ Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, assertC
 Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, assertClassName )
 Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, assertHtmlTag )
 Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, assertHtmlAttribute )
+Cypress.Commands.add( 'assertBlockContent', { prevSubject: 'element' }, assertBlockContent )
 
 export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop' ) {
 	const removeAnimationStyles = [
@@ -339,6 +340,64 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 							`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
 						)
 					}
+				}
+			} )
+	} )
+}
+
+export function _assertFrontendBlockContent( htmlContent = '', customSelector = '', expectedValue = '' ) {
+	const saveElement = createElementFromHTMLString( htmlContent )
+	const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
+	if ( parsedClassList.match( customSelector ) ) {
+		assert.isTrue(
+			saveElement.textContent === expectedValue || saveElement,
+			`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+		)
+	} else {
+		// Otherwise, search the element
+		assert.isTrue(
+			saveElement.querySelector( customSelector ).textContent === expectedValue,
+			`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+		)
+	}
+}
+
+/**
+ * Command for asserting the content of a block
+ *
+ * @param {*} subject
+ * @param {string} customSelector
+ * @param {string} expectedValue
+ * @param {Object} options
+ */
+export function assertBlockContent( subject, customSelector = '', expectedValue = '', options = {} ) {
+	const {
+		assertBackend = true,
+		assertFrontend = true,
+		delay = 0,
+	} = options
+
+	cy.wp().then( wp => {
+		cy.publish()
+		cy.wait( delay )
+
+		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+
+		cy
+			.get( subject )
+			.then( $block => {
+				// Assert editor block content.
+				if ( assertBackend ) {
+					assert.isTrue(
+						! isEmpty( $block.find( `${ customSelector }:contains(${ expectedValue })` ) ),
+						`${ customSelector } must have content '${ expectedValue }' in Editor'`
+					)
+				}
+
+				// Check if we're asserting the parent element.
+				if ( assertFrontend ) {
+					const htmlContent = wp.blocks.getBlockContent( block )
+					_assertFrontendBlockContent( htmlContent, customSelector, expectedValue )
 				}
 			} )
 	} )

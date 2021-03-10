@@ -26,7 +26,7 @@
 import {
 	createElementFromHTMLString,
 } from '../util'
-import { _assertComputedStyle } from '../commands/assertions'
+import { _assertComputedStyle, _assertFrontendBlockContent } from '../commands/assertions'
 
 /**
  * External dependencies
@@ -52,6 +52,7 @@ class BlockSnapshots {
 		this.alias = alias
 		cy.wrap( [] ).as( `${ alias }.contentSnapshots` )
 		cy.wrap( [] ).as( `${ alias }.stubbedStyles` )
+		cy.wrap( [] ).as( `${ alias }.stubbedContentAssertions` )
 	}
 
 	/**
@@ -82,6 +83,21 @@ class BlockSnapshots {
 		cy.get( `@${ self.alias }.stubbedStyles` ).then( $stubbedStyles => {
 			$stubbedStyles.push( { style, viewport } )
 			cy.wrap( $stubbedStyles ).as( `${ self.alias }.stubbedStyles` ).then( () => {
+			} )
+		} )
+	}
+
+	/**
+	 * Asynchronously stub the content assertions.
+	 *
+	 * @param {string} customSelector
+	 * @param {string} content
+	 */
+	 stubContentAssertions( customSelector, content ) {
+		const self = this
+		cy.get( `@${ self.alias }.stubbedContentAssertions` ).then( $stubbedContent => {
+			$stubbedContent.push( { customSelector, content } )
+			cy.wrap( $stubbedContent ).as( `${ self.alias }.stubbedContentAssertions` ).then( () => {
 			} )
 		} )
 	}
@@ -166,6 +182,39 @@ class BlockSnapshots {
 			} )
 		} )
 	}
+
+	/**
+	 * Enqueue all stubbed html contents to the frontend.
+	 * Individually assert its content.
+	 */
+	 assertFrontendContent() {
+		const self = this
+		cy.get( `@${ self.alias }.stubbedContentAssertions` ).then( $stubbedContent => {
+			cy.get( `@${ self.alias }.contentSnapshots` ).then( $contentSnapshots => {
+				// Combine all stubbed styles and content snapshots into one array.
+				const combinedStubbed = $contentSnapshots.map( ( htmlContent, index ) => {
+					return {
+						htmlContent,
+						customSelector: $stubbedContent[ index ].customSelector,
+						expectedValue: $stubbedContent[ index ].content,
+					}
+				} )
+
+				if ( ! combinedStubbed.length ) {
+					return
+				}
+
+				combinedStubbed.forEach( combinedStubbedContent => {
+					const {
+						htmlContent, customSelector, expectedValue,
+					} = combinedStubbedContent
+
+					// Assert Frontend Content
+					_assertFrontendBlockContent( htmlContent, customSelector, expectedValue )
+				} )
+			} )
+		} )
+	}
 }
 
 /**
@@ -197,6 +246,30 @@ export const registerBlockSnapshots = alias => {
 		}
 
 		if ( args.length === 3 ) {
+			return modifiedFn( ...args )
+		}
+		return modifiedFn( ...[ ...args, {} ] )
+	} )
+
+	/**
+	 * Overwrite `assertBlockContent` by passing `blockSnapshots` option
+	 */
+	 Cypress.Commands.overwrite( 'assertBlockContent', ( originalFn, ...args ) => {
+		function modifiedFn( ...passedArgs ) {
+			const options = passedArgs.pop()
+			// Since Cypress commands are asynchronous, we need to pass a separate object to originalFn to avoid directly mutating the options argument.
+			const optionsToPass = cloneDeep( options )
+			// No need to assert backend because typeBlock asserts it for us
+			optionsToPass.assertBackend = false
+			optionsToPass.assertFrontend = false
+			if ( options.assertFrontend === undefined || ( isBoolean( options.assertFrontend ) && options.assertFrontend ) ) {
+				blockSnapshots.stubContentAssertions( passedArgs[ 1 ], passedArgs[ 2 ] )
+				blockSnapshots.createContentSnapshot()
+			}
+			originalFn( ...[ ...passedArgs, optionsToPass ] )
+		}
+
+		if ( args.length === 4 ) {
 			return modifiedFn( ...args )
 		}
 		return modifiedFn( ...[ ...args, {} ] )

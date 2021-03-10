@@ -7,6 +7,7 @@ import { blocks } from '~stackable-e2e/config'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -70,28 +71,13 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/accordion' )
-		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/accordion', '.block-editor-block-list__block', 'Hello World! 1234' )
-		cy.get( '.ugb-accordion' )
-			.find( '.block-editor-block-list__block' )
-			.then( $textBlock => {
-				$textBlock.addClass( 'e2e-paragraph' )
-			} )
+		cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
+		const accordionBlock = registerBlockSnapshots( 'accordionBlock' )
 
-		cy.publish()
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.get( '.ugb-accordion' )
-				.find( '.ugb-accordion__title' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-accordion' )
-				.find( '.e2e-paragraph' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.visit( editorUrl )
-		} )
+		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-accordion__title', 'Hello World! 1234' )
+
+		accordionBlock.assertFrontendContent()
 	} )
 }
 
