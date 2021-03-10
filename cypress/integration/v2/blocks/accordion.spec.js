@@ -72,12 +72,10 @@ function typeContent() {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
-		const accordionBlock = registerBlockSnapshots( 'accordionBlock' )
+		registerBlockSnapshots( 'accordionBlock' )
 
 		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', 'Hello World! 1234' )
 			.assertBlockContent( '.ugb-accordion__title', 'Hello World! 1234' )
-
-		accordionBlock.assertFrontendContent()
 	} )
 }
 

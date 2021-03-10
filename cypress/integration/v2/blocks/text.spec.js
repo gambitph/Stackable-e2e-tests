@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, switchLayouts, switchDesigns, assertAligns, assertBlockBackground, assertSeparators, registerTests, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -64,18 +65,11 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/text' )
-		cy.typeBlock( 'ugb/text', '.ugb-text__text-1', 'Hello World! 1234' )
+		cy.addBlock( 'ugb/text' ).as( 'textBlock' )
+		registerBlockSnapshots( 'textBlock' )
 
-		cy.publish()
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.get( '.ugb-text' )
-				.find( '.ugb-text__text-1' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.visit( editorUrl )
-		} )
+		cy.typeBlock( 'ugb/text', '.ugb-text__text-1', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-text__text-1', 'Hello World! 1234' )
 	} )
 }
 

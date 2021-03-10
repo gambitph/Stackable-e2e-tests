@@ -5,6 +5,7 @@ import { range, startCase } from 'lodash'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertContainer, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -66,33 +67,19 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/team-member' )
+		cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )
+		registerBlockSnapshots( 'teamMemberBlock' )
 
 		cy.openInspector( 'ugb/team-member', 'Style' )
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 1 )
 
 		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__name', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-team-member__name', 'Hello World! 1234' )
 		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__position', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-team-member__position', 'Hello World! 1234' )
 		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__description', 'Hello World! 1234' )
-
-		cy.publish()
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.get( '.ugb-team-member' )
-				.find( '.ugb-team-member__name' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-team-member' )
-				.find( '.ugb-team-member__position' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-team-member' )
-				.find( '.ugb-team-member__description' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.visit( editorUrl )
-		} )
+			.assertBlockContent( '.ugb-team-member__description', 'Hello World! 1234' )
 	} )
 }
 

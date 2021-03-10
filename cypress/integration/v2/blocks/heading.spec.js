@@ -5,6 +5,7 @@
 import {
 	assertBlockExist, blockErrorTest, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -33,23 +34,13 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/heading' )
-		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Hello World! 1234' )
+		cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
+		registerBlockSnapshots( 'headingBlock' )
 
-		cy.publish()
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.get( '.ugb-heading' )
-				.find( '.ugb-heading__title' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-heading' )
-				.find( '.ugb-heading__subtitle' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.visit( editorUrl )
-		} )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-heading__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-heading__subtitle', 'Hello World! 1234' )
 	} )
 }
 

@@ -358,44 +358,58 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 		assertBackend = true,
 		assertFrontend = true,
 		delay = 0,
+		afterFrontendAssert = () => {},
+		afterBackendAssert = () => {},
 	} = options
 
 	cy.wp().then( wp => {
 		cy.publish()
 		cy.wait( delay )
+		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
-		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
-
-		cy
-			.get( subject )
-			.then( $block => {
-				// Assert editor block content.
-				if ( assertBackend ) {
-					assert.isTrue(
-						! isEmpty( $block.find( `${ customSelector }:contains(${ expectedValue })` ) ),
-						`${ customSelector } must have content '${ expectedValue }' in Editor'`
-					)
-				}
-
-				// Check if we're asserting the parent element.
-				if ( assertFrontend ) {
-					cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-						cy.visit( previewUrl )
-						cy.wait( delay )
+		cy.getBlockAttributes().then( attributes => {
+			const selector = `${ attributes.className }`
+			cy
+				.get( subject )
+				.then( $block => {
+					if ( assertBackend ) {
 						assert.isTrue(
 							! isEmpty( $block.find( `${ customSelector }:contains(${ expectedValue })` ) ),
-							`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+							`${ customSelector } must have content '${ expectedValue }' in Editor'`
 						)
+						afterBackendAssert()
+					}
 
-						cy.visit( editorUrl )
-						// SELECT BLOCK HERE
-						cy.wp().then( _wp => {
-							const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks() ) || {}
-							cy.log( block )
-							 cy.selectBlock( name, { clientId } )
+					if ( assertFrontend ) {
+						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+							cy.visit( previewUrl )
+							cy.wait( delay )
+
+							cy.document().then( doc => {
+								const element = doc.querySelector( `.${ selector }` )
+								if ( element ) {
+									assert.isTrue(
+										! isEmpty( customSelector !== ''
+											? cy.get( `.${ selector }` )
+												.find( `${ customSelector }` )
+												.contains( `${ expectedValue }` )
+											: cy.get( `.${ selector }` )
+												.contains( `${ expectedValue }` ) )
+										,
+										`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+									)
+								}
+
+								cy.visit( editorUrl )
+								cy.wp().then( _wp => {
+									const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
+									cy.selectBlock( name, { clientId } )
+									afterFrontendAssert()
+								} )
+							} )
 						} )
-					} )
-				}
-			} )
+					}
+				} )
+		} )
 	} )
 }

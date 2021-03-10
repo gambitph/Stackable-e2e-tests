@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -58,28 +59,15 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/notification' )
-		cy.typeBlock( 'ugb/notification', '.ugb-notification__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/notification', '.ugb-notification__description', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/notification', '.ugb-button--inner', 'Hello World! 1234' )
+		cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
+		registerBlockSnapshots( 'notificationBlock' )
 
-		cy.publish()
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.get( '.ugb-notification' )
-				.find( '.ugb-notification__title' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-notification' )
-				.find( '.ugb-notification__description' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-notification' )
-				.find( '.ugb-button--inner' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.visit( editorUrl )
-		} )
+		cy.typeBlock( 'ugb/notification', '.ugb-notification__title', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-notification__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/notification', '.ugb-notification__description', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-notification__description', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/notification', '.ugb-button--inner', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-button--inner', 'Hello World! 1234' )
 	} )
 }
 

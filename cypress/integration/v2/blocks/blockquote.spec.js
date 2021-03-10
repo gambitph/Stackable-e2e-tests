@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -63,18 +64,11 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/blockquote' )
-		cy.typeBlock( 'ugb/blockquote', '.ugb-blockquote__text', 'Hello World! 1234' )
+		cy.addBlock( 'ugb/blockquote' ).as( 'blockquoteBlock' )
+		registerBlockSnapshots( 'blockquoteBlock' )
 
-		cy.publish()
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.get( '.ugb-blockquote' )
-				.find( '.ugb-blockquote__text' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.visit( editorUrl )
-		} )
+		cy.typeBlock( 'ugb/blockquote', '.ugb-blockquote__text', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-blockquote__text', 'Hello World! 1234' )
 	} )
 }
 

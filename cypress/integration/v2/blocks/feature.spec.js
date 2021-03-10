@@ -5,6 +5,7 @@ import { startCase } from 'lodash'
 import {
 	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -119,28 +120,15 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/feature' )
-		cy.typeBlock( 'ugb/feature', '.ugb-feature__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/feature', '.ugb-feature__description', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/feature', '.ugb-button--inner', 'Hello World! 1234' )
+		cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
+		registerBlockSnapshots( 'featureBlock' )
 
-		cy.publish()
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.get( '.ugb-feature' )
-				.find( '.ugb-feature__title' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-feature' )
-				.find( '.ugb-feature__description' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-feature' )
-				.find( '.ugb-button--inner' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.visit( editorUrl )
-		} )
+		cy.typeBlock( 'ugb/feature', '.ugb-feature__title', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-feature__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/feature', '.ugb-feature__description', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-feature__description', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/feature', '.ugb-button--inner', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-button--inner', 'Hello World! 1234' )
 	} )
 }
 

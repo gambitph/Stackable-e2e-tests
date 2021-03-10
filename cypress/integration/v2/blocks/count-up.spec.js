@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, registerTests, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -62,33 +63,19 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/count-up' )
+		cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
+		registerBlockSnapshots( 'countUpBlock' )
 
 		cy.openInspector( 'ugb/count-up', 'Style' )
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 1 )
 
 		cy.typeBlock( 'ugb/count-up', '.ugb-countup__title', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-countup__title', 'Hello World! 1234' )
 		cy.typeBlock( 'ugb/count-up', '.ugb-countup__counter', '1234' )
+			.assertBlockContent( '.ugb-countup__counter', '1234' )
 		cy.typeBlock( 'ugb/count-up', '.ugb-countup__description', 'Hello World! 1234' )
-
-		cy.publish()
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.get( '.ugb-count-up' )
-				.find( '.ugb-countup__title' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-count-up' )
-				.find( '.ugb-countup__counter' )
-				.contains( '1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-count-up' )
-				.find( '.ugb-countup__description' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.visit( editorUrl )
-		} )
+			.assertBlockContent( '.ugb-countup__description', 'Hello World! 1234' )
 	} )
 }
 

@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -32,38 +33,19 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/expand' )
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-text', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-toggle-text', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-text', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-toggle-text', 'Hello World! 1234' )
+		cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )
+		registerBlockSnapshots( 'expandBlock' )
 
-		cy.publish()
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.get( '.ugb-expand' )
-				.find( '.ugb-expand__title' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-expand' )
-				.find( '.ugb-expand__less-text' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-expand' )
-				.find( '.ugb-expand__more-toggle-text' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-expand' )
-				.find( '.ugb-expand__more-text' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.get( '.ugb-expand' )
-				.find( '.ugb-expand__less-toggle-text' )
-				.contains( 'Hello World! 1234' )
-				.should( 'exist' )
-			cy.visit( editorUrl )
-		} )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-expand__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-text', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-expand__less-text', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-toggle-text', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-expand__more-toggle-text', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-text', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-expand__more-text', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-toggle-text', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-expand__less-toggle-text', 'Hello World! 1234' )
 	} )
 }
 
