@@ -52,7 +52,6 @@ class BlockSnapshots {
 		this.alias = alias
 		cy.wrap( [] ).as( `${ alias }.contentSnapshots` )
 		cy.wrap( [] ).as( `${ alias }.stubbedStyles` )
-		cy.wrap( [] ).as( `${ alias }.stubbedContentAssertions` )
 	}
 
 	/**
@@ -83,21 +82,6 @@ class BlockSnapshots {
 		cy.get( `@${ self.alias }.stubbedStyles` ).then( $stubbedStyles => {
 			$stubbedStyles.push( { style, viewport } )
 			cy.wrap( $stubbedStyles ).as( `${ self.alias }.stubbedStyles` ).then( () => {
-			} )
-		} )
-	}
-
-	/**
-	 * Asynchronously stub the content assertions.
-	 *
-	 * @param {string} customSelector
-	 * @param {string} content
-	 */
-	 stubContentAssertions( customSelector, content ) {
-		const self = this
-		cy.get( `@${ self.alias }.stubbedContentAssertions` ).then( $stubbedContent => {
-			$stubbedContent.push( { customSelector, content } )
-			cy.wrap( $stubbedContent ).as( `${ self.alias }.stubbedContentAssertions` ).then( () => {
 			} )
 		} )
 	}
@@ -259,13 +243,29 @@ export const registerBlockSnapshots = alias => {
 			const options = passedArgs.pop()
 			// Since Cypress commands are asynchronous, we need to pass a separate object to originalFn to avoid directly mutating the options argument.
 			const optionsToPass = cloneDeep( options )
-			// No need to assert backend because typeBlock asserts it for us
-			optionsToPass.assertBackend = false
 			optionsToPass.assertFrontend = false
-			if ( options.assertFrontend === undefined || ( isBoolean( options.assertFrontend ) && options.assertFrontend ) ) {
-				blockSnapshots.stubContentAssertions( passedArgs[ 1 ], passedArgs[ 2 ] )
-				blockSnapshots.createContentSnapshot()
-			}
+			const [ subject, customSelector, expectedValue ] = passedArgs
+
+			cy.wp().then( wp => {
+				const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+				const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+				const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
+
+				if ( parsedClassList.match( customSelector ) ) {
+					// Check if we're asserting the parent element.
+					assert.isTrue(
+						saveElement.textContent === expectedValue,
+						`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+					)
+				} else {
+					// Otherwise, search the element
+					assert.isTrue(
+						saveElement.querySelector( customSelector ).textContent === expectedValue,
+						`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+					)
+				}
+			} )
+
 			originalFn( ...[ ...passedArgs, optionsToPass ] )
 		}
 

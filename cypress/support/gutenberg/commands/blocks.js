@@ -107,9 +107,6 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
 	)
 		.click( { force: true } )
 		.type( `{selectall}${ content }`, { force: true } )
-		.then( $element => {
-			return expect( $element ).to.contain( content )
-		} )
 
 	if ( content[ 0 ] !== '/' ) {
 		cy.selectBlock( subject, customSelector )

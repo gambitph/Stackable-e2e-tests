@@ -345,23 +345,6 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 	} )
 }
 
-export function _assertFrontendBlockContent( htmlContent = '', customSelector = '', expectedValue = '' ) {
-	const saveElement = createElementFromHTMLString( htmlContent )
-	const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
-	if ( parsedClassList.match( customSelector ) ) {
-		assert.isTrue(
-			saveElement.textContent === expectedValue || saveElement,
-			`${ customSelector } must have content '${ expectedValue }' in Frontend'`
-		)
-	} else {
-		// Otherwise, search the element
-		assert.isTrue(
-			saveElement.querySelector( customSelector ).textContent === expectedValue,
-			`${ customSelector } must have content '${ expectedValue }' in Frontend'`
-		)
-	}
-}
-
 /**
  * Command for asserting the content of a block
  *
@@ -396,8 +379,22 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 
 				// Check if we're asserting the parent element.
 				if ( assertFrontend ) {
-					const htmlContent = wp.blocks.getBlockContent( block )
-					_assertFrontendBlockContent( htmlContent, customSelector, expectedValue )
+					cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+						cy.visit( previewUrl )
+						cy.wait( delay )
+						assert.isTrue(
+							! isEmpty( $block.find( `${ customSelector }:contains(${ expectedValue })` ) ),
+							`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+						)
+
+						cy.visit( editorUrl )
+						// SELECT BLOCK HERE
+						cy.wp().then( _wp => {
+							const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks() ) || {}
+							cy.log( block )
+							 cy.selectBlock( name, { clientId } )
+						} )
+					} )
 				}
 			} )
 	} )
