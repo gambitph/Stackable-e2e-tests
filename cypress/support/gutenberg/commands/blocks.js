@@ -2,9 +2,7 @@
 /**
  * External dependencies
  */
-import {
-	last, first, uniqueId,
-} from 'lodash'
+import { last, first } from 'lodash'
 
 /**
  * Internal dependencies
@@ -36,7 +34,7 @@ export function assertBlockError() {
 export function addBlock( blockName = 'ugb/accordion' ) {
 	cy.wp().then( wp => {
 		return new Cypress.Promise( resolve => {
-			const block = wp.blocks.createBlock( blockName, { className: `e2etest-block-${ uniqueId() }` } )
+			const block = wp.blocks.createBlock( blockName )
 			wp.data.dispatch( 'core/editor' ).insertBlock( block )
 				.then( dispatchResolver( () => resolve( last( wp.data.select( 'core/block-editor' ).getBlocks() ) ) ) )
 		} )
@@ -148,7 +146,7 @@ export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/ac
 	cy.wp().then( wp => {
 		return new Cypress.Promise( resolve => {
 			const selectedBlockClientId = wp.data.select( 'core/block-editor' ).getSelectedBlockClientId()
-			const newBlock = wp.blocks.createBlock( blockToAdd, { className: `e2etest-block-${ uniqueId() }` } )
+			const newBlock = wp.blocks.createBlock( blockToAdd )
 			wp.data.dispatch( 'core/editor' ).insertBlock( newBlock, 0, selectedBlockClientId ).then( dispatchResolver( resolve ) )
 		} )
 	} )
