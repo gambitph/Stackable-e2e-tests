@@ -19,6 +19,7 @@ import { lowerCase } from 'lodash'
 export const assertBlockTitleDescription = ( options = {}, assertOptions = {} ) => {
 	const {
 		viewport = 'Desktop',
+		enableSpacing = true,
 	} = options
 
 	const _assertBlockTitleDescription = ( viewport, desktopOnly ) => {
@@ -67,16 +68,19 @@ export const assertBlockTitleDescription = ( options = {}, assertOptions = {} ) 
 			assertTypography( typographySelector, { viewport } )
 			assertAligns( 'Text Align', typographySelector, { viewport } )
 		} )
-		cy.collapse( 'Spacing' )
-		cy.adjust( 'Block Title', 41, { viewport } )
-		cy.adjust( 'Block Description', 65, { viewport } ).assertComputedStyle( {
-			'.ugb-block-title': {
-				'margin-bottom': '41px',
-			},
-			'.ugb-block-description': {
-				'margin-bottom': '65px',
-			},
-		}, assertOptions )
+
+		if ( enableSpacing ) {
+			cy.collapse( 'Spacing' )
+			cy.adjust( 'Block Title', 41, { viewport } )
+			cy.adjust( 'Block Description', 65, { viewport } ).assertComputedStyle( {
+				'.ugb-block-title': {
+					'margin-bottom': '41px',
+				},
+				'.ugb-block-description': {
+					'margin-bottom': '65px',
+				},
+			}, assertOptions )
+		}
 	}
 
 	const [ Desktop, Tablet, Mobile ] = responsiveAssertHelper( _assertBlockTitleDescription, { disableItAssertion: true } )

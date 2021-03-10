@@ -58,12 +58,6 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		cy.toolbarControl( /^Single|Gradient$/, ...args, optionsToPass )
 		return cy.get( '.block-editor-block-list__block.is-selected' )
 	}
-	if ( [ 'Separator Layer 2', 'Separator Layer 3' ].includes( label ) ) {
-		// We don't want to use the toggle control for this. Use popoverControl instead.
-		args.shift()
-		cy.popoverControl( label, ...args, optionsToPass )
-		return cy.get( '.block-editor-block-list__block.is-selected' )
-	}
 
 	const customOptions = {
 		// Pass our own adjust controls.
