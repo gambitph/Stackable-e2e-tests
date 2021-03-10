@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	keys, first, omit,
+	keys, first, omit, omitBy,
 } from 'lodash'
 import { containsRegExp } from '~common/util'
 
@@ -300,7 +300,7 @@ export function adjust( name, value, options ) {
 		// overwrite selector options.
 		customOptions = {},
 		// overwrite parent element selector used to locate option labels.
-		parentElement = '.components-base-control',
+		parentElement = '.components-panel__body > .components-base-control',
 		// if the option has no label, pass custom regex to find the control
 	} = options
 
@@ -341,24 +341,19 @@ export function adjust( name, value, options ) {
 
 	baseControlSelector()
 		.then( $baseControl => {
-			const combinedControlHandlers = Object.assign( baseControlHandler, customOptions )
-			const executeCommand = key => {
-				if ( $baseControl.find( key ).length || Array.from( first( $baseControl ).classList ).includes( key.replace( '.', '' ) ) ) {
-					cy[ combinedControlHandlers[ key ] ]( name, value, omit( options, 'customOptions' ) )
-					return true
-				}
-				return false
-			}
+			const combinedControlHandlers = Object.assign( customOptions, baseControlHandler )
+			const commandClassKey = first( keys( omitBy(
+				combinedControlHandlers,
+				( value, key ) => ! ( $baseControl.find( key ).length || Array.from( first( $baseControl ).classList ).includes( key.replace( '.', '' ) ) )
+			) ) )
 
-			if (
-				! keys( customOptions ).map( executeCommand ).some( value => value ) &&
-				! keys( baseControlHandler ).map( executeCommand ).some( value => value )
-			) {
-				// Selector not found.
+			if ( ! commandClassKey ) {
 				throw new Error(
 					'The `cy.adjust` function could not handle this option or the label provided is not found inside `.components-base-control element`. You may overwrite `cy.adjust` by passing customOptions and parentElement to find the right control.'
 				)
 			}
+
+			cy[ combinedControlHandlers[ commandClassKey ] ]( name, value, omit( options, 'customOptions' ) )
 		} )
 
 	// Always return the selected block which will be used in functions that require chained wp-block elements.
@@ -376,7 +371,7 @@ export function resetStyle( name, options = {} ) {
 		// overwrite selector options.
 		customOptions = {},
 		// overwrite parent element selector used to locate option labels.
-		parentElement = '.components-base-control',
+		parentElement = '.components-panel__body > .components-base-control',
 		// if the option has no label, pass custom regex to find the control
 	} = options
 	const baseControlSelector = () => cy
@@ -396,24 +391,19 @@ export function resetStyle( name, options = {} ) {
 
 	baseControlSelector()
 		.then( $baseControl => {
-			const combinedControlHandlers = Object.assign( baseControlHandler, customOptions )
-			const executeCommand = key => {
-				if ( $baseControl.find( key ).length || Array.from( first( $baseControl ).classList ).includes( key.replace( '.', '' ) ) ) {
-					cy[ combinedControlHandlers[ key ] ]( name, options )
-					return true
-				}
-				return false
-			}
+			const combinedControlHandlers = Object.assign( customOptions, baseControlHandler )
+			const commandClassKey = first( keys( omitBy(
+				combinedControlHandlers,
+				( value, key ) => ! ( $baseControl.find( key ).length || Array.from( first( $baseControl ).classList ).includes( key.replace( '.', '' ) ) )
+			) ) )
 
-			if (
-				! keys( customOptions ).map( executeCommand ).some( value => value ) &&
-				! keys( baseControlHandler ).map( executeCommand ).some( value => value )
-			) {
-				// Selector not found.
+			if ( ! commandClassKey ) {
 				throw new Error(
 					'The `cy.reset` function could not handle this option or the label provided is not found inside `.components-base-control element`. You may overwrite `cy.reset` by passing customOptions and parentElement to find the right control.'
 				)
 			}
+
+			cy[ combinedControlHandlers[ commandClassKey ] ]( name, omit( options, 'customOptions' ) )
 		} )
 
 	// Always return the selected block which will be used in functions that require chained wp-block elements.
