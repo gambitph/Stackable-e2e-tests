@@ -101,6 +101,32 @@ Cypress.Commands.overwrite( 'assertHtmlTag', ( originalFn, ...args ) => {
 	return modifiedFn( ...args )
 } )
 
+// Temporary overwrite fix for assertHtmlAttribute
+Cypress.Commands.overwrite( 'assertHtmlAttribute', ( originalFn, ...args ) => {
+	function modifiedFn( ...newArgs ) {
+		cy.getActiveTab().then( tab => {
+			cy.document().then( doc => {
+				const optionsToPass = newArgs.length === 5 ? args.pop() : {}
+				const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
+				// This is for stackable only.
+				// After asserting the frontend, go back to the previous state.
+				if ( ( args.length === 5 &&
+				( last( args ).assertFrontend === undefined ||
+				last( args ).assertFrontend ) ) || args.length === 4 ) {
+					optionsToPass.afterFrontendAssert = () => {
+						cy.openSidebar( 'Settings' )
+						cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
+						cy.collapse( activePanel )
+					}
+				}
+				return originalFn( ...[ ...args, optionsToPass ] )
+			} )
+		} )
+	}
+
+	return modifiedFn( ...args )
+} )
+
 export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop' ) {
 	const removeAnimationStyles = [
 		'-webkit-transition: none !important',
@@ -411,54 +437,75 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 		assertBackend = true,
 		assertFrontend = true,
 		delay = 0,
+		afterFrontendAssert = () => {},
+		afterBackendAssert = () => {},
 	} = options
 
 	cy.wp().then( wp => {
 		cy.publish()
 		cy.wait( delay )
+		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
-		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
-
-		cy
-			.get( subject )
-			.find( customSelector )
-			.invoke( 'attr', attribute )
-			.then( $attribute => {
-				// Assert editor HTML attributes.
-				if ( assertBackend ) {
-					if ( typeof expectedValue === 'string' ) {
-						assert.isTrue(
-							$attribute === expectedValue,
-							`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor`
-						)
-					} else if ( expectedValue instanceof RegExp ) {
-						assert.isTrue(
-							( $attribute || '' ).match( expectedValue ),
-							`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor` )
+		cy.getBlockAttributes().then( attributes => {
+			const selector = `${ attributes.className }`
+			cy
+				.get( subject )
+				.find( customSelector )
+				.invoke( 'attr', attribute )
+				.then( $attribute => {
+					// Assert editor classes.
+					if ( assertBackend ) {
+						if ( typeof expectedValue === 'string' ) {
+							assert.isTrue(
+								$attribute === expectedValue,
+								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor`
+							)
+						} else if ( expectedValue instanceof RegExp ) {
+							assert.isTrue(
+								( $attribute || '' ).match( expectedValue ),
+								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor` )
+						}
+						afterBackendAssert()
 					}
-				}
 
-				// Check if we're asserting the parent element.
-				if ( assertFrontend ) {
-					const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
-					const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
-					if ( parsedClassList.match( customSelector ) ) {
-						assert.isTrue(
-							attribute instanceof RegExp
-								? !! saveElement.getAttribute( attribute ).match( expectedValue )
-								: saveElement.getAttribute( attribute ) === expectedValue,
-							`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
-						)
-					} else {
-						// Otherwise, search the element
-						assert.isTrue(
-							attribute instanceof RegExp
-								? !! saveElement.querySelector( customSelector ).getAttribute( attribute ).match( expectedValue )
-								: saveElement.querySelector( customSelector ).getAttribute( attribute ) === expectedValue,
-							`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
-						)
+					// Assert frontend classes
+					if ( assertFrontend ) {
+						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+							cy.visit( previewUrl )
+							cy.document().then( doc => {
+								const element = doc.querySelector( `.${ selector }` )
+								if ( element ) {
+									cy.get( `.${ selector }` ).invoke( 'attr', 'class' ).then( classNames => {
+										const parsedClassNames = classNames.split( ' ' )
+										if ( typeof expectedValue === 'string' ) {
+											if ( parsedClassNames.includes( customSelector ) ) {
+												assert.isTrue( Cypress.$( parsedClassNames ).attr( attribute ) === expectedValue, `${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Frontend` )
+											} else {
+												cy.get( customSelector ).invoke( 'attr', attribute ).then( attr => {
+													assert.isTrue( attr === expectedValue, `${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Frontend` )
+												} )
+											}
+										} else if ( expectedValue instanceof RegExp ) {
+											if ( parsedClassNames.includes( customSelector ) ) {
+												assert.isTrue( ( Cypress.$( parsedClassNames ).attr( attribute ) || '' ).match( expectedValue ), `${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Frontend` )
+											} else {
+												cy.get( customSelector ).invoke( 'attr', attribute ).then( attr => {
+													assert.isTrue( ( attr || '' ).match( expectedValue ), `${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Frontend` )
+												} )
+											}
+										}
+									} )
+								}
+							} )
+							cy.visit( editorUrl )
+							cy.wp().then( _wp => {
+								const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
+								cy.selectBlock( name, { clientId } )
+								afterFrontendAssert()
+							} )
+						} )
 					}
-				}
-			} )
+				} )
+		} )
 	} )
 }

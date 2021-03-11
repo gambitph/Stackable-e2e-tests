@@ -213,7 +213,6 @@ export const registerBlockSnapshots = alias => {
 			optionsToPass.assertFrontend = false
 			if ( options.assertFrontend === undefined || ( isBoolean( options.assertFrontend ) && options.assertFrontend ) ) {
 				cy.wp().then( wp => {
-					cy.publish()
 					const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
 					const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
 					// Assert frontend classes.
@@ -253,7 +252,6 @@ export const registerBlockSnapshots = alias => {
 			optionsToPass.assertFrontend = false
 			if ( options.assertFrontend === undefined || ( isBoolean( options.assertFrontend ) && options.assertFrontend ) ) {
 				cy.wp().then( wp => {
-					cy.publish()
 					const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
 					const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
 					const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
@@ -276,6 +274,49 @@ export const registerBlockSnapshots = alias => {
 		}
 
 		if ( args.length === 4 ) {
+			return modifiedFn( ...args )
+		}
+		return modifiedFn( ...[ ...args, {} ] )
+	} )
+
+	Cypress.Commands.overwrite( 'assertHtmlAttribute', ( originalFn, ...args ) => {
+		function modifiedFn( ...passedArgs ) {
+			const options = passedArgs.pop()
+			const subject = passedArgs.shift()
+			const customSelector = passedArgs.shift()
+			const attribute = passedArgs.shift()
+			const expectedValue = passedArgs.shift()
+			// Since Cypress commands are asynchronous, we need to pass a separate object to originalFn to avoid directly mutating the options argument.
+			const optionsToPass = cloneDeep( options )
+			optionsToPass.assertFrontend = false
+			if ( options.assertFrontend === undefined || ( isBoolean( options.assertFrontend ) && options.assertFrontend ) ) {
+				cy.wp().then( wp => {
+					const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+					const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+					const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
+					// Check if we're asserting the parent element.
+					if ( parsedClassList.match( customSelector ) ) {
+						assert.isTrue(
+							attribute instanceof RegExp
+								? !! saveElement.getAttribute( attribute ).match( expectedValue )
+								: saveElement.getAttribute( attribute ) === expectedValue,
+							`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+						)
+					} else {
+						// Otherwise, search the element
+						assert.isTrue(
+							attribute instanceof RegExp
+								? !! saveElement.querySelector( customSelector ).getAttribute( attribute ).match( expectedValue )
+								: saveElement.querySelector( customSelector ).getAttribute( attribute ) === expectedValue,
+							`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+						)
+					}
+				} )
+			}
+			originalFn( ...[ subject, customSelector, attribute, expectedValue, optionsToPass ] )
+		}
+
+		if ( args.length === 5 ) {
 			return modifiedFn( ...args )
 		}
 		return modifiedFn( ...[ ...args, {} ] )
