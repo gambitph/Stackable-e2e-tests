@@ -307,7 +307,7 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
 		cy.getBlockAttributes().then( attributes => {
-			const selector = `${ attributes.className }`
+			const selector = `.${ attributes.className }`
 			cy
 				.get( subject )
 				.then( $block => {
@@ -325,9 +325,9 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 							cy.visit( previewUrl )
 							cy.document().then( doc => {
-								const element = doc.querySelector( `.${ selector }` )
+								const element = doc.querySelector( selector )
 								if ( element ) {
-									cy.get( `.${ selector }` ).invoke( 'attr', 'class' ).then( classNames => {
+									cy.get( selector ).invoke( 'attr', 'class' ).then( classNames => {
 										const parsedClassNames = classNames.split( ' ' )
 										if ( parsedClassNames.includes( customSelector ) ) {
 											assert.isTrue(
@@ -382,7 +382,7 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
 		cy.getBlockAttributes().then( attributes => {
-			const selector = `${ attributes.className }`
+			const selector = `.${ attributes.className }`
 			cy
 				.get( subject )
 				.then( $block => {
@@ -400,9 +400,9 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 							cy.visit( previewUrl )
 							cy.document().then( doc => {
-								const element = doc.querySelector( `.${ selector }` )
+								const element = doc.querySelector( selector )
 								if ( element ) {
-									cy.get( `.${ selector }` ).then( $frontendBlock => {
+									cy.get( selector ).then( $frontendBlock => {
 										assert.isTrue(
 											! isEmpty( $frontendBlock.find( `${ expectedValue }${ customSelector }` ) ),
 											`${ customSelector } must have HTML tag '${ expectedValue }' in Frontend'`
@@ -447,7 +447,7 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
 		cy.getBlockAttributes().then( attributes => {
-			const selector = `${ attributes.className }`
+			const selector = `.${ attributes.className }`
 			cy
 				.get( subject )
 				.find( customSelector )
@@ -473,9 +473,9 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 							cy.visit( previewUrl )
 							cy.document().then( doc => {
-								const element = doc.querySelector( `.${ selector }` )
+								const element = doc.querySelector( selector )
 								if ( element ) {
-									cy.get( `.${ selector }` ).invoke( 'attr', 'class' ).then( classNames => {
+									cy.get( selector ).invoke( 'attr', 'class' ).then( classNames => {
 										const parsedClassNames = classNames.split( ' ' )
 										if ( typeof expectedValue === 'string' ) {
 											if ( parsedClassNames.includes( customSelector ) ) {
