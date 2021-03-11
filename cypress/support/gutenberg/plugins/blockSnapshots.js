@@ -205,9 +205,7 @@ export const registerBlockSnapshots = alias => {
 	Cypress.Commands.overwrite( 'assertClassName', ( originalFn, ...args ) => {
 		function modifiedFn( ...passedArgs ) {
 			const options = passedArgs.pop()
-			const subject = passedArgs.shift()
-			const customSelector = passedArgs.shift()
-			const expectedValue = passedArgs.shift()
+			const [ subject, customSelector, expectedValue ] = passedArgs
 			// Since Cypress commands are asynchronous, we need to pass a separate object to originalFn to avoid directly mutating the options argument.
 			const optionsToPass = cloneDeep( options )
 			optionsToPass.assertFrontend = false
@@ -232,7 +230,7 @@ export const registerBlockSnapshots = alias => {
 					}
 				} )
 			}
-			originalFn( ...[ subject, customSelector, expectedValue, optionsToPass ] )
+			originalFn( ...[ ...passedArgs, optionsToPass ] )
 		}
 
 		if ( args.length === 4 ) {
@@ -244,9 +242,7 @@ export const registerBlockSnapshots = alias => {
 	Cypress.Commands.overwrite( 'assertHtmlTag', ( originalFn, ...args ) => {
 		function modifiedFn( ...passedArgs ) {
 			const options = passedArgs.pop()
-			const subject = passedArgs.shift()
-			const customSelector = passedArgs.shift()
-			const expectedValue = passedArgs.shift()
+			const [ subject, customSelector, expectedValue ] = passedArgs
 			// Since Cypress commands are asynchronous, we need to pass a separate object to originalFn to avoid directly mutating the options argument.
 			const optionsToPass = cloneDeep( options )
 			optionsToPass.assertFrontend = false
@@ -270,7 +266,7 @@ export const registerBlockSnapshots = alias => {
 					}
 				} )
 			}
-			originalFn( ...[ subject, customSelector, expectedValue, optionsToPass ] )
+			originalFn( ...[ ...passedArgs, optionsToPass ] )
 		}
 
 		if ( args.length === 4 ) {
@@ -282,10 +278,7 @@ export const registerBlockSnapshots = alias => {
 	Cypress.Commands.overwrite( 'assertHtmlAttribute', ( originalFn, ...args ) => {
 		function modifiedFn( ...passedArgs ) {
 			const options = passedArgs.pop()
-			const subject = passedArgs.shift()
-			const customSelector = passedArgs.shift()
-			const attribute = passedArgs.shift()
-			const expectedValue = passedArgs.shift()
+			const [ subject, customSelector, attribute, expectedValue ] = passedArgs
 			// Since Cypress commands are asynchronous, we need to pass a separate object to originalFn to avoid directly mutating the options argument.
 			const optionsToPass = cloneDeep( options )
 			optionsToPass.assertFrontend = false
@@ -313,7 +306,7 @@ export const registerBlockSnapshots = alias => {
 					}
 				} )
 			}
-			originalFn( ...[ subject, customSelector, attribute, expectedValue, optionsToPass ] )
+			originalFn( ...[ ...passedArgs, optionsToPass ] )
 		}
 
 		if ( args.length === 5 ) {
