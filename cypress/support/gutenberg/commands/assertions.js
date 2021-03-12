@@ -2,14 +2,14 @@
  * External dependencies
  */
 import {
-	keys, camelCase, isEmpty, first, pick, last, get, startCase, toUpper,
+	keys, camelCase, isEmpty, first, pick, last, get, toUpper,
 } from 'lodash'
 
 /**
  * Internal dependencies
  */
 import {
-	getBlockStringPath, createElementFromHTMLString,
+	getBlockStringPath, createElementFromHTMLString, overwriteAssert,
 } from '../util'
 
 /**
@@ -20,112 +20,11 @@ Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, assertClass
 Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, assertHtmlTag )
 Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, assertHtmlAttribute )
 
-// TODO: Add a function for overwriting assertions to be reused by
-// assertComputedStyle, assertClassName, assertHtmlTag, assertHtmlAttribute
-
 // Temporary overwrite fix. @see stackable/commands/assertions.js
-Cypress.Commands.overwrite( 'assertComputedStyle', ( originalFn, ...args ) => {
-	function modifiedFn( ...newArgs ) {
-		cy.getActiveTab().then( tab => {
-			cy.document().then( doc => {
-				const optionsToPass = newArgs.length === 3 ? args.pop() : {}
-				const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
-				// This is for stackable only.
-				// After asserting the frontend, go back to the previous state.
-				if ( ( args.length === 3 &&
-				( last( args ).assertFrontend === undefined ||
-				last( args ).assertFrontend ) ) || args.length === 2 ) {
-					optionsToPass.afterFrontendAssert = () => {
-						cy.openSidebar( 'Settings' )
-						cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
-						cy.collapse( activePanel )
-					}
-				}
-				return originalFn( ...[ ...args, optionsToPass ] )
-			} )
-		} )
-	}
-
-	return modifiedFn( ...args )
-} )
-
-// Temporary overwrite fix for assertClassName
-Cypress.Commands.overwrite( 'assertClassName', ( originalFn, ...args ) => {
-	function modifiedFn( ...newArgs ) {
-		cy.getActiveTab().then( tab => {
-			cy.document().then( doc => {
-				const optionsToPass = newArgs.length === 4 ? args.pop() : {}
-				const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
-				// This is for stackable only.
-				// After asserting the frontend, go back to the previous state.
-				if ( ( args.length === 4 &&
-				( last( args ).assertFrontend === undefined ||
-				last( args ).assertFrontend ) ) || args.length === 3 ) {
-					optionsToPass.afterFrontendAssert = () => {
-						cy.openSidebar( 'Settings' )
-						cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
-						cy.collapse( activePanel )
-					}
-				}
-				return originalFn( ...[ ...args, optionsToPass ] )
-			} )
-		} )
-	}
-
-	return modifiedFn( ...args )
-} )
-
-// Temporary overwrite fix for assertHtmlTag
-Cypress.Commands.overwrite( 'assertHtmlTag', ( originalFn, ...args ) => {
-	function modifiedFn( ...newArgs ) {
-		cy.getActiveTab().then( tab => {
-			cy.document().then( doc => {
-				const optionsToPass = newArgs.length === 4 ? args.pop() : {}
-				const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
-				// This is for stackable only.
-				// After asserting the frontend, go back to the previous state.
-				if ( ( args.length === 4 &&
-				( last( args ).assertFrontend === undefined ||
-				last( args ).assertFrontend ) ) || args.length === 3 ) {
-					optionsToPass.afterFrontendAssert = () => {
-						cy.openSidebar( 'Settings' )
-						cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
-						cy.collapse( activePanel )
-					}
-				}
-				return originalFn( ...[ ...args, optionsToPass ] )
-			} )
-		} )
-	}
-
-	return modifiedFn( ...args )
-} )
-
-// Temporary overwrite fix for assertHtmlAttribute
-Cypress.Commands.overwrite( 'assertHtmlAttribute', ( originalFn, ...args ) => {
-	function modifiedFn( ...newArgs ) {
-		cy.getActiveTab().then( tab => {
-			cy.document().then( doc => {
-				const optionsToPass = newArgs.length === 5 ? args.pop() : {}
-				const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
-				// This is for stackable only.
-				// After asserting the frontend, go back to the previous state.
-				if ( ( args.length === 5 &&
-				( last( args ).assertFrontend === undefined ||
-				last( args ).assertFrontend ) ) || args.length === 4 ) {
-					optionsToPass.afterFrontendAssert = () => {
-						cy.openSidebar( 'Settings' )
-						cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
-						cy.collapse( activePanel )
-					}
-				}
-				return originalFn( ...[ ...args, optionsToPass ] )
-			} )
-		} )
-	}
-
-	return modifiedFn( ...args )
-} )
+Cypress.Commands.overwrite( 'assertComputedStyle', overwriteAssert( { argumentLength: 3 } ) )
+Cypress.Commands.overwrite( 'assertClassName', overwriteAssert( { argumentLength: 4 } ) )
+Cypress.Commands.overwrite( 'assertHtmlTag', overwriteAssert( { argumentLength: 4 } ) )
+Cypress.Commands.overwrite( 'assertHtmlAttribute', overwriteAssert( { argumentLength: 5 } ) )
 
 export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop' ) {
 	const removeAnimationStyles = [

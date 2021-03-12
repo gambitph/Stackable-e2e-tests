@@ -1,3 +1,38 @@
+import { last, startCase } from 'lodash'
+
+// Temporary overwrite fix @see stackable/util.js
+/**
+ * Function for overwriting assertions
+ *
+ * @param {Object} options
+ */
+export function overwriteAssert( options = {} ) {
+	const {
+		argumentLength,
+	} = options
+
+	return function( originalFn, ...args ) {
+		cy.getActiveTab().then( tab => {
+			cy.document().then( doc => {
+				const optionsToPass = args.length === argumentLength ? args.pop() : {}
+				const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
+				// This is for stackable only.
+				// After asserting the frontend, go back to the previous state.
+				if ( ( args.length === argumentLength &&
+					( last( args ).assertFrontend === undefined ||
+					last( args ).assertFrontend ) ) || args.length === ( argumentLength - 1 ) ) {
+					optionsToPass.afterFrontendAssert = () => {
+						cy.openSidebar( 'Settings' )
+						cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
+						cy.collapse( activePanel )
+					}
+					return originalFn( ...args, optionsToPass )
+				}
+				return originalFn( ...[ ...args, optionsToPass ] )
+			} )
+		} )
+	}
+}
 
 /**
  * Create a DOM Element based on HTML string

@@ -6,6 +6,8 @@ import {
 } from 'lodash'
 import { containsRegExp } from '~common/util'
 
+// TODO: Pass overwriteAssert in gutenberg/util.js here
+
 /**
  * Function for overwriting log argument.
  *
