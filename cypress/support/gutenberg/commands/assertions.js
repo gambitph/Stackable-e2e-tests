@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	keys, camelCase, isEmpty, first, pick, last, get, startCase,
+	keys, camelCase, isEmpty, first, pick, last, get, startCase, toUpper,
 } from 'lodash'
 
 /**
@@ -327,23 +327,20 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 							cy.document().then( doc => {
 								const element = doc.querySelector( selector )
 								if ( element ) {
-									cy.get( selector ).invoke( 'attr', 'class' ).then( classNames => {
-										const parsedClassNames = classNames.split( ' ' )
-										if ( parsedClassNames.includes( customSelector ) ) {
-											assert.isTrue(
-												parsedClassNames.includes( expectedValue ),
-												`${ expectedValue } class must be present in ${ customSelector } in Frontend`
-											)
-										} else {
-											cy.get( customSelector ).invoke( 'attr', 'class' ).then( classList => {
-												const parsedClassList = classList.split( ' ' )
-												assert.isTrue(
-													parsedClassList.includes( expectedValue ),
-													`${ expectedValue } class must be present in ${ customSelector } in Frontend`
-												)
-											} )
-										}
-									} )
+									const parsedClassNames = Array.from( element.classList ).map( _class => `.${ _class }` ).join( '' )
+									// Check if we're asserting the parent element.
+									if ( parsedClassNames.match( customSelector ) ) {
+										assert.isTrue(
+											!! parsedClassNames.match( expectedValue ),
+											`${ expectedValue } class must be present in ${ customSelector } in Frontend`
+										)
+									} else {
+										// Otherwise, search the element
+										assert.isTrue(
+											!! Array.from( element.querySelector( customSelector ).classList ).includes( expectedValue ),
+											`${ expectedValue } class must be present in ${ customSelector } in Frontend`
+										)
+									}
 								}
 							} )
 							cy.visit( editorUrl )
@@ -402,12 +399,20 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 							cy.document().then( doc => {
 								const element = doc.querySelector( selector )
 								if ( element ) {
-									cy.get( selector ).then( $frontendBlock => {
+									const parsedClassNames = Array.from( element.classList ).map( _class => `.${ _class }` ).join( '' )
+									// Check if we're asserting the parent element.
+									if ( parsedClassNames.match( customSelector ) ) {
 										assert.isTrue(
-											! isEmpty( $frontendBlock.find( `${ expectedValue }${ customSelector }` ) ),
+											element.tagName === toUpper( expectedValue ),
 											`${ customSelector } must have HTML tag '${ expectedValue }' in Frontend'`
 										)
-									} )
+									} else {
+										// Otherwise, search the element
+										assert.isTrue(
+											element.querySelector( customSelector ).tagName === toUpper( expectedValue ),
+											`${ customSelector } must have HTML tag '${ expectedValue }' in Frontend'`
+										)
+									}
 								}
 							} )
 							cy.visit( editorUrl )
@@ -475,26 +480,24 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 							cy.document().then( doc => {
 								const element = doc.querySelector( selector )
 								if ( element ) {
-									cy.get( selector ).invoke( 'attr', 'class' ).then( classNames => {
-										const parsedClassNames = classNames.split( ' ' )
-										if ( typeof expectedValue === 'string' ) {
-											if ( parsedClassNames.includes( customSelector ) ) {
-												assert.isTrue( Cypress.$( parsedClassNames ).attr( attribute ) === expectedValue, `${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Frontend` )
-											} else {
-												cy.get( customSelector ).invoke( 'attr', attribute ).then( attr => {
-													assert.isTrue( attr === expectedValue, `${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Frontend` )
-												} )
-											}
-										} else if ( expectedValue instanceof RegExp ) {
-											if ( parsedClassNames.includes( customSelector ) ) {
-												assert.isTrue( ( Cypress.$( parsedClassNames ).attr( attribute ) || '' ).match( expectedValue ), `${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Frontend` )
-											} else {
-												cy.get( customSelector ).invoke( 'attr', attribute ).then( attr => {
-													assert.isTrue( ( attr || '' ).match( expectedValue ), `${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Frontend` )
-												} )
-											}
-										}
-									} )
+									const parsedClassNames = Array.from( element.classList ).map( _class => `.${ _class }` ).join( '' )
+									// Check if we're asserting the parent element.
+									if ( parsedClassNames.match( customSelector ) ) {
+										assert.isTrue(
+											attribute instanceof RegExp
+												? !! element.getAttribute( attribute ).match( expectedValue )
+												: element.getAttribute( attribute ) === expectedValue,
+											`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+										)
+									} else {
+										// Otherwise, search the element
+										assert.isTrue(
+											attribute instanceof RegExp
+												? !! element.querySelector( customSelector ).getAttribute( attribute ).match( expectedValue )
+												: element.querySelector( customSelector ).getAttribute( attribute ) === expectedValue,
+											`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+										)
+									}
 								}
 							} )
 							cy.visit( editorUrl )
