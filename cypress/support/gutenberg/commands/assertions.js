@@ -9,7 +9,7 @@ import {
  * Internal dependencies
  */
 import {
-	getBlockStringPath, createElementFromHTMLString, overwriteAssert,
+	getBlockStringPath, createElementFromHTMLString, withInspectorTabMemory,
 } from '../util'
 
 /**
@@ -21,10 +21,10 @@ Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, assertHtmlTag
 Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, assertHtmlAttribute )
 
 // Temporary overwrite fix. @see stackable/commands/assertions.js
-Cypress.Commands.overwrite( 'assertComputedStyle', overwriteAssert( { argumentLength: 3 } ) )
-Cypress.Commands.overwrite( 'assertClassName', overwriteAssert( { argumentLength: 4 } ) )
-Cypress.Commands.overwrite( 'assertHtmlTag', overwriteAssert( { argumentLength: 4 } ) )
-Cypress.Commands.overwrite( 'assertHtmlAttribute', overwriteAssert( { argumentLength: 5 } ) )
+Cypress.Commands.overwrite( 'assertComputedStyle', withInspectorTabMemory( { argumentLength: 3 } ) )
+Cypress.Commands.overwrite( 'assertClassName', withInspectorTabMemory( { argumentLength: 4 } ) )
+Cypress.Commands.overwrite( 'assertHtmlTag', withInspectorTabMemory( { argumentLength: 4 } ) )
+Cypress.Commands.overwrite( 'assertHtmlAttribute', withInspectorTabMemory( { argumentLength: 5 } ) )
 
 export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop' ) {
 	const removeAnimationStyles = [
@@ -224,22 +224,13 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 							cy.visit( previewUrl )
 							cy.document().then( doc => {
-								const element = doc.querySelector( selector )
-								if ( element ) {
-									const parsedClassNames = Array.from( element.classList ).map( _class => `.${ _class }` ).join( '' )
-									// Check if we're asserting the parent element.
-									if ( parsedClassNames.match( customSelector ) ) {
-										assert.isTrue(
-											!! parsedClassNames.match( expectedValue ),
-											`${ expectedValue } class must be present in ${ customSelector } in Frontend`
-										)
-									} else {
-										// Otherwise, search the element
-										assert.isTrue(
-											!! Array.from( element.querySelector( customSelector ).classList ).includes( expectedValue ),
-											`${ expectedValue } class must be present in ${ customSelector } in Frontend`
-										)
-									}
+								const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
+								if ( blockElement ) {
+									const parsedClassList = Array.from( blockElement.classList ).map( _class => `.${ _class }` ).join( '' )
+									assert.isTrue(
+										!! parsedClassList.match( expectedValue ),
+										`${ expectedValue } class must be present in ${ customSelector } in Frontend`
+									)
 								}
 							} )
 							cy.visit( editorUrl )
@@ -296,22 +287,12 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 							cy.visit( previewUrl )
 							cy.document().then( doc => {
-								const element = doc.querySelector( selector )
-								if ( element ) {
-									const parsedClassNames = Array.from( element.classList ).map( _class => `.${ _class }` ).join( '' )
-									// Check if we're asserting the parent element.
-									if ( parsedClassNames.match( customSelector ) ) {
-										assert.isTrue(
-											element.tagName === toUpper( expectedValue ),
-											`${ customSelector } must have HTML tag '${ expectedValue }' in Frontend'`
-										)
-									} else {
-										// Otherwise, search the element
-										assert.isTrue(
-											element.querySelector( customSelector ).tagName === toUpper( expectedValue ),
-											`${ customSelector } must have HTML tag '${ expectedValue }' in Frontend'`
-										)
-									}
+								const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
+								if ( blockElement ) {
+									assert.isTrue(
+										blockElement.tagName === toUpper( expectedValue ),
+										`${ customSelector } must have HTML tag '${ expectedValue }' in Frontend'`
+									)
 								}
 							} )
 							cy.visit( editorUrl )
@@ -377,26 +358,14 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 							cy.visit( previewUrl )
 							cy.document().then( doc => {
-								const element = doc.querySelector( selector )
-								if ( element ) {
-									const parsedClassNames = Array.from( element.classList ).map( _class => `.${ _class }` ).join( '' )
-									// Check if we're asserting the parent element.
-									if ( parsedClassNames.match( customSelector ) ) {
-										assert.isTrue(
-											attribute instanceof RegExp
-												? !! element.getAttribute( attribute ).match( expectedValue )
-												: element.getAttribute( attribute ) === expectedValue,
-											`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
-										)
-									} else {
-										// Otherwise, search the element
-										assert.isTrue(
-											attribute instanceof RegExp
-												? !! element.querySelector( customSelector ).getAttribute( attribute ).match( expectedValue )
-												: element.querySelector( customSelector ).getAttribute( attribute ) === expectedValue,
-											`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
-										)
-									}
+								const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
+								if ( blockElement ) {
+									assert.isTrue(
+										attribute instanceof RegExp
+											? !! blockElement.getAttribute( attribute ).match( expectedValue )
+											: blockElement.getAttribute( attribute ) === expectedValue,
+										`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+									)
 								}
 							} )
 							cy.visit( editorUrl )

@@ -6,7 +6,7 @@ import { last, startCase } from 'lodash'
  *
  * @param {Object} options
  */
-export function overwriteAssert( options = {} ) {
+export function withInspectorTabMemory( options = {} ) {
 	const {
 		argumentLength,
 	} = options
