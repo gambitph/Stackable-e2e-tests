@@ -224,11 +224,10 @@ function switchColumnLayout() {
 	} )
 }
 
-function columnStyleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function columnStyleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )
-	const columnsBlock = registerBlockSnapshots( 'columnsBlock' )
+	cy.addBlock( 'ugb/columns' )
 
 	cy.openInspector( 'ugb/column', 'Layout' )
 	cy.adjustLayout( 'Basic' )
@@ -254,6 +253,7 @@ function columnStyleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		},
 	} )
 	aligns.forEach( align => {
+		cy.adjust( 'Content Width', 73, { viewport } )
 		cy.adjust( 'Content Horizontal Align', align, { viewport } ).assertComputedStyle( {
 			'.ugb-column__item': {
 				'align-items': align,
@@ -321,19 +321,14 @@ function columnStyleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 		// Go back to ugb/column
 		cy.selectBlock( 'ugb/column' )
 	} )
-
-	columnsBlock.assertFrontendStyles()
 }
 
-function columnAdvancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function columnAdvancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )
-	const columnsBlock = registerBlockSnapshots( 'columnsBlock' )
+	cy.addBlock( 'ugb/columns' )
 
 	cy.addInnerBlock( 'ugb/column', 'ugb/card' )
 	cy.openInspector( 'ugb/column', 'Advanced' )
 	assertAdvancedTab( '.ugb-column', { viewport } )
-
-	columnsBlock.assertFrontendStyles()
 }
