@@ -227,7 +227,7 @@ function styleTab( viewport, desktopOnly ) {
 	iconBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/icon' ).as( 'iconBlock' )

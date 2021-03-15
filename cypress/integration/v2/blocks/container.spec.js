@@ -202,7 +202,7 @@ function styleTab( viewport, desktopOnly ) {
 	containerBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/container' ).as( 'containerBlock' )

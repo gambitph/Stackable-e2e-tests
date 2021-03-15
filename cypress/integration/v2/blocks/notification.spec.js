@@ -315,7 +315,7 @@ function styleTab( viewport, desktopOnly ) {
 	notificationBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )

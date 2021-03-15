@@ -275,7 +275,7 @@ function styleTab( viewport, desktopOnly ) {
 	ctaBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/cta' ).as( 'ctaBlock' )

@@ -127,7 +127,7 @@ function styleTab( viewport, desktopOnly ) {
 	videoPopupBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/video-popup' ).as( 'videoPopupBlock' )

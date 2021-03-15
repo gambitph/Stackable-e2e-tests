@@ -357,7 +357,7 @@ function styleTab( viewport, desktopOnly ) {
 	headerBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/header' ).as( 'headerBlock' )

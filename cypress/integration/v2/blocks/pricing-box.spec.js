@@ -72,10 +72,6 @@ function typeContent() {
 		cy.addBlock( 'ugb/pricing-box' ).as( 'pricingBoxBlock' )
 		registerBlockSnapshots( 'pricingBoxBlock' )
 
-		cy.openInspector( 'ugb/pricing-box', 'Style' )
-		cy.collapse( 'General' )
-		cy.adjust( 'Columns', 1 )
-
 		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-pricing-box__title', 'Hello World! 1' )
 		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__price-prefix', 'P' )
@@ -91,6 +87,7 @@ function typeContent() {
 		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__description', 'Hellooo World!!! 123' )
 			.assertBlockContent( '.ugb-pricing-box__description', 'Hellooo World!!! 123' )
 
+		cy.openInspector( 'ugb/pricing-box', 'Style' )
 		assertBlockTitleDescriptionContent( 'ugb/pricing-box' )
 	} )
 }

@@ -75,10 +75,6 @@ function typeContent() {
 		cy.addBlock( 'ugb/image-box' ).as( 'imageBoxBlock' )
 		registerBlockSnapshots( 'imageBoxBlock' )
 
-		cy.openInspector( 'ugb/image-box', 'Style' )
-		cy.collapse( 'General' )
-		cy.adjust( 'Columns', 1 )
-
 		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__subtitle', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-image-box__subtitle', 'Hello World! 1' )
 		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__title', 'Helloo World!! 12' )
@@ -86,6 +82,7 @@ function typeContent() {
 		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__description', 'Hellooo World!!! 123' )
 			.assertBlockContent( '.ugb-image-box__description', 'Hellooo World!!! 123' )
 
+		cy.openInspector( 'ugb/image-box', 'Style' )
 		assertBlockTitleDescriptionContent( 'ugb/image-box' )
 	} )
 }
@@ -381,7 +378,7 @@ function styleTab( viewport, desktopOnly ) {
 	assertSeparators( { viewport } )
 }
 
-function advancedTab( viewport, desktopOnly ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/image-box' ).as( 'imageBoxBlock' )

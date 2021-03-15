@@ -76,10 +76,6 @@ function typeContent() {
 		cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
 		registerBlockSnapshots( 'cardBlock' )
 
-		cy.openInspector( 'ugb/card', 'Style' )
-		cy.collapse( 'General' )
-		cy.adjust( 'Columns', 1 )
-
 		cy.typeBlock( 'ugb/card', '.ugb-card__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-card__title', 'Hello World! 1' )
 		cy.typeBlock( 'ugb/card', '.ugb-card__subtitle', 'Helloo World!! 12' )
@@ -89,6 +85,7 @@ function typeContent() {
 		cy.typeBlock( 'ugb/card', '.ugb-button--inner', 'Helloooo World!!!! 1234' )
 			.assertBlockContent( '.ugb-button--inner', 'Helloooo World!!!! 1234' )
 
+		cy.openInspector( 'ugb/card', 'Style' )
 		assertBlockTitleDescriptionContent( 'ugb/card' )
 	} )
 }
@@ -324,7 +321,7 @@ function styleTab( viewport, desktopOnly ) {
 	cardBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )

@@ -62,7 +62,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/icon-list' ).as( 'iconListBlock' )
+		cy.addBlock( 'ugb/icon-list' )
 
 		cy.typeBlock( 'ugb/icon-list', '.block-editor-rich-text__editable', 'Helloo World!! 12' )
 			.assertBlockContent( '', 'Helloo World!! 12' )
@@ -137,7 +137,7 @@ function styleTab( viewport, desktopOnly ) {
 	iconListBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/icon-list' ).as( 'iconListBlock' )

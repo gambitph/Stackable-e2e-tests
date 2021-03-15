@@ -323,7 +323,7 @@ function styleTab( viewport, desktopOnly ) {
 	featureBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )

@@ -107,6 +107,7 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
 		? cy.selectBlock( subject, customSelector ).find( contentSelector )
 		: cy.selectBlock( subject, customSelector )
 	)
+		.first()
 		.click( { force: true } )
 		.type( `{selectall}${ content }`, { force: true } )
 

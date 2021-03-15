@@ -86,10 +86,6 @@ function typeContent() {
 		cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
 		registerBlockSnapshots( 'featureGridBlock' )
 
-		cy.openInspector( 'ugb/feature-grid', 'Style' )
-		cy.collapse( 'General' )
-		cy.adjust( 'Columns', 1 )
-
 		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-feature-grid__title', 'Hello World! 1' )
 		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__description', 'Helloo World!! 12' )
@@ -97,6 +93,7 @@ function typeContent() {
 		cy.typeBlock( 'ugb/feature-grid', '.ugb-button--inner', 'Hellooo World!!! 123' )
 			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
 
+		cy.openInspector( 'ugb/feature-grid', 'Style' )
 		assertBlockTitleDescriptionContent( 'ugb/feature-grid' )
 	} )
 }

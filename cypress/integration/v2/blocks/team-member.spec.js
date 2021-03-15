@@ -70,10 +70,6 @@ function typeContent() {
 		cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )
 		registerBlockSnapshots( 'teamMemberBlock' )
 
-		cy.openInspector( 'ugb/team-member', 'Style' )
-		cy.collapse( 'General' )
-		cy.adjust( 'Columns', 1 )
-
 		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__name', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-team-member__name', 'Hello World! 1' )
 		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__position', 'Helloo World!! 12' )
@@ -81,6 +77,7 @@ function typeContent() {
 		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__description', 'Hellooo World!!! 123' )
 			.assertBlockContent( '.ugb-team-member__description', 'Hellooo World!!! 123' )
 
+		cy.openInspector( 'ugb/team-member', 'Style' )
 		assertBlockTitleDescriptionContent( 'ugb/team-member' )
 	} )
 }

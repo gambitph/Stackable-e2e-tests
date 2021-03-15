@@ -68,15 +68,12 @@ function typeContent() {
 		cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )
 		registerBlockSnapshots( 'numberBoxBlock' )
 
-		cy.openInspector( 'ugb/number-box', 'Style' )
-		cy.collapse( 'General' )
-		cy.adjust( 'Columns', 1 )
-
 		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-number-box__title', 'Hello World! 1' )
 		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__description', 'Helloo World!! 12' )
 			.assertBlockContent( '.ugb-number-box__description', 'Helloo World!! 12' )
 
+		cy.openInspector( 'ugb/number-box', 'Style' )
 		assertBlockTitleDescriptionContent( 'ugb/number-box' )
 	} )
 }

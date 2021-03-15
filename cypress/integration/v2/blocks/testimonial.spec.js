@@ -72,10 +72,6 @@ function typeContent() {
 		cy.addBlock( 'ugb/testimonial' ).as( 'testimonialBlock' )
 		registerBlockSnapshots( 'testimonialBlock' )
 
-		cy.openInspector( 'ugb/testimonial', 'Style' )
-		cy.collapse( 'General' )
-		cy.adjust( 'Columns', 1 )
-
 		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__body', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-testimonial__body', 'Hello World! 1' )
 		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__name', 'Helloo World!! 12' )
@@ -83,6 +79,7 @@ function typeContent() {
 		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__position', 'Hellooo World!!! 123' )
 			.assertBlockContent( '.ugb-testimonial__position', 'Hellooo World!!! 123' )
 
+		cy.openInspector( 'ugb/testimonial', 'Style' )
 		assertBlockTitleDescriptionContent( 'ugb/testimonial' )
 	} )
 }

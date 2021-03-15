@@ -66,10 +66,6 @@ function typeContent() {
 		cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
 		registerBlockSnapshots( 'countUpBlock' )
 
-		cy.openInspector( 'ugb/count-up', 'Style' )
-		cy.collapse( 'General' )
-		cy.adjust( 'Columns', 1 )
-
 		cy.typeBlock( 'ugb/count-up', '.ugb-countup__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-countup__title', 'Hello World! 1' )
 		cy.typeBlock( 'ugb/count-up', '.ugb-countup__counter', '1234' )
@@ -77,6 +73,7 @@ function typeContent() {
 		cy.typeBlock( 'ugb/count-up', '.ugb-countup__description', 'Helloo World!! 12' )
 			.assertBlockContent( '.ugb-countup__description', 'Helloo World!! 12' )
 
+		cy.openInspector( 'ugb/count-up', 'Style' )
 		assertBlockTitleDescriptionContent( 'ugb/count-up' )
 	} )
 }
@@ -293,7 +290,7 @@ function styleTab( viewport, desktopOnly ) {
 	countUpBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
