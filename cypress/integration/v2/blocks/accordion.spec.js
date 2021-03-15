@@ -136,25 +136,24 @@ function styleTab( viewport, desktopOnly ) {
 					cy.visit( editorUrl )
 				} )
 		} )
-
-		// Test 'Reverse arrow'
-		cy.openInspector( 'ugb/accordion', 'Style' )
-		cy.collapse( 'General' )
-		cy.adjust( 'Reverse arrow', true ).assertComputedStyle( {
-			'.ugb-accordion__heading': {
-				'flex-direction': 'row-reverse',
-			},
-		} )
 		cy.deleteBlock( 'ugb/accordion', 'Accordion 1' )
 	} )
 
 	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
 	const accordionBlock = registerBlockSnapshots( 'accordionBlock' )
 
-	// Test General Alignment
+	// Test General Reverse Arrow and Alignment
 	cy.openInspector( 'ugb/accordion', 'Style' )
 	cy.collapse( 'General' )
 	cy.adjust( 'Open at the start', true )
+
+	desktopOnly( () => {
+		cy.adjust( 'Reverse arrow', true ).assertComputedStyle( {
+			'.ugb-accordion__heading': {
+				'flex-direction': 'row-reverse',
+			},
+		} )
+	} )
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
 	cy.collapse( 'Container' )

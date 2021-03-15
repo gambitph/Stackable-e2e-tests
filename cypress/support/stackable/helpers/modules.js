@@ -94,11 +94,9 @@ export const assertBlockTitleDescription = ( options = {}, assertOptions = {} ) 
  * Assertion function for typing content into Block Title and Block Description.
  *
  * @param {string} subject
- * @param {Object} options
  * @param {Object} assertOptions
  */
-export const assertBlockTitleDescriptionContent = ( subject, options = {}, assertOptions = {} ) => {
-
+export const assertBlockTitleDescriptionContent = ( subject, assertOptions = {} ) => {
 	const typographyAssertions = [ 'Title', 'Description' ]
 
 	typographyAssertions.forEach( typographyAssertion => {
