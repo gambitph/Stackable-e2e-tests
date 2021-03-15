@@ -89,6 +89,42 @@ if ( isset( $_GET['setup'] ) ) {
 			wp_delete_post( $pages->ID );
 		}
 
+		// Get all posts in the site.
+		$all_posts = get_posts( array(
+			'post_type' => 'post',
+			'post_status' => 'any'
+		) );
+
+		// Remove all posts.
+		forEach( $all_posts as $posts ){
+			wp_delete_post( $posts->ID );
+		}
+
+		// Create 4 posts
+		forEach (array(1, 2, 3, 4) as $idx) {
+			// Post Variables
+			$postType = 'post';
+			if( $user ) {
+				$userID = $user->ID;
+			}
+			$categoryID = '1';
+			$postStatus = 'publish';
+			$leadTitle = 'Sample post ' . $idx;
+			$leadContent = '<p>This is a sample content for this post.</p>';
+			$leadContent .= ' <!--more--> <p>More text for this post!</p>';
+
+			$new_post = array(
+				'post_title' => $leadTitle,
+				'post_content' => $leadContent,
+				'post_status' => $postStatus,
+				'post_author' => $userID,
+				'post_type' => $postType,
+				'post_category' => array($categoryID)
+			);
+
+			$post_id = wp_insert_post($new_post);
+		}
+
 		die();
 	});
 }
