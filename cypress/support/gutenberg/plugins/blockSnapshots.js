@@ -26,7 +26,7 @@
 import {
 	createElementFromHTMLString,
 } from '../util'
-import { _assertComputedStyle, _assertFrontendBlockContent } from '../commands/assertions'
+import { _assertComputedStyle } from '../commands/assertions'
 
 /**
  * External dependencies
@@ -162,39 +162,6 @@ class BlockSnapshots {
 							cy.viewport( Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
 						} )
 					} )
-				} )
-			} )
-		} )
-	}
-
-	/**
-	 * Enqueue all stubbed html contents to the frontend.
-	 * Individually assert its content.
-	 */
-	 assertFrontendContent() {
-		const self = this
-		cy.get( `@${ self.alias }.stubbedContentAssertions` ).then( $stubbedContent => {
-			cy.get( `@${ self.alias }.contentSnapshots` ).then( $contentSnapshots => {
-				// Combine all stubbed styles and content snapshots into one array.
-				const combinedStubbed = $contentSnapshots.map( ( htmlContent, index ) => {
-					return {
-						htmlContent,
-						customSelector: $stubbedContent[ index ].customSelector,
-						expectedValue: $stubbedContent[ index ].content,
-					}
-				} )
-
-				if ( ! combinedStubbed.length ) {
-					return
-				}
-
-				combinedStubbed.forEach( combinedStubbedContent => {
-					const {
-						htmlContent, customSelector, expectedValue,
-					} = combinedStubbedContent
-
-					// Assert Frontend Content
-					_assertFrontendBlockContent( htmlContent, customSelector, expectedValue )
 				} )
 			} )
 		} )

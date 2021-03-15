@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
@@ -88,6 +88,8 @@ function typeContent() {
 			.assertBlockContent( '.ugb-card__description', 'Hello World! 1234' )
 		cy.typeBlock( 'ugb/card', '.ugb-button--inner', 'Hello World! 1234' )
 			.assertBlockContent( '.ugb-button--inner', 'Hello World! 1234' )
+
+		assertBlockTitleDescriptionContent( 'ugb/card' )
 	} )
 }
 

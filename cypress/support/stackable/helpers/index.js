@@ -10,7 +10,7 @@ import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
  * Export Block Module assertions.
  */
 export {
-	assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+	assertBlockTitleDescription, assertBlockTitleDescriptionContent, assertBlockBackground, assertSeparators,
 } from './modules'
 
 /*

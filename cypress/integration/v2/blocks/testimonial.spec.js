@@ -3,7 +3,7 @@
  */
 import { range } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
@@ -82,6 +82,8 @@ function typeContent() {
 			.assertBlockContent( '.ugb-testimonial__name', 'Hello World! 1234' )
 		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__position', 'Hello World! 1234' )
 			.assertBlockContent( '.ugb-testimonial__position', 'Hello World! 1234' )
+
+		assertBlockTitleDescriptionContent( 'ugb/testimonial' )
 	} )
 }
 

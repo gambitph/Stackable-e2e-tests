@@ -68,6 +68,14 @@ function typeContent() {
 		cy.addBlock( 'ugb/text' ).as( 'textBlock' )
 		registerBlockSnapshots( 'textBlock' )
 
+		cy.openInspector( 'ugb/text', 'Style' )
+		cy.toggleStyle( 'Title' )
+		cy.toggleStyle( 'Subtitle' )
+
+		cy.typeBlock( 'ugb/text', '.ugb-text__title', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-text__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/text', '.ugb-text__subtitle', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-text__subtitle', 'Hello World! 1234' )
 		cy.typeBlock( 'ugb/text', '.ugb-text__text-1', 'Hello World! 1234' )
 			.assertBlockContent( '.ugb-text__text-1', 'Hello World! 1234' )
 	} )

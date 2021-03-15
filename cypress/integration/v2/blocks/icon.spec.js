@@ -3,8 +3,9 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, registerTests, responsiveAssertHelper, assertTypography, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -13,6 +14,7 @@ describe( 'Icon Block', registerTests( [
 	blockExist,
 	blockError,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -36,6 +38,23 @@ function switchDesign() {
 		'Hue Icon',
 		'Lume Icon',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/icon' ).as( 'iconBlock' )
+		registerBlockSnapshots( 'iconBlock' )
+
+		cy.openInspector( 'ugb/icon', 'Style' )
+		cy.toggleStyle( 'Title' )
+
+		cy.typeBlock( 'ugb/icon', '.ugb-icon__title', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-icon__title', 'Hello World! 1234' )
+
+		assertBlockTitleDescriptionContent( 'ugb/icon' )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

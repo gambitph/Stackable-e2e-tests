@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import { startCase, range } from 'lodash'
@@ -76,6 +76,8 @@ function typeContent() {
 			.assertBlockContent( '.ugb-number-box__title', 'Hello World! 1234' )
 		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__description', 'Hello World! 1234' )
 			.assertBlockContent( '.ugb-number-box__description', 'Hello World! 1234' )
+
+		assertBlockTitleDescriptionContent( 'ugb/number-box' )
 	} )
 }
 

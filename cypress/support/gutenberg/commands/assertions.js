@@ -368,7 +368,7 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
 		cy.getBlockAttributes().then( attributes => {
-			const selector = `${ attributes.className }`
+			const selector = `.${ attributes.className }`
 			cy
 				.get( subject )
 				.then( $block => {
@@ -386,14 +386,14 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 							cy.wait( delay )
 
 							cy.document().then( doc => {
-								const element = doc.querySelector( `.${ selector }` )
+								const element = doc.querySelector( selector )
 								if ( element ) {
 									assert.isTrue(
 										! isEmpty( customSelector !== ''
-											? cy.get( `.${ selector }` )
+											? cy.get( selector )
 												.find( `${ customSelector }` )
 												.contains( `${ expectedValue }` )
-											: cy.get( `.${ selector }` )
+											: cy.get( selector )
 												.contains( `${ expectedValue }` ) )
 										,
 										`${ customSelector } must have content '${ expectedValue }' in Frontend'`

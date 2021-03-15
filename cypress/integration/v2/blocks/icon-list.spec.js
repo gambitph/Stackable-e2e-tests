@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, registerTests, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -65,6 +65,9 @@ function typeContent() {
 
 		cy.typeBlock( 'ugb/icon-list', '.block-editor-rich-text__editable', 'Hello World! 1234' )
 			.assertBlockContent( '', 'Hello World! 1234' )
+
+		cy.openInspector( 'ugb/icon-list', 'Style' )
+		assertBlockTitleDescriptionContent( 'ugb/icon-list' )
 	} )
 }
 

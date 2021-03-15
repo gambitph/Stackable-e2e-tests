@@ -3,8 +3,9 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, registerTests, responsiveAssertHelper, assertAdvancedTab, assertContainer, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+	assertBlockExist, blockErrorTest, switchDesigns, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAdvancedTab, assertContainer, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -13,6 +14,7 @@ describe( 'Video Popup Block', registerTests( [
 	blockExist,
 	blockError,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -44,6 +46,18 @@ function switchDesign() {
 		'Peplum Video Popup',
 		'Speck Video Popup',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/video-popup' ).as( 'videoPopupBlock' )
+		registerBlockSnapshots( 'videoPopupBlock' )
+		cy.openInspector( 'ugb/video-popup', 'Style' )
+
+		assertBlockTitleDescriptionContent( 'ugb/video-popup' )
+	} )
 }
 
 function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {

@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, registerTests, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, registerTests, assertBlockTitleDescriptionContent, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
@@ -76,6 +76,8 @@ function typeContent() {
 			.assertBlockContent( '.ugb-countup__counter', '1234' )
 		cy.typeBlock( 'ugb/count-up', '.ugb-countup__description', 'Hello World! 1234' )
 			.assertBlockContent( '.ugb-countup__description', 'Hello World! 1234' )
+
+		assertBlockTitleDescriptionContent( 'ugb/count-up' )
 	} )
 }
 
