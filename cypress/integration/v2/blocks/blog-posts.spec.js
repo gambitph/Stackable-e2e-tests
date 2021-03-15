@@ -2,8 +2,9 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
@@ -12,6 +13,7 @@ describe( 'Blog Posts Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopAdvanced,
 	tabletAdvanced,
 	mobileAdvanced,
@@ -53,6 +55,23 @@ function switchDesign() {
 		'Prime Blog Post',
 		'Propel Blog Post',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/blog-posts' ).as( 'blogPostsBlock' )
+		registerBlockSnapshots( 'blogPostsBlock' )
+
+		cy.openInspector( 'ugb/blog-posts', 'Style' )
+		cy.toggleStyle( 'Load More Button' )
+
+		cy.typeBlock( 'ugb/blog-posts', '.ugb-button--inner', 'Helloo World!! 12345' )
+			.assertBlockContent( '.ugb-button--inner', 'Helloo World!! 12345' )
+
+		assertBlockTitleDescriptionContent( 'ugb/blog-posts' )
+	} )
 }
 
 function advancedTab( viewport ) {

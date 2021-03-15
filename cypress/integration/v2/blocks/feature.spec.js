@@ -123,16 +123,16 @@ function typeContent() {
 		cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
 		registerBlockSnapshots( 'featureBlock' )
 
-		cy.typeBlock( 'ugb/feature', '.ugb-feature__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-feature__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/feature', '.ugb-feature__description', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-feature__description', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/feature', '.ugb-button--inner', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-button--inner', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/feature', '.ugb-feature__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-feature__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/feature', '.ugb-feature__description', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-feature__description', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/feature', '.ugb-button--inner', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
@@ -323,7 +323,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	featureBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )

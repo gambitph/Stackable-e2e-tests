@@ -50,14 +50,14 @@ function typeContent() {
 		cy.openInspector( 'ugb/icon', 'Style' )
 		cy.toggleStyle( 'Title' )
 
-		cy.typeBlock( 'ugb/icon', '.ugb-icon__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-icon__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/icon', '.ugb-icon__title', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-icon__title', 'Helloo World!! 12' )
 
 		assertBlockTitleDescriptionContent( 'ugb/icon' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/icon' ).as( 'iconBlock' )
@@ -227,7 +227,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	iconBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/icon' ).as( 'iconBlock' )

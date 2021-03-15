@@ -79,7 +79,7 @@ function typeContent() {
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 
@@ -221,7 +221,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	accordionBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )

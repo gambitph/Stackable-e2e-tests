@@ -5,6 +5,7 @@ import { blocks } from '~stackable-e2e/config'
 import {
 	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -54,7 +55,7 @@ function switchLayout() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/container' ).as( 'containerBlock' )
@@ -201,7 +202,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	containerBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/container' ).as( 'containerBlock' )

@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -63,15 +64,15 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/icon-list' ).as( 'iconListBlock' )
 
-		cy.typeBlock( 'ugb/icon-list', '.block-editor-rich-text__editable', 'Hello World! 1234' )
-			.assertBlockContent( '', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/icon-list', '.block-editor-rich-text__editable', 'Helloo World!! 12' )
+			.assertBlockContent( '', 'Helloo World!! 12' )
 
 		cy.openInspector( 'ugb/icon-list', 'Style' )
 		assertBlockTitleDescriptionContent( 'ugb/icon-list' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 
@@ -136,7 +137,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	iconListBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/icon-list' ).as( 'iconListBlock' )

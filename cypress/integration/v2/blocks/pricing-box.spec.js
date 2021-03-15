@@ -76,26 +76,26 @@ function typeContent() {
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 1 )
 
-		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-pricing-box__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-pricing-box__title', 'Hello World! 1' )
 		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__price-prefix', 'P' )
 			.assertBlockContent( '.ugb-pricing-box__price-prefix', 'P' )
-		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__price', '1234' )
-			.assertBlockContent( '.ugb-pricing-box__price', '1234' )
+		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__price', '12' )
+			.assertBlockContent( '.ugb-pricing-box__price', '12' )
 		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__price-suffix', '1234' )
 			.assertBlockContent( '.ugb-pricing-box__price-suffix', '1234' )
-		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__subprice', '1234' )
-			.assertBlockContent( '.ugb-pricing-box__subprice', '1234' )
-		cy.typeBlock( 'ugb/pricing-box', '.ugb-button--inner', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-button--inner', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__description', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-pricing-box__description', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__subprice', '123456' )
+			.assertBlockContent( '.ugb-pricing-box__subprice', '123456' )
+		cy.typeBlock( 'ugb/pricing-box', '.ugb-button--inner', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-button--inner', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__description', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-pricing-box__description', 'Hellooo World!!! 123' )
 
 		assertBlockTitleDescriptionContent( 'ugb/pricing-box' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/pricing-box' ).as( 'pricingBoxBlock' )
@@ -400,7 +400,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	pricingBoxBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/pricing-box' ).as( 'pricingBoxBlock' )

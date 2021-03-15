@@ -72,16 +72,16 @@ function typeContent() {
 		cy.toggleStyle( 'Title' )
 		cy.toggleStyle( 'Subtitle' )
 
-		cy.typeBlock( 'ugb/text', '.ugb-text__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-text__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/text', '.ugb-text__subtitle', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-text__subtitle', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/text', '.ugb-text__text-1', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-text__text-1', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/text', '.ugb-text__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-text__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/text', '.ugb-text__subtitle', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-text__subtitle', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/text', '.ugb-text__text-1', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-text__text-1', 'Hellooo World!!! 123' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/text' ).as( 'textBlock' )
@@ -235,7 +235,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	textBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/text' ).as( 'textBlock' )

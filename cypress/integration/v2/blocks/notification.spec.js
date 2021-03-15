@@ -62,16 +62,16 @@ function typeContent() {
 		cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
 		registerBlockSnapshots( 'notificationBlock' )
 
-		cy.typeBlock( 'ugb/notification', '.ugb-notification__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-notification__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/notification', '.ugb-notification__description', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-notification__description', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/notification', '.ugb-button--inner', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-button--inner', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/notification', '.ugb-notification__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-notification__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/notification', '.ugb-notification__description', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-notification__description', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/notification', '.ugb-button--inner', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
@@ -315,7 +315,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	notificationBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )

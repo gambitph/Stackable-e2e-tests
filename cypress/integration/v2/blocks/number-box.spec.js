@@ -72,16 +72,16 @@ function typeContent() {
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 1 )
 
-		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-number-box__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__description', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-number-box__description', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-number-box__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__description', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-number-box__description', 'Helloo World!! 12' )
 
 		assertBlockTitleDescriptionContent( 'ugb/number-box' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )
@@ -260,7 +260,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	numberBoxBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )

@@ -80,20 +80,20 @@ function typeContent() {
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 1 )
 
-		cy.typeBlock( 'ugb/card', '.ugb-card__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-card__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/card', '.ugb-card__subtitle', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-card__subtitle', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/card', '.ugb-card__description', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-card__description', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/card', '.ugb-button--inner', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-button--inner', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/card', '.ugb-card__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-card__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/card', '.ugb-card__subtitle', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-card__subtitle', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/card', '.ugb-card__description', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-card__description', 'Hellooo World!!! 123' )
+		cy.typeBlock( 'ugb/card', '.ugb-button--inner', 'Helloooo World!!!! 1234' )
+			.assertBlockContent( '.ugb-button--inner', 'Helloooo World!!!! 1234' )
 
 		assertBlockTitleDescriptionContent( 'ugb/card' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
@@ -324,7 +324,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cardBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )

@@ -37,14 +37,14 @@ function typeContent() {
 		cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
 		registerBlockSnapshots( 'headingBlock' )
 
-		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-heading__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-heading__subtitle', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-heading__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-heading__subtitle', 'Helloo World!! 12' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
@@ -185,7 +185,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	headingBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )

@@ -70,18 +70,18 @@ function typeContent() {
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 1 )
 
-		cy.typeBlock( 'ugb/count-up', '.ugb-countup__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-countup__title', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/count-up', '.ugb-countup__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-countup__title', 'Hello World! 1' )
 		cy.typeBlock( 'ugb/count-up', '.ugb-countup__counter', '1234' )
 			.assertBlockContent( '.ugb-countup__counter', '1234' )
-		cy.typeBlock( 'ugb/count-up', '.ugb-countup__description', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-countup__description', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/count-up', '.ugb-countup__description', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-countup__description', 'Helloo World!! 12' )
 
 		assertBlockTitleDescriptionContent( 'ugb/count-up' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
@@ -293,7 +293,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	countUpBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )

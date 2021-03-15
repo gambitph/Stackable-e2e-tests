@@ -79,12 +79,12 @@ function typeContent() {
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 1 )
 
-		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__subtitle', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-image-box__subtitle', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-image-box__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__description', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-image-box__description', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__subtitle', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-image-box__subtitle', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__title', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-image-box__title', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__description', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-image-box__description', 'Hellooo World!!! 123' )
 
 		assertBlockTitleDescriptionContent( 'ugb/image-box' )
 	} )
@@ -381,7 +381,7 @@ function styleTab( viewport, desktopOnly ) {
 	assertSeparators( { viewport } )
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/image-box' ).as( 'imageBoxBlock' )

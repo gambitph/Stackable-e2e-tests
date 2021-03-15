@@ -76,18 +76,18 @@ function typeContent() {
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 1 )
 
-		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__body', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-testimonial__body', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__name', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-testimonial__name', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__position', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-testimonial__position', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__body', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-testimonial__body', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__name', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-testimonial__name', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__position', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-testimonial__position', 'Hellooo World!!! 123' )
 
 		assertBlockTitleDescriptionContent( 'ugb/testimonial' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/testimonial' ).as( 'testimonialBlock' )
@@ -262,7 +262,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	testimonialBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/testimonial' ).as( 'testimonialBlock' )

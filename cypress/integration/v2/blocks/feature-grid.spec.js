@@ -90,18 +90,18 @@ function typeContent() {
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 1 )
 
-		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-feature-grid__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__description', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-feature-grid__description', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/feature-grid', '.ugb-button--inner', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-button--inner', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-feature-grid__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__description', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-feature-grid__description', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/feature-grid', '.ugb-button--inner', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
 
 		assertBlockTitleDescriptionContent( 'ugb/feature-grid' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
@@ -306,7 +306,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	featureGridBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )

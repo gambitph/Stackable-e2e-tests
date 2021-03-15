@@ -64,7 +64,7 @@ function typeContent() {
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/button' ).as( 'buttonBlock' )
@@ -181,7 +181,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	buttonBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/button' ).as( 'buttonBlock' )

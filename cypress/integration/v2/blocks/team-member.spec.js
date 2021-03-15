@@ -74,18 +74,18 @@ function typeContent() {
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 1 )
 
-		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__name', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-team-member__name', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__position', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-team-member__position', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__description', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-team-member__description', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__name', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-team-member__name', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__position', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-team-member__position', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__description', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-team-member__description', 'Hellooo World!!! 123' )
 
 		assertBlockTitleDescriptionContent( 'ugb/team-member' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )
@@ -318,7 +318,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	teamMemberBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )

@@ -69,7 +69,7 @@ function typeContent() {
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )
@@ -183,7 +183,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	// TODO: Add style assertion for one column
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )

@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -45,7 +46,7 @@ function switchLayout() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/separator' ).as( 'separatorBlock' )
@@ -272,7 +273,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	separatorBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/separator' ).as( 'separatorBlock' )

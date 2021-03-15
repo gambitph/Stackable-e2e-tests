@@ -36,20 +36,20 @@ function typeContent() {
 		cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )
 		registerBlockSnapshots( 'expandBlock' )
 
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-expand__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-text', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-expand__less-text', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-toggle-text', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-expand__more-toggle-text', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-text', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-expand__more-text', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-toggle-text', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-expand__less-toggle-text', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-expand__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-text', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-expand__less-text', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-toggle-text', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-expand__more-toggle-text', 'Hellooo World!!! 123' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-text', 'Helloooo World!!!! 1234' )
+			.assertBlockContent( '.ugb-expand__more-text', 'Helloooo World!!!! 1234' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-toggle-text', 'Hellooooo World!!!!! 12345' )
+			.assertBlockContent( '.ugb-expand__less-toggle-text', 'Hellooooo World!!!!! 12345' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )
@@ -117,7 +117,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	expandBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )

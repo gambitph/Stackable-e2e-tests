@@ -94,16 +94,16 @@ function typeContent() {
 		cy.addBlock( 'ugb/cta' ).as( 'ctaBlock' )
 		registerBlockSnapshots( 'ctaBlock' )
 
-		cy.typeBlock( 'ugb/cta', '.ugb-cta__title', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-cta__title', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/cta', '.ugb-cta__description', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-cta__description', 'Hello World! 1234' )
-		cy.typeBlock( 'ugb/cta', '.ugb-button--inner', 'Hello World! 1234' )
-			.assertBlockContent( '.ugb-button--inner', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/cta', '.ugb-cta__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-cta__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/cta', '.ugb-cta__description', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-cta__description', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/cta', '.ugb-button--inner', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
 	} )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/cta' ).as( 'ctaBlock' )
@@ -275,7 +275,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	ctaBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/cta' ).as( 'ctaBlock' )
