@@ -98,9 +98,6 @@ export const assertBlockTitleDescription = ( options = {}, assertOptions = {} ) 
  * @param {Object} assertOptions
  */
 export const assertBlockTitleDescriptionContent = ( subject, options = {}, assertOptions = {} ) => {
-	const {
-
-	} = options
 
 	const typographyAssertions = [ 'Title', 'Description' ]
 
