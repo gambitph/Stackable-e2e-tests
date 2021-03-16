@@ -387,13 +387,12 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 
 							cy.document().then( doc => {
 								const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
-								cy.log( blockElement )
-								// if ( blockElement ) {
-								// 	assert.isTrue(
-								// 		blockElement.textContent === expectedValue,
-								// 		`${ customSelector } must have content '${ expectedValue }' in Frontend'`
-								// 	)
-								// }
+								if ( blockElement ) {
+									assert.isTrue(
+										blockElement.textContent === expectedValue,
+										`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+									)
+								}
 
 								cy.visit( editorUrl )
 								cy.wp().then( _wp => {
