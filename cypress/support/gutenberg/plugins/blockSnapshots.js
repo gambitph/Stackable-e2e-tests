@@ -216,21 +216,11 @@ export const registerBlockSnapshots = alias => {
 			cy.wp().then( wp => {
 				const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
 				const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
-				const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 
-				if ( parsedClassList.match( customSelector ) ) {
-					// Check if we're asserting the parent element.
-					assert.isTrue(
-						saveElement.textContent === expectedValue,
-						`${ customSelector } must have content '${ expectedValue }' in Frontend'`
-					)
-				} else {
-					// Otherwise, search the element
-					assert.isTrue(
-						saveElement.querySelector( customSelector ).textContent === expectedValue,
-						`${ customSelector } must have content '${ expectedValue }' in Frontend'`
-					)
-				}
+				assert.isTrue(
+					saveElement.textContent === expectedValue || saveElement.querySelector( customSelector ).textContent === expectedValue,
+					`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+				)
 			} )
 
 			originalFn( ...[ ...passedArgs, optionsToPass ] )

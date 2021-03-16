@@ -64,7 +64,7 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/icon-list' )
 
-		cy.typeBlock( 'ugb/icon-list', '.block-editor-rich-text__editable', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/icon-list', '.ugb-block-content ul', 'Helloo World!! 12' )
 			.assertBlockContent( '', 'Helloo World!! 12' )
 
 		cy.openInspector( 'ugb/icon-list', 'Style' )
