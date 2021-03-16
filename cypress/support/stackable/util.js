@@ -2,9 +2,11 @@
  * External dependencies
  */
 import {
-	first, last, lowerCase,
+	first, last,
 } from 'lodash'
 import { containsRegExp } from '~common/util'
+
+// TODO: Pass withInspectorTabMemory in gutenberg/util.js here
 
 /**
  * Function for overwriting log argument.
@@ -100,24 +102,6 @@ export function changeControlViewport( viewport = 'Desktop', name = '', isInPopo
 				}
 				cy.wait( 1 )
 			}
-		} )
-}
-
-/**
- * Function for getting the active tab
- * in inspector.
- *
- * @param {Function} callback callback function
- */
-export function getActiveTab( callback = () => {} ) {
-	cy
-		.get( '.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active', { log: false } )
-		.invoke( 'attr', 'aria-label' )
-		.then( ariaLabel => {
-			// Get the active tab.
-			const tab = lowerCase( first( ariaLabel.split( ' ' ) ) )
-
-			callback( tab )
 		} )
 }
 
