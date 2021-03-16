@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { first, lowerCase } from 'lodash'
+import { first } from 'lodash'
 import { containsRegExp } from '~common/util'
 
 const SIDEBAR_NAMESPACES = {
@@ -14,17 +14,16 @@ const SIDEBAR_NAMESPACES = {
  */
 Cypress.Commands.add( 'openInspector', openInspector )
 Cypress.Commands.add( 'toggleStyle', toggleStyle )
-Cypress.Commands.add( 'getActiveTab', getActiveTab )
 
 /**
  * Overwrite Gutenberg commands.
  */
 Cypress.Commands.overwrite( 'openSidebar', ( originalFn, ...args ) => {
-	originalFn( SIDEBAR_NAMESPACES[ first( args ) ] )
+	originalFn( SIDEBAR_NAMESPACES( first( args ) ) )
 } )
 
 Cypress.Commands.overwrite( 'closeSidebar', ( originalFn, ...args ) => {
-	originalFn( SIDEBAR_NAMESPACES[ first( args ) ] )
+	originalFn( SIDEBAR_NAMESPACES( first( args ) ) )
 } )
 
 /**
@@ -71,22 +70,5 @@ export function toggleStyle( name = 'Block Title', enabled = true ) {
 					.find( 'input' )
 					.click( { force: true } )
 			}
-		} )
-}
-
-/**
- * Stackable Command for getting the active tab
- * in inspector.
- */
-export function getActiveTab() {
-	return cy
-		.get( '.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active', { log: false } )
-		.invoke( 'attr', 'aria-label' )
-		.then( ariaLabel => {
-			return new Cypress.Promise( resolve => {
-				// Get the active tab.ß
-				const tab = lowerCase( first( ariaLabel.split( ' ' ) ) )
-				resolve( tab )
-			} )
 		} )
 }
