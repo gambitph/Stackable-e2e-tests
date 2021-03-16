@@ -3,8 +3,9 @@
  */
 import { range } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertBlockTitleDescriptionContent, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -14,6 +15,7 @@ describe( 'Image Box Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -64,6 +66,25 @@ function switchDesign() {
 		'Upland Image Box 1',
 		'Upland Image Box 2',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/image-box' ).as( 'imageBoxBlock' )
+		registerBlockSnapshots( 'imageBoxBlock' )
+
+		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__subtitle', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-image-box__subtitle', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__title', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-image-box__title', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__description', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-image-box__description', 'Hellooo World!!! 123' )
+
+		cy.openInspector( 'ugb/image-box', 'Style' )
+		assertBlockTitleDescriptionContent( 'ugb/image-box' )
+	} )
 }
 
 function styleTab( viewport, desktopOnly ) {
@@ -357,7 +378,7 @@ function styleTab( viewport, desktopOnly ) {
 	assertSeparators( { viewport } )
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/image-box' ).as( 'imageBoxBlock' )

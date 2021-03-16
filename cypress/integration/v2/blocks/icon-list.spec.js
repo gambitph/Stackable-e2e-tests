@@ -2,8 +2,9 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, registerTests, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -12,6 +13,7 @@ describe( 'Icon List Block', registerTests( [
 	blockExist,
 	blockError,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -56,7 +58,22 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/icon-list' ).as( 'iconListBlock' )
+		registerBlockSnapshots( 'iconListBlock' )
+
+		cy.typeBlock( 'ugb/icon-list', '.block-editor-rich-text__editable', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-block-content ul', 'Helloo World!! 12' )
+
+		cy.openInspector( 'ugb/icon-list', 'Style' )
+		assertBlockTitleDescriptionContent( 'ugb/icon-list' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 
@@ -121,7 +138,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	iconListBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/icon-list' ).as( 'iconListBlock' )

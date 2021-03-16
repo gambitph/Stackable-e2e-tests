@@ -4,13 +4,12 @@
 import {
 	lowerCase, isEmpty,
 } from 'lodash'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 /**
  * Export Block Module assertions.
  */
 export {
-	assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+	assertBlockTitleDescription, assertBlockTitleDescriptionContent, assertBlockBackground, assertSeparators,
 } from './modules'
 
 /*
@@ -171,11 +170,11 @@ export const responsiveAssertHelper = ( callback = () => {}, options = {} ) => {
 	const responsiveAssertFunctions = viewports.map( viewport => {
 		const assertDesktopOnlyFunction = generateAssertDesktopOnlyFunction( viewport )
 		if ( disableItAssertion ) {
-			return () => callback( viewport, assertDesktopOnlyFunction, registerBlockSnapshots )
+			return () => callback( viewport, assertDesktopOnlyFunction )
 		}
 		return () => {
 			it( `should adjust ${ lowerCase( viewport ) } options inside ${ lowerCase( tab ) } tab`, () => {
-				callback( viewport, assertDesktopOnlyFunction, registerBlockSnapshots )
+				callback( viewport, assertDesktopOnlyFunction )
 			} )
 		}
 	} )

@@ -5,6 +5,7 @@
 import {
 	assertBlockExist, blockErrorTest, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -12,6 +13,7 @@ const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelp
 describe( 'Advanced Heading Block', registerTests( [
 	blockExist,
 	blockError,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -28,7 +30,21 @@ function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/heading' ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
+		registerBlockSnapshots( 'headingBlock' )
+
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-heading__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-heading__subtitle', 'Helloo World!! 12' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
@@ -169,7 +185,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	headingBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )

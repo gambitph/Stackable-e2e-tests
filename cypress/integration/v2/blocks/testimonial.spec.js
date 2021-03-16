@@ -3,8 +3,9 @@
  */
 import { range } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -14,6 +15,7 @@ describe( 'Testimonial Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -63,7 +65,26 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/testimonial' ).as( 'testimonialBlock' )
+		registerBlockSnapshots( 'testimonialBlock' )
+
+		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__body', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-testimonial__body', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__name', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-testimonial__name', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__position', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-testimonial__position', 'Hellooo World!!! 123' )
+
+		cy.openInspector( 'ugb/testimonial', 'Style' )
+		assertBlockTitleDescriptionContent( 'ugb/testimonial' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/testimonial' ).as( 'testimonialBlock' )
@@ -238,7 +259,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	testimonialBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/testimonial' ).as( 'testimonialBlock' )

@@ -7,6 +7,7 @@ import { getActiveTab } from '../util'
  * Exernal dependencies
  */
 import { last, startCase } from 'lodash'
+import { withInspectorTabMemory } from '~gutenberg-e2e/util'
 
 /**
  * Overwrite Gutenberg commands
@@ -26,3 +27,5 @@ Cypress.Commands.overwrite( 'assertComputedStyle', ( originalFn, ...args ) => {
 		}
 	} )
 } )
+
+Cypress.Commands.overwrite( 'assertBlockContent', withInspectorTabMemory( { argumentLength: 4 } ) )

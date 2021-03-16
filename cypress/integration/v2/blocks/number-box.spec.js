@@ -3,8 +3,9 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import { startCase, range } from 'lodash'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -15,6 +16,7 @@ describe( 'Number Box Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -59,7 +61,24 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )
+		registerBlockSnapshots( 'numberBoxBlock' )
+
+		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-number-box__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__description', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-number-box__description', 'Helloo World!! 12' )
+
+		cy.openInspector( 'ugb/number-box', 'Style' )
+		assertBlockTitleDescriptionContent( 'ugb/number-box' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )
@@ -238,7 +257,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	numberBoxBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )
