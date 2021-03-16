@@ -216,9 +216,10 @@ export const registerBlockSnapshots = alias => {
 			cy.wp().then( wp => {
 				const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
 				const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+				const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 
 				assert.isTrue(
-					saveElement.textContent === expectedValue || saveElement.querySelector( customSelector ).textContent === expectedValue,
+					( parsedClassList.match( customSelector ) ? saveElement : saveElement.querySelector( customSelector ) ).textContent === expectedValue,
 					`${ customSelector } must have content '${ expectedValue }' in Frontend'`
 				)
 			} )
