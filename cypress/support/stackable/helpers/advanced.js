@@ -239,6 +239,11 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 				} )
 			} )
 		} )
+
+		_collapse( 'Custom CSS', () => {
+			//Test Custom CSS
+			_adjust( 'Custom CSS', 'Hello World!', { viewport }, 'assertComputedStyle', {} )
+		} )
 	}
 
 	_assertAdvancedTab( viewport )
@@ -247,7 +252,6 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 
 	_adjust( `Hide on ${ viewport }`, true, {}, 'assertClassName', MAIN_SELECTOR, `ugb--hide-${ lowerCase( viewport ) }` )
 
-	// TODO: Custom CSS
 	// TODO: HTML Anchor
 	// TODO: Additional CSS class(es)
 }
