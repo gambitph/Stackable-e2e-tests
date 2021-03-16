@@ -139,18 +139,13 @@ if ( isset( $_GET['activate-plugin'] ) ) {
 
 if ( isset( $_GET['register-posts'] ) ) {
 	add_action('init', function() {
-		$post_type = $_GET['postType'];
-		$post_title = $_GET['postTitle'];
-		$post_content = $_GET['postContent'];
-		$featured_image = $_GET['featuredImage'];
-		$image_name = $_GET['imageName'];
 		$user = get_user_by( 'login', 'admin' );
 
 		// Register Post Data
 		$post = array();
-		$post['post_type']     = $post_type;
-		$post['post_title']    = $post_title;
-		$post['post_content']  = $post_content;
+		$post['post_type']     = $_GET['post_type'];
+		$post['post_title']    = $_GET['post_title'];
+		$post['post_content']  = $_GET['post_content'];
 		$post['post_author']   = $user->ID;
 		$post['post_category']   = array(1);
 		$post['post_status']   = 'publish';
@@ -159,8 +154,8 @@ if ( isset( $_GET['register-posts'] ) ) {
 
 		// Add Featured Image to Post
 		$upload_dir = wp_upload_dir();
-		$image_data = file_get_contents($featured_image);
-		$unique_file_name = wp_unique_filename( $upload_dir['path'], $image_name );
+		$image_data = file_get_contents( $_GET['featured_image'] );
+		$unique_file_name = wp_unique_filename( $upload_dir['path'], $_GET['image_name'] );
 		$filename = basename( $unique_file_name );
 
 		// Check folder permission and define file location
@@ -188,7 +183,7 @@ if ( isset( $_GET['register-posts'] ) ) {
 		$attach_id = wp_insert_attachment( $attachment, $file, $post_id );
 
 		// Include image.php
-		require_once(ABSPATH . 'wp-admin/includes/image.php');
+		require_once( ABSPATH . 'wp-admin/includes/image.php' );
 
 		// Define attachment metadata
 		$attach_data = wp_generate_attachment_metadata( $attach_id, $file );
