@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, assertBlockBackground, assertSeparators, responsiveAssertHelper, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -13,6 +14,7 @@ describe( 'Header', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -79,7 +81,23 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/header' ).as( 'headerBlock' )
+		registerBlockSnapshots( 'headerBlock' )
+
+		cy.typeBlock( 'ugb/header', '.ugb-header__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-header__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/header', '.ugb-header__subtitle', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-header__subtitle', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/header', '.ugb-button--inner', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/header' ).as( 'headerBlock' )
@@ -339,7 +357,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	headerBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/header' ).as( 'headerBlock' )

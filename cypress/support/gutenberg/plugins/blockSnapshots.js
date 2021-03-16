@@ -315,6 +315,37 @@ export const registerBlockSnapshots = alias => {
 		return modifiedFn( ...[ ...args, {} ] )
 	} )
 
+	/**
+	 * Overwrite `assertBlockContent` by passing `blockSnapshots` option
+	 */
+	 Cypress.Commands.overwrite( 'assertBlockContent', ( originalFn, ...args ) => {
+		function modifiedFn( ...passedArgs ) {
+			const options = passedArgs.pop()
+			// Since Cypress commands are asynchronous, we need to pass a separate object to originalFn to avoid directly mutating the options argument.
+			const optionsToPass = cloneDeep( options )
+			optionsToPass.assertFrontend = false
+			const [ subject, customSelector, expectedValue ] = passedArgs
+
+			cy.wp().then( wp => {
+				const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+				const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
+				const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
+
+				assert.isTrue(
+					( parsedClassList.match( customSelector ) ? saveElement : saveElement.querySelector( customSelector ) ).textContent === expectedValue,
+					`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+				)
+			} )
+
+			originalFn( ...[ ...passedArgs, optionsToPass ] )
+		}
+
+		if ( args.length === 4 ) {
+			return modifiedFn( ...args )
+		}
+		return modifiedFn( ...[ ...args, {} ] )
+	} )
+
 	return blockSnapshots
 }
 

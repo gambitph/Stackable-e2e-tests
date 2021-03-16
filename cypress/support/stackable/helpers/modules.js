@@ -91,6 +91,25 @@ export const assertBlockTitleDescription = ( options = {}, assertOptions = {} ) 
 }
 
 /**
+ * Assertion function for typing content into Block Title and Block Description.
+ *
+ * @param {string} subject
+ * @param {Object} assertOptions
+ */
+export const assertBlockTitleDescriptionContent = ( subject, assertOptions = {} ) => {
+	const typographyAssertions = [ 'Title', 'Description' ]
+
+	typographyAssertions.forEach( typographyAssertion => {
+		const typographySelector = `.ugb-block-${ lowerCase( typographyAssertion ) }`
+		cy.collapse( `Block ${ typographyAssertion }` )
+		cy.toggleStyle( `Block ${ typographyAssertion }` )
+
+		cy.typeBlock( subject, typographySelector, 'Hello World! 1234' )
+			.assertBlockContent( typographySelector, 'Hello World! 1234', assertOptions )
+	} )
+}
+
+/**
  * Assertion function for Block Background.
  *
  * @param {string} selector

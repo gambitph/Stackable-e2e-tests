@@ -7,6 +7,7 @@ import { blocks } from '~stackable-e2e/config'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -17,6 +18,7 @@ describe( 'Accordion Block', registerTests( [
 	innerBlocks,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -65,7 +67,19 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
+		registerBlockSnapshots( 'accordionBlock' )
+
+		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', 'Hello World! 1234' )
+			.assertBlockContent( '.ugb-accordion__title', 'Hello World! 1234' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 
@@ -122,25 +136,24 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 					cy.visit( editorUrl )
 				} )
 		} )
-
-		// Test 'Reverse arrow'
-		cy.openInspector( 'ugb/accordion', 'Style' )
-		cy.collapse( 'General' )
-		cy.adjust( 'Reverse arrow', true ).assertComputedStyle( {
-			'.ugb-accordion__heading': {
-				'flex-direction': 'row-reverse',
-			},
-		} )
 		cy.deleteBlock( 'ugb/accordion', 'Accordion 1' )
 	} )
 
 	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
 	const accordionBlock = registerBlockSnapshots( 'accordionBlock' )
 
-	// Test General Alignment
+	// Test General Reverse Arrow and Alignment
 	cy.openInspector( 'ugb/accordion', 'Style' )
 	cy.collapse( 'General' )
 	cy.adjust( 'Open at the start', true )
+
+	desktopOnly( () => {
+		cy.adjust( 'Reverse arrow', true ).assertComputedStyle( {
+			'.ugb-accordion__heading': {
+				'flex-direction': 'row-reverse',
+			},
+		} )
+	} )
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
 	cy.collapse( 'Container' )
@@ -207,7 +220,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	accordionBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )

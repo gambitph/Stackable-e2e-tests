@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -11,6 +12,7 @@ const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelp
 describe( 'Expand Block', registerTests( [
 	blockExist,
 	blockError,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -27,7 +29,27 @@ function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'ugb/expand' ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )
+		registerBlockSnapshots( 'expandBlock' )
+
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-expand__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-text', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-expand__less-text', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-toggle-text', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-expand__more-toggle-text', 'Hellooo World!!! 123' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-text', 'Helloooo World!!!! 1234' )
+			.assertBlockContent( '.ugb-expand__more-text', 'Helloooo World!!!! 1234' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-toggle-text', 'Hellooooo World!!!!! 12345' )
+			.assertBlockContent( '.ugb-expand__less-toggle-text', 'Hellooooo World!!!!! 12345' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )
@@ -95,7 +117,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	expandBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )

@@ -2,8 +2,9 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertBlockTitleDescriptionContent, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import { range } from 'lodash'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -14,6 +15,7 @@ describe( 'Feature Grid Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -77,7 +79,26 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
+		registerBlockSnapshots( 'featureGridBlock' )
+
+		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-feature-grid__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__description', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-feature-grid__description', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/feature-grid', '.ugb-button--inner', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
+
+		cy.openInspector( 'ugb/feature-grid', 'Style' )
+		assertBlockTitleDescriptionContent( 'ugb/feature-grid' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
@@ -282,7 +303,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	featureGridBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )

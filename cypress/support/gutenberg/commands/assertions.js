@@ -19,12 +19,14 @@ Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, assertC
 Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, assertClassName )
 Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, assertHtmlTag )
 Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, assertHtmlAttribute )
+Cypress.Commands.add( 'assertBlockContent', { prevSubject: 'element' }, assertBlockContent )
 
 // Temporary overwrite fix. @see stackable/commands/assertions.js
 Cypress.Commands.overwrite( 'assertComputedStyle', withInspectorTabMemory( { argumentLength: 3 } ) )
 Cypress.Commands.overwrite( 'assertClassName', withInspectorTabMemory( { argumentLength: 4 } ) )
 Cypress.Commands.overwrite( 'assertHtmlTag', withInspectorTabMemory( { argumentLength: 4 } ) )
 Cypress.Commands.overwrite( 'assertHtmlAttribute', withInspectorTabMemory( { argumentLength: 5 } ) )
+Cypress.Commands.overwrite( 'assertBlockContent', withInspectorTabMemory( { argumentLength: 4 } ) )
 
 export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop' ) {
 	const removeAnimationStyles = [
@@ -373,6 +375,69 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 								const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
 								cy.selectBlock( name, { clientId } )
 								afterFrontendAssert()
+							} )
+						} )
+					}
+				} )
+		} )
+	} )
+}
+
+/**
+ * Command for asserting the content of a block
+ *
+ * @param {*} subject
+ * @param {string} customSelector
+ * @param {string} expectedValue
+ * @param {Object} options
+ */
+export function assertBlockContent( subject, customSelector = '', expectedValue = '', options = {} ) {
+	const {
+		assertBackend = true,
+		assertFrontend = true,
+		delay = 0,
+		afterFrontendAssert = () => {},
+		afterBackendAssert = () => {},
+	} = options
+
+	cy.wp().then( wp => {
+		cy.publish()
+		cy.wait( delay )
+		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
+
+		cy.getBlockAttributes().then( attributes => {
+			const selector = `.${ attributes.className }`
+			cy
+				.get( subject )
+				.then( $block => {
+					if ( assertBackend ) {
+						assert.isTrue(
+							! isEmpty( $block.find( `${ customSelector }:contains(${ expectedValue })` ) ),
+							`${ customSelector } must have content '${ expectedValue }' in Editor'`
+						)
+						afterBackendAssert()
+					}
+
+					if ( assertFrontend ) {
+						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+							cy.visit( previewUrl )
+							cy.wait( delay )
+
+							cy.document().then( doc => {
+								const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
+								if ( blockElement ) {
+									assert.isTrue(
+										blockElement.textContent === expectedValue,
+										`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+									)
+								}
+
+								cy.visit( editorUrl )
+								cy.wp().then( _wp => {
+									const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
+									cy.selectBlock( name, { clientId } )
+									afterFrontendAssert()
+								} )
 							} )
 						} )
 					}

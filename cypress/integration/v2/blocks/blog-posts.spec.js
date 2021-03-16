@@ -4,7 +4,9 @@
 import { range } from 'lodash'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
+	assertBlockTitleDescriptionContent,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -14,6 +16,7 @@ describe( 'Blog Posts Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -58,6 +61,23 @@ function switchDesign() {
 		'Prime Blog Post',
 		'Propel Blog Post',
 	] ) )
+}
+
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/blog-posts' ).as( 'blogPostsBlock' )
+		registerBlockSnapshots( 'blogPostsBlock' )
+
+		cy.openInspector( 'ugb/blog-posts', 'Style' )
+		cy.toggleStyle( 'Load More Button' )
+
+		cy.typeBlock( 'ugb/blog-posts', '.ugb-button--inner', 'Helloo World!! 12345' )
+			.assertBlockContent( '.ugb-button--inner', 'Helloo World!! 12345' )
+
+		assertBlockTitleDescriptionContent( 'ugb/blog-posts' )
+	} )
 }
 
 function styleTab( viewport, desktopOnly ) {

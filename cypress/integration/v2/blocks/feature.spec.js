@@ -5,6 +5,7 @@ import { startCase } from 'lodash'
 import {
 	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -14,6 +15,7 @@ describe( 'Feature Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -114,7 +116,23 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
+		registerBlockSnapshots( 'featureBlock' )
+
+		cy.typeBlock( 'ugb/feature', '.ugb-feature__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-feature__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/feature', '.ugb-feature__description', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-feature__description', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/feature', '.ugb-button--inner', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
@@ -305,7 +323,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	featureBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )

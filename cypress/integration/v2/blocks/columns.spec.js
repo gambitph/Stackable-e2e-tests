@@ -4,8 +4,9 @@
 import { range } from 'lodash'
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer,
+	assertBlockExist, blockErrorTest, switchLayouts, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAdvancedTab, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -17,6 +18,7 @@ describe( 'Advanced Columns and Grid Block', registerTests( [
 	blockError,
 	innerBlocks,
 	switchLayout,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -64,7 +66,19 @@ function switchLayout() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )
+		registerBlockSnapshots( 'columnsBlock' )
+		cy.openInspector( 'ugb/columns', 'Style' )
+
+		assertBlockTitleDescriptionContent( 'ugb/columns' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )
@@ -177,7 +191,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	columnsBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )

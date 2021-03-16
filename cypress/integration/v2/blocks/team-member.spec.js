@@ -3,8 +3,9 @@
  */
 import { range, startCase } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertContainer, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertContainer, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -13,6 +14,7 @@ describe( 'Team Member Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -61,7 +63,26 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )
+		registerBlockSnapshots( 'teamMemberBlock' )
+
+		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__name', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-team-member__name', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__position', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-team-member__position', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__description', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-team-member__description', 'Hellooo World!!! 123' )
+
+		cy.openInspector( 'ugb/team-member', 'Style' )
+		assertBlockTitleDescriptionContent( 'ugb/team-member' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )
@@ -294,7 +315,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	teamMemberBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )
