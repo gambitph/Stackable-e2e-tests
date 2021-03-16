@@ -62,6 +62,7 @@ function switchDesign() {
 
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
+	cy.registerPosts( 4 )
 	cy.newPage()
 	cy.addBlock( 'ugb/blog-posts' )
 	cy.openInspector( 'ugb/blog-posts', 'Style' )
@@ -116,6 +117,7 @@ function styleTab( viewport, desktopOnly ) {
 			.get( '.ugb-block-content' )
 			.find( '.ugb-blog-posts__item' )
 			.should( 'have.length', 3 )
+		cy.resetStyle( 'Offset' )
 
 		/**
 		 * TODOs:
@@ -241,7 +243,10 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Meta' )
 	assertTypography( '.ugb-blog-posts__meta', { viewport } )
 	desktopOnly( () => {
-		// TODO: Add assertion for Show Author & Show Comments
+		cy.adjust( 'Show Author', true )
+		cy.get( '.ugb-blog-posts__meta' ).contains( 'admin' ).should( 'exist' )
+		cy.adjust( 'Show Comments', true )
+		cy.get( '.ugb-blog-posts__meta' ).contains( 'comments' ).should( 'exist' )
 		cy.adjust( 'Show Date', true )
 		cy.get( '.ugb-blog-posts__date' ).should( 'exist' )
 		cy.adjust( 'Text Color', '#ff5500' ).assertComputedStyle( {
@@ -259,7 +264,8 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Read More Link' )
 	assertTypography( '.ugb-blog-posts__readmore', { viewport } )
 	desktopOnly( () => {
-		// TODO: Add assertion for Read More text
+		cy.adjust( 'Customize Read More Link', 'click here' )
+		cy.get( '.ugb-blog-posts__readmore a' ).contains( 'click here' ).should( 'exist' )
 		cy.adjust( 'Text Color', '#ff6a6a' ).assertComputedStyle( {
 			'.ugb-blog-posts__readmore a': {
 				'color': '#ff6a6a',
@@ -340,6 +346,7 @@ function styleTab( viewport, desktopOnly ) {
 
 function advancedTab( viewport ) {
 	cy.setupWP()
+	cy.registerPosts()
 	cy.newPage()
 	cy.addBlock( 'ugb/blog-posts' )
 

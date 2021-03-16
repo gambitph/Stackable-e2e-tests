@@ -3,6 +3,7 @@
  */
 Cypress.Commands.add( 'loginAdmin', loginAdmin )
 Cypress.Commands.add( 'setupWP', setupWP )
+Cypress.Commands.add( 'registerPosts', registerPosts )
 
 /**
  * Command used to enter the login credentials of the admin.
@@ -25,5 +26,26 @@ export function setupWP( args = {} ) {
 		setup: true,
 	} )
 	cy.visit( '/?' + params.toString() )
+}
+
+/**
+ * Command for creating blog posts.
+ *
+ * @param {number} value
+ */
+export function registerPosts( value = 1 ) {
+	cy.fixture( 'posts' ).then( post => {
+		const params = new URLSearchParams( {
+			postType: post.post_type,
+			postTitle: post.post_title,
+			postContent: post.post_content,
+			featuredImage: post.featured_image,
+			imageName: post.image_name,
+		} )
+
+		while ( value-- ) {
+			cy.visit( '/?register-posts=' + params.toString() )
+		}
+	} )
 }
 

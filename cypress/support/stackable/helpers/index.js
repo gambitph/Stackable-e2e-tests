@@ -26,6 +26,9 @@ export { assertAdvancedTab } from './advanced'
 export const blockErrorTest = ( blockName = 'ugb/accordion' ) =>
 	() => {
 		cy.setupWP()
+		if ( blockName === 'ugb/blog-posts' ) {
+			cy.registerPosts()
+		}
 		cy.newPage()
 		cy.addBlock( blockName )
 		cy.publish()
@@ -40,6 +43,9 @@ export const blockErrorTest = ( blockName = 'ugb/accordion' ) =>
  */
 export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-accordion' ) => () => {
 	cy.setupWP()
+	if ( blockName === 'ugb/blog-posts' ) {
+		cy.registerPosts()
+	}
 	cy.newPage()
 	cy.addBlock( blockName )
 	cy.get( selector ).should( 'exist' )
@@ -54,6 +60,9 @@ export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-
  */
 export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => () => {
 	cy.setupWP()
+	if ( blockName === 'ugb/blog-posts' ) {
+		cy.registerPosts()
+	}
 	cy.newPage()
 	designs.forEach( ( design, index ) => {
 		cy.addBlock( blockName )
@@ -77,6 +86,9 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
  */
 export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => () => {
 	cy.setupWP()
+	if ( blockName === 'ugb/blog-posts' ) {
+		cy.registerPosts()
+	}
 	cy.newPage()
 	layouts.forEach( ( layout, index ) => {
 		cy.addBlock( blockName )
