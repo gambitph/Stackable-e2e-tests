@@ -375,6 +375,7 @@ function advancedTab( viewport ) {
 		viewport,
 		customCssSelectors: [
 			'.ugb-blog-posts__item',
+			'.ugb-blog-posts__category',
 			'.ugb-blog-posts__meta',
 			'.ugb-blog-posts__title a',
 			'.ugb-blog-posts__excerpt',

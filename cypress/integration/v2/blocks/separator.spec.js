@@ -287,6 +287,12 @@ function advancedTab( viewport ) {
 		mainSelector: '.ugb-separator',
 		paddingUnits: [ 'px', 'em' ],
 		viewport,
+		customCssSelectors: [
+			'.ugb-separator__svg-wrapper',
+			'.ugb-separator__layer-1',
+			'.ugb-separator__top-pad',
+			'.ugb-separator__bottom-pad',
+		],
 	 } )
 
 	separatorBlock.assertFrontendStyles()
