@@ -10,7 +10,6 @@
 	"env": {
 		"DEBUG": "false",
 		"INCLUDED_V2_TEST_FILES": [
-			"blog-posts",
 			"accordion",
 			"blockquote",
 			"blog-posts",
