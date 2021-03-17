@@ -269,11 +269,10 @@ function advancedTab( viewport, desktopOnly ) {
 
 	assertAdvancedTab( '.ugb-testimonial', {
 		viewport,
-		customCssSelector: [
+		customCssSelectors: [
 			'.ugb-testimonial__item',
 			'.ugb-testimonial__body',
 			'.ugb-testimonial__person',
-			'.ugb-testimonial__image',
 			'.ugb-testimonial__name',
 			'.ugb-testimonial__position',
 		],
