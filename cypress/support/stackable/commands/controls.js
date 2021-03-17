@@ -22,7 +22,6 @@ Cypress.Commands.add( 'fourRangeControl', fourRangeControl )
 Cypress.Commands.add( 'iconControl', iconControl )
 Cypress.Commands.add( 'popoverControl', popoverControl )
 Cypress.Commands.add( 'suggestionControl', suggestionControl )
-Cypress.Commands.add( 'customCssControl', customCssControl )
 
 // Reset
 Cypress.Commands.add( 'iconControlReset', iconControlReset )
@@ -57,10 +56,6 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 	if ( label === 'Color Type' ) {
 		args.shift()
 		cy.toolbarControl( /^Single|Gradient$/, ...args, optionsToPass )
-		return cy.get( '.block-editor-block-list__block.is-selected' )
-	}
-	if ( label === 'Custom CSS' ) {
-		cy.customCssControl( ...args, optionsToPass )
 		return cy.get( '.block-editor-block-list__block.is-selected' )
 	}
 
@@ -276,24 +271,6 @@ function suggestionControl( name, value, options = {} ) {
 		.closest( '.components-panel__body>.components-base-control' )
 		.find( 'input' )
 		.type( `{selectall}${ value }{enter}`, { force: true } )
-}
-
-/**
- * Command for adjusting the custom css advanced control.
- *
- * @param {string} name
- * @param {*} value
- * @param {Object} options
- */
-function customCssControl( name, value, options = {} ) {
-	const {
-		beforeAdjust = () => {},
-	} = options
-
-	beforeAdjust( name, value, options )
-	cy.get( '.ugb-custom-css-control' )
-		.find( 'textarea.ugb-code-textarea' )
-		.type( `{selectall}${ value }`, { force: true } )
 }
 
 /**
