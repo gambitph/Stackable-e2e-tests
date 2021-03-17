@@ -193,7 +193,13 @@ function advancedTab( viewport ) {
 
 	cy.openInspector( 'ugb/heading', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-heading', { viewport } )
+	assertAdvancedTab( '.ugb-heading', {
+		viewport,
+		customCssSelector: [
+			'.ugb-heading__title',
+			'.ugb-heading__subtitle',
+		],
+	} )
 
 	// Add more block specific tests.
 	headingBlock.assertFrontendStyles()

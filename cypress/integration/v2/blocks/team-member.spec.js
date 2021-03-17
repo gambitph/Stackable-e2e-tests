@@ -323,7 +323,16 @@ function advancedTab( viewport, desktopOnly ) {
 
 	cy.openInspector( 'ugb/team-member', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-team-member', { viewport } )
+	assertAdvancedTab( '.ugb-team-member', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-team-member__item',
+			'.ugb-team-member__content',
+			'.ugb-team-member__name',
+			'.ugb-team-member__position',
+			'.ugb-team-member__description',
+		],
+	} )
 
 	desktopOnly( () => {
 		cy.setBlockAttribute( {

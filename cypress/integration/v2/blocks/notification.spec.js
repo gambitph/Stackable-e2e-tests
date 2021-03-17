@@ -323,7 +323,17 @@ function advancedTab( viewport ) {
 
 	cy.openInspector( 'ugb/notification', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-notification', { viewport } )
+	assertAdvancedTab( '.ugb-notification', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-notification__item',
+			'.ugb-notification__title',
+			'.ugb-notification__description',
+			'.ugb-button-container',
+			'.ugb-button',
+			'.ugb-button .ugb-button--inner',
+		],
+	} )
 
 	// Add more block specific tests.
 	notificationBlock.assertFrontendStyles()

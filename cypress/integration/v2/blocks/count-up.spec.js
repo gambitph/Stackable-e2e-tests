@@ -298,7 +298,15 @@ function advancedTab( viewport ) {
 
 	cy.openInspector( 'ugb/count-up', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-count-up', { viewport } )
+	assertAdvancedTab( '.ugb-count-up', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-countup__item',
+			'.ugb-countup__title',
+			'.ugb-countup__counter',
+			'.ugb-countup__description',
+		],
+	} )
 
 	// Add more block specific tests.
 	countUpBlock.assertFrontendStyles()

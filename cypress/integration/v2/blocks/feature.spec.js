@@ -331,7 +331,15 @@ function advancedTab( viewport ) {
 
 	cy.openInspector( 'ugb/feature', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-feature', { viewport } )
+	assertAdvancedTab( '.ugb-feature', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-feature__title',
+			'.ugb-feature__description',
+			'.ugb-button',
+			'.ugb-button--inner',
+		],
+	 } )
 
 	// Add more block specific tests.
 
