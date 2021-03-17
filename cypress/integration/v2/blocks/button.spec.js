@@ -178,6 +178,10 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	assertAdvancedTab( '.ugb-button', {
 		viewport,
 		mainSelector: '.ugb-button-wrapper',
+		customCssSelectors: [
+			'.ugb-button1',
+			'.ugb-button1 .ugb-button--inner',
+		],
 	} )
 
 	// Add more block specific tests.

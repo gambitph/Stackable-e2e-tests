@@ -62,6 +62,14 @@ function advancedTab( viewport ) {
 
 	cy.openInspector( 'ugb/blog-posts', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-blog-posts', { viewport } )
+	assertAdvancedTab( '.ugb-blog-posts', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-blog-posts__item',
+			'.ugb-blog-posts__meta',
+			'.ugb-blog-posts__title a',
+			'.ugb-blog-posts__excerpt',
+		],
+	} )
 }
 

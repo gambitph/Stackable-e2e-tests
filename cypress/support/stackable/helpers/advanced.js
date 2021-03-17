@@ -29,6 +29,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 		paddingUnits = [ 'px', 'em', '%' ],
 		marginUnits = [ 'px', '%' ],
 		verticalAlignSelector = null,
+		customCssSelectors = [],
 		viewport = 'Desktop',
 		mainSelector = null,
 	} = options
@@ -246,11 +247,22 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 
 		_collapse( 'Custom CSS', () => {
 			//Test Custom CSS
-			cy.getBlockAttributes().then( attributes => {
-				cy.log( selector )
-
-				attributes.customCss = 'test'
+			const assertionObj = {}
+			let customCssString = ''
+			customCssSelectors.unshift( '' )
+			customCssSelectors.forEach( cssSelector => {
+				customCssString += `
+					${ `${ selector } ${ cssSelector }` } {
+						color: #808080;
+					}
+				`
+				assertionObj[ `${ selector } ${ cssSelector }` ] = { 'color': '#808080' }
 			} )
+
+			cy.setBlockAttribute( {
+				'customCSS': customCssString,
+			} )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( assertionObj )
 		} )
 
 		// Draft: Still Not Working

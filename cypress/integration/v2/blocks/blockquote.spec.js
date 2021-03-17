@@ -150,7 +150,14 @@ function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
 
 	cy.openInspector( 'ugb/blockquote', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-blockquote', { viewport } )
+	assertAdvancedTab( '.ugb-blockquote', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-blockquote__item',
+			'.ugb-blockquote__quote',
+			'.ugb-blockquote__text',
+		],
+	} )
 
 	// Add more block specific tests.
 	blockquoteBlock.assertFrontendStyles()
