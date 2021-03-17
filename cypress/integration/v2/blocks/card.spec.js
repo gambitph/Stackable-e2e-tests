@@ -2,8 +2,9 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -13,6 +14,7 @@ describe( 'Card Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -67,7 +69,28 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
+		registerBlockSnapshots( 'cardBlock' )
+
+		cy.typeBlock( 'ugb/card', '.ugb-card__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-card__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/card', '.ugb-card__subtitle', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-card__subtitle', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/card', '.ugb-card__description', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-card__description', 'Hellooo World!!! 123' )
+		cy.typeBlock( 'ugb/card', '.ugb-button--inner', 'Helloooo World!!!! 1234' )
+			.assertBlockContent( '.ugb-button--inner', 'Helloooo World!!!! 1234' )
+
+		cy.openInspector( 'ugb/card', 'Style' )
+		assertBlockTitleDescriptionContent( 'ugb/card' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
@@ -298,7 +321,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	cardBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )

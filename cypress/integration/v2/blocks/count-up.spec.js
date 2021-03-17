@@ -2,8 +2,9 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, registerTests, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, registerTests, assertBlockTitleDescriptionContent, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -13,6 +14,7 @@ describe( 'Count Up Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -57,7 +59,26 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
+		registerBlockSnapshots( 'countUpBlock' )
+
+		cy.typeBlock( 'ugb/count-up', '.ugb-countup__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-countup__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/count-up', '.ugb-countup__counter', '1234' )
+			.assertBlockContent( '.ugb-countup__counter', '1234' )
+		cy.typeBlock( 'ugb/count-up', '.ugb-countup__description', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-countup__description', 'Helloo World!! 12' )
+
+		cy.openInspector( 'ugb/count-up', 'Style' )
+		assertBlockTitleDescriptionContent( 'ugb/count-up' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
@@ -269,7 +290,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	countUpBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )

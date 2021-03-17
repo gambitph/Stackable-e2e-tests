@@ -4,6 +4,7 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -13,6 +14,7 @@ describe( 'Notification Block', registerTests( [
 	blockError,
 	switchLayout,
 	switchDesign,
+	typeContent,
 	desktopStyle,
 	tabletStyle,
 	mobileStyle,
@@ -53,7 +55,23 @@ function switchDesign() {
 	] ) )
 }
 
-function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function typeContent() {
+	it( 'should allow typing in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
+		registerBlockSnapshots( 'notificationBlock' )
+
+		cy.typeBlock( 'ugb/notification', '.ugb-notification__title', 'Hello World! 1' )
+			.assertBlockContent( '.ugb-notification__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/notification', '.ugb-notification__description', 'Helloo World!! 12' )
+			.assertBlockContent( '.ugb-notification__description', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/notification', '.ugb-button--inner', 'Hellooo World!!! 123' )
+			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
@@ -297,7 +315,7 @@ function styleTab( viewport, desktopOnly, registerBlockSnapshots ) {
 	notificationBlock.assertFrontendStyles()
 }
 
-function advancedTab( viewport, desktopOnly, registerBlockSnapshots ) {
+function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
