@@ -192,6 +192,7 @@ export const responsiveAssertHelper = ( callback = () => {}, options = {} ) => {
 export const assertTypography = ( selector, options = {}, assertOptions = {} ) => {
 	const {
 		viewport = 'Desktop',
+		enableFontFamily = true,
 		enableSize = true,
 		enableWeight = true,
 		enableTransform = true,
@@ -204,6 +205,11 @@ export const assertTypography = ( selector, options = {}, assertOptions = {} ) =
 		0: { adjust: {}, assert: {} },
 		1: { adjust: {}, assert: {} },
 		2: { adjust: {}, assert: {} },
+	}
+
+	if ( enableFontFamily ) {
+		typographyAssertions[ 1 ].adjust[ 'Font Family' ] = 'Abel'
+		typographyAssertions[ 1 ].assert[ 'font-family' ] = '"Abel", Sans-serif'
 	}
 
 	if ( enableSize ) {
