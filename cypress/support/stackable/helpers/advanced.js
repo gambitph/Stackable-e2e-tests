@@ -265,13 +265,13 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( assertionObj )
 		} )
 
-		// Draft: Still Not Working
 		_collapse( 'Advanced', () => {
-			// Test HTML anchor
-			_adjust( 'HTML anchor', 'e2e-html-anchor', {
-				parentElement: '.components-base-control',
-				viewport,
-			}, 'assertHtmlAttribute', selector, 'id', 'e2e-html-anchor' )
+			if ( viewport === 'Desktop' ) {
+				// Test HTML anchor
+				_adjust( 'HTML anchor', 'e2e-html-anchor', {
+					parentElement: '.components-panel__body > * > .components-base-control',
+				}, 'assertHtmlAttribute', selector, 'id', 'e2e-html-anchor' )
+			}
 		} )
 	}
 

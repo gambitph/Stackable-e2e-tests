@@ -59,10 +59,10 @@ export function getBaseControl( matches, options = {} ) {
 		customParentSelector = '.components-panel__body',
 	} = options
 	return ( ! isInPopover
-		? cy.get( `${ customParentSelector ? `${ customParentSelector }>` : '' }.components-base-control` )
+		? cy.get( `${ customParentSelector ? `${ customParentSelector } ` : '' }.components-base-control` )
 		: cy.get( '.components-popover__content' ).find( '.components-base-control' ) )
 		.contains( containsRegExp( matches ) )
-		.closest( `${ customParentSelector ? `${ customParentSelector }>` : '' }.components-base-control` )
+		.closest( `${ customParentSelector ? `${ customParentSelector } ` : '' }.components-base-control` )
 }
 
 /**
