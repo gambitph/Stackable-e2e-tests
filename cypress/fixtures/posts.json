@@ -1,53 +1,7 @@
 {
-	"posts": [
-		{
-			"post_type": "post",
-			"post_title": "Sample Post",
-			"post_content": "This is a sample content for this post.",
-			"featured_image": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
-			"image_name": "sample-image.jpg"
-		},
-		{
-			"post_type": "post",
-			"post_title": "Sample Post",
-			"post_content": "This is a sample content for this post.",
-			"featured_image": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
-			"image_name": "sample-image.jpg"
-		},
-		{
-			"post_type": "post",
-			"post_title": "Sample Post",
-			"post_content": "This is a sample content for this post.",
-			"featured_image": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
-			"image_name": "sample-image.jpg"
-		},
-		{
-			"post_type": "post",
-			"post_title": "Sample Post",
-			"post_content": "This is a sample content for this post.",
-			"featured_image": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
-			"image_name": "sample-image.jpg"
-		},
-		{
-			"post_type": "post",
-			"post_title": "Sample Post",
-			"post_content": "This is a sample content for this post.",
-			"featured_image": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
-			"image_name": "sample-image.jpg"
-		},
-		{
-			"post_type": "post",
-			"post_title": "Sample Post",
-			"post_content": "This is a sample content for this post.",
-			"featured_image": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
-			"image_name": "sample-image.jpg"
-		},
-		{
-			"post_type": "post",
-			"post_title": "Sample Post",
-			"post_content": "This is a sample content for this post.",
-			"featured_image": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
-			"image_name": "sample-image.jpg"
-		}
-	]
+	"post_type": "post",
+	"post_title": "Sample Post",
+	"post_content": "This is a sample content for this post.",
+	"featured_image": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
+	"image_name": "sample-image.jpg"
 }

@@ -26,7 +26,7 @@ export const blockErrorTest = ( blockName = 'ugb/accordion' ) =>
 	() => {
 		cy.setupWP()
 		if ( blockName === 'ugb/blog-posts' ) {
-			cy.registerPosts()
+			cy.registerPosts( { numOfPosts: 1 } )
 		}
 		cy.newPage()
 		cy.addBlock( blockName )
@@ -43,7 +43,7 @@ export const blockErrorTest = ( blockName = 'ugb/accordion' ) =>
 export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-accordion' ) => () => {
 	cy.setupWP()
 	if ( blockName === 'ugb/blog-posts' ) {
-		cy.registerPosts()
+		cy.registerPosts( { numOfPosts: 1 } )
 	}
 	cy.newPage()
 	cy.addBlock( blockName )
@@ -60,7 +60,7 @@ export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-
 export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => () => {
 	cy.setupWP()
 	if ( blockName === 'ugb/blog-posts' ) {
-		cy.registerPosts()
+		cy.registerPosts( { numOfPosts: 1 } )
 	}
 	cy.newPage()
 	designs.forEach( ( design, index ) => {
@@ -86,7 +86,7 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => () => {
 	cy.setupWP()
 	if ( blockName === 'ugb/blog-posts' ) {
-		cy.registerPosts()
+		cy.registerPosts( { numOfPosts: 1 } )
 	}
 	cy.newPage()
 	layouts.forEach( ( layout, index ) => {

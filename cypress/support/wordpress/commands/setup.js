@@ -30,13 +30,20 @@ export function setupWP( args = {} ) {
 
 /**
  * Command for creating blog posts.
+ *
+ * @param {Object} args
  */
-export function registerPosts() {
+export function registerPosts( args = {} ) {
 	cy.fixture( 'posts' ).then( posts => {
-		( posts.posts || [] ).forEach( post => {
-			const params = new URLSearchParams( post )
-			cy.visit( '/?register-posts=' + params.toString() )
+		const params = new URLSearchParams( {
+			postType: posts.post_type,
+			postTitle: posts.post_title,
+			postContent: posts.post_content,
+			featuredImage: posts.featured_image,
+			imageName: posts.image_name,
+			numOfPosts: args.numOfPosts,
 		} )
+		cy.visit( '/?register-posts=' + params.toString() )
 	} )
 }
 

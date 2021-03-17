@@ -6,7 +6,6 @@ import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
 	assertBlockTitleDescriptionContent,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -66,9 +65,9 @@ function switchDesign() {
 function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
+		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
-		cy.addBlock( 'ugb/blog-posts' ).as( 'blogPostsBlock' )
-		registerBlockSnapshots( 'blogPostsBlock' )
+		cy.addBlock( 'ugb/blog-posts' )
 
 		cy.openInspector( 'ugb/blog-posts', 'Style' )
 		cy.toggleStyle( 'Load More Button' )
@@ -82,7 +81,7 @@ function typeContent() {
 
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
-	cy.registerPosts( 4 )
+	cy.registerPosts( { numOfPosts: 4 } )
 	cy.newPage()
 	cy.addBlock( 'ugb/blog-posts' )
 	cy.openInspector( 'ugb/blog-posts', 'Style' )
@@ -366,7 +365,7 @@ function styleTab( viewport, desktopOnly ) {
 
 function advancedTab( viewport ) {
 	cy.setupWP()
-	cy.registerPosts()
+	cy.registerPosts( { numOfPosts: 1 } )
 	cy.newPage()
 	cy.addBlock( 'ugb/blog-posts' )
 
