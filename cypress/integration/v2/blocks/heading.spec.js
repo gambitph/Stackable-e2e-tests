@@ -195,7 +195,7 @@ function advancedTab( viewport ) {
 
 	assertAdvancedTab( '.ugb-heading', {
 		viewport,
-		customCssSelector: [
+		customCssSelectors: [
 			'.ugb-heading__title',
 			'.ugb-heading__subtitle',
 		],
