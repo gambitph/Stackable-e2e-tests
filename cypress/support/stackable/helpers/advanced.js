@@ -43,7 +43,11 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 	 * @param {Function} callback
 	 */
 	const _collapse = ( collapseName = '', callback = () => {} ) => {
-		cy.get( '.ugb-inspector-panel-controls', { log: false } )
+		const customSelector = {
+			'Advanced': 'block-editor-block-inspector__advanced',
+		}
+
+		cy.get( `.${ customSelector[ collapseName ] || 'ugb-inspector-panel-controls' }` )
 			.then( $panel => {
 				if ( $panel.text().includes( collapseName ) ) {
 					cy.collapse( collapseName )
@@ -62,7 +66,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 	 * @param {Array} args
 	 */
 	const _adjust = ( adjustName, value, options = {}, assertionFunc, ...args ) => {
-		cy.get( '.ugb-toggle-panel-body.is-opened', { log: false } )
+		cy.get( '.components-panel__body.is-opened' )
 			.then( $panel => {
 				if ( $panel.text().includes( adjustName ) ) {
 					if ( args.length ) {
@@ -239,6 +243,24 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 				} )
 			} )
 		} )
+
+		_collapse( 'Custom CSS', () => {
+			//Test Custom CSS
+			cy.getBlockAttributes().then( attributes => {
+				cy.log( selector )
+
+				attributes.customCss = 'test'
+			} )
+		} )
+
+		// Draft: Still Not Working
+		_collapse( 'Advanced', () => {
+			// Test HTML anchor
+			_adjust( 'HTML anchor', 'e2e-html-anchor', {
+				parentElement: '.components-base-control',
+				viewport,
+			}, 'assertHtmlAttribute', selector, 'id', 'e2e-html-anchor' )
+		} )
 	}
 
 	_assertAdvancedTab( viewport )
@@ -247,8 +269,6 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 
 	_adjust( `Hide on ${ viewport }`, true, {}, 'assertClassName', MAIN_SELECTOR, `ugb--hide-${ lowerCase( viewport ) }` )
 
-	// TODO: Custom CSS
-	// TODO: HTML Anchor
 	// TODO: Additional CSS class(es)
 }
 
