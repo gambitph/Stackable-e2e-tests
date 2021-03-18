@@ -247,22 +247,24 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 
 		_collapse( 'Custom CSS', () => {
 			//Test Custom CSS
-			const assertionObj = {}
-			let customCssString = ''
-			customCssSelectors.unshift( '' )
-			customCssSelectors.forEach( cssSelector => {
-				customCssString += `
+			if ( viewport === 'Desktop' ) {
+				const assertionObj = {}
+				let customCssString = ''
+				customCssSelectors.unshift( '' )
+				customCssSelectors.forEach( cssSelector => {
+					customCssString += `
 					${ `${ selector } ${ cssSelector }` } {
 						color: #808080;
 					}
 				`
-				assertionObj[ `${ selector } ${ cssSelector }` ] = { 'color': '#808080' }
-			} )
+					assertionObj[ `${ selector } ${ cssSelector }` ] = { 'color': '#808080' }
+				} )
 
-			cy.setBlockAttribute( {
-				'customCSS': customCssString,
-			} )
-			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( assertionObj )
+				cy.setBlockAttribute( {
+					'customCSS': customCssString,
+				} )
+				cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( assertionObj )
+			}
 		} )
 
 		_collapse( 'Advanced', () => {
