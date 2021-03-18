@@ -262,6 +262,7 @@ function styleTab( viewport, desktopOnly ) {
 		if ( typographyAssertion.match( /price-/ ) ) {
 			assertTypography( `.ugb-pricing-box__${ textClass }`, {
 				viewport,
+				enableFontFamily: false,
 				enableTransform: false,
 				enableLetterSpacing: false,
 			} )

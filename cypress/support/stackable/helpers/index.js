@@ -25,6 +25,9 @@ export { assertAdvancedTab } from './advanced'
 export const blockErrorTest = ( blockName = 'ugb/accordion' ) =>
 	() => {
 		cy.setupWP()
+		if ( blockName === 'ugb/blog-posts' ) {
+			cy.registerPosts( { numOfPosts: 1 } )
+		}
 		cy.newPage()
 		cy.addBlock( blockName )
 		cy.publish()
@@ -39,6 +42,9 @@ export const blockErrorTest = ( blockName = 'ugb/accordion' ) =>
  */
 export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-accordion' ) => () => {
 	cy.setupWP()
+	if ( blockName === 'ugb/blog-posts' ) {
+		cy.registerPosts( { numOfPosts: 1 } )
+	}
 	cy.newPage()
 	cy.addBlock( blockName )
 	cy.get( selector ).should( 'exist' )
@@ -53,6 +59,9 @@ export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-
  */
 export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => () => {
 	cy.setupWP()
+	if ( blockName === 'ugb/blog-posts' ) {
+		cy.registerPosts( { numOfPosts: 1 } )
+	}
 	cy.newPage()
 	designs.forEach( ( design, index ) => {
 		cy.addBlock( blockName )
@@ -76,6 +85,9 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
  */
 export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => () => {
 	cy.setupWP()
+	if ( blockName === 'ugb/blog-posts' ) {
+		cy.registerPosts( { numOfPosts: 1 } )
+	}
 	cy.newPage()
 	layouts.forEach( ( layout, index ) => {
 		cy.addBlock( blockName )
@@ -192,6 +204,7 @@ export const responsiveAssertHelper = ( callback = () => {}, options = {} ) => {
 export const assertTypography = ( selector, options = {}, assertOptions = {} ) => {
 	const {
 		viewport = 'Desktop',
+		enableFontFamily = true,
 		enableSize = true,
 		enableWeight = true,
 		enableTransform = true,
@@ -204,6 +217,11 @@ export const assertTypography = ( selector, options = {}, assertOptions = {} ) =
 		0: { adjust: {}, assert: {} },
 		1: { adjust: {}, assert: {} },
 		2: { adjust: {}, assert: {} },
+	}
+
+	if ( enableFontFamily ) {
+		typographyAssertions[ 1 ].adjust[ 'Font Family' ] = 'Abel'
+		typographyAssertions[ 1 ].assert[ 'font-family' ] = '"Abel", Sans-serif'
 	}
 
 	if ( enableSize ) {
