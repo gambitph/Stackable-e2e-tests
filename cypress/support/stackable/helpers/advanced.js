@@ -245,9 +245,9 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 			} )
 		} )
 
-		_collapse( 'Custom CSS', () => {
+		if ( viewport === 'Desktop' ) {
 			//Test Custom CSS
-			if ( viewport === 'Desktop' ) {
+			_collapse( 'Custom CSS', () => {
 				const assertionObj = {}
 				let customCssString = ''
 				customCssSelectors.unshift( '' )
@@ -264,8 +264,8 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 					'customCSS': customCssString,
 				} )
 				cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( assertionObj )
-			}
-		} )
+			} )
+		}
 
 		_collapse( 'Advanced', () => {
 			if ( viewport === 'Desktop' ) {
