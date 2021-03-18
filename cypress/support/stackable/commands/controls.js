@@ -178,18 +178,9 @@ function popoverControl( name, value = {}, options = {} ) {
 	} = options
 
 	const clickPopoverButton = () => {
-		const selector = () => cy.getBaseControl( name, { isInPopover } )
-
-		if ( name.includes( 'Separator Layer' ) ) {
-			selector()
-				.parent()
-				.find( 'button[aria-label="Edit"]' )
-				.click( { force: true } )
-		} else {
-			selector()
-				.find( 'button[aria-label="Edit"]' )
-				.click( { force: true } )
-		}
+		cy.getBaseControl( name, { isInPopover } )
+			.find( 'button[aria-label="Edit"]' )
+			.click( { force: true } )
 	}
 
 	if ( typeof value === 'object' ) {

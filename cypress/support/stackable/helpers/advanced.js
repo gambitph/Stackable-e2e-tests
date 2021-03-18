@@ -270,9 +270,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 		_collapse( 'Advanced', () => {
 			if ( viewport === 'Desktop' ) {
 				// Test HTML anchor
-				_adjust( 'HTML anchor', 'e2e-html-anchor', {
-					parentElement: '.components-panel__body > * > .components-base-control',
-				}, 'assertHtmlAttribute', selector, 'id', 'e2e-html-anchor' )
+				_adjust( 'HTML anchor', 'e2e-html-anchor', { viewport }, 'assertHtmlAttribute', selector, 'id', 'e2e-html-anchor' )
 			}
 		} )
 	}
