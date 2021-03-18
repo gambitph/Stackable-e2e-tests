@@ -280,7 +280,5 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 	_collapse( 'Responsive' )
 
 	_adjust( `Hide on ${ viewport }`, true, {}, 'assertClassName', MAIN_SELECTOR, `ugb--hide-${ lowerCase( viewport ) }` )
-
-	// TODO: Additional CSS class(es)
 }
 
