@@ -78,7 +78,7 @@ export function waitUntil( callback = () => true, options = {} ) {
 }
 
 /**
- * Stackable Command for waiting a spinner button to disappear.
+ * Command for waiting a spinner button to disappear.
  *
  * @param {string} selector
  * @param {Object} options

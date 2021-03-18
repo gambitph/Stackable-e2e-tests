@@ -103,6 +103,8 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		afterBackendAssert = () => {},
 	} = options
 
+	cy.log( subject )
+
 	cy.wp().then( wp => {
 		cy.publish()
 		cy.wait( delay )
