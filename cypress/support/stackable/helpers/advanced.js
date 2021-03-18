@@ -246,8 +246,8 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 		} )
 
 		if ( viewport === 'Desktop' ) {
-			_collapse( 'Custom CSS', () => {
 			//Test Custom CSS
+			_collapse( 'Custom CSS', () => {
 				const assertionObj = {}
 				let customCssString = ''
 				customCssSelectors.unshift( '' )
