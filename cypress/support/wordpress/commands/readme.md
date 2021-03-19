@@ -94,7 +94,7 @@
     ```
 
 3. registerPosts
-    - Command for creating blog posts
+    - Command for creating dummy posts
 
     Syntax:
 
