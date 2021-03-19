@@ -213,6 +213,9 @@ function advancedTab( viewport ) {
 	assertAdvancedTab( '.ugb-container', {
 		viewport,
 		disableColumnVerticalAlign: true,
+		customCssSelectors: [
+			'.ugb-container__content-wrapper',
+		],
 	} )
 
 	// Add more block specific tests.

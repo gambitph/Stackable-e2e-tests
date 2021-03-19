@@ -146,7 +146,14 @@ function advancedTab( viewport ) {
 
 	cy.openInspector( 'ugb/icon-list', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-icon-list', { viewport } )
+	assertAdvancedTab( '.ugb-icon-list', {
+		viewport,
+		customCssSelectors: [
+			'ul',
+			'li',
+			'li:before',
+		],
+	} )
 
 	// Add more block specific tests.
 	iconListBlock.assertFrontendStyles()

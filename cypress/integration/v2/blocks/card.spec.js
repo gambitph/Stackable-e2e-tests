@@ -332,6 +332,13 @@ function advancedTab( viewport ) {
 	assertAdvancedTab( '.ugb-card', {
 		viewport,
 		verticalAlignSelector: '.ugb-card__content',
+		customCssSelectors: [
+			'.ugb-card__title',
+			'.ugb-card__subtitle',
+			'.ugb-card__description',
+			'.ugb-button',
+			'.ugb-button--inner',
+		],
 	 } )
 
 	// Add more block specific tests.

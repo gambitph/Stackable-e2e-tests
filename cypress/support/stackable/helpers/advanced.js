@@ -29,6 +29,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 		paddingUnits = [ 'px', 'em', '%' ],
 		marginUnits = [ 'px', '%' ],
 		verticalAlignSelector = null,
+		customCssSelectors = [],
 		viewport = 'Desktop',
 		mainSelector = null,
 	} = options
@@ -43,7 +44,11 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 	 * @param {Function} callback
 	 */
 	const _collapse = ( collapseName = '', callback = () => {} ) => {
-		cy.get( '.ugb-inspector-panel-controls', { log: false } )
+		const customSelector = {
+			'Advanced': 'block-editor-block-inspector__advanced',
+		}
+
+		cy.get( `.${ customSelector[ collapseName ] || 'ugb-inspector-panel-controls' }` )
 			.then( $panel => {
 				if ( $panel.text().includes( collapseName ) ) {
 					cy.collapse( collapseName )
@@ -62,7 +67,7 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 	 * @param {Array} args
 	 */
 	const _adjust = ( adjustName, value, options = {}, assertionFunc, ...args ) => {
-		cy.get( '.ugb-toggle-panel-body.is-opened', { log: false } )
+		cy.get( '.components-panel__body.is-opened' )
 			.then( $panel => {
 				if ( $panel.text().includes( adjustName ) ) {
 					if ( args.length ) {
@@ -239,6 +244,35 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 				} )
 			} )
 		} )
+
+		if ( viewport === 'Desktop' ) {
+			//Test Custom CSS
+			_collapse( 'Custom CSS', () => {
+				const assertionObj = {}
+				let customCssString = ''
+				customCssSelectors.unshift( '' )
+				customCssSelectors.forEach( cssSelector => {
+					customCssString += `
+					${ `${ selector } ${ cssSelector }` } {
+						color: #808080;
+					}
+				`
+					assertionObj[ `${ selector } ${ cssSelector }` ] = { 'color': '#808080' }
+				} )
+
+				cy.setBlockAttribute( {
+					'customCSS': customCssString,
+				} )
+				cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( assertionObj )
+			} )
+		}
+
+		_collapse( 'Advanced', () => {
+			if ( viewport === 'Desktop' ) {
+				// Test HTML anchor
+				_adjust( 'HTML anchor', 'e2e-html-anchor', { viewport }, 'assertHtmlAttribute', selector, 'id', 'e2e-html-anchor' )
+			}
+		} )
 	}
 
 	_assertAdvancedTab( viewport )
@@ -246,9 +280,5 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 	_collapse( 'Responsive' )
 
 	_adjust( `Hide on ${ viewport }`, true, {}, 'assertClassName', MAIN_SELECTOR, `ugb--hide-${ lowerCase( viewport ) }` )
-
-	// TODO: Custom CSS
-	// TODO: HTML Anchor
-	// TODO: Additional CSS class(es)
 }
 

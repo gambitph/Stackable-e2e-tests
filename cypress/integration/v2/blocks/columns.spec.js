@@ -199,7 +199,12 @@ function advancedTab( viewport, desktopOnly ) {
 
 	cy.openInspector( 'ugb/columns', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-columns', { viewport } )
+	assertAdvancedTab( '.ugb-columns', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-columns__item',
+		],
+	} )
 	desktopOnly( () => {
 		cy.collapse( 'Responsive' )
 		cy.adjust( 'Collapsed Row Gap', 500 ).assertComputedStyle( {

@@ -243,7 +243,12 @@ function advancedTab( viewport ) {
 
 	cy.openInspector( 'ugb/text', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-text', { viewport } )
+	assertAdvancedTab( '.ugb-text', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-text__text',
+		],
+	} )
 
 	// Add more block specific tests.
 	textBlock.assertFrontendStyles()

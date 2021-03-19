@@ -267,7 +267,16 @@ function advancedTab( viewport, desktopOnly ) {
 
 	cy.openInspector( 'ugb/testimonial', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-testimonial', { viewport } )
+	assertAdvancedTab( '.ugb-testimonial', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-testimonial__item',
+			'.ugb-testimonial__body',
+			'.ugb-testimonial__person',
+			'.ugb-testimonial__name',
+			'.ugb-testimonial__position',
+		],
+	} )
 
 	desktopOnly( () => {
 		cy.setBlockAttribute( {

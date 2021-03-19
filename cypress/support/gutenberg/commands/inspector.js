@@ -57,12 +57,15 @@ export function getBaseControl( matches, options = {} ) {
 	const {
 		isInPopover = false,
 		customParentSelector = '.components-panel__body',
+		supportedDelimiter = [ '>', '>div>' ],
 	} = options
+
+	const selector = supportedDelimiter.map( d => `${ customParentSelector ? `${ customParentSelector }${ d }` : '' }.components-base-control` ).join( ',' )
 	return ( ! isInPopover
-		? cy.get( `${ customParentSelector ? `${ customParentSelector }>` : '' }.components-base-control` )
+		? cy.get( selector )
 		: cy.get( '.components-popover__content' ).find( '.components-base-control' ) )
 		.contains( containsRegExp( matches ) )
-		.closest( `${ customParentSelector ? `${ customParentSelector }>` : '' }.components-base-control` )
+		.closest( selector )
 }
 
 /**
