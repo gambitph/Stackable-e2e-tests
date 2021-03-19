@@ -119,7 +119,7 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
 /**
  * Command for deleting a specific block.
  *
- * @param {*} subject
+ * @param {string} subject
  * @param {string} selector
  */
 export function deleteBlock( subject, selector ) {
