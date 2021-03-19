@@ -279,6 +279,13 @@ export const assertTypography = ( selector, options = {}, assertOptions = {} ) =
 	}
 }
 
+/*
+* Helper function for Container panel assertion.
+*
+* @param {string} selector
+* @param {Object} options
+* @param {string} attrNameTemplate
+*/
 export const assertContainer = ( selector, options = {}, attrNameTemplate = 'column%sBackgroundMediaUrl' ) => {
 	const {
 		viewport,
