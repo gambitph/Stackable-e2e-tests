@@ -8,7 +8,7 @@ import { last, startCase } from 'lodash'
  */
 export function withInspectorTabMemory( options = {} ) {
 	const {
-		argumentLength,
+		argumentLength = 1,
 	} = options
 
 	return function( originalFn, ...args ) {
