@@ -23,3 +23,11 @@
 1. Make sure this plugin is activated in your test site.
 2. Run `npm run test`
 3. In the window that opens, pick a test to run or click run all tests.
+
+## Commands
+
+[List of WordPress commands](https://github.com/gambitph/Stackable-e2e-tests/tree/master/cypress/support/wordpress/commands)
+
+[List of Gutenberg commands](https://github.com/gambitph/Stackable-e2e-tests/tree/master/cypress/support/gutenberg/commands)
+
+[List of Stackable commands](https://github.com/gambitph/Stackable-e2e-tests/tree/master/cypress/support/stackable/commands)
