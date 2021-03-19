@@ -406,7 +406,21 @@ function advancedTab( viewport, desktopOnly ) {
 
 	cy.openInspector( 'ugb/pricing-box', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-pricing-box', { viewport } )
+	assertAdvancedTab( '.ugb-pricing-box', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-pricing-box__item',
+			'.ugb-pricing-box__title',
+			'.ugb-pricing-box__price-line',
+			'.ugb-pricing-box__price-prefix',
+			'.ugb-pricing-box__price',
+			'.ugb-pricing-box__price-suffix',
+			'.ugb-pricing-box__subprice',
+			'.ugb-pricing-box__description',
+			'.ugb-button',
+			'.ugb-button--inner',
+		],
+	} )
 
 	desktopOnly( () => {
 		cy.setBlockAttribute( {

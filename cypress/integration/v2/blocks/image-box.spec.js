@@ -392,6 +392,11 @@ function advancedTab( viewport ) {
 	assertAdvancedTab( '.ugb-image-box', {
 		viewport,
 		disableColumnHeight: true,
+		customCssSelectors: [
+			'.ugb-image-box__item',
+			'.ugb-image-box__title',
+			'.ugb-image-box__subtitle',
+		],
 	} )
 
 	// Add more block specific tests.

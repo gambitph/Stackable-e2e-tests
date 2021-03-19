@@ -228,7 +228,15 @@ function advancedTab( viewport ) {
 
 	cy.openInspector( 'ugb/accordion', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-accordion', { viewport } )
+	assertAdvancedTab( '.ugb-accordion', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-accordion__heading',
+			'.ugb-accordion__title',
+			'.ugb-accordion__arrow',
+			'.ugb-accordion__content',
+		],
+	} )
 
 	// Add more block specific tests.
 	accordionBlock.assertFrontendStyles()

@@ -311,7 +311,16 @@ function advancedTab( viewport, desktopOnly ) {
 
 	cy.openInspector( 'ugb/feature-grid', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-feature-grid', { viewport } )
+	assertAdvancedTab( '.ugb-feature-grid', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-feature-grid__item',
+			'.ugb-feature-grid__title',
+			'.ugb-feature-grid__description',
+			'.ugb-button',
+			'.ugb-button .ugb-button--inner',
+		],
+	} )
 
 	desktopOnly( () => {
 		cy.setBlockAttribute( {
