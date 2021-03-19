@@ -15,7 +15,8 @@
 3. Clone the repository to the plugins folder by typing `git clone https://github.com/gambitph/Stackable-e2e-tests.git`
 4. Type `cd /path/to/Stackable-e2e-tests`
 5. Install node package dependencies by typing `npm install`
-6. Open your browser and go to http://e2etest.local/. Activate the plugin.
+6. Open your browser and go to http://e2etest.local/wp-admin/plugins.php. Activate the plugin.
+7. Install and activate the latest version of Stackable Premium to your test site and make sure that you rename the folder as "stackable" inside the plugins folder.
 
 ### How to Run
 
