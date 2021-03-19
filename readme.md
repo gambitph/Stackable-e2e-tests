@@ -10,16 +10,12 @@
 
 ### Setup
 
-1. Open your command prompt/terminal.
-2. Clone the repository by typing `git clone https://github.com/gambitph/Stackable-e2e-tests.git`
-3. Type `cd /path/to/root/folder/Stackable-e2e-tests`
-4. Install node package dependencies by typing `npm install`
-5. Create a Local by Flywheel test site on http://e2etest.local/ this should only be used for testing. Username and password for this test site should be set as "admin".
-6. Place this as a plugin in http://e2etest.local/ by creating a symlink.
-    * For Linux: `ln -s "/path/to/Stackable-e2e-tests" "/path/to/test/site/.../app/public/wp-content/plugins"`
-    * For Windows: `mklink "/path/to/test/site/.../app/public/wp-content/plugins" "/path/to/Stackable-e2e-tests"`
-7. Activate the plugin.
-
+1. Create a Local by Flywheel test site on http://e2etest.local/ this should only be used for testing. Username and password for this test site should be set as "admin".
+2. Go to your test site's plugins folder. Type `cd /path/to/test/site/.../app/public/wp-content/plugins`
+3. Clone the repository to the plugins folder by typing `git clone https://github.com/gambitph/Stackable-e2e-tests.git`
+4. Type `cd /path/to/Stackable-e2e-tests`
+5. Install node package dependencies by typing `npm install`
+6. Open your browser and go to http://e2etest.local/. Activate the plugin.
 
 ### How to Run
 

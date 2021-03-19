@@ -1,5 +1,5 @@
 ## Commands
-### plugins.js
+### commands/plugins.js
 
 1. deactivatePlugin
     - Command for deactivating a plugin.
@@ -9,6 +9,10 @@
     ```jsx
     cy.deactivatePlugin( slug )
     ```
+
+    Arguments:
+
+    - slug - string
 
     Usage:
 
@@ -24,6 +28,10 @@
     ```jsx
     cy.activatePlugin( slug )
     ```
+
+    Arguments:
+
+    - slug - string
 
     Usage:
 
@@ -48,7 +56,7 @@
 
 ---
 
-### setup.js
+### commands/setup.js
 
 1. loginAdmin
     - Command used to enter the login credentials of the admin.
@@ -75,6 +83,10 @@
     cy.setupWP( args )
     ```
 
+    Arguments:
+
+    - args - Object
+
     Usage:
 
     ```jsx
@@ -82,13 +94,17 @@
     ```
 
 3. registerPosts
-    - Command for creating dummy posts
+    - Command for creating blog posts
 
     Syntax:
 
     ```jsx
     cy.registerPosts( args )
     ```
+
+    Arguments:
+
+    - args - Object
 
     Usage:
 
