@@ -89,10 +89,10 @@
     - value - any type
     - options - Object
 
-Option | Data type | Default value | Description
------- | --------- | ------------- | -----------
-isInPopover | boolean | false | If the control is in popover
-beforeAdjust | function | () ⇒ {} | Function to call before adjustment
+    Option | Data type | Default value | Description
+    ------ | --------- | ------------- | -----------
+    isInPopover | boolean | false | If the control is in popover
+    beforeAdjust | function | () ⇒ {} | Function to call before adjustment
 
 5. popoverControl
     - Command for adjusting the popover control. This function is utilized by the `cy.adjust()` command.
@@ -109,9 +109,9 @@ beforeAdjust | function | () ⇒ {} | Function to call before adjustment
     - value - any type
     - options - Object
 
-Option | Data type | Default value | Description
------- | --------- | ------------- | -----------
-isInPopover | boolean | false | If the control is in popover
+    Option | Data type | Default value | Description
+    ------ | --------- | ------------- | -----------
+    isInPopover | boolean | false | If the control is in popover
 
 6. popoverControlReset
     - Command for resetting the popover control. This function is utilized by the `cy.adjust()` command.
@@ -140,10 +140,10 @@ isInPopover | boolean | false | If the control is in popover
     - value - any type
     - options - Object
 
-Option | Data type | Default value | Description
------- | --------- | ------------- | -----------
-isInPopover | boolean | false | If the control is in popover
-beforeAdjust | function | () ⇒ {} | Function to call before adjustment
+    Option | Data type | Default value | Description
+    ------ | --------- | ------------- | -----------
+    isInPopover | boolean | false | If the control is in popover
+    beforeAdjust | function | () ⇒ {} | Function to call before adjustment
 
 8. suggestionControlClear
     - Command for resetting the auto suggestion control. This function is utilized by the `cy.adjust()` command.
@@ -159,10 +159,10 @@ beforeAdjust | function | () ⇒ {} | Function to call before adjustment
     - name - string
     - options - Object
 
-Option | Data type | Default value | Description
------- | --------- | ------------- | -----------
-isInPopover | boolean | false | If the control is in popover
-beforeAdjust | function | () ⇒ {} | Function to call before adjustment
+    Option | Data type | Default value | Description
+    ------ | --------- | ------------- | -----------
+    isInPopover | boolean | false | If the control is in popover
+    beforeAdjust | function | () ⇒ {} | Function to call before adjustment
 
 9. fourRangeControl
     - Command for adjusting the four range control. This function is utilized by the `cy.adjust()` command.
@@ -179,10 +179,10 @@ beforeAdjust | function | () ⇒ {} | Function to call before adjustment
     - value - any type
     - options - Object
 
-Option | Data type | Default value | Description
------- | --------- | ------------- | -----------
-isInPopover | boolean | false | If the control is in popover
-beforeAdjust | function | () ⇒ {} | Function to call before adjustment
+    Option | Data type | Default value | Description
+    ------ | --------- | ------------- | -----------
+    isInPopover | boolean | false | If the control is in popover
+    beforeAdjust | function | () ⇒ {} | Function to call before adjustment
 
 10. fourRangeControlReset
     - Command for resetting the four range control. This function is utilized by the `cy.adjust()` command.
@@ -198,10 +198,10 @@ beforeAdjust | function | () ⇒ {} | Function to call before adjustment
     - name - string
     - options - Object
 
-Option | Data type | Default value | Description
------- | --------- | ------------- | -----------
-isInPopover | boolean | false | If the control is in popover
-beforeAdjust | function | () ⇒ {} | Function to call before adjustment
+    Option | Data type | Default value | Description
+    ------ | --------- | ------------- | -----------
+    isInPopover | boolean | false | If the control is in popover
+    beforeAdjust | function | () ⇒ {} | Function to call before adjustment
 
 11. columnControl
     - Command for adjusting the column control. This function is utilized by the `cy.adjust()` command.
@@ -218,10 +218,10 @@ beforeAdjust | function | () ⇒ {} | Function to call before adjustment
     - value - any type
     - options - Object
 
-Option | Data type | Default value | Description
------- | --------- | ------------- | -----------
-isInPopover | boolean | false | If the control is in popover
-beforeAdjust | function | () ⇒ {} | Function to call before adjustment
+    Option | Data type | Default value | Description
+    ------ | --------- | ------------- | -----------
+    isInPopover | boolean | false | If the control is in popover
+    beforeAdjust | function | () ⇒ {} | Function to call before adjustment
 
 12. iconControl
     - Command for adjusting the icon control. This function is utilized by the `cy.adjust()` command.
@@ -238,10 +238,10 @@ beforeAdjust | function | () ⇒ {} | Function to call before adjustment
     - value - any type
     - options - Object
 
-Option | Data type | Default value | Description
------- | --------- | ------------- | -----------
-isInPopover | boolean | false | If the control is in popover
-beforeAdjust | function | () ⇒ {} | Function to call before adjustment
+    Option | Data type | Default value | Description
+    ------ | --------- | ------------- | -----------
+    isInPopover | boolean | false | If the control is in popover
+    beforeAdjust | function | () ⇒ {} | Function to call before adjustment
 
 13. iconControlReset
     - Command for resetting the icon control. This function is utilized by the `cy.adjust()` command.
@@ -257,10 +257,10 @@ beforeAdjust | function | () ⇒ {} | Function to call before adjustment
     - name - string
     - options - Object
 
-Option | Data type | Default value | Description
------- | --------- | ------------- | -----------
-isInPopover | boolean | false | If the control is in popover
-beforeAdjust | function | () ⇒ {} | Function to call before adjustment
+    Option | Data type | Default value | Description
+    ------ | --------- | ------------- | -----------
+    isInPopover | boolean | false | If the control is in popover
+    beforeAdjust | function | () ⇒ {} | Function to call before adjustment
 
 ---
 
@@ -280,10 +280,10 @@ beforeAdjust | function | () ⇒ {} | Function to call before adjustment
 
     - options - Object
 
-Option | Data type | Default value | Description
------- | --------- | ------------- | -----------
-name | string | '' | Set the name of a global color
-color | string | '' | Set a color to be added in global colors
+    Option | Data type | Default value | Description
+    ------ | --------- | ------------- | -----------
+    name | string | '' | Set the name of a global color
+    color | string | '' | Set a color to be added in global colors
 
     Usage:
 
