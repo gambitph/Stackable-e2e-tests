@@ -265,7 +265,16 @@ function advancedTab( viewport, desktopOnly ) {
 
 	cy.openInspector( 'ugb/number-box', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-number-box', { viewport } )
+	assertAdvancedTab( '.ugb-number-box', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-number-box__item',
+			'.ugb-number-box__number',
+			'.ugb-number-box__content',
+			'.ugb-number-box__title',
+			'.ugb-number-box__description',
+		],
+	} )
 
 	desktopOnly( () => {
 		range( 1, 3 ).forEach( idx => {

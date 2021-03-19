@@ -300,7 +300,7 @@ export function adjust( name, value, options ) {
 		// overwrite selector options.
 		customOptions = {},
 		// overwrite parent element selector used to locate option labels.
-		parentElement = '.components-panel__body > .components-base-control',
+		parentElement = '.components-panel__body',
 		// if the option has no label, pass custom regex to find the control
 	} = options
 
@@ -320,9 +320,7 @@ export function adjust( name, value, options ) {
 	}
 
 	const baseControlSelector = () => cy
-		.get( parentElement )
-		.contains( containsRegExp( name ) )
-		.closest( parentElement )
+		.getBaseControl( name, { customParentSelector: parentElement } )
 
 	/**
 	 * Specific selector to trigger one
