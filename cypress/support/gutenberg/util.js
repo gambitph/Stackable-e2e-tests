@@ -3,6 +3,7 @@ import { last, startCase } from 'lodash'
 // Temporary overwrite fix @see stackable/util.js
 /**
  * Function for overwriting assertions
+ * Stackable command for selecting the block, current tab and panel.
  *
  * @param {Object} options
  */
