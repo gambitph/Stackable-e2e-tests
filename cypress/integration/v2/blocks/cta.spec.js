@@ -283,7 +283,14 @@ function advancedTab( viewport ) {
 
 	cy.openInspector( 'ugb/cta', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-cta', { viewport } )
+	assertAdvancedTab( '.ugb-cta', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-cta__title',
+			'.ugb-cta__description',
+			'.ugb-button',
+		],
+	} )
 
 	// Add more block specific tests.
 	ctaBlock.assertFrontendStyles()

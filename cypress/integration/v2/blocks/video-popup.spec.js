@@ -135,7 +135,15 @@ function advancedTab( viewport ) {
 
 	cy.openInspector( 'ugb/video-popup', 'Advanced' )
 
-	assertAdvancedTab( '.ugb-video-popup', { viewport } )
+	assertAdvancedTab( '.ugb-video-popup', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-video-popup__wrapper',
+			'.ugb-video-popup__wrapper:before',
+			'.ugb-video-popup__play-button',
+			'.ugb-video-popup__play-button svg',
+		],
+	} )
 
 	// Add more block specific tests.
 	videoPopupBlock.assertFrontendStyles()
