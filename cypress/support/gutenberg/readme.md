@@ -9,8 +9,8 @@
     Syntax:
 
     ```jsx
-    withInspectorTabMemory();
-    withInspectorTabMemory(options);
+    withInspectorTabMemory()
+    withInspectorTabMemory( options )
     ```
 
     Arguments:
@@ -28,8 +28,8 @@
     ```jsx
     Cypress.Commands.overwrite(
     	"assertComputedStyle",
-    	withInspectorTabMemory({ argumentLength: 3 })
-    );
+    	withInspectorTabMemory( { argumentLength: 3 } )
+    )
     ```
 
     Rules/Requirements:
@@ -43,7 +43,7 @@
     Syntax:
 
     ```jsx
-    createElementFromHTMLString(htmlString);
+    createElementFromHTMLString( htmlString )
     ```
 
     Arguments:
@@ -53,7 +53,7 @@
     Usage:
 
     ```jsx
-    createElementFromHTMLString(wp.blocks.getBlockContent(block));
+    createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
     ```
 
 3. getBlockStringPath
@@ -64,7 +64,7 @@
     Syntax:
 
     ```jsx
-    getBlockStringPath(blocks, clientId);
+    getBlockStringPath( blocks, clientId )
     ```
 
     Arguments:
@@ -76,7 +76,7 @@
 
     ```jsx
     getBlockStringPath(
-    	wp.data.select("core/block-editor").getBlocks(),
-    	subject.data("block")
-    );
+    	wp.data.select( "core/block-editor" ).getBlocks(),
+    	subject.data( "block" )
+    )
     ```
