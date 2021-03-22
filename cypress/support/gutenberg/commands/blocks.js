@@ -46,7 +46,7 @@ export function addBlock( blockName = 'ugb/accordion' ) {
 /**
  * Command for selecting a specific block.
  *
- * @param {string} subject
+ * @param {string | number | object} subject
  * @param {*} selector
  */
 export function selectBlock( subject, selector ) {
@@ -119,7 +119,7 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
 /**
  * Command for deleting a specific block.
  *
- * @param {string} subject
+ * @param {string | number | object} subject
  * @param {string} selector
  */
 export function deleteBlock( subject, selector ) {
@@ -137,7 +137,7 @@ export function deleteBlock( subject, selector ) {
 /**
  * Command for adding inner block using block appender
  *
- * @param {string} blockName
+ * @param {string | number | object} blockName
  * @param {string} blockToAdd
  * @param {string} customSelector
  */
