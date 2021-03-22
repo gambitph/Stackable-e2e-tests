@@ -34,9 +34,10 @@
     Usage:
 
     ```jsx
-    cy.adjust("Title Color", "#ff7979").assertComputedStyle({
-    	".ugb-accordion__title": { color: "#ff7979" },
-    });
+    cy.adjust( "Title Color", "#ff7979" )
+        .assertComputedStyle( {
+            ".ugb-accordion__title": { color: "#ff7979" },
+        } )
     ```
 
     Rules/Requirements:
@@ -75,10 +76,8 @@
     Usage:
 
     ```jsx
-    cy.adjust("Full Height", true).assertClassName(
-    	".ugb-header__item",
-    	"ugb--full-height"
-    );
+    cy.adjust( "Full Height", true )
+        .assertClassName( ".ugb-header__item", "ugb--full-height" )
     ```
 
     Rules/Requirements:
@@ -117,10 +116,8 @@
     Usage:
 
     ```jsx
-    cy.adjust("Title HTML Tag", "h4").assertHtmlTag(
-    	".ugb-heading__title",
-    	"h4"
-    );
+    cy.adjust( "Title HTML Tag", "h4" )
+        .assertHtmlTag( ".ugb-heading__title", "h4" )
     ```
 
     Rules/Requirements:
@@ -160,10 +157,8 @@
     Usage:
 
     ```jsx
-    cy.adjust(
-    	"Alt Text (Alternative Text)",
-    	"Hello World!"
-    ).assertHtmlAttribute(".ugb-img", "alt", "Hello World!");
+    cy.adjust( "Alt Text (Alternative Text)", "Hello World!" )
+        .assertHtmlAttribute( ".ugb-img", "alt", "Hello World!" )
     ```
 
     Rules/Requirements:
@@ -202,11 +197,8 @@
     Usage:
 
     ```jsx
-    cy.typeBlock(
-    	"ugb/pricing-box",
-    	".ugb-pricing-box__title",
-    	"Hello World! 1"
-    ).assertBlockContent(".ugb-pricing-box__title", "Hello World! 1");
+    cy.typeBlock( "ugb/pricing-box", ".ugb-pricing-box__title", "Hello World! 1" )
+        .assertBlockContent(".ugb-pricing-box__title", "Hello World! 1")
     ```
 
     Rules/Requirements:
@@ -236,9 +228,9 @@
     Usage:
 
     ```jsx
-    cy.setBlockAttribute({
+    cy.setBlockAttribute( {
     	videoLink: Cypress.env("DUMMY_VIDEO_URL"),
-    });
+    } )
     ```
 
 2. getBlockAttributes
@@ -259,9 +251,9 @@
     Usage:
 
     ```jsx
-    cy.getBlockAttributes().then((attributes) => {
+    cy.getBlockAttributes().then( ( attributes ) => {
     	// access block attributes
-    });
+    } )
     ```
 
 ---
@@ -281,7 +273,7 @@
     Usage:
 
     ```jsx
-    cy.assertBlockError();
+    cy.assertBlockError()
     ```
 
 2. addBlock
@@ -301,7 +293,7 @@
     Usage:
 
     ```jsx
-    cy.addBlock("ugb/columns");
+    cy.addBlock( "ugb/columns" )
     ```
 
 3. selectBlock
@@ -321,7 +313,7 @@
     Usage:
 
     ```jsx
-    cy.selectBlock("ugb/column");
+    cy.selectBlock( "ugb/column" )
     ```
 
 4. typeBlock
@@ -345,7 +337,7 @@
     Usage:
 
     ```jsx
-    cy.typeBlock("ugb/card", ".ugb-card__title", "Hello World! 1");
+    cy.typeBlock( "ugb/card", ".ugb-card__title", "Hello World! 1" )
     ```
 
 5. deleteBlock
@@ -367,7 +359,7 @@
     Usage:
 
     ```jsx
-    cy.deleteBlock("ugb/accordion", "Accordion 3");
+    cy.deleteBlock( "ugb/accordion", "Accordion 3" )
     ```
 
 6. addInnerBlock
@@ -390,7 +382,7 @@
     Usage:
 
     ```jsx
-    cy.addInnerBlock("ugb/container", "ugb/card");
+    cy.addInnerBlock( "ugb/container", "ugb/card" )
     ```
 
 ---
@@ -423,7 +415,7 @@
     Usage:
 
     ```jsx
-    cy.colorControlClear("Title Color");
+    cy.colorControlClear( "Title Color" )
     ```
 
 2.  rangeControlReset
@@ -452,7 +444,7 @@
     Usage:
 
     ```jsx
-    cy.rangeControlReset("Size");
+    cy.rangeControlReset( "Size" )
     ```
 
 3.  dropdownControl
@@ -482,7 +474,7 @@
     Usage:
 
     ```jsx
-    cy.dropdownControl("Image Size", "large");
+    cy.dropdownControl( "Image Size", "large" )
     ```
 
 4.  colorControl
@@ -512,7 +504,7 @@
     Usage:
 
     ```jsx
-    cy.colorControl("Subtitle Color", "#00FF00");
+    cy.colorControl( "Subtitle Color", "#00FF00" )
     ```
 
 5.  rangeControl
@@ -542,7 +534,7 @@
     Usage:
 
     ```jsx
-    cy.rangeControl("Size", 40);
+    cy.rangeControl( "Size", 40 )
     ```
 
 6.  toolbarControl
@@ -572,7 +564,7 @@
     Usage:
 
     ```jsx
-    cy.toolbarControl("Title HTML Tag", "h4");
+    cy.toolbarControl( "Title HTML Tag", "h4" )
     ```
 
 7.  toggleControl
@@ -602,7 +594,7 @@
     Usage:
 
     ```jsx
-    cy.toggleControl("Reverse arrow", true);
+    cy.toggleControl( "Reverse arrow", true )
     ```
 
 8.  textControl
@@ -632,7 +624,7 @@
     Usage:
 
     ```jsx
-    cy.textControl("Number 1 Label", "100");
+    cy.textControl( "Number 1 Label", "100" )
     ```
 
 9.  textAreaControl
@@ -662,7 +654,7 @@
     Usage:
 
     ```jsx
-    cy.textAreaControl("Alt Text (Alternative Text)", "picture of dog");
+    cy.textAreaControl( "Alt Text (Alternative Text)", "picture of dog" )
     ```
 
 10. stylesControl
@@ -691,7 +683,7 @@
     Usage:
 
     ```jsx
-    cy.stylesControl("Block Design", "Rounded");
+    cy.stylesControl( "Block Design", "Rounded" )
     ```
 
 11. fontSizeControl
@@ -720,7 +712,7 @@
     Usage:
 
     ```jsx
-    cy.fontSizeControl("Font size", "Large");
+    cy.fontSizeControl( "Font size", "Large" )
     ```
 
 12. adjust
@@ -750,7 +742,7 @@
     Usage:
 
     ```jsx
-    cy.adjust("Border Radius", 27);
+    cy.adjust( "Border Radius", 27 )
     ```
 
 13. resetStyle
@@ -779,7 +771,7 @@
     Usage:
 
     ```jsx
-    cy.resetStyle("Height");
+    cy.resetStyle( "Height" )
     ```
 
 ---
@@ -799,7 +791,7 @@
     Usage:
 
     ```jsx
-    cy.newPage();
+    cy.newPage()
     ```
 
 2. hideAnyGutenbergTip
@@ -815,7 +807,7 @@
     Usage:
 
     ```jsx
-    cy.hideAnyGutenbergTip();
+    cy.hideAnyGutenbergTip()
     ```
 
 3. getPostUrls
@@ -831,9 +823,9 @@
     Usage:
 
     ```jsx
-    cy.getPostUrls().then(({ editorUrl, previewUrl }) => {
+    cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
     	// use editorUrl and previewUrl in code
-    });
+    } )
     ```
 
 4. waitUntil
@@ -863,11 +855,11 @@
     Usage:
 
     ```jsx
-    cy.waitUntil((done) => {
-    	cy.window().then((win) => {
-    		done(win.FontAwesome);
-    	});
-    });
+    cy.waitUntil( ( done ) => {
+    	cy.window().then( ( win ) => {
+    		done( win.FontAwesome )
+    	} )
+    } )
     ```
 
 5. waitLoader
@@ -896,7 +888,7 @@
     Usage:
 
     ```jsx
-    cy.waitLoader(".ugb-icon-popover__iconlist>span.components-spinner");
+    cy.waitLoader( ".ugb-icon-popover__iconlist>span.components-spinner" )
     ```
 
 6. changePreviewMode
@@ -917,7 +909,7 @@
     Usage:
 
     ```jsx
-    cy.changePreviewMode("Mobile");
+    cy.changePreviewMode( "Mobile" )
     ```
 
 7. getPreviewMode
@@ -933,9 +925,9 @@
     Usage:
 
     ```jsx
-    cy.getPreviewMode().then((previewMode) => {
+    cy.getPreviewMode().then( ( previewMode ) => {
     	// use previewMode in code
-    });
+    } )
     ```
 
 8. publish
@@ -951,7 +943,7 @@
     Usage:
 
     ```jsx
-    cy.publish();
+    cy.publish()
     ```
 
 9. wp
@@ -967,9 +959,9 @@
     Usage:
 
     ```jsx
-    cy.wp().then((wp) => {
+    cy.wp().then( ( wp ) => {
     	// use wp in code
-    });
+    } )
     ```
 
 ---
@@ -995,7 +987,7 @@
     Usage:
 
     ```jsx
-    cy.toggleSidebar("edit-post/block", true);
+    cy.toggleSidebar( "edit-post/block", true )
     ```
 
 2. openSidebar
@@ -1015,7 +1007,7 @@
     Usage:
 
     ```jsx
-    cy.openSidebar("Stackable Settings");
+    cy.openSidebar( "Stackable Settings" )
     ```
 
 3. closeSidebar
@@ -1035,7 +1027,7 @@
     Usage:
 
     ```jsx
-    cy.closeSidebar("Stackable Settings");
+    cy.closeSidebar( "Stackable Settings" )
     ```
 
 4. getBaseControl
@@ -1065,7 +1057,7 @@
     Usage:
 
     ```jsx
-    cy.getBaseControl(name, { isInPopover });
+    cy.getBaseControl( name, { isInPopover } )
     ```
 
 5. collapse
@@ -1087,5 +1079,5 @@
     Usage:
 
     ```jsx
-    cy.collapse("Container");
+    cy.collapse( "Container" )
     ```
