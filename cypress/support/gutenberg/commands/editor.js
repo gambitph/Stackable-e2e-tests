@@ -14,6 +14,7 @@ Cypress.Commands.add( 'waitLoader', waitLoader )
 Cypress.Commands.add( 'changePreviewMode', changePreviewMode )
 Cypress.Commands.add( 'getPreviewMode', getPreviewMode )
 Cypress.Commands.add( 'publish', publish )
+Cypress.Commands.add( 'savePost', savePost )
 Cypress.Commands.add( 'wp', wp )
 
 /**
@@ -131,6 +132,14 @@ export function getPreviewMode() {
 				?	wp.data.select( 'core/edit-post' ).__experimentalGetPreviewDeviceType()
 				: 'Desktop'
 			resolve( previewMode )
+		} )
+	} )
+}
+
+export function savePost() {
+	cy.wp().then( wp => {
+		return new Cypress.Promise( resolve => {
+			wp.data.dispatch( 'core/editor' ).savePost().then( dispatchResolver( resolve ) )
 		} )
 	} )
 }

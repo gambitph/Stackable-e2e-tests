@@ -30,7 +30,7 @@ export const blockErrorTest = ( blockName = 'ugb/accordion' ) =>
 		}
 		cy.newPage()
 		cy.addBlock( blockName )
-		cy.publish()
+		cy.savePost()
 		cy.reload()
 	}
 
@@ -48,7 +48,7 @@ export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-
 	cy.newPage()
 	cy.addBlock( blockName )
 	cy.get( selector ).should( 'exist' )
-	cy.publish()
+	cy.savePost()
 }
 
 /**
@@ -71,10 +71,10 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 		}
 		cy.adjustDesign( design )
 	} )
-	cy.publish()
+	cy.savePost()
 	cy.reload()
 	cy.assertBlockError()
-	cy.publish()
+	cy.savePost()
 }
 
 /**
@@ -104,7 +104,7 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 		}
 	} )
 
-	cy.publish()
+	cy.savePost()
 
 	cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 		cy.visit( previewUrl )
@@ -118,7 +118,7 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 	} )
 
 	cy.assertBlockError()
-	cy.publish()
+	cy.savePost()
 }
 
 /*

@@ -107,7 +107,7 @@ class BlockSnapshots {
 					return
 				}
 
-				cy.publish()
+				cy.savePost()
 				cy.getPostUrls().then( ( { previewUrl } ) => {
 					cy.visit( previewUrl )
 					combinedStubbed.forEach( combinedStubbedContent => {
