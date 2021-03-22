@@ -169,7 +169,7 @@ export function publish() {
 						}
 					}
 
-					cy.waitLoader( '.editor-post-publish-button.is-busy' )
+					cy.waitLoader( '.editor-post-publish-button.is-busy', { interval: 500 } )
 				} )
 		} )
 }

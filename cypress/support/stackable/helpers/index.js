@@ -105,7 +105,6 @@ export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => ()
 	} )
 
 	cy.publish()
-	cy.wait( 300 )
 
 	cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 		cy.visit( previewUrl )
