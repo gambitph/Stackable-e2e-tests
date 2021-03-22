@@ -43,7 +43,7 @@ export function getPostUrls() {
 	return cy.wp().then( wp => {
 		const postID = wp.data.select( 'core/editor' ).getCurrentPostId()
 		const previewUrl = `/?${ ( new URLSearchParams( { 'page_id': postID, 'preview': true } ) ).toString() }`
-		const editorUrl = `/post.php?${ ( new URLSearchParams( { 'post': postID, 'action': 'edit' } ) ).toString() }`
+		const editorUrl = `/wp-admin/post.php?${ ( new URLSearchParams( { 'post': postID, 'action': 'edit' } ) ).toString() }`
 		return new Cypress.Promise( resolve => {
 			resolve( {
 				editorUrl, previewUrl, postID,
