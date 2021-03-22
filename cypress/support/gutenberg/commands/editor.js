@@ -136,6 +136,9 @@ export function getPreviewMode() {
 	} )
 }
 
+/**
+ * Command for saving a post.
+ */
 export function savePost() {
 	cy.wp().then( wp => {
 		return new Cypress.Promise( resolve => {
