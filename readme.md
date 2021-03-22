@@ -16,7 +16,13 @@
 4. Type `cd /path/to/Stackable-e2e-tests`
 5. Install node package dependencies by typing `npm install`
 6. Open your browser and go to http://e2etest.local/wp-admin/plugins.php. Activate the plugin.
-7. Install and activate the latest version of Stackable Premium to your test site and make sure that you rename the folder as "stackable" inside the plugins folder.
+7. Install and activate the plugin you want to test.
+8. Open plugin.php located at the root folder of the repository. Change the default slug in line 19 and 40 as follows:
+```
+$PLUGIN = 'your-plugin-slug-here/plugin.php';
+$plugins_activated[] = get_plugin_slug( 'your-plugin-slug-here' );
+```
+9. Start writing your tests.
 
 ### How to Run
 
@@ -24,6 +30,7 @@
 2. Run `npm run test`
 3. In the window that opens, pick a test to run or click run all tests.
 
+---
 ## Commands
 
 [List of WordPress commands](https://github.com/gambitph/Stackable-e2e-tests/tree/master/cypress/support/wordpress/commands)
