@@ -156,7 +156,7 @@ export function publish() {
 				.then( $actions => {
 					// Click the publish button in publish panel
 					// when necessary.
-					if ( $actions.find( '.editor-post-publish-panel' ).length ) {
+					if ( $actions.find( '.editor-post-publish-panel:contains(Publish)' ).length ) {
 						cy
 							.get( '.editor-post-publish-panel' )
 							.contains( containsRegExp( 'Publish' ) )
