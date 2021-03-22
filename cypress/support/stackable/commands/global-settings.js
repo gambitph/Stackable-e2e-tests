@@ -210,7 +210,7 @@ function adjustGlobalTypography( selector = 'h1', options = {} ) {
 }
 
 /**
- * Command for resetting the global typogragpy style.
+ * Command for resetting the global typography style.
  *
  * @param {string} selector
  */

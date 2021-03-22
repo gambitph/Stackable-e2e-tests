@@ -4,19 +4,21 @@
  * we can overwrite `getComputedStyle` to stub all generated HTML contents and CSS objects for future assertions.
  *
  * Usage:
- * function desktopStyles( viewport, desktopOnly, registerBlockSnapshots ) {
- *   cy.setupWP()
- *   cy.newPage()
- *   cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
- *   const accordionBlock = registerBlockSnapshots( 'accordionBlock' )
+ * // import registerBlockSnapshots to create an instance of BlockSnapshots
+ * import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
  *
- *   // More tests...
- *   // assertComputedStyle will no longer assert the frontend
- *   // every call. Instead, block snapshots will be stubbed and
- *   // can be enqueued before the end of the test.
+ * function desktopStyles( viewport, desktopOnly ) {
+ * 	cy.setupWP()
+ * 	cy.newPage()
+ * 	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
+ * 	const accordionBlock = registerblockSnapshots( 'accordionBlock' )
  *
- *   // Enqueue all block snapshots and assert frontend styles.
- *   accordionBlock.assertFrontendStyles()
+ * 	// More tests...
+ * 	// All assertion commands will no longer assert the frontend every call.
+ * 	// Instead, block snapshots will be stubbed and can be enqueued before the end of the test
+ *
+ * 	// Enqueue all block snapshots and assert frontend styles
+ * 	accordionBlock.assertFrontendStyles
  * }
  */
 

@@ -47,7 +47,7 @@ export function addBlock( blockName = 'ugb/accordion' ) {
  * Command for selecting a specific block.
  *
  * @param {string} subject
- * @param {*} selector
+ * @param {string | number | object} selector
  */
 export function selectBlock( subject, selector ) {
 	if ( selector === '' ) {
@@ -100,7 +100,7 @@ export function selectBlock( subject, selector ) {
  * @param {string} subject
  * @param {string} contentSelector
  * @param {string} content
- * @param {string} customSelector
+ * @param {string | number | object} customSelector
  */
 export function typeBlock( subject, contentSelector = '', content = '', customSelector = '' ) {
 	( contentSelector
@@ -119,8 +119,8 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
 /**
  * Command for deleting a specific block.
  *
- * @param {*} subject
- * @param {string} selector
+ * @param {string} subject
+ * @param {string | number | object} selector
  */
 export function deleteBlock( subject, selector ) {
 	cy.selectBlock( subject, selector )
@@ -139,7 +139,7 @@ export function deleteBlock( subject, selector ) {
  *
  * @param {string} blockName
  * @param {string} blockToAdd
- * @param {string} customSelector
+ * @param {string | number | object} customSelector
  */
 export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/accordion', customSelector ) {
 	cy.selectBlock( blockName, customSelector )
