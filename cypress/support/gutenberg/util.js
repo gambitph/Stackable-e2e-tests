@@ -3,12 +3,13 @@ import { last, startCase } from 'lodash'
 // Temporary overwrite fix @see stackable/util.js
 /**
  * Function for overwriting assertions
+ * Stackable command for selecting the block, current tab and panel.
  *
  * @param {Object} options
  */
 export function withInspectorTabMemory( options = {} ) {
 	const {
-		argumentLength,
+		argumentLength = 1,
 	} = options
 
 	return function( originalFn, ...args ) {
