@@ -104,7 +104,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	} = options
 
 	cy.wp().then( wp => {
-		cy.publish()
+		cy.savePost()
 		cy.wait( delay )
 
 		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
@@ -203,7 +203,7 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 	} = options
 
 	cy.wp().then( wp => {
-		cy.publish()
+		cy.savePost()
 		cy.wait( delay )
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
@@ -266,7 +266,7 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 	} = options
 
 	cy.wp().then( wp => {
-		cy.publish()
+		cy.savePost()
 		cy.wait( delay )
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
@@ -329,7 +329,7 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 	} = options
 
 	cy.wp().then( wp => {
-		cy.publish()
+		cy.savePost()
 		cy.wait( delay )
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
@@ -401,7 +401,7 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 	} = options
 
 	cy.wp().then( wp => {
-		cy.publish()
+		cy.savePost()
 		cy.wait( delay )
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
