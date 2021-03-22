@@ -3,7 +3,7 @@
 1. withInspectorTabMemory
 
     - Function for overwriting assertions
-    - Adds functionality of going back to selected block and current tab
+    - Stackable command for selecting the block, current tab and panel.
     - Temporary overwrite fix @see stackable/util.js
 
     Syntax:
