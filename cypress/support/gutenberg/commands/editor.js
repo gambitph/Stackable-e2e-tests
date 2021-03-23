@@ -22,6 +22,7 @@ Cypress.Commands.add( 'wp', wp )
 export function newPage() {
 	cy.visit( '/wp-admin/post-new.php?post_type=page' )
 	hideAnyGutenbergTip()
+	removeGlobalCssTransitions()
 }
 
 /**
@@ -32,6 +33,24 @@ export function hideAnyGutenbergTip() {
 		if ( $body.find( '.edit-post-welcome-guide' ).length ) {
 			cy.get( '.edit-post-welcome-guide button:eq(0)' ).click()
 		}
+	} )
+}
+
+/**
+ * Function for removing transitions from CSS globally
+ */
+export function removeGlobalCssTransitions() {
+	const style = '.editor-styles-wrapper .wp-block, .editor-styles-wrapper .wp-block * {  color: red; transition: none !important; }'
+
+	cy.document().then( doc => {
+		const removeTransStyle = doc.createElement( 'style' )
+		removeTransStyle.type = 'text/css'
+		removeTransStyle.innerText = style
+
+		cy.get( '.interface-interface-skeleton__content' )
+			.then( $content => {
+				$content.prepend( removeTransStyle )
+			} )
 	} )
 }
 
