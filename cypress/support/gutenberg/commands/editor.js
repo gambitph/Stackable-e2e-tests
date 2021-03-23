@@ -137,7 +137,7 @@ export function getPreviewMode() {
 }
 
 /**
- * Command for saving a post.
+ * Command for saving a page or post.
  */
 export function savePost() {
 	cy.wp().then( wp => {
