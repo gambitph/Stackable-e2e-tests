@@ -16,6 +16,7 @@ Cypress.Commands.add( 'getPreviewMode', getPreviewMode )
 Cypress.Commands.add( 'publish', publish )
 Cypress.Commands.add( 'savePost', savePost )
 Cypress.Commands.add( 'wp', wp )
+Cypress.Commands.add( 'removeGlobalCssTransitions', removeGlobalCssTransitions )
 
 /**
  * Command for opening a new page in gutenberg editor.
@@ -41,7 +42,7 @@ export function hideAnyGutenbergTip() {
  * Function for removing transitions from CSS globally
  */
 export function removeGlobalCssTransitions() {
-	const style = '.editor-styles-wrapper .wp-block, .editor-styles-wrapper .wp-block * {  color: red; transition: none !important; }'
+	const style = '.editor-styles-wrapper .wp-block, .editor-styles-wrapper .wp-block * { -webkit-transition: none !important, -moz-transition: none !important, -o-transition: none !important, transition: none !important, transition-duration: 0s !important; }'
 
 	cy.document().then( doc => {
 		const removeTransStyle = doc.createElement( 'style' )
