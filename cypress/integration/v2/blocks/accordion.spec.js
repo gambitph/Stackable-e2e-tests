@@ -46,7 +46,7 @@ function innerBlocks() {
 			.filter( blockName => blockName !== 'ugb/accordion' )
 			.forEach( blockName => cy.addInnerBlock( 'ugb/accordion', blockName ) )
 
-		cy.publish()
+		cy.savePost()
 	} )
 }
 
@@ -93,7 +93,7 @@ function styleTab( viewport, desktopOnly ) {
 			cy.adjust( 'Close adjacent on open', true )
 		} )
 
-		cy.publish()
+		cy.savePost()
 		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 			cy.visit( previewUrl )
 			range( 0, 3 ).forEach( idx1 => {
@@ -125,7 +125,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/accordion', 'Style' )
 		cy.collapse( 'General' )
 		cy.adjust( 'Open at the start', true )
-		cy.publish()
+		cy.savePost()
 		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 			cy.visit( previewUrl )
 			cy

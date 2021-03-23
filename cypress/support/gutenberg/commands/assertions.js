@@ -103,10 +103,10 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		afterBackendAssert = () => {},
 	} = options
 
-	cy.wp().then( wp => {
-		cy.publish()
-		cy.wait( delay )
+	cy.savePost()
+	cy.wait( delay )
 
+	cy.wp().then( wp => {
 		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
 		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
@@ -203,9 +203,10 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 		afterBackendAssert = () => {},
 	} = options
 
+	cy.savePost()
+	cy.wait( delay )
+
 	cy.wp().then( wp => {
-		cy.publish()
-		cy.wait( delay )
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
 		cy.getBlockAttributes().then( attributes => {
@@ -267,9 +268,10 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 		afterBackendAssert = () => {},
 	} = options
 
+	cy.savePost()
+	cy.wait( delay )
+
 	cy.wp().then( wp => {
-		cy.publish()
-		cy.wait( delay )
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
 		cy.getBlockAttributes().then( attributes => {
@@ -331,9 +333,10 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 		afterBackendAssert = () => {},
 	} = options
 
+	cy.savePost()
+	cy.wait( delay )
+
 	cy.wp().then( wp => {
-		cy.publish()
-		cy.wait( delay )
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
 		cy.getBlockAttributes().then( attributes => {
@@ -404,9 +407,10 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 		afterBackendAssert = () => {},
 	} = options
 
+	cy.savePost()
+	cy.wait( delay )
+
 	cy.wp().then( wp => {
-		cy.publish()
-		cy.wait( delay )
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
 		cy.getBlockAttributes().then( attributes => {

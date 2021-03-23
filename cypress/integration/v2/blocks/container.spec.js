@@ -41,7 +41,7 @@ function innerBlocks() {
 			.filter( blockName => blockName !== 'ugb/container' )
 			.forEach( blockName => cy.addInnerBlock( 'ugb/container', blockName ) )
 
-		cy.publish()
+		cy.savePost()
 	} )
 }
 
