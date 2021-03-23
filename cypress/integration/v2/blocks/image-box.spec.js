@@ -107,9 +107,6 @@ function styleTab( viewport, desktopOnly ) {
 		'.ugb-image-box__item': {
 			'height': '287px',
 		},
-		'.ugb-block-content > *': {
-			'min-height': '287px',
-		},
 	} )
 
 	cy.adjust( 'Borders', 'solid' )
