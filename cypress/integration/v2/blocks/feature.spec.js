@@ -183,6 +183,22 @@ function styleTab( viewport, desktopOnly ) {
 		'imageUrl': Cypress.env( 'DUMMY_IMAGE_URL' ),
 	} )
 
+	cy.adjust( 'Border Radius', 33 )
+	cy.adjust( 'Image Width', 300, { viewport } ).assertComputedStyle( {
+		'.ugb-img': {
+			'width': '300px',
+			'border-radius': '33px',
+		},
+	} )
+	desktopOnly( () => {
+		cy.adjust( 'Force square image', true ).assertComputedStyle( {
+			'.ugb-img': {
+				'height': '300px',
+			},
+		} )
+		cy.adjust( 'Shadow / Outline', 2 ).assertClassName( 'img.ugb-img', 'ugb--shadow-2' )
+	} )
+
 	desktopOnly( () => {
 		cy.adjust( 'Shape', {
 			label: 'Blob 1',
@@ -195,19 +211,6 @@ function styleTab( viewport, desktopOnly ) {
 		// We won't be able to assert image size for now since it requires server handling.
 
 		cy.adjust( 'Alt Text (Alternative Text)', 'Hello World!' ).assertHtmlAttribute( '.ugb-img', 'alt', 'Hello World!' )
-	} )
-
-	cy.adjust( 'Image Width', 300, { viewport } ).assertComputedStyle( {
-		'.ugb-img': {
-			'width': '300px',
-		},
-	} )
-	desktopOnly( () => {
-		cy.adjust( 'Force square image', true ).assertComputedStyle( {
-			'.ugb-img': {
-				'height': '300px',
-			},
-		} )
 	} )
 
 	// Title Tab and Description Tab
