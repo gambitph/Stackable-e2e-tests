@@ -1,6 +1,7 @@
 /**
  * External dependencies
  */
+import { toPairs } from 'lodash'
 import { containsRegExp, dispatchResolver } from '~common/util'
 
 /**
@@ -42,12 +43,32 @@ export function hideAnyGutenbergTip() {
  * Function for removing transitions from CSS globally
  */
 export function removeGlobalCssTransitions() {
-	const style = '.editor-styles-wrapper .wp-block, .editor-styles-wrapper .wp-block * { -webkit-transition: none !important; -moz-transition: none !important; -o-transition: none !important; transition: none !important; transition-duration: 0s !important; }'
+	const styles = {
+		'.editor-styles-wrapper .wp-block, .editor-styles-wrapper .wp-block *': {
+			'-webkit-transition': 'none !important',
+			'-moz-trainsition': 'none !important',
+			'-o-trainsition': 'none !important',
+			'trainsition': 'none !important',
+			'transition-duration': '0s !important',
+		},
+		'.notransition': {
+			'-webkit-transition': 'none !important',
+			'-moz-trainsition': 'none !important',
+			'-o-trainsition': 'none !important',
+			'trainsition': 'none !important',
+			'transition-duration': '0s !important',
+		},
+	}
 
 	cy.document().then( doc => {
 		const removeTransStyle = doc.createElement( 'style' )
 		removeTransStyle.type = 'text/css'
-		removeTransStyle.innerText = style
+		removeTransStyle.innerText = toPairs( styles )
+			.map( ( [ selector, cssRule ] ) =>
+				`${ selector } { ${ toPairs( cssRule )
+					.map( ( [ key, value ] ) => `${ key } : ${ value };` )
+					.join( ' ' ) } }` )
+			.join( ' ' )
 
 		cy.get( '.interface-interface-skeleton__content' )
 			.then( $content => {
