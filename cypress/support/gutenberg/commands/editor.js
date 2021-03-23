@@ -14,6 +14,7 @@ Cypress.Commands.add( 'waitLoader', waitLoader )
 Cypress.Commands.add( 'changePreviewMode', changePreviewMode )
 Cypress.Commands.add( 'getPreviewMode', getPreviewMode )
 Cypress.Commands.add( 'publish', publish )
+Cypress.Commands.add( 'savePost', savePost )
 Cypress.Commands.add( 'wp', wp )
 
 /**
@@ -39,14 +40,13 @@ export function hideAnyGutenbergTip() {
  * Command that returns the original link address and preview address
  */
 export function getPostUrls() {
-	return cy.window().then( _win => {
-		const _currUrl = _win.location.href
-		const parsedPostID = _currUrl.match( /post=([0-9]*)/g )[ 0 ].split( '=' )[ 1 ]
-		const previewUrl = `/?page_id=${ parsedPostID }&preview=true`
-		const editorUrl = _currUrl.replace( Cypress.config( 'baseUrl' ), '/' )
+	return cy.wp().then( wp => {
+		const postID = wp.data.select( 'core/editor' ).getCurrentPostId()
+		const previewUrl = `/?${ ( new URLSearchParams( { 'page_id': postID, 'preview': true } ) ).toString() }`
+		const editorUrl = `/wp-admin/post.php?${ ( new URLSearchParams( { 'post': postID, 'action': 'edit' } ) ).toString() }`
 		return new Cypress.Promise( resolve => {
 			resolve( {
-				editorUrl, previewUrl, postID: parsedPostID,
+				editorUrl, previewUrl, postID,
 			} )
 		} )
 	} )
@@ -137,6 +137,17 @@ export function getPreviewMode() {
 }
 
 /**
+ * Command for saving a page or post.
+ */
+export function savePost() {
+	cy.wp().then( wp => {
+		return new Cypress.Promise( resolve => {
+			wp.data.dispatch( 'core/editor' ).savePost().then( dispatchResolver( resolve ) )
+		} )
+	} )
+}
+
+/**
  * Command for publishing a page.
  */
 export function publish() {
@@ -169,7 +180,7 @@ export function publish() {
 						}
 					}
 
-					cy.waitLoader( '.editor-post-publish-button.is-busy' )
+					cy.waitLoader( '.editor-post-publish-button.is-busy', { initialDelay: 500 } )
 				} )
 		} )
 }
