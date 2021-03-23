@@ -37,12 +37,6 @@ export function addBlock( blockName = 'ugb/accordion' ) {
 	cy.wp().then( wp => {
 		return new Cypress.Promise( resolve => {
 			const block = wp.blocks.createBlock( blockName, { className: `e2etest-block-${ uniqueId() }` } )
-
-			// Remove animations.
-			// element.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
-			// element.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
-			// parentEl.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
-
 			wp.data.dispatch( 'core/editor' ).insertBlock( block )
 				.then( dispatchResolver( () => resolve( last( wp.data.select( 'core/block-editor' ).getBlocks() ) ) ) )
 		} )
