@@ -66,7 +66,7 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 					element.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 					parentEl.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 
-					const computedStyles = pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) )
+					const computedStyles = Object.assign( {}, pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) ) )
 					const expectedStylesToEnqueue = keys( _cssObject ).map( key =>
 						`${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` )
 
@@ -76,7 +76,7 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 					element.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 					parentEl.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 
-					const expectedStyles = pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) )
+					const expectedStyles = Object.assign( {}, pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) ) )
 
 					keys( _cssObject ).forEach( key => {
 						const computedStyle = computedStyles[ camelCase( key ) ]
@@ -86,11 +86,12 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 							expectedStyle,
 							`'${ camelCase( key ) }' expected to be ${ expectedStyle } in ${ assertType }. Found '${ computedStyle }'.`
 						)
-
-						element.classList.remove( 'notransition' )
-						element.parentElement.classList.remove( 'notransition' )
-						parentEl.parentElement.classList.remove( 'notransition' )
 					} )
+
+					element.removeAttribute( 'style' )
+					element.classList.remove( 'notransition' )
+					element.parentElement.classList.remove( 'notransition' )
+					parentEl.parentElement.classList.remove( 'notransition' )
 				} )
 		} )
 	} )

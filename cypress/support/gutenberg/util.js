@@ -129,7 +129,6 @@ export function removeGlobalCssTransitions() {
 			'-o-animation': 'none !important',
 			'-ms-animation': 'none !important',
 			'animation': 'none !important',
-			'background-color': 'red',
 		},
 	}
 
@@ -139,8 +138,8 @@ export function removeGlobalCssTransitions() {
 				.map( ( [ key, value ] ) => `${ key } : ${ value };` )
 				.join( ' ' ) } }` )
 		.join( ' ' )
-	const removeTransStyle = Cypress.$( '<style></style>' ).html( styleText )
 
-	Cypress.$( '.interface-interface-skeleton__content' )
-		.prepend( removeTransStyle )
+	cy.get( '.interface-interface-skeleton__content' ).then( $el => {
+		$el.prepend( `<style>${ styleText }</style>` )
+	} )
 }

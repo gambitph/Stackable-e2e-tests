@@ -2,25 +2,19 @@
  * Internal Dependencies
  */
 import { removeGlobalCssTransitions } from '../util'
-import { containsRegExp } from '~common/util'
 
 /**
  * Overwrite Cypress Commands
  */
 Cypress.Commands.overwrite( 'visit', ( originalFn, url, options ) => {
+	const yieldWin = originalFn( url, options )
+
 	// Check if the url matches the editor, and new page URL
-	if ( url.match( containsRegExp( 'action=edit' ) ) ||
-        url === '/wp-admin/post-new.php?post_type=page' ) {
-		// Remove the transitions
-		if ( ! options ) {
-			options = {}
-		}
-		options.onLoad = () => {
-			removeGlobalCssTransitions()
-		}
+	if ( url.match( /(post|post-new)\.php/g ) && url.match( /wp-admin/g ) ) {
+		removeGlobalCssTransitions()
 	}
 
-	return originalFn( url, options )
+	return cy.wrap( yieldWin )
 } )
 
 /**
