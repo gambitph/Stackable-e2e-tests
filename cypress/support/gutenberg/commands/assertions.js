@@ -29,14 +29,6 @@ Cypress.Commands.overwrite( 'assertHtmlAttribute', withInspectorTabMemory( { arg
 Cypress.Commands.overwrite( 'assertBlockContent', withInspectorTabMemory( { argumentLength: 4 } ) )
 
 export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop' ) {
-	const removeAnimationStyles = [
-		'-webkit-transition: none !important',
-		'-moz-transition: none !important',
-		'-o-transition: none !important',
-		'transition: none !important',
-		'transition-duration: 0s !important',
-	]
-
 	cy.window().then( win => {
 		cy.document().then( doc => {
 			cy
@@ -60,17 +52,31 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 						return expectedValue
 					}
 
-					// Remove animations.
-					element.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
-					element.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
-					parentEl.parentElement.setAttribute( 'style', removeAnimationStyles.join( '; ' ) )
+					// Add notransition animation.
+					element.classList.add( 'notransition' )
+					element.parentElement.classList.add( 'notransition' )
+					parentEl.parentElement.classList.add( 'notransition' )
 
-					const computedStyles = pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) )
+					/**
+					 * Triggers a reflow, flushing the CSS changes.
+					 *
+					 * @see https://stackoverflow.com/questions/11131875/what-is-the-cleanest-way-to-disable-css-transition-effects-temporarily
+					 */
+					element.offsetHeight // eslint-disable-line no-unused-expressions
+					element.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
+					parentEl.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
+
+					const computedStyles = Object.assign( {}, pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) ) )
 					const expectedStylesToEnqueue = keys( _cssObject ).map( key =>
 						`${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` )
 
-					element.setAttribute( 'style', `${ [ ...removeAnimationStyles, ...expectedStylesToEnqueue ].join( '; ' ) }` )
-					const expectedStyles = pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) )
+					element.setAttribute( 'style', `${ expectedStylesToEnqueue.join( '; ' ) }` )
+
+					element.offsetHeight // eslint-disable-line no-unused-expressions
+					element.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
+					parentEl.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
+
+					const expectedStyles = Object.assign( {}, pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) ) )
 
 					keys( _cssObject ).forEach( key => {
 						const computedStyle = computedStyles[ camelCase( key ) ]
@@ -81,6 +87,11 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 							`'${ camelCase( key ) }' expected to be ${ expectedStyle } in ${ assertType }. Found '${ computedStyle }'.`
 						)
 					} )
+
+					element.removeAttribute( 'style' )
+					element.classList.remove( 'notransition' )
+					element.parentElement.classList.remove( 'notransition' )
+					parentEl.parentElement.classList.remove( 'notransition' )
 				} )
 		} )
 	} )

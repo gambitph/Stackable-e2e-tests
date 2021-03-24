@@ -9,7 +9,6 @@ import { modifyLogFunc } from '../util'
 Cypress.Commands.overwrite( 'get', modifyLogFunc() )
 Cypress.Commands.overwrite( 'click', modifyLogFunc() )
 Cypress.Commands.overwrite( 'type', modifyLogFunc() )
-Cypress.Commands.overwrite( 'visit', modifyLogFunc() )
 Cypress.Commands.overwrite( 'reload', modifyLogFunc() )
 Cypress.Commands.overwrite( 'document', modifyLogFunc() )
 Cypress.Commands.overwrite( 'window', modifyLogFunc() )
