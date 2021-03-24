@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { toPairs } from 'lodash'
 import { containsRegExp, dispatchResolver } from '~common/util'
 
 /**
@@ -17,7 +16,6 @@ Cypress.Commands.add( 'getPreviewMode', getPreviewMode )
 Cypress.Commands.add( 'publish', publish )
 Cypress.Commands.add( 'savePost', savePost )
 Cypress.Commands.add( 'wp', wp )
-Cypress.Commands.add( 'removeGlobalCssTransitions', removeGlobalCssTransitions )
 
 /**
  * Command for opening a new page in gutenberg editor.
@@ -25,7 +23,6 @@ Cypress.Commands.add( 'removeGlobalCssTransitions', removeGlobalCssTransitions )
 export function newPage() {
 	cy.visit( '/wp-admin/post-new.php?post_type=page' )
 	hideAnyGutenbergTip()
-	removeGlobalCssTransitions()
 }
 
 /**
@@ -36,65 +33,6 @@ export function hideAnyGutenbergTip() {
 		if ( $body.find( '.edit-post-welcome-guide' ).length ) {
 			cy.get( '.edit-post-welcome-guide button:eq(0)' ).click()
 		}
-	} )
-}
-
-/**
- * Function for removing transitions from CSS globally
- */
-export function removeGlobalCssTransitions() {
-	const styles = {
-		'.editor-styles-wrapper .wp-block, .editor-styles-wrapper .wp-block *': {
-			'-webkit-transition': 'none !important',
-			'-moz-transition': 'none !important',
-			'-o-transition': 'none !important',
-			'transition': 'none !important',
-			'transition-duration': '0s !important',
-			'-o-transition-property': 'none !important',
-			'-moz-transition-property': 'none !important',
-			'-ms-transition-property': 'none !important',
-			'-webkit-transition-property': 'none !important',
-			'transition-property': 'none !important',
-			'-webkit-animation': 'none !important',
-			'-moz-animation': 'none !important',
-			'-o-animation': 'none !important',
-			'-ms-animation': 'none !important',
-			'animation': 'none !important',
-		},
-		'.notransition': {
-			'-webkit-transition': 'none !important',
-			'-moz-transition': 'none !important',
-			'-o-transition': 'none !important',
-			'transition': 'none !important',
-			'transition-duration': '0s !important',
-			'-o-transition-property': 'none !important',
-			'-moz-transition-property': 'none !important',
-			'-ms-transition-property': 'none !important',
-			'-webkit-transition-property': 'none !important',
-			'transition-property': 'none !important',
-			'-webkit-animation': 'none !important',
-			'-moz-animation': 'none !important',
-			'-o-animation': 'none !important',
-			'-ms-animation': 'none !important',
-			'animation': 'none !important',
-			'background-color': 'red',
-		},
-	}
-
-	cy.document().then( doc => {
-		const removeTransStyle = doc.createElement( 'style' )
-		removeTransStyle.type = 'text/css'
-		removeTransStyle.innerText = toPairs( styles )
-			.map( ( [ selector, cssRule ] ) =>
-				`${ selector } { ${ toPairs( cssRule )
-					.map( ( [ key, value ] ) => `${ key } : ${ value };` )
-					.join( ' ' ) } }` )
-			.join( ' ' )
-
-		cy.get( '.interface-interface-skeleton__content' )
-			.then( $content => {
-				$content.prepend( removeTransStyle )
-			} )
 	} )
 }
 

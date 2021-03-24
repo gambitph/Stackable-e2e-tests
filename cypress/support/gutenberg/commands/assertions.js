@@ -185,7 +185,6 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 					cy.viewport( Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
 					cy.visit( editorUrl )
 					cy.wp().then( _wp => {
-						cy.removeGlobalCssTransitions()
 						const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
 						cy.selectBlock( name, { clientId } )
 						afterFrontendAssert()
@@ -249,7 +248,6 @@ export function assertClassName( subject, customSelector = '', expectedValue = '
 							} )
 							cy.visit( editorUrl )
 							cy.wp().then( _wp => {
-								cy.removeGlobalCssTransitions()
 								const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
 								cy.selectBlock( name, { clientId } )
 								afterFrontendAssert()
@@ -313,7 +311,6 @@ export function assertHtmlTag( subject, customSelector = '', expectedValue = '',
 							} )
 							cy.visit( editorUrl )
 							cy.wp().then( _wp => {
-								cy.removeGlobalCssTransitions()
 								const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
 								cy.selectBlock( name, { clientId } )
 								afterFrontendAssert()
@@ -388,7 +385,6 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 							} )
 							cy.visit( editorUrl )
 							cy.wp().then( _wp => {
-								cy.removeGlobalCssTransitions()
 								const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
 								cy.selectBlock( name, { clientId } )
 								afterFrontendAssert()
@@ -452,7 +448,6 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 
 								cy.visit( editorUrl )
 								cy.wp().then( _wp => {
-									cy.removeGlobalCssTransitions()
 									const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
 									cy.selectBlock( name, { clientId } )
 									afterFrontendAssert()

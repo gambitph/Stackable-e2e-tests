@@ -1,4 +1,6 @@
-import { last, startCase } from 'lodash'
+import {
+	last, startCase, toPairs,
+} from 'lodash'
 
 // Temporary overwrite fix @see stackable/util.js
 /**
@@ -89,3 +91,56 @@ export function getBlockStringPath( blocks = [], clientId = '' ) {
 	return paths.join( '' )
 }
 
+/**
+ * Function for removing transitions from CSS globally
+ */
+export function removeGlobalCssTransitions() {
+	const styles = {
+		'.editor-styles-wrapper .wp-block, .editor-styles-wrapper .wp-block *': {
+			'-webkit-transition': 'none !important',
+			'-moz-transition': 'none !important',
+			'-o-transition': 'none !important',
+			'transition': 'none !important',
+			'transition-duration': '0s !important',
+			'-o-transition-property': 'none !important',
+			'-moz-transition-property': 'none !important',
+			'-ms-transition-property': 'none !important',
+			'-webkit-transition-property': 'none !important',
+			'transition-property': 'none !important',
+			'-webkit-animation': 'none !important',
+			'-moz-animation': 'none !important',
+			'-o-animation': 'none !important',
+			'-ms-animation': 'none !important',
+			'animation': 'none !important',
+		},
+		'.notransition': {
+			'-webkit-transition': 'none !important',
+			'-moz-transition': 'none !important',
+			'-o-transition': 'none !important',
+			'transition': 'none !important',
+			'transition-duration': '0s !important',
+			'-o-transition-property': 'none !important',
+			'-moz-transition-property': 'none !important',
+			'-ms-transition-property': 'none !important',
+			'-webkit-transition-property': 'none !important',
+			'transition-property': 'none !important',
+			'-webkit-animation': 'none !important',
+			'-moz-animation': 'none !important',
+			'-o-animation': 'none !important',
+			'-ms-animation': 'none !important',
+			'animation': 'none !important',
+			'background-color': 'red',
+		},
+	}
+
+	const styleText = toPairs( styles )
+		.map( ( [ selector, cssRule ] ) =>
+			`${ selector } { ${ toPairs( cssRule )
+				.map( ( [ key, value ] ) => `${ key } : ${ value };` )
+				.join( ' ' ) } }` )
+		.join( ' ' )
+	const removeTransStyle = Cypress.$( '<style></style>' ).html( styleText )
+
+	Cypress.$( '.interface-interface-skeleton__content' )
+		.prepend( removeTransStyle )
+}

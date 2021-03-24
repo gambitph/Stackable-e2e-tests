@@ -1,18 +1,24 @@
 /**
+ * Internal Dependencies
+ */
+import { removeGlobalCssTransitions } from '../util'
+import { containsRegExp } from '~common/util'
+
+/**
  * Overwrite Cypress Commands
  */
 Cypress.Commands.overwrite( 'visit', ( originalFn, url, options ) => {
-	cy.log( 'remove transitions !!' )
-	cy.getPostUrls().then( ( { editorUrl } ) => {
-		// Check if the url matches the editor, and new page URL
-		if ( url === editorUrl ||
-            url === '/wp-admin/post-new.php?post_type=page' ) {
-			// Remove the transitions
-			options.onLoad = () => {
-				cy.removeGlobalCssTransitions()
-			}
+	// Check if the url matches the editor, and new page URL
+	if ( url.match( containsRegExp( 'action=edit' ) ) ||
+        url === '/wp-admin/post-new.php?post_type=page' ) {
+		// Remove the transitions
+		if ( ! options ) {
+			options = {}
 		}
-	} )
+		options.onLoad = () => {
+			removeGlobalCssTransitions()
+		}
+	}
 
 	return originalFn( url, options )
 } )
