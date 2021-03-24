@@ -5,7 +5,7 @@ import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertBlockTitleDescriptionContent, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
-import { range } from 'lodash'
+import { range, startCase } from 'lodash'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -189,6 +189,17 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Button' )
 	cy.waitFA()
 	desktopOnly( () => {
+		const buttonDesigns = [ 'ghost', 'plain', 'link' ]
+		buttonDesigns.forEach( design => {
+			cy.adjust( 'Design', {
+				label: startCase( design ),
+				value: design,
+			} ).assertClassName( '.ugb-button', `ugb-button--design-${ design }` )
+		} )
+		cy.adjust( 'Design', {
+			label: 'Basic',
+			value: 'basic',
+		} )
 		cy.adjust( 'Button Color', '#4e2e2e' )
 		cy.adjust( 'Hover Effect', 'scale' )
 			.assertClassName( '.ugb-button', 'ugb--hover-effect-scale' )
@@ -202,6 +213,9 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Opacity', 0.2 ).assertComputedStyle( {
 			'.ugb-button .ugb-button--inner': {
 				'color': '#4e2e2e',
+			},
+			'.ugb-button': {
+				'opacity': '0.2',
 			},
 		} )
 		cy.adjust( 'Icon', 'info' )
