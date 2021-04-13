@@ -308,6 +308,29 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 	assertAligns( 'Align', '.ugb-team-member__buttons', { viewport } )
 
+	// Effects option
+	desktopOnly( () => {
+		cy.collapse( 'Effects' )
+		const effects = [
+			'shadow',
+			'lift',
+			'lift-more',
+			'lift-shadow',
+			'lift-staggered',
+			'lift-shadow-staggered',
+			'scale',
+			'scale-more',
+			'scale-shadow',
+			'lower',
+			'lower-more',
+		]
+		effects.forEach( effect => {
+			cy.adjust( 'Hover Effect', effect )
+				.assertClassName( '.ugb-team-member__item', `ugb--hover-${ effect }` )
+		} )
+		cy.adjust( 'Color on Hover', true ).assertClassName( '.ugb-team-member', 'ugb-team-member--color-on-hover' )
+	} )
+
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-team-member', { viewport } )
 	assertSeparators( { viewport } )
