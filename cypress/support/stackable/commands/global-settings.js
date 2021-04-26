@@ -59,7 +59,8 @@ function addGlobalColor( options = {} ) {
 							.closest( '.components-color-picker__inputs-field' )
 							.find( 'input' )
 							.click( { force: true } )
-							.type( `{selectall}${ color }{enter}` )
+							.clear()
+							.type( `{selectall}${ color }{enter}`, { timeout: 300 } )
 					}
 
 					// Type the name if defined.
@@ -70,7 +71,8 @@ function addGlobalColor( options = {} ) {
 							.closest( '.components-color-picker__input-field' )
 							.find( 'input' )
 							.click( { force: true } )
-							.type( `{selectall}${ name }{enter}` )
+							.clear()
+							.type( `{selectall}${ name }{enter}`, { timeout: 300 } )
 					}
 
 					// Click outside the popover to close it.
