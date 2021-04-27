@@ -10,22 +10,24 @@ describe( 'Global Settings', () => {
 		cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
 		const cardBlock = registerBlockSnapshots( 'cardBlock' )
 
+		const colors = [ '#ff0000', '#3fcee8', '#f2e374', '#f00069' ]
+
 		// Add Global colors
 		cy.addGlobalColor( {
 			name: 'Custom Color Red',
-			color: '#ff0000',
+			color: colors[ 0 ],
 		} )
 		cy.addGlobalColor( {
 			name: 'Aqua',
-			color: '#3fcee8',
+			color: colors[ 1 ],
 		} )
 		cy.addGlobalColor( {
 			name: 'Yellow Sun',
-			color: '#f2e374',
+			color: colors[ 2 ],
 		} )
 		cy.addGlobalColor( {
 			name: 'Stackable Pink',
-			color: '#f00069',
+			color: colors[ 3 ],
 		} )
 		cy.adjust( 'Use only Stackable colors', true )
 
@@ -33,22 +35,22 @@ describe( 'Global Settings', () => {
 		cy.openInspector( 'ugb/card', 'Style' )
 		cy.collapse( 'Title' )
 
-		// const colors = [ 'Custom Color Red', 'Aqua', 'Yellow Sun', 'Stackable Pink' ]
+		colors.forEach( ( val, idx ) => {
+			cy
+				.get( '.editor-color-palette-control__color-palette' )
+				.find( '.components-circular-option-picker__option-wrapper' )
+				.eq( idx )
+				.find( 'button' )
+				.click( { force: true } )
 
-		cy
-			.get( '.components-circular-option-picker__swatches' )
-			.find( '.components-circular-option-picker__option-wrapper' )
-			.its( 'length' )
-			.should( 'equal', 4 )
-			// .then( $el => {
-			// 	$el.its( 'length' ).should( 'be', 4 )
-			// 	cy
-			// 		.get( 'button.components-circular-option-picker__option' )
-			// 		.invoke( 'attr', 'aria-label' )
-			// 		.then( label => {
-			// 			expect( label ).toBe( `Color: ${ colors[ idx ] }` )
-			// 		} )
-			// } )
+			cy
+				.selectBlock( 'ugb/card' )
+				.assertComputedStyle( {
+					'.ugb-card__title': {
+						'color': val,
+					},
+				} )
+		} )
 
 		cardBlock.assertFrontendStyles()
 	} )
