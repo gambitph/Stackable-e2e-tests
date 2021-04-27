@@ -10,24 +10,30 @@ describe( 'Global Settings', () => {
 		cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
 		const cardBlock = registerBlockSnapshots( 'cardBlock' )
 
-		const colors = [ '#ff0000', '#3fcee8', '#f2e374', '#f00069' ]
+		const colors = [
+			{
+				name: 'Custom Color Red',
+				color: '#ff0000',
+			},
+			{
+				name: 'Aqua',
+				color: '#3fcee8',
+			},
+			{
+				name: 'Yellow Sun',
+				color: '#f2e374',
+			},
+			{
+				name: 'Stackable Pink',
+				color: '#f00069',
+			} ]
 
 		// Add Global colors
-		cy.addGlobalColor( {
-			name: 'Custom Color Red',
-			color: colors[ 0 ],
-		} )
-		cy.addGlobalColor( {
-			name: 'Aqua',
-			color: colors[ 1 ],
-		} )
-		cy.addGlobalColor( {
-			name: 'Yellow Sun',
-			color: colors[ 2 ],
-		} )
-		cy.addGlobalColor( {
-			name: 'Stackable Pink',
-			color: colors[ 3 ],
+		colors.forEach( val => {
+			cy.addGlobalColor( {
+				name: val.name,
+				color: val.color,
+			} )
 		} )
 		cy.adjust( 'Use only Stackable colors', true )
 
@@ -47,7 +53,7 @@ describe( 'Global Settings', () => {
 				.selectBlock( 'ugb/card' )
 				.assertComputedStyle( {
 					'.ugb-card__title': {
-						'color': val,
+						'color': val.color,
 					},
 				} )
 		} )

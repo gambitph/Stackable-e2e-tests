@@ -59,7 +59,7 @@ function addGlobalColor( options = {} ) {
 							.closest( '.components-color-picker__inputs-field' )
 							.find( 'input' )
 							.click( { force: true } )
-							.clear()
+							.clear( { force: true } )
 							.type( `{selectall}${ color }{enter}`, { timeout: 300 } )
 					}
 
@@ -71,7 +71,7 @@ function addGlobalColor( options = {} ) {
 							.closest( '.components-color-picker__input-field' )
 							.find( 'input' )
 							.click( { force: true } )
-							.clear()
+							.clear( { force: true } )
 							.type( `{selectall}${ name }{enter}`, { timeout: 300 } )
 					}
 
