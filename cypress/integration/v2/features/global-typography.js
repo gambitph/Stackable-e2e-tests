@@ -122,6 +122,36 @@ function globalTypography( viewport, desktopOnly ) {
 		} )
 	} )
 
+	// Test fontSize px and lineHeight em values for Tablet & Mobile
+	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
+
+	if ( tabletMobileViewports.includes( viewport ) ) {
+		range( 1, 8 ).forEach( idx => {
+			cy.adjustGlobalTypography( globalTypo[ idx - 1 ].tag, {
+				'Size': {
+					value: globalTypo[ idx - 1 ].size,
+					unit: 'px',
+					viewport,
+				},
+				'Line-Height': {
+					value: globalTypo[ idx - 1 ].lineHeight,
+					unit: 'em',
+					viewport,
+				},
+			} )
+
+			cy.openInspector( 'ugb/heading', 'Style' )
+			cy.collapse( 'Title' )
+			cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
+				'.ugb-heading__title': {
+					'font-size': `${ globalTypo[ idx - 1 ].size }px`,
+					'line-height': `${ globalTypo[ idx - 1 ].lineHeight }em`,
+				},
+			} )
+		} )
+	}
+
+	// Test fontSize em and lineHeight px values for all viewports
 	const emFontSize = [ 4.2, 4.1, 3.9, 3.8, 3.7, 3.6, 3.5 ]
 	const pxLineHeight = [ 64, 58, 54, 48, 44, 38, 34 ]
 
