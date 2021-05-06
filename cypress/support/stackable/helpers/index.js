@@ -411,3 +411,56 @@ export const assertContainer = ( selector, options = {}, attrNameTemplate = 'col
 			.assertClassName( selector, 'ugb--shadow-9' )
 	} )
 }
+
+/*
+* Helper function for Container link panel assertion.
+*
+* @param {string} selector
+* @param {Object} options
+* @param {Object} assertOptions
+*/
+export const assertContainerLink = ( selector, options, assertOptions = {} ) => {
+	const {
+		viewport,
+	} = options
+	const desktopOnly = callback => viewport === 'Desktop' && callback()
+
+	const _collapse = ( collapseName = '' ) => {
+		const customSelector = {
+			'Style': 'ugb-panel-style',
+		}
+
+		cy.get( `.${ customSelector[ collapseName ] || 'ugb-inspector-panel-controls' }` )
+			.then( $panel => {
+				if ( $panel.text().includes( collapseName ) ) {
+					cy.collapse( collapseName )
+				}
+			} )
+	}
+
+	const _adjust = ( adjustName, value, options = {}, assertionFunc, args = [] ) => {
+		cy.get( '.ugb-toggle-panel-body.is-opened', { log: false } )
+			.then( $panel => {
+				if ( $panel.text().includes( adjustName ) ) {
+					if ( args.length ) {
+						cy.adjust( adjustName, value, options )[ assertionFunc ]( ...args )
+					} else {
+						cy.adjust( adjustName, value, options )
+					}
+				}
+			} )
+	}
+
+	desktopOnly( () => {
+		_collapse( 'General' )
+		_adjust( 'Columns', 1 )
+
+		cy.collapse( 'Container Link' )
+		cy.toggleStyle( 'Container Link' )
+
+		cy.get( 'input.block-editor-url-input__input' ).type( 'https://www.google.com/' )
+		cy.adjust( 'Link Title', 'Sample Link Title' ).assertHtmlAttribute( `${ selector } > a`, 'title', 'Sample Link Title', assertOptions )
+		cy.adjust( 'Open link in new tab', true ).assertHtmlAttribute( `${ selector } > a`, 'href', 'https://www.google.com/', assertOptions )
+		cy.adjust( 'Nofollow link', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', 'noopener noreferrer nofollow', assertOptions )
+	} )
+}

@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import { startCase, range } from 'lodash'
@@ -254,6 +254,7 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-number-box', { viewport } )
 	assertSeparators( { viewport } )
+	assertContainerLink( '.ugb-number-box__item', { viewport } )
 	numberBoxBlock.assertFrontendStyles()
 }
 
