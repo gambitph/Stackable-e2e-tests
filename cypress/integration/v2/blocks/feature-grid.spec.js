@@ -211,10 +211,8 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
 		cy.adjust( 'Opacity', 0.2 ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'color': '#4e2e2e',
-			},
 			'.ugb-button': {
+				'background-color': '#4e2e2e',
 				'opacity': '0.2',
 			},
 		} )
