@@ -163,10 +163,10 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 
-		cy.adjust( 'Paddings', [ 24, 12, 12, 21 ], { unit: '%', viewport } ).assertComputedStyle( {
+		cy.adjust( 'Paddings', [ 24, 12, 13, 21 ], { unit: '%', viewport } ).assertComputedStyle( {
 			'.ugb-header__item': {
 				'padding-top': '24%',
-				'padding-bottom': '12%',
+				'padding-bottom': '13%',
 				'padding-right': '12%',
 				'padding-left': '21%',
 			},
