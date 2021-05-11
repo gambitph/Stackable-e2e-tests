@@ -58,6 +58,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Title Options
 
+	cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Title here' )
 	cy.collapse( 'Title' )
 	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h4' )
@@ -74,7 +75,7 @@ function styleTab( viewport, desktopOnly ) {
 	// Test Subtitle options
 
 	cy.collapse( 'Subtitle' )
-	cy.toggleStyle( 'Subtitle' )
+	cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Subtitle here' )
 	desktopOnly( () => {
 		cy.adjust( 'Subtitle Color', '#742f2f' ).assertComputedStyle( {
 			'.ugb-heading__subtitle': {
@@ -191,6 +192,8 @@ function advancedTab( viewport ) {
 	cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
 	const headingBlock = registerBlockSnapshots( 'headingBlock' )
 
+	cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Title here' )
+	cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Subtitle here' )
 	cy.openInspector( 'ugb/heading', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-heading', {
