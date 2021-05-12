@@ -164,12 +164,12 @@ function styleTab( viewport, desktopOnly ) {
 	cy.collapse( 'Spacing' )
 	// Test Padding options
 	desktopOnly( () => {
-		cy.adjust( 'Padding', 46 ).assertComputedStyle( {
+		cy.adjust( 'Padding', [ 35, 36, 37, 38 ] ).assertComputedStyle( {
 			'.ugb-accordion__heading': {
-				'padding-top': '46px',
-				'padding-right': '46px',
-				'padding-bottom': '46px',
-				'padding-left': '46px',
+				'padding-top': '35px',
+				'padding-right': '36px',
+				'padding-bottom': '37px',
+				'padding-left': '38px',
 			},
 		} )
 	} )

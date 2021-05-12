@@ -170,28 +170,28 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Spacing options
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', 27, { viewport, unit: 'px' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 35, 36, 37, 38 ], { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			'padding-top': '27px',
-			'padding-bottom': '27px',
-			'padding-right': '27px',
-			'padding-left': '27px',
+			'padding-top': '35px',
+			'padding-right': '36px',
+			'padding-bottom': '37px',
+			'padding-left': '38px',
 		},
 	} )
-	cy.adjust( 'Paddings', 8, { viewport, unit: 'em' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 3, 4, 5, 6 ], { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			'padding-top': '8em',
-			'padding-bottom': '8em',
-			'padding-right': '8em',
-			'padding-left': '8em',
+			'padding-top': '3em',
+			'padding-right': '4em',
+			'padding-bottom': '5em',
+			'padding-left': '6em',
 		},
 	} )
-	cy.adjust( 'Paddings', 22, { viewport, unit: '%' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 17, 18, 19, 20 ], { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			'padding-top': '22%',
-			'padding-bottom': '22%',
-			'padding-right': '22%',
-			'padding-left': '22%',
+			'padding-top': '17%',
+			'padding-right': '18%',
+			'padding-bottom': '19%',
+			'padding-left': '20%',
 		},
 	} )
 	cy.adjust( 'Icon', 52, { viewport } ).assertComputedStyle( {
