@@ -181,12 +181,12 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Spacing options
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', [ 35, 36, 37, 38 ], { viewport } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 25, 26, 27, 28 ], { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-icon__content-wrapper': {
-			'padding-top': '35px',
-			'padding-right': '36px',
-			'padding-bottom': '37px',
-			'padding-left': '38px',
+			'padding-top': '25px',
+			'padding-right': '26px',
+			'padding-bottom': '27px',
+			'padding-left': '28px',
 		},
 	} )
 	cy.adjust( 'Paddings', [ 3, 4, 5, 6 ], { unit: 'em', viewport } ).assertComputedStyle( {
