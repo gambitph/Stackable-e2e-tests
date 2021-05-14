@@ -85,12 +85,12 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Spacing options
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', [ 35, 36, 37, 38 ], { viewport, unit: 'px' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 25, 26, 27, 28 ], { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-blockquote__item': {
-			'padding-top': '35px',
-			'padding-right': '36px',
-			'padding-bottom': '37px',
-			'padding-left': '38px',
+			'padding-top': '25px',
+			'padding-right': '26px',
+			'padding-bottom': '27px',
+			'padding-left': '28px',
 		},
 	} )
 	cy.resetStyle( 'Paddings' )
