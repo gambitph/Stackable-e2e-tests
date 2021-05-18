@@ -306,7 +306,11 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Color Type', 'gradient' )
 		cy.adjust( 'Button Color #1', '#a13939' )
 		cy.adjust( 'Button Color #2', '#4e59d4' )
-		cy.adjust( 'Gradient Direction (degrees)', 138 )
+		cy.adjust( 'Gradient Direction (degrees)', 138 ).assertComputedStyle( {
+			'.ugb-blog-posts__pagination .ugb-button': {
+				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
+			},
+		} )
 		cy.adjust( 'Text Color', '#ffa03b' )
 		cy.adjust( 'Hover Effect', 'scale' )
 			.assertClassName( '.ugb-blog-posts__pagination > button', 'ugb--hover-effect-scale' )
@@ -327,7 +331,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Shadow', 4 ).assertClassName( '.ugb-blog-posts__pagination .ugb-button', 'ugb--shadow-4' )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
 			'.ugb-blog-posts__pagination .ugb-button': {
-				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
 				'padding-top': '15px',
 				'padding-right': '43px',
 				'padding-bottom': '15px',
