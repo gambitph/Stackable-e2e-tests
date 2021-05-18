@@ -85,30 +85,30 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Spacing options
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', 25, { viewport, unit: 'px' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 25, 26, 27, 28 ], { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-blockquote__item': {
 			'padding-top': '25px',
-			'padding-bottom': '25px',
-			'padding-right': '25px',
-			'padding-left': '25px',
+			'padding-right': '26px',
+			'padding-bottom': '27px',
+			'padding-left': '28px',
 		},
 	} )
 	cy.resetStyle( 'Paddings' )
-	cy.adjust( 'Paddings', 3, { viewport, unit: 'em' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 3, 4, 5, 6 ], { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-blockquote__item': {
 			'padding-top': '3em',
-			'padding-bottom': '3em',
-			'padding-right': '3em',
-			'padding-left': '3em',
+			'padding-right': '4em',
+			'padding-bottom': '5em',
+			'padding-left': '6em',
 		},
 	} )
 	cy.resetStyle( 'Paddings' )
-	cy.adjust( 'Paddings', 17, { viewport, unit: '%' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 17, 18, 19, 20 ], { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-blockquote__item': {
 			'padding-top': '17%',
-			'padding-bottom': '17%',
-			'padding-right': '17%',
-			'padding-left': '17%',
+			'padding-right': '18%',
+			'padding-bottom': '19%',
+			'padding-left': '20%',
 		},
 	} )
 

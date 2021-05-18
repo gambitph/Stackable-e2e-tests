@@ -81,28 +81,28 @@ function columnStyleTab( viewport, desktopOnly ) {
 	assertContainer( '.ugb-column__item', { viewport }, 'column%sBackgroundMediaUrl' )
 
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', 28, { unit: 'px', viewport } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 25, 26, 27, 28 ], { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-column__item': {
-			'padding-top': '28px',
-			'padding-bottom': '28px',
-			'padding-right': '28px',
+			'padding-top': '25px',
+			'padding-right': '26px',
+			'padding-bottom': '27px',
 			'padding-left': '28px',
 		},
 	} )
-	cy.adjust( 'Paddings', 7, { unit: 'em', viewport } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 3, 4, 5, 6 ], { unit: 'em', viewport } ).assertComputedStyle( {
 		'.ugb-column__item': {
-			'padding-top': '7em',
-			'padding-bottom': '7em',
-			'padding-right': '7em',
-			'padding-left': '7em',
+			'padding-top': '3em',
+			'padding-right': '4em',
+			'padding-bottom': '5em',
+			'padding-left': '6em',
 		},
 	} )
-	cy.adjust( 'Paddings', 23, { unit: '%', viewport } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 17, 18, 19, 20 ], { unit: '%', viewport } ).assertComputedStyle( {
 		'.ugb-column__item': {
-			'padding-top': '23%',
-			'padding-bottom': '23%',
-			'padding-right': '23%',
-			'padding-left': '23%',
+			'padding-top': '17%',
+			'padding-right': '18%',
+			'padding-bottom': '19%',
+			'padding-left': '20%',
 		},
 	} )
 
