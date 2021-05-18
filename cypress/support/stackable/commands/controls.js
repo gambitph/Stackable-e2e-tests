@@ -22,6 +22,7 @@ Cypress.Commands.add( 'fourRangeControl', fourRangeControl )
 Cypress.Commands.add( 'iconControl', iconControl )
 Cypress.Commands.add( 'popoverControl', popoverControl )
 Cypress.Commands.add( 'suggestionControl', suggestionControl )
+Cypress.Commands.add( 'urlInputControl', urlInputControl )
 
 // Reset
 Cypress.Commands.add( 'iconControlReset', iconControlReset )
@@ -68,6 +69,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		'.ugb-columns-width-control': 'columnControl',
 		'.ugb-design-control': 'designControl',
 		'.ugb-icon-control': 'iconControl',
+		'.ugb-url-input-control__input': 'urlInputControl',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -143,6 +145,27 @@ export function changeIcon( index = 1, keyword = '', icon ) {
 		.get( `.ugb-icon-popover__iconlist>button${ icon ? `.${ icon }` : '' }` )
 		.first()
 		.click( { force: true } )
+}
+
+/**
+ * Command for adjusting the URL input control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ */
+function urlInputControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+	} = options
+
+	beforeAdjust( name, value, options )
+	cy.getBaseControl( name, { isInPopover } )
+		.contains( containsRegExp( name ) )
+		.closest( '.components-panel__body>.components-base-control' )
+		.find( 'input' )
+		.type( `{selectall}${ value }{enter}`, { force: true } )
 }
 
 /**
