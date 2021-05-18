@@ -272,7 +272,7 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-cta', { viewport } )
 
 	assertSeparators( { viewport } )
-	assertContainerLink( '.ugb-container__wrapper', { viewport } )
+	assertContainerLink( '.ugb-cta__item', { viewport } )
 	ctaBlock.assertFrontendStyles()
 }
 
