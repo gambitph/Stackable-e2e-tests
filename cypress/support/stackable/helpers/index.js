@@ -411,3 +411,34 @@ export const assertContainer = ( selector, options = {}, attrNameTemplate = 'col
 			.assertClassName( selector, 'ugb--shadow-9' )
 	} )
 }
+
+/*
+* Helper function for Container link panel assertion.
+*
+* @param {string} selector
+* @param {Object} options
+* @param {Object} assertOptions
+*/
+export const assertContainerLink = ( selector, options = {}, assertOptions = {} ) => {
+	const {
+		viewport = 'Desktop',
+	} = options
+	const desktopOnly = callback => viewport === 'Desktop' && callback()
+
+	desktopOnly( () => {
+		cy.collapse( 'Container Link' )
+		cy.toggleStyle( 'Container Link' )
+
+		cy.getBlockAttributes().then( ( { columns } ) => {
+			if ( columns && columns !== 1 ) {
+				cy.adjust( 'Link / URL #1', 'https://www.google.com/' ).assertHtmlAttribute( `${ selector } > a`, 'href', 'https://www.google.com/', assertOptions )
+				cy.adjust( 'Link 1 Title', 'Sample Link Title' ).assertHtmlAttribute( `${ selector } > a`, 'title', 'Sample Link Title', assertOptions )
+			} else {
+				cy.adjust( 'Link / URL', 'https://www.google.com/' ).assertHtmlAttribute( `${ selector } > a`, 'href', 'https://www.google.com/', assertOptions )
+				cy.adjust( 'Link Title', 'Sample Link Title' ).assertHtmlAttribute( `${ selector } > a`, 'title', 'Sample Link Title', assertOptions )
+			}
+			cy.adjust( 'Open link in new tab', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', 'noopener noreferrer', assertOptions )
+			cy.adjust( 'Nofollow link', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', 'noopener noreferrer nofollow', assertOptions )
+		} )
+	} )
+}

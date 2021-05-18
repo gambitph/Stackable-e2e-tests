@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertAligns, assertBlockBackground, assertSeparators, responsiveAssertHelper, assertTypography, assertContainer, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, registerTests, assertAligns, assertBlockBackground, assertSeparators, responsiveAssertHelper, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
@@ -323,6 +323,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	assertBlockBackground( '.ugb-header', { viewport } )
 	assertSeparators( { viewport } )
+	assertContainerLink( '.ugb-header__item', { viewport } )
 	headerBlock.assertFrontendStyles()
 }
 

@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	registerTests, responsiveAssertHelper, assertAdvancedTab, assertAligns, assertContainer,
+	registerTests, responsiveAssertHelper, assertAdvancedTab, assertAligns, assertContainer, assertContainerLink,
 } from '~stackable-e2e/helpers'
 
 const [ columnDesktopStyle, columnTabletStyle, columnMobileStyle ] = responsiveAssertHelper( columnStyleTab )
@@ -136,6 +136,7 @@ function columnStyleTab( viewport, desktopOnly ) {
 		// Go back to ugb/column
 		cy.selectBlock( 'ugb/column' )
 	} )
+	assertContainerLink( '.ugb-column__item', { viewport } )
 }
 
 function columnAdvancedTab( viewport ) {

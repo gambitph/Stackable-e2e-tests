@@ -20,6 +20,7 @@ Cypress.Commands.add( 'textControl', textControl )
 Cypress.Commands.add( 'textAreaControl', textAreaControl )
 Cypress.Commands.add( 'stylesControl', stylesControl )
 Cypress.Commands.add( 'fontSizeControl', fontSizeControl )
+Cypress.Commands.add( 'urlInputControl', urlInputControl )
 
 // Adjust Styles
 Cypress.Commands.add( 'adjust', adjust )
@@ -289,6 +290,27 @@ function fontSizeControl( name, value, options = {} ) {
 }
 
 /**
+ * Command for adjusting the URL input control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ */
+function urlInputControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+	} = options
+
+	beforeAdjust( name, value, options )
+	cy.getBaseControl( name, { isInPopover } )
+		.contains( containsRegExp( name ) )
+		.closest( '.components-panel__body>.components-base-control' )
+		.find( 'input.block-editor-url-input__input' )
+		.type( `{selectall}${ value }{enter}`, { force: true } )
+}
+
+/**
  * Command for adjusting settings.
  *
  * @param {string} name
@@ -335,6 +357,7 @@ export function adjust( name, value, options ) {
 		'.components-form-toggle__input': 'toggleControl',
 		'.components-text-control__input': 'textControl',
 		'.components-textarea-control__input': 'textAreaControl',
+		'.block-editor-url-input': 'urlInputControl',
 	}
 
 	baseControlSelector()

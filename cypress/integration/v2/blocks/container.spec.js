@@ -3,7 +3,7 @@
  */
 import { blocks } from '~stackable-e2e/config'
 import {
-	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertContainer, assertAdvancedTab,
+	assertAligns, assertBlockBackground, assertBlockExist, assertContainerLink, assertSeparators, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
@@ -199,6 +199,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.selectBlock( 'ugb/container' )
 	assertBlockBackground( '.ugb-container', { viewport } )
 	assertSeparators( { viewport } )
+	assertContainerLink( '.ugb-container__wrapper', { viewport } )
 	containerBlock.assertFrontendStyles()
 }
 
