@@ -419,9 +419,9 @@ export const assertContainer = ( selector, options = {}, attrNameTemplate = 'col
 * @param {Object} options
 * @param {Object} assertOptions
 */
-export const assertContainerLink = ( selector, options, assertOptions = {} ) => {
+export const assertContainerLink = ( selector, options = {}, assertOptions = {} ) => {
 	const {
-		viewport,
+		viewport = 'Desktop',
 	} = options
 	const desktopOnly = callback => viewport === 'Desktop' && callback()
 
