@@ -142,12 +142,62 @@ describe( 'Global Settings', () => {
 				} )
 			} )
 
+		cy.addBlock( 'core/paragraph' )
+		// Edit a global color
+		cy.addGlobalColor( { name: 'Aquamarine', color: '#0ccbbf' }, 'Stackable Pink' )
+		// Assert the edited global color in blocks
+		blocks
+			.filter( blockName => blockName !== 'ugb/blog-posts' )
+			.forEach( blockName => {
+				const name = blockName.split( '/' ).pop()
+
+				if ( blocksWithTitle.includes( blockName ) ) {
+					cy
+						.selectBlock( blockName )
+						.assertComputedStyle( {
+							[ `.ugb-${ name === 'ugb/count-up' ? 'countup' : name }__title` ]: {
+								'color': '#0ccbbf',
+							},
+						} )
+				}
+
+				if ( blocksWithSeparator.includes( blockName ) ) {
+					cy
+						.selectBlock( blockName )
+						.assertComputedStyle( {
+							'.ugb-top-separator svg': {
+								'fill': '#0ccbbf',
+							},
+						} )
+				}
+
+				if ( name === 'divider' || name === 'spacer' ) {
+					cy
+						.selectBlock( blockName )
+						.assertComputedStyle( {
+							[ `${ name === 'divider' ? '.ugb-divider__hr' : '.ugb-spacer--inner' }` ]: {
+								'background-color': '#0ccbbf',
+							},
+						} )
+				}
+
+				if ( name === 'separator' ) {
+					cy
+						.selectBlock( blockName )
+						.assertComputedStyle( {
+							'.ugb-separator__layer-1': {
+								'fill': '#0ccbbf',
+							},
+						} )
+				}
+			} )
+
 		// Delete Global colors
 		cy.addBlock( 'core/paragraph' )
 		cy.resetGlobalColor()
 		cy.adjust( 'Use only Stackable colors', false )
 
-		// Global Color test TODOs
+		// Global Color test TODOs:
 		// Posts block
 	} )
 } )
