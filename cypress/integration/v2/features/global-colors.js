@@ -4,32 +4,61 @@
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import { blocks } from '~stackable-e2e/config'
 
+const colors = [
+	{
+		name: 'Custom Color Red',
+		color: '#ff0000',
+	},
+	{
+		name: 'Aqua',
+		color: '#3fcee8',
+	},
+	{
+		name: 'Yellow Sun',
+		color: '#f2e374',
+	},
+	{
+		name: 'Stackable Pink',
+		color: '#f00069',
+	},
+]
+
+const blocksWithTitle = [
+	'ugb/accordion',
+	'ugb/heading',
+	'ugb/text',
+	'ugb/icon',
+	'ugb/feature-grid',
+	'ugb/image-box',
+	'ugb/feature',
+	'ugb/cta',
+	'ugb/card',
+	'ugb/header',
+	'ugb/count-up',
+	'ugb/pricing-box',
+	'ugb/notification',
+	'ugb/number-box',
+	'ugb/expand',
+]
+
+const blocksWithSeparator = [
+	'ugb/columns',
+	'ugb/container',
+	'ugb/icon-list',
+	'ugb/video-popup',
+	'ugb/testimonial',
+	'ugb/team-member',
+	'ugb/button',
+	'ugb/blockquote',
+]
+
 describe( 'Global Settings', () => {
-	it( 'should adjust Stackable Global Colors', () => {
+	it( 'should adjust Global Colors and assert the color picker in blocks', () => {
 		cy.setupWP()
 		cy.newPage()
 
-		const colors = [
-			{
-				name: 'Custom Color Red',
-				color: '#ff0000',
-			},
-			{
-				name: 'Aqua',
-				color: '#3fcee8',
-			},
-			{
-				name: 'Yellow Sun',
-				color: '#f2e374',
-			},
-			{
-				name: 'Stackable Pink',
-				color: '#f00069',
-			},
-		]
-
-		cy.addBlock( 'core/paragraph' )
 		// Add Global colors
+		cy.addBlock( 'core/paragraph' )
 		colors.forEach( val => {
 			cy.addGlobalColor( {
 				name: val.name,
@@ -37,35 +66,6 @@ describe( 'Global Settings', () => {
 			} )
 		} )
 		cy.adjust( 'Use only Stackable colors', true )
-
-		const blocksWithTitle = [
-			'ugb/accordion',
-			'ugb/heading',
-			'ugb/text',
-			'ugb/icon',
-			'ugb/feature-grid',
-			'ugb/image-box',
-			'ugb/feature',
-			'ugb/cta',
-			'ugb/card',
-			'ugb/header',
-			'ugb/count-up',
-			'ugb/pricing-box',
-			'ugb/notification',
-			'ugb/number-box',
-			'ugb/expand',
-		]
-
-		const blocksWithSeparator = [
-			'ugb/columns',
-			'ugb/container',
-			'ugb/icon-list',
-			'ugb/video-popup',
-			'ugb/testimonial',
-			'ugb/team-member',
-			'ugb/button',
-			'ugb/blockquote',
-		]
 
 		blocks
 			.filter( blockName => blockName !== 'ugb/blog-posts' )
@@ -142,20 +142,77 @@ describe( 'Global Settings', () => {
 				} )
 			} )
 
+		// Delete Global colors
 		cy.addBlock( 'core/paragraph' )
+		cy.resetGlobalColor()
+		cy.adjust( 'Use only Stackable colors', false )
+		cy.savePost()
+		// Global Color test TODOs:
+		// Posts block
+	} )
+
+	it( 'should assert the changing of Global Color', () => {
+		cy.setupWP()
+		cy.newPage()
+
+		cy.addBlock( 'core/paragraph' )
+		cy.addGlobalColor( {
+			name: colors[ 3 ].name,
+			color: colors[ 3 ].color,
+		} )
+		cy.adjust( 'Use only Stackable colors', true )
+
+		blocks
+			.filter( blockName => blockName !== 'ugb/blog-posts' )
+			.forEach( blockName => {
+				const name = blockName.split( '/' ).pop()
+				cy.addBlock( blockName )
+				cy.openInspector( blockName, 'Style' )
+
+				if ( blocksWithTitle.includes( blockName ) ) {
+					if ( name === 'heading' || name === 'text' ||
+					name === 'expand' ) {
+						if ( name === 'text' ) {
+							cy.toggleStyle( 'Title' )
+						}
+						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
+					}
+
+					cy.collapse( 'Title' )
+					cy.adjust( 'Title Color', 1 )
+				}
+
+				if ( blocksWithSeparator.includes( blockName ) ) {
+					cy.collapse( 'Top Separator' )
+					cy.adjust( 'Color', 1 )
+				}
+
+				if ( name === 'divider' || name === 'spacer' ) {
+					cy.collapse( 'General' )
+					cy.adjust( `${ blockName === 'ugb/divider' ? 'Color' : 'Background Color' }`, 1 )
+				}
+
+				if ( name === 'separator' ) {
+					cy.collapse( 'Separator' )
+					cy.adjust( 'Separator Color', 1 )
+				}
+			} )
+
 		// Edit a global color
+		cy.addBlock( 'core/paragraph' )
 		cy.addGlobalColor( { name: 'Aquamarine', color: '#0ccbbf' }, 'Stackable Pink' )
 		// Assert the edited global color in blocks
 		blocks
 			.filter( blockName => blockName !== 'ugb/blog-posts' )
 			.forEach( blockName => {
 				const name = blockName.split( '/' ).pop()
+				cy.openInspector( blockName, 'Style' )
 
 				if ( blocksWithTitle.includes( blockName ) ) {
 					cy
 						.selectBlock( blockName )
 						.assertComputedStyle( {
-							[ `.ugb-${ name === 'ugb/count-up' ? 'countup' : name }__title` ]: {
+							[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
 								'color': '#0ccbbf',
 							},
 						} )
@@ -182,8 +239,9 @@ describe( 'Global Settings', () => {
 				}
 
 				if ( name === 'separator' ) {
+					cy.collapse( 'Separator' )
 					cy
-						.selectBlock( blockName )
+						.adjust( 'Shadow', true )
 						.assertComputedStyle( {
 							'.ugb-separator__layer-1': {
 								'fill': '#0ccbbf',
@@ -191,13 +249,5 @@ describe( 'Global Settings', () => {
 						} )
 				}
 			} )
-
-		// Delete Global colors
-		cy.addBlock( 'core/paragraph' )
-		cy.resetGlobalColor()
-		cy.adjust( 'Use only Stackable colors', false )
-
-		// Global Color test TODOs:
-		// Posts block
 	} )
 } )

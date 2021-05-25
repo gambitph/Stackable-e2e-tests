@@ -2,10 +2,13 @@
  * External dependencies
  */
 import { range } from 'lodash'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import {
 	responsiveAssertHelper,
 	registerTests,
 } from '~stackable-e2e/helpers'
+
+import { blocks } from '~stackable-e2e/config'
 
 const [ desktopGlobal, tabletGlobal, mobileGlobal ] = responsiveAssertHelper( globalTypography, { tab: 'Global Typography' } )
 
@@ -85,12 +88,34 @@ function globalTypography( viewport, desktopOnly ) {
 		},
 	]
 
-	cy.addBlock( 'ugb/heading' )
-	cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Heading' )
-	cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'This is paragraph' )
+	const blocksWithTitle = [
+		'ugb/accordion',
+		'ugb/heading',
+		'ugb/text',
+		'ugb/icon',
+		'ugb/feature-grid',
+		'ugb/image-box',
+		'ugb/feature',
+		'ugb/cta',
+		'ugb/card',
+		'ugb/header',
+		'ugb/count-up',
+		'ugb/pricing-box',
+		'ugb/notification',
+		'ugb/number-box',
+		'ugb/expand',
+	]
 
-	// Adjust Global Typography settings
+	const blocksWithBlockTitle = [
+		'ugb/columns',
+		'ugb/icon-list',
+		'ugb/video-popup',
+		'ugb/testimonial',
+		'ugb/team-member',
+	]
+
 	desktopOnly( () => {
+		cy.addBlock( 'core/paragraph' )
 		globalTypo.forEach( val => {
 			cy.adjustGlobalTypography( val.tag, {
 				'Font Family': val.font,
@@ -106,26 +131,78 @@ function globalTypography( viewport, desktopOnly ) {
 				},
 				'Letter Spacing': val.letterSpacing,
 			} )
-
-			cy.openInspector( 'ugb/heading', 'Style' )
-			cy.collapse( 'Title' )
-			cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-				'.ugb-heading__title': {
-					'font-family': `${ val.font }, sans-serif`,
-					'font-size': `${ val.size }px`,
-					'font-weight': val.weight,
-					'text-transform': val.transform,
-					'line-height': `${ val.lineHeight }em`,
-					'letter-spacing': `${ val.letterSpacing }px`,
-				},
-			} )
 		} )
+
+		blocks
+			.filter( blockName => {
+			// Blocks that do not have typography module
+				const blacklist = [
+					'ugb/container',
+					'ugb/button',
+					'ugb/blockquote',
+					'ugb/divider',
+					'ugb/spacer',
+					'ugb/separator',
+					'ugb/blog-posts',
+				]
+				return ! blacklist.includes( blockName )
+			} )
+			.forEach( blockName => {
+				const name = blockName.split( '/' ).pop()
+
+				cy.addBlock( blockName ).as( 'block' )
+				const block = registerBlockSnapshots( 'block' )
+				cy.openInspector( blockName, 'Style' )
+
+				// Adjust Global Typography settings
+				if ( name === 'heading' || name === 'text' ||
+					name === 'expand' ) {
+					if ( name === 'text' ) {
+						cy.toggleStyle( 'Title' )
+					}
+					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
+				}
+
+				globalTypo.forEach( val => {
+					if ( blocksWithTitle.includes( blockName ) ) {
+						cy.collapse( 'Title' )
+						cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
+							[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
+								'font-family': `${ val.font }, sans-serif`,
+								'font-size': `${ val.size }px`,
+								'font-weight': val.weight,
+								'text-transform': val.transform,
+								'line-height': `${ val.lineHeight }em`,
+								'letter-spacing': `${ val.letterSpacing }px`,
+							},
+						} )
+					}
+
+					if ( blocksWithBlockTitle.includes( blockName ) ) {
+						cy.toggleStyle( 'Block Title' )
+						cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
+							[ `.ugb-${ name } .ugb-block-title` ]: {
+								'font-family': `${ val.font }, sans-serif`,
+								'font-size': `${ val.size }px`,
+								'font-weight': val.weight,
+								'text-transform': val.transform,
+								'line-height': `${ val.lineHeight }em`,
+								'letter-spacing': `${ val.letterSpacing }px`,
+							},
+						} )
+					}
+				} )
+
+				cy.getPostUrls().then( ( { editorUrl } ) => {
+					block.assertFrontendStyles()
+					cy.visit( editorUrl )
+				} )
+			} )
 	} )
 
-	// Test fontSize px and lineHeight em values for Tablet & Mobile
 	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
-
 	if ( tabletMobileViewports.includes( viewport ) ) {
+		cy.addBlock( 'core/paragraph' )
 		range( 1, 8 ).forEach( idx => {
 			cy.adjustGlobalTypography( globalTypo[ idx - 1 ].tag, {
 				'Size': {
@@ -139,22 +216,72 @@ function globalTypography( viewport, desktopOnly ) {
 					viewport,
 				},
 			} )
-
-			cy.openInspector( 'ugb/heading', 'Style' )
-			cy.collapse( 'Title' )
-			cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
-				'.ugb-heading__title': {
-					'font-size': `${ globalTypo[ idx - 1 ].size }px`,
-					'line-height': `${ globalTypo[ idx - 1 ].lineHeight }em`,
-				},
-			} )
 		} )
+
+		blocks
+			.filter( blockName => {
+			// Blocks that do not have typography module
+				const blacklist = [
+					'ugb/container',
+					'ugb/button',
+					'ugb/blockquote',
+					'ugb/divider',
+					'ugb/spacer',
+					'ugb/separator',
+					'ugb/blog-posts',
+				]
+				return ! blacklist.includes( blockName )
+			} )
+			.forEach( blockName => {
+				const name = blockName.split( '/' ).pop()
+
+				cy.addBlock( blockName ).as( 'block' )
+				const block = registerBlockSnapshots( 'block' )
+
+				if ( name === 'heading' || name === 'text' ||
+					name === 'expand' ) {
+					if ( name === 'text' ) {
+						cy.toggleStyle( 'Title' )
+					}
+					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
+				}
+				// Test fontSize px and lineHeight em values for Tablet & Mobile
+				range( 1, 8 ).forEach( idx => {
+					cy.openInspector( blockName, 'Style' )
+
+					if ( blocksWithTitle.includes( blockName ) ) {
+						cy.collapse( 'Title' )
+						cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
+							[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
+								'font-size': `${ globalTypo[ idx - 1 ].size }px`,
+								'line-height': `${ globalTypo[ idx - 1 ].lineHeight }em`,
+							},
+						} )
+					}
+
+					if ( blocksWithBlockTitle.includes( blockName ) ) {
+						cy.toggleStyle( 'Block Title' )
+						cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
+							[ `.ugb-${ name } .ugb-block-title` ]: {
+								'font-size': `${ globalTypo[ idx - 1 ].size }px`,
+								'line-height': `${ globalTypo[ idx - 1 ].lineHeight }em`,
+							},
+						} )
+					}
+				} )
+
+				cy.getPostUrls().then( ( { editorUrl } ) => {
+					block.assertFrontendStyles()
+					cy.visit( editorUrl )
+				} )
+			} )
 	}
 
 	// Test fontSize em and lineHeight px values for all viewports
 	const emFontSize = [ 4.2, 4.1, 3.9, 3.8, 3.7, 3.6, 3.5 ]
 	const pxLineHeight = [ 64, 58, 54, 48, 44, 38, 34 ]
 
+	cy.addBlock( 'core/paragraph' )
 	range( 1, 8 ).forEach( idx => {
 		cy.adjustGlobalTypography( globalTypo[ idx - 1 ].tag, {
 			'Size': {
@@ -168,17 +295,54 @@ function globalTypography( viewport, desktopOnly ) {
 				viewport,
 			},
 		} )
+	} )
 
-		cy.openInspector( 'ugb/heading', 'Style' )
-		cy.collapse( 'Title' )
-		cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
-			'.ugb-heading__title': {
-				'font-size': `${ emFontSize[ idx - 1 ] }em`,
-				'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
-			},
+	blocks
+		.filter( blockName => {
+			// Blocks that do not have typography module / dynamic block
+			const blacklist = [
+				'ugb/container',
+				'ugb/button',
+				'ugb/blockquote',
+				'ugb/divider',
+				'ugb/spacer',
+				'ugb/separator',
+				'ugb/blog-posts', // TODO.
+			]
+			return ! blacklist.includes( blockName )
+		} )
+		.forEach( blockName => {
+			const name = blockName.split( '/' ).pop()
+
+			range( 1, 8 ).forEach( idx => {
+				cy.openInspector( blockName, 'Style' )
+
+				if ( blocksWithTitle.includes( blockName ) ) {
+					cy.collapse( 'Title' )
+					cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
+						[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
+							'font-size': `${ emFontSize[ idx - 1 ] }em`,
+							'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
+						},
+					} )
+				}
+
+				if ( blocksWithBlockTitle.includes( blockName ) ) {
+					cy.toggleStyle( 'Block Title' )
+					cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
+						[ `.ugb-${ name } .ugb-block-title` ]: {
+							'font-size': `${ emFontSize[ idx - 1 ] }em`,
+							'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
+						},
+					} )
+				}
+
+				// Reset Global Typography settings
+				cy.addBlock( 'core/paragraph' )
+				cy.resetGlobalTypography( globalTypo[ idx - 1 ].tag )
+			} )
 		} )
 
-		// Reset Global Typography settings
-		cy.resetGlobalTypography( globalTypo[ idx - 1 ].tag )
-	} )
+	// Global typography TODOs:
+	// Posts block
 }
