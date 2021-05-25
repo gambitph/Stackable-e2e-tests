@@ -250,4 +250,56 @@ describe( 'Global Settings', () => {
 				}
 			} )
 	} )
+
+	it( 'should assert global colors in native blocks', () => {
+		cy.setupWP()
+		cy.newPage()
+
+		const nativeBlocks = [
+			'core/paragraph',
+			'core/separator',
+			'core/heading',
+			'core/list',
+			'core/buttons',
+			'core/cover',
+		]
+
+		nativeBlocks.forEach( blockName => {
+			cy.addBlock( blockName )
+		} )
+
+		colors.forEach( val => {
+			cy.addGlobalColor( {
+				name: val.name,
+				color: val.color,
+			} )
+		} )
+		cy.adjust( 'Use only Stackable colors', true )
+
+		nativeBlocks.forEach( blockName => {
+			if ( blockName !== 'core/separator' && blockName !== 'core/cover' ) {
+				cy
+					.get( `.wp-block[data-type='${ blockName }']` )
+					.type( 'Block Title', { force: true } )
+			}
+			if ( blockName !== 'core/cover' ) {
+				cy.selectBlock( `${ blockName === 'core/buttons' ? 'core/button' : blockName }` )
+				cy.openSidebar( 'Settings' )
+				cy.collapse( 'Color settings' )
+				colors.forEach( ( val, idx ) => {
+					cy
+						.adjust( `${ blockName === 'core/separator' ? 'Color' : 'Text Color' }`, idx + 1 )
+				} )
+			}
+			colors.forEach( ( val, idx ) => {
+				cy
+					.get( '.components-circular-option-picker__option-wrapper' )
+					.eq( idx )
+					.find( `button[aria-label="Color: ${ val.name }"]` )
+					.should( 'exist' )
+					.invoke( 'attr', 'style', `background-color: ${ val.color }` )
+					.should( 'have.attr', 'style', `background-color: ${ val.color }` )
+			} )
+		} )
+	} )
 } )
