@@ -249,6 +249,14 @@ describe( 'Global Settings', () => {
 						} )
 				}
 			} )
+
+		// Delete Global colors
+		cy.addBlock( 'core/paragraph' )
+		cy.resetGlobalColor()
+		cy.adjust( 'Use only Stackable colors', false )
+		cy.savePost()
+		// Global Color test TODOs:
+		// Posts block
 	} )
 
 	it( 'should assert global colors in native blocks', () => {
@@ -301,5 +309,11 @@ describe( 'Global Settings', () => {
 					.should( 'have.attr', 'style', `background-color: ${ val.color }` )
 			} )
 		} )
+
+		// Delete Global colors
+		cy.addBlock( 'core/paragraph' )
+		cy.resetGlobalColor()
+		cy.adjust( 'Use only Stackable colors', false )
+		cy.savePost()
 	} )
 } )
