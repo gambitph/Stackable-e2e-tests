@@ -143,7 +143,7 @@ function globalTypography( viewport, desktopOnly ) {
 					'ugb/divider',
 					'ugb/spacer',
 					'ugb/separator',
-					'ugb/blog-posts',
+					'ugb/blog-posts', // blacklisted as this is a dynamic block
 				]
 				return ! blacklist.includes( blockName )
 			} )
