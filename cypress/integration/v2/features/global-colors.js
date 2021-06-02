@@ -372,7 +372,12 @@ describe( 'Global Settings', () => {
 		// Reset the global colors
 		cy.addBlock( 'core/paragraph' )
 		cy.resetGlobalColor()
-		cy.adjust( 'Use only Stackable colors', false )
+		// Add a global color with the same name as the removed one.
+		// This should not affect the color of the blocks.
+		cy.addEditGlobalColor( {
+			name: colors[ 3 ].name,
+			color: '#eeeeee',
+		} )
 
 		blocks
 			.filter( blockName => blockName !== 'ugb/blog-posts' )
