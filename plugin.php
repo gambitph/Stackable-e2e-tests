@@ -198,3 +198,16 @@ if ( isset( $_GET[ 'register-posts' ] ) ) {
 		}
 	} );
 }
+
+if ( isset( $_GET[ 'change-role' ] ) ) {
+	add_action( 'init', function() {
+		$role_from = strtolower( $_GET[ 'roleFrom' ] );
+		$role_to = strtolower( $_GET[ 'roleTo' ] );
+	
+		$user = new WP_User( 1 );
+		// Remove role
+		$user->remove_role( $role_from );
+		// Add role
+		$user->add_role( $role_to );
+	} );
+}

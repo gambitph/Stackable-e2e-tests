@@ -4,6 +4,7 @@
 Cypress.Commands.add( 'loginAdmin', loginAdmin )
 Cypress.Commands.add( 'setupWP', setupWP )
 Cypress.Commands.add( 'registerPosts', registerPosts )
+Cypress.Commands.add( 'changeRole', changeRole )
 
 /**
  * Command used to enter the login credentials of the admin.
@@ -43,7 +44,19 @@ export function registerPosts( args = {} ) {
 			imageName: posts.image_name,
 			numOfPosts: args.numOfPosts,
 		} )
-		cy.visit( '/?register-posts=' + params.toString() )
+		cy.visit( '/?register-posts=true&' + params.toString() )
 	} )
 }
 
+/**
+ * Command for changing the role of the current user.
+ *
+ * @param {Object} args
+ */
+export function changeRole( args = {} ) {
+	const params = new URLSearchParams( {
+		roleFrom: args.roleFrom,
+		roleTo: args.roleTo,
+	} )
+	cy.visit( '/?change-role=true&' + params.toString() )
+}
