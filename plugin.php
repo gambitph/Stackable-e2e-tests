@@ -201,8 +201,10 @@ if ( isset( $_GET[ 'register-posts' ] ) ) {
 
 if ( isset( $_GET[ 'change-role' ] ) ) {
 	add_action( 'init', function() {
-		$role_from = strtolower( $_GET[ 'roleFrom' ] );
 		$role_to = strtolower( $_GET[ 'roleTo' ] );
+
+		$roles = wp_get_current_user()->roles;
+		$role_from = reset( $roles );
 	
 		$user = new WP_User( 1 );
 		// Remove role

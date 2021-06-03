@@ -55,7 +55,6 @@ export function registerPosts( args = {} ) {
  */
 export function changeRole( args = {} ) {
 	const params = new URLSearchParams( {
-		roleFrom: args.roleFrom,
 		roleTo: args.roleTo,
 	} )
 	cy.visit( '/?change-role=true&' + params.toString() )

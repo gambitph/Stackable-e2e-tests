@@ -35,7 +35,7 @@ describe( 'Role Manager', () => {
 
 		cy.getPostUrls().then( ( { editorUrl } ) => {
 			// Test full site editing for editor
-			cy.changeRole( { roleFrom: 'administrator', roleTo: 'editor' } )
+			cy.changeRole( { roleTo: 'editor' } )
 			cy.visit( editorUrl )
 			blocks.forEach( blockName => {
 				cy.selectBlock( blockName )
@@ -43,12 +43,12 @@ describe( 'Role Manager', () => {
 			} )
 			cy.savePost()
 			// Revert to administrator role to adjust role manager settings
-			cy.changeRole( { roleFrom: 'editor', roleTo: 'administrator' } )
+			cy.changeRole( { roleTo: 'administrator' } )
 			adjustAllRoles()
 
-			const testContentOnly = ( roleFrom, roleTo ) => {
+			const testContentOnly = roleTo => {
 				if ( roleTo !== 'administrator' ) {
-					cy.changeRole( { roleFrom, roleTo } )
+					cy.changeRole( { roleTo } )
 				}
 
 				cy.visit( editorUrl )
@@ -70,14 +70,14 @@ describe( 'Role Manager', () => {
 		} )
 
 		// Always revert the role back to the administrator to have full access of the site
-		cy.changeRole( { roleFrom: 'editor', roleTo: 'administrator' } )
+		cy.changeRole( { roleTo: 'administrator' } )
 		// Revert the settings back
 		adjustAllRoles()
 	} )
 
 	it( 'should assert role manager settings for author and contributor', () => {
 		cy.setupWP()
-		cy.changeRole( { roleFrom: 'administrator', roleTo: 'author' } )
+		cy.changeRole( { roleTo: 'author' } )
 		cy.newPost()
 		blocks.forEach( blockName => {
 			cy.addBlock( blockName )
@@ -89,7 +89,7 @@ describe( 'Role Manager', () => {
 
 		cy.getPostUrls().then( ( { editorUrl } ) => {
 			// Test full site editing for contributor
-			cy.changeRole( { roleFrom: 'author', roleTo: 'contributor' } )
+			cy.changeRole( { roleTo: 'contributor' } )
 			cy.visit( editorUrl )
 			blocks.forEach( blockName => {
 				cy.selectBlock( blockName )
@@ -97,11 +97,11 @@ describe( 'Role Manager', () => {
 			} )
 			cy.savePost()
 			// Revert to administrator to adjust role manager settings
-			cy.changeRole( { roleFrom: 'contributor', roleTo: 'administrator' } )
+			cy.changeRole( { roleTo: 'administrator' } )
 			adjustAllRoles()
 
-			const testContentOnly = ( roleFrom, roleTo ) => {
-				cy.changeRole( { roleFrom, roleTo } )
+			const testContentOnly = roleTo => {
+				cy.changeRole( { roleTo } )
 
 				cy.visit( editorUrl )
 				blocks.forEach( blockName => {
@@ -121,7 +121,7 @@ describe( 'Role Manager', () => {
 		} )
 
 		// Always revert the role back to the administrator to have full access of the site
-		cy.changeRole( { roleFrom: 'contributor', roleTo: 'administrator' } )
+		cy.changeRole( { roleTo: 'administrator' } )
 		// Revert the settings back
 		adjustAllRoles()
 	} )
