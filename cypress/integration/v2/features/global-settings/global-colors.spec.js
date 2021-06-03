@@ -53,14 +53,14 @@ const blocksWithSeparator = [
 ]
 
 describe( 'Global Settings', () => {
-	it( 'should adjust Global Colors and assert the color picker in blocks', () => {
+	it( 'should adjust global colors and assert the color picker in blocks', () => {
 		cy.setupWP()
 		cy.newPage()
 
 		// Add Global colors
 		cy.addBlock( 'core/paragraph' )
 		colors.forEach( val => {
-			cy.addGlobalColor( {
+			cy.addEditGlobalColor( {
 				name: val.name,
 				color: val.color,
 			} )
@@ -151,12 +151,12 @@ describe( 'Global Settings', () => {
 		// Posts block
 	} )
 
-	it( 'should assert the changing of Global Color', () => {
+	it( 'should assert the changing of global color', () => {
 		cy.setupWP()
 		cy.newPage()
 
 		cy.addBlock( 'core/paragraph' )
-		cy.addGlobalColor( {
+		cy.addEditGlobalColor( {
 			name: colors[ 3 ].name,
 			color: colors[ 3 ].color,
 		} )
@@ -200,7 +200,11 @@ describe( 'Global Settings', () => {
 
 		// Edit a global color
 		cy.addBlock( 'core/paragraph' )
-		cy.addGlobalColor( { name: 'Aquamarine', color: '#0ccbbf' }, 'Stackable Pink' )
+		cy.addEditGlobalColor( {
+			name: 'Aquamarine',
+			color: '#0ccbbf',
+			currName: 'Stackable Pink',
+		} )
 		// Assert the edited global color in blocks
 		blocks
 			.filter( blockName => blockName !== 'ugb/blog-posts' )
@@ -239,6 +243,7 @@ describe( 'Global Settings', () => {
 				}
 
 				if ( name === 'separator' ) {
+					// Adjust a random option in Separator to assert the global color
 					cy.collapse( 'Separator' )
 					cy
 						.adjust( 'Shadow', true )
@@ -277,7 +282,7 @@ describe( 'Global Settings', () => {
 		} )
 
 		colors.forEach( val => {
-			cy.addGlobalColor( {
+			cy.addEditGlobalColor( {
 				name: val.name,
 				color: val.color,
 			} )
@@ -309,6 +314,119 @@ describe( 'Global Settings', () => {
 					.should( 'have.attr', 'style', `background-color: ${ val.color }` )
 			} )
 		} )
+
+		// Delete Global colors
+		cy.addBlock( 'core/paragraph' )
+		cy.resetGlobalColor()
+		cy.adjust( 'Use only Stackable colors', false )
+		cy.savePost()
+	} )
+
+	it( 'should assert deleted global color values', () => {
+		cy.setupWP()
+		cy.newPage()
+
+		cy.addBlock( 'core/paragraph' )
+		cy.addEditGlobalColor( {
+			name: colors[ 3 ].name,
+			color: colors[ 3 ].color,
+		} )
+		cy.adjust( 'Use only Stackable colors', true )
+
+		blocks
+			.filter( blockName => blockName !== 'ugb/blog-posts' )
+			.forEach( blockName => {
+				const name = blockName.split( '/' ).pop()
+				cy.addBlock( blockName )
+				cy.openInspector( blockName, 'Style' )
+
+				if ( blocksWithTitle.includes( blockName ) ) {
+					if ( name === 'heading' || name === 'text' ||
+					name === 'expand' ) {
+						if ( name === 'text' ) {
+							cy.toggleStyle( 'Title' )
+						}
+						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
+					}
+
+					cy.collapse( 'Title' )
+					cy.adjust( 'Title Color', 1 )
+				}
+
+				if ( blocksWithSeparator.includes( blockName ) ) {
+					cy.collapse( 'Top Separator' )
+					cy.adjust( 'Color', 1 )
+				}
+
+				if ( name === 'divider' || name === 'spacer' ) {
+					cy.collapse( 'General' )
+					cy.adjust( `${ blockName === 'ugb/divider' ? 'Color' : 'Background Color' }`, 1 )
+				}
+
+				if ( name === 'separator' ) {
+					cy.collapse( 'Separator' )
+					cy.adjust( 'Separator Color', 1 )
+				}
+			} )
+
+		// Reset the global colors
+		cy.addBlock( 'core/paragraph' )
+		cy.resetGlobalColor()
+		// Add a global color with the same name as the removed one.
+		// This should not affect the color of the blocks.
+		cy.addEditGlobalColor( {
+			name: colors[ 3 ].name,
+			color: '#eeeeee',
+		} )
+
+		blocks
+			.filter( blockName => blockName !== 'ugb/blog-posts' )
+			.forEach( blockName => {
+				const name = blockName.split( '/' ).pop()
+				cy.openInspector( blockName, 'Style' )
+
+				if ( blocksWithTitle.includes( blockName ) ) {
+					cy
+						.selectBlock( blockName )
+						.assertComputedStyle( {
+							[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
+								'color': colors[ 3 ].color,
+							},
+						} )
+				}
+
+				if ( blocksWithSeparator.includes( blockName ) ) {
+					cy
+						.selectBlock( blockName )
+						.assertComputedStyle( {
+							'.ugb-top-separator svg': {
+								'fill': colors[ 3 ].color,
+							},
+						} )
+				}
+
+				if ( name === 'divider' || name === 'spacer' ) {
+					cy
+						.selectBlock( blockName )
+						.assertComputedStyle( {
+							[ `${ name === 'divider' ? '.ugb-divider__hr' : '.ugb-spacer--inner' }` ]: {
+								'background-color': colors[ 3 ].color,
+							},
+						} )
+				}
+
+				if ( name === 'separator' ) {
+					// Adjust a random option in Separator to assert the global color
+					cy.collapse( 'Separator' )
+					cy
+						.adjust( 'Shadow', true )
+						.assertComputedStyle( {
+							'.ugb-separator__layer-1': {
+								'fill': colors[ 3 ].color,
+							},
+						} )
+				}
+			} )
 
 		// Delete Global colors
 		cy.addBlock( 'core/paragraph' )
