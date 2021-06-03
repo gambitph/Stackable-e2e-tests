@@ -35,6 +35,10 @@ describe( 'Copy Paste Accordion Styles', () => {
 
 		cy.addBlock( 'ugb/accordion' )
 		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', 'Accordion copy', 1 )
+
+		cy.copyStyles( 'ugb/accordion', 'Accordion 1' )
+		cy.pasteStyles( 'ugb/accordion', 'Accordion copy' )
+
 		cy.openInspector( 'ugb/accordion', 'Style', 'Accordion copy' )
 		cy
 			.selectBlock( 'ugb/accordion', 'Accordion copy' )
@@ -48,6 +52,7 @@ describe( 'Copy Paste Accordion Styles', () => {
 					'border-bottom-width': '4px',
 					'border-left-width': '1px',
 					'border-color': '#f8a2a2',
+					'background-image': `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
 				},
 				'.ugb-inner-block': {
 					'text-align': 'right',
