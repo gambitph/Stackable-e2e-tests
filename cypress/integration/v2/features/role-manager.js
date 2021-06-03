@@ -14,6 +14,12 @@ const adjustRoleManager = idx => {
 	// take effect before going back to the editor URL
 	cy.wait( 500 )
 }
+const adjustAllRoles = () => {
+	cy.visit( '/wp-admin/options-general.php?page=stackable' )
+	range( 0, 5 ).forEach( ( _, idx ) => {
+		adjustRoleManager( idx )
+	} )
+}
 
 describe( 'Role Manager', () => {
 	it( 'should assert role manager settings for admin and editor', () => {
@@ -38,12 +44,7 @@ describe( 'Role Manager', () => {
 			cy.savePost()
 			// Revert to administrator role to adjust role manager settings
 			cy.changeRole( { roleFrom: 'editor', roleTo: 'administrator' } )
-
-			cy.visit( '/wp-admin/options-general.php?page=stackable' )
-			range( 0, 5 ).forEach( ( _, idx ) => {
-				// Adjust all roles to CONTENT ONLY MODE
-				adjustRoleManager( idx )
-			} )
+			adjustAllRoles()
 
 			const testContentOnly = ( roleFrom, roleTo ) => {
 				if ( roleTo !== 'administrator' ) {
@@ -70,6 +71,8 @@ describe( 'Role Manager', () => {
 
 		// Always revert the role back to the administrator to have full access of the site
 		cy.changeRole( { roleFrom: 'editor', roleTo: 'administrator' } )
+		// Revert the settings back
+		adjustAllRoles()
 	} )
 
 	it( 'should assert role manager settings for author and contributor', () => {
@@ -95,12 +98,7 @@ describe( 'Role Manager', () => {
 			cy.savePost()
 			// Revert to administrator to adjust role manager settings
 			cy.changeRole( { roleFrom: 'contributor', roleTo: 'administrator' } )
-
-			cy.visit( '/wp-admin/options-general.php?page=stackable' )
-			range( 0, 5 ).forEach( ( _, idx ) => {
-				// Adjust all roles to CONTENT ONLY MODE
-				adjustRoleManager( idx )
-			} )
+			adjustAllRoles()
 
 			const testContentOnly = ( roleFrom, roleTo ) => {
 				cy.changeRole( { roleFrom, roleTo } )
@@ -124,5 +122,7 @@ describe( 'Role Manager', () => {
 
 		// Always revert the role back to the administrator to have full access of the site
 		cy.changeRole( { roleFrom: 'contributor', roleTo: 'administrator' } )
+		// Revert the settings back
+		adjustAllRoles()
 	} )
 } )
