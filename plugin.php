@@ -61,6 +61,13 @@ if ( isset( $_GET[ 'setup' ] ) ) {
 			wp_set_current_user( $user_id, $user->user_login );
 			wp_set_auth_cookie( $user_id, true );
 			do_action( 'wp_login', $user->user_login, $user );
+
+			// Get the current role of the admin user.
+			// Set the user to be an administrator upon setup.
+			$curr_role = reset( wp_get_current_user()->roles );
+			$u = new WP_User( $user_id );
+			$u->remove_role( $curr_role );
+			$u->add_role( 'administrator' );
 		}
 
 		// Reset all stackable settings.
@@ -202,9 +209,7 @@ if ( isset( $_GET[ 'register-posts' ] ) ) {
 if ( isset( $_GET[ 'change-role' ] ) ) {
 	add_action( 'init', function() {
 		$role_to = strtolower( $_GET[ 'roleTo' ] );
-
-		$roles = wp_get_current_user()->roles;
-		$role_from = reset( $roles );
+		$role_from = reset( wp_get_current_user()->roles );
 	
 		$user = new WP_User( 1 );
 		// Remove role

@@ -37,14 +37,15 @@ export function setupWP( args = {} ) {
 export function registerPosts( args = {} ) {
 	cy.fixture( 'posts' ).then( posts => {
 		const params = new URLSearchParams( {
-			postType: posts.post_type,
-			postTitle: posts.post_title,
-			postContent: posts.post_content,
-			featuredImage: posts.featured_image,
-			imageName: posts.image_name,
-			numOfPosts: args.numOfPosts,
+			'postType': posts.post_type,
+			'postTitle': posts.post_title,
+			'postContent': posts.post_content,
+			'featuredImage': posts.featured_image,
+			'imageName': posts.image_name,
+			'numOfPosts': args.numOfPosts,
+			'register-posts': 'true',
 		} )
-		cy.visit( '/?register-posts=true&' + params.toString() )
+		cy.visit( '/?' + params.toString() )
 	} )
 }
 
@@ -55,7 +56,8 @@ export function registerPosts( args = {} ) {
  */
 export function changeRole( args = {} ) {
 	const params = new URLSearchParams( {
-		roleTo: args.roleTo,
+		'roleTo': args.roleTo,
+		'change-role': 'true',
 	} )
-	cy.visit( '/?change-role=true&' + params.toString() )
+	cy.visit( '/?' + params.toString() )
 }
