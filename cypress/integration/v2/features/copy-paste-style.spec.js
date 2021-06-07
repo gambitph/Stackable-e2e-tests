@@ -5,7 +5,7 @@
 import { isEqual, omit } from 'lodash'
 import { registerTests } from '~stackable-e2e/helpers'
 
-describe( 'Copy Paste Accordion Styles', registerTests( [
+describe( 'Copy Paste Styles', registerTests( [
 	styleTest,
 	contentTest,
 ] ) )
