@@ -135,7 +135,7 @@ function globalTypography( viewport, desktopOnly ) {
 
 		blocks
 			.filter( blockName => {
-			// Blocks that do not have typography module
+			// Blocks that do not have typography module / dynamic
 				const blacklist = [
 					'ugb/container',
 					'ugb/button',
@@ -143,7 +143,7 @@ function globalTypography( viewport, desktopOnly ) {
 					'ugb/divider',
 					'ugb/spacer',
 					'ugb/separator',
-					'ugb/blog-posts', // blacklisted as this is a dynamic block
+					'ugb/blog-posts',
 				]
 				return ! blacklist.includes( blockName )
 			} )
@@ -154,9 +154,7 @@ function globalTypography( viewport, desktopOnly ) {
 				const block = registerBlockSnapshots( 'block' )
 				cy.openInspector( blockName, 'Style' )
 
-				// Adjust Global Typography settings
-				if ( name === 'heading' || name === 'text' ||
-					name === 'expand' ) {
+				if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
 					if ( name === 'text' ) {
 						cy.toggleStyle( 'Title' )
 					}
@@ -220,7 +218,7 @@ function globalTypography( viewport, desktopOnly ) {
 
 		blocks
 			.filter( blockName => {
-			// Blocks that do not have typography module
+			// Blocks that do not have typography module / dynamic
 				const blacklist = [
 					'ugb/container',
 					'ugb/button',
@@ -237,18 +235,21 @@ function globalTypography( viewport, desktopOnly ) {
 
 				cy.addBlock( blockName ).as( 'block' )
 				const block = registerBlockSnapshots( 'block' )
+				cy.openInspector( blockName, 'Style' )
 
-				if ( name === 'heading' || name === 'text' ||
-					name === 'expand' ) {
+				if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
 					if ( name === 'text' ) {
 						cy.toggleStyle( 'Title' )
 					}
 					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
 				}
+
+				// Adjust preview to the current viewport
+				// We need to do this because Title HTML tag does not have viewport controls.
+				cy.changePreviewMode( viewport )
+
 				// Test fontSize px and lineHeight em values for Tablet & Mobile
 				range( 1, 8 ).forEach( idx => {
-					cy.openInspector( blockName, 'Style' )
-
 					if ( blocksWithTitle.includes( blockName ) ) {
 						cy.collapse( 'Title' )
 						cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
@@ -307,16 +308,20 @@ function globalTypography( viewport, desktopOnly ) {
 				'ugb/divider',
 				'ugb/spacer',
 				'ugb/separator',
-				'ugb/blog-posts', // TODO.
+				'ugb/blog-posts',
 			]
 			return ! blacklist.includes( blockName )
 		} )
 		.forEach( blockName => {
 			const name = blockName.split( '/' ).pop()
 
-			range( 1, 8 ).forEach( idx => {
-				cy.openInspector( blockName, 'Style' )
+			// Adjust preview to the current viewport
+			// We need to do this because Title HTML tag does not have viewport controls.
+			cy.changePreviewMode( viewport )
+			cy.openInspector( blockName, 'Style' )
+			cy.selectBlock( blockName )
 
+			range( 1, 8 ).forEach( idx => {
 				if ( blocksWithTitle.includes( blockName ) ) {
 					cy.collapse( 'Title' )
 					cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
@@ -336,13 +341,10 @@ function globalTypography( viewport, desktopOnly ) {
 						},
 					} )
 				}
-
-				// Reset Global Typography settings
-				cy.addBlock( 'core/paragraph' )
-				cy.resetGlobalTypography( globalTypo[ idx - 1 ].tag )
 			} )
 		} )
 
-	// Global typography TODOs:
-	// Posts block
+	// TODOs:
+	// TypeError - Cannot read property originalContent of null
+	// Blog posts typography test
 }
