@@ -152,28 +152,28 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.toggleStyle( 'Load More Button' )
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', 29, { viewport, unit: 'px' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 25, 26, 27, 28 ], { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-blog-posts__item': {
-			'padding-top': '29px',
-			'padding-bottom': '29px',
-			'padding-right': '29px',
-			'padding-left': '29px',
+			'padding-top': '25px',
+			'padding-right': '26px',
+			'padding-bottom': '27px',
+			'padding-left': '28px',
 		},
 	} )
-	cy.adjust( 'Paddings', 3, { viewport, unit: 'em' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 3, 4, 5, 6 ], { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-blog-posts__item': {
 			'padding-top': '3em',
-			'padding-bottom': '3em',
-			'padding-right': '3em',
-			'padding-left': '3em',
+			'padding-right': '4em',
+			'padding-bottom': '5em',
+			'padding-left': '6em',
 		},
 	} )
-	cy.adjust( 'Paddings', 14, { viewport, unit: '%' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 17, 18, 19, 20 ], { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-blog-posts__item': {
-			'padding-top': '14%',
-			'padding-bottom': '14%',
-			'padding-right': '14%',
-			'padding-left': '14%',
+			'padding-top': '17%',
+			'padding-right': '18%',
+			'padding-bottom': '19%',
+			'padding-left': '20%',
 		},
 	} )
 	cy.adjust( 'Image', 37, { viewport } )
@@ -294,6 +294,69 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 	assertAligns( 'Align', '.ugb-blog-posts__readmore', { viewport } )
 
+	// Test Pagination.
+	cy.collapse( 'Posts Settings' )
+	cy.adjust( 'Number of items', 2 )
+	cy.toggleStyle( 'Pagination' )
+	desktopOnly( () => {
+		cy.adjust( 'Show previous and next buttons', true )
+		cy.adjust( 'Previous label', 'Prev' )
+		cy.adjust( 'Next label', 'Next' )
+
+		cy.adjust( 'Color Type', 'gradient' )
+		cy.adjust( 'Button Color #1', '#a13939' )
+		cy.adjust( 'Button Color #2', '#4e59d4' )
+		cy.adjust( 'Gradient Direction (degrees)', 138 ).assertComputedStyle( {
+			'.ugb-blog-posts__pagination .ugb-button': {
+				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
+			},
+		} )
+		cy.adjust( 'Text Color', '#ffa03b' )
+		cy.adjust( 'Hover Effect', 'scale' )
+			.assertClassName( '.ugb-blog-posts__pagination > button', 'ugb--hover-effect-scale' )
+		cy.adjust( 'Hover & Active Opacity', 0.6 )
+		cy.adjust( 'Hover & Active Colors', {
+			'Button Color #1': '#bd8b8b',
+			'Button Color #2': '#3fa35b',
+			'Gradient Direction (degrees)': 72,
+			'Text Color': '#80194d',
+		} )
+
+		assertTypography( '.ugb-blog-posts__pagination .ugb-button .ugb-button--inner', { enableLineHeight: false } )
+		cy.adjust( 'Button Size', 'large' )
+			.assertClassName( '.ugb-blog-posts__pagination .ugb-button', 'ugb-button--size-large' )
+		cy.adjust( 'Border Radius', 40 )
+		cy.adjust( 'Vertical Padding', 15 )
+		cy.adjust( 'Horizontal Padding', 43 )
+		cy.adjust( 'Shadow', 4 ).assertClassName( '.ugb-blog-posts__pagination .ugb-button', 'ugb--shadow-4' )
+		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
+			'.ugb-blog-posts__pagination .ugb-button': {
+				'padding-top': '15px',
+				'padding-right': '43px',
+				'padding-bottom': '15px',
+				'padding-left': '43px',
+				'opacity': '0.6',
+				'border-radius': '40px',
+			},
+			'.ugb-blog-posts__pagination .is-active': {
+				'background-image': 'linear-gradient(72deg, #bd8b8b, #3fa35b)',
+			},
+		} )
+	} )
+
+	if ( viewport !== 'Desktop' ) {
+		assertTypography( '.ugb-blog-posts__pagination .ugb-button .ugb-button--inner', {
+			viewport,
+			enableWeight: false,
+			enableTransform: false,
+			enableLineHeight: false,
+			enableLetterSpacing: false,
+		} )
+	}
+
+	assertAligns( 'Align', '.ugb-blog-posts__pagination.ugb-button-container', { viewport } )
+
+	cy.toggleStyle( 'Load More Button' )
 	cy.typeBlock( 'ugb/blog-posts', '.ugb-button .ugb-button--inner', 'More Posts' )
 	cy.collapse( 'Load More Button' )
 	cy.waitFA()

@@ -60,6 +60,7 @@ function styleTab( viewport, desktopOnly ) {
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 
 	// Test Title options
+	cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Title here' )
 	cy.collapse( 'Title' )
 	desktopOnly( () => {
 		cy.adjust( 'Title HTML Tag', 'h6' )
@@ -73,6 +74,10 @@ function styleTab( viewport, desktopOnly ) {
 	assertTypography( '.ugb-expand__title', { viewport } )
 	assertAligns( 'Align', '.ugb-expand__title', { viewport } )
 
+	cy.typeBlock( 'ugb/expand', '.ugb-expand__less-text', 'Less Text here' )
+	cy.typeBlock( 'ugb/expand', '.ugb-expand__more-toggle-text', 'More Toggle Text here' )
+	cy.typeBlock( 'ugb/expand', '.ugb-expand__more-text', 'More text here' )
+	cy.typeBlock( 'ugb/expand', '.ugb-expand__less-toggle-text', 'Less Toggle Text here' )
 	// Test Text options
 	cy.collapse( 'Text' )
 	desktopOnly( () => {
@@ -123,6 +128,11 @@ function advancedTab( viewport ) {
 	cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )
 	const expandBlock = registerBlockSnapshots( 'expandBlock' )
 
+	cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Title here' )
+	cy.typeBlock( 'ugb/expand', '.ugb-expand__less-text', 'Less Text here' )
+	cy.typeBlock( 'ugb/expand', '.ugb-expand__more-toggle-text', 'More Toggle Text here' )
+	cy.typeBlock( 'ugb/expand', '.ugb-expand__more-text', 'More text here' )
+	cy.typeBlock( 'ugb/expand', '.ugb-expand__less-toggle-text', 'Less Toggle Text here' )
 	cy.openInspector( 'ugb/expand', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-expand', {

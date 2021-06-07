@@ -7,6 +7,7 @@ import { containsRegExp, dispatchResolver } from '~common/util'
  * Register functions to Cypress Commands.
  */
 Cypress.Commands.add( 'newPage', newPage )
+Cypress.Commands.add( 'newPost', newPost )
 Cypress.Commands.add( 'hideAnyGutenbergTip', hideAnyGutenbergTip )
 Cypress.Commands.add( 'getPostUrls', getPostUrls )
 Cypress.Commands.add( 'waitUntil', waitUntil )
@@ -22,6 +23,14 @@ Cypress.Commands.add( 'wp', wp )
  */
 export function newPage() {
 	cy.visit( '/wp-admin/post-new.php?post_type=page' )
+	hideAnyGutenbergTip()
+}
+
+/**
+ * Command for opening a new post in gutenberg editor.
+ */
+export function newPost() {
+	cy.visit( '/wp-admin/post-new.php' )
 	hideAnyGutenbergTip()
 }
 

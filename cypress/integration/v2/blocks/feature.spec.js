@@ -3,7 +3,7 @@
  */
 import { startCase } from 'lodash'
 import {
-	assertAligns, assertBlockBackground, assertBlockExist, assertSeparators, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
+	assertAligns, assertBlockBackground, assertBlockExist, assertContainerLink, assertSeparators, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
@@ -322,7 +322,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	assertBlockBackground( '.ugb-feature', { viewport } )
 	assertSeparators( { viewport } )
-
+	assertContainerLink( '.ugb-feature__item', { viewport } )
 	featureBlock.assertFrontendStyles()
 }
 

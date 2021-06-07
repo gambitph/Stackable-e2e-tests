@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground, assertContainer, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
@@ -170,28 +170,28 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Spacing options
 	cy.collapse( 'Spacing' )
-	cy.adjust( 'Paddings', 27, { viewport, unit: 'px' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 25, 26, 27, 28 ], { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			'padding-top': '27px',
+			'padding-top': '25px',
+			'padding-right': '26px',
 			'padding-bottom': '27px',
-			'padding-right': '27px',
-			'padding-left': '27px',
+			'padding-left': '28px',
 		},
 	} )
-	cy.adjust( 'Paddings', 8, { viewport, unit: 'em' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 3, 4, 5, 6 ], { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			'padding-top': '8em',
-			'padding-bottom': '8em',
-			'padding-right': '8em',
-			'padding-left': '8em',
+			'padding-top': '3em',
+			'padding-right': '4em',
+			'padding-bottom': '5em',
+			'padding-left': '6em',
 		},
 	} )
-	cy.adjust( 'Paddings', 22, { viewport, unit: '%' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 17, 18, 19, 20 ], { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-notification__item': {
-			'padding-top': '22%',
-			'padding-bottom': '22%',
-			'padding-right': '22%',
-			'padding-left': '22%',
+			'padding-top': '17%',
+			'padding-right': '18%',
+			'padding-bottom': '19%',
+			'padding-left': '20%',
 		},
 	} )
 	cy.adjust( 'Icon', 52, { viewport } ).assertComputedStyle( {
@@ -312,6 +312,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Block Background
 	assertBlockBackground( '.ugb-notification', { viewport } )
+	assertContainerLink( '.ugb-notification__item', { viewport } )
 	notificationBlock.assertFrontendStyles()
 }
 

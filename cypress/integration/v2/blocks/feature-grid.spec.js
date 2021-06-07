@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertBlockTitleDescriptionContent, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, registerTests, assertBlockTitleDescriptionContent, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import { range, startCase } from 'lodash'
@@ -211,10 +211,8 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button', 'ugb-button--size-large' )
 		cy.adjust( 'Opacity', 0.2 ).assertComputedStyle( {
-			'.ugb-button .ugb-button--inner': {
-				'color': '#4e2e2e',
-			},
 			'.ugb-button': {
+				'background-color': '#4e2e2e',
 				'opacity': '0.2',
 			},
 		} )
@@ -240,30 +238,30 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 	cy.collapse( 'Spacing' )
 
-	cy.adjust( 'Paddings', 24, { viewport, unit: 'px' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 25, 26, 27, 28 ], { viewport, unit: 'px' } ).assertComputedStyle( {
 		'.ugb-feature-grid__item': {
-			'padding-top': '24px',
-			'padding-bottom': '24px',
-			'padding-left': '24px',
-			'padding-right': '24px',
+			'padding-top': '25px',
+			'padding-right': '26px',
+			'padding-bottom': '27px',
+			'padding-left': '28px',
 		},
 	} )
 
-	cy.adjust( 'Paddings', 4, { viewport, unit: 'em' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 3, 4, 5, 6 ], { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-feature-grid__item': {
-			'padding-top': '4em',
-			'padding-bottom': '4em',
-			'padding-left': '4em',
+			'padding-top': '3em',
 			'padding-right': '4em',
+			'padding-bottom': '5em',
+			'padding-left': '6em',
 		},
 	} )
 
-	cy.adjust( 'Paddings', 12, { viewport, unit: '%' } ).assertComputedStyle( {
+	cy.adjust( 'Paddings', [ 17, 18, 19, 20 ], { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-feature-grid__item': {
-			'padding-top': '12%',
-			'padding-bottom': '12%',
-			'padding-left': '12%',
-			'padding-right': '12%',
+			'padding-top': '17%',
+			'padding-right': '18%',
+			'padding-bottom': '19%',
+			'padding-left': '20%',
 		},
 	} )
 
@@ -314,6 +312,7 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-feature-grid', { viewport } )
 	assertSeparators( { viewport } )
+	assertContainerLink( '.ugb-feature-grid__item', { viewport } )
 	featureGridBlock.assertFrontendStyles()
 }
 
