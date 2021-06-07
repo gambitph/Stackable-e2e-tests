@@ -64,6 +64,7 @@ const blocksWithSeparator = [
 function adjustGlobalColorTest() {
 	it( 'should adjust global colors and assert the color picker in blocks', () => {
 		cy.setupWP()
+		// Publish one post to test global colors in blog-posts
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
 
@@ -77,6 +78,8 @@ function adjustGlobalColorTest() {
 		} )
 		cy.adjust( 'Use only Stackable colors', true )
 
+		// Assert the colors in blog posts first because this is a dynamic block.
+		// It cannot use the block snapshots.
 		cy.addBlock( 'ugb/blog-posts' )
 		cy.openInspector( 'ugb/blog-posts', 'Style' )
 		cy.collapse( 'Title' )
@@ -96,8 +99,10 @@ function adjustGlobalColorTest() {
 				cy.addBlock( blockName ).as( 'block' )
 				const block = registerBlockSnapshots( 'block' )
 				cy.openInspector( blockName, 'Style' )
+
 				// Check if the Global colors are added in blocks
 				if ( blocksWithTitle.includes( blockName ) ) {
+					// Type into heading, text and expand block title for color assertion.
 					if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
 						if ( name === 'text' ) {
 							cy.toggleStyle( 'Title' )
@@ -106,6 +111,7 @@ function adjustGlobalColorTest() {
 					}
 
 					cy.collapse( 'Title' )
+					// Assert each added global color in blocks with title
 					colors.forEach( ( val, idx ) => {
 						cy
 							.adjust( 'Title Color', idx + 1 )
@@ -173,6 +179,7 @@ function changeGlobalColorTest() {
 		cy.newPage()
 
 		cy.addBlock( 'core/paragraph' )
+		// Add one global color: Stackable Pink
 		cy.addEditGlobalColor( {
 			name: colors[ 3 ].name,
 			color: colors[ 3 ].color,
@@ -186,6 +193,7 @@ function changeGlobalColorTest() {
 				cy.openInspector( blockName, 'Style' )
 
 				if ( blocksWithTitle.includes( blockName ) ) {
+					// Type into heading, text and expand block title for color assertion.
 					if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
 						if ( name === 'text' ) {
 							cy.toggleStyle( 'Title' )
@@ -194,26 +202,30 @@ function changeGlobalColorTest() {
 					}
 
 					cy.collapse( 'Title' )
+					// Set the title color to: Stackable Pink
 					cy.adjust( `${ name === 'blog-posts' ? 'Text' : 'Title' } Color`, 1 )
 				}
 
 				if ( blocksWithSeparator.includes( blockName ) ) {
 					cy.collapse( 'Top Separator' )
+					// Set the separator color to: Stackable Pink
 					cy.adjust( 'Color', 1 )
 				}
 
 				if ( name === 'divider' || name === 'spacer' ) {
 					cy.collapse( 'General' )
+					// Set the color to: Stackable Pink
 					cy.adjust( `${ blockName === 'ugb/divider' ? 'Color' : 'Background Color' }`, 1 )
 				}
 
 				if ( name === 'separator' ) {
 					cy.collapse( 'Separator' )
+					// Set the color to: Stackable Pink
 					cy.adjust( 'Separator Color', 1 )
 				}
 			} )
 
-		// Edit a global color
+		// Edit the global color: Stackable Pink to Aquamarine
 		cy.addBlock( 'core/paragraph' )
 		cy.addEditGlobalColor( {
 			name: 'Aquamarine',
@@ -226,6 +238,7 @@ function changeGlobalColorTest() {
 				const name = blockName.split( '/' ).pop()
 				cy.openInspector( blockName, 'Style' )
 
+				// Assert the Aquamarine global color in blocks
 				if ( blocksWithTitle.includes( blockName ) && name !== 'blog-posts' ) {
 					cy
 						.selectBlock( blockName )
@@ -268,6 +281,7 @@ function changeGlobalColorTest() {
 
 				if ( name === 'separator' ) {
 					// Adjust a random option in Separator to assert the global color
+					// selectBlock does not work in Separator due to its html structure.
 					cy.collapse( 'Separator' )
 					cy
 						.adjust( 'Shadow', true )
@@ -443,6 +457,7 @@ function deleteGlobalColorTest() {
 
 				if ( name === 'separator' ) {
 					// Adjust a random option in Separator to assert the global color
+					// selectBlock does not work in Separator due to its html structure.
 					cy.collapse( 'Separator' )
 					cy
 						.adjust( 'Shadow', true )
