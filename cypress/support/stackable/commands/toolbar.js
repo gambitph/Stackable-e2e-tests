@@ -1,4 +1,9 @@
 /**
+ * Internal dependencies
+ */
+import { containsRegExp } from '~common/util'
+
+/**
  * Register functions to cypress commands.
  */
 // Toolbar Controls
@@ -18,16 +23,16 @@ export function copyPasteStyles( subject, blockToCopy, blockToPaste ) {
 		.get( 'button[tooltip="Copy & Paste Styles"]' )
 		.click( { force: true } )
 	cy
-		.contains( 'Copy Styles' )
+		.contains( containsRegExp( 'Copy Styles' ) )
 		.click( { force: true } )
 
 	cy.selectBlock( subject, blockToPaste )
-	if ( ! cy.contains( 'Paste Styles' ) ) {
+	if ( ! cy.contains( containsRegExp( 'Paste Styles' ) ) ) {
 		cy
 			.get( 'button[tooltip="Copy & Paste Styles"]' )
 			.click( { force: true } )
 	}
 	cy
-		.contains( 'Paste Styles' )
+		.contains( containsRegExp( 'Paste Styles' ) )
 		.click( { force: true } )
 }

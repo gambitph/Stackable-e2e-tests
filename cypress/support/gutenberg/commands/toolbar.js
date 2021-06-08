@@ -1,7 +1,11 @@
 /**
+ * Internal dependencies
+ */
+import { containsRegExp } from '~common/util'
+
+/**
  * Register functions to cypress commands.
  */
-// Toolbar Controls
 Cypress.Commands.add( 'topToolbar', topToolbar )
 
 /**
@@ -9,7 +13,7 @@ Cypress.Commands.add( 'topToolbar', topToolbar )
  */
 export function topToolbar() {
 	const toolbar = () => cy
-		.contains( 'Top toolbar' )
+		.contains( containsRegExp( 'Top toolbar' ) )
 		.closest( 'button.components-menu-item__button' )
 
 	cy
