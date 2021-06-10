@@ -20,6 +20,7 @@ Cypress.Commands.add( 'resetGlobalColor', resetGlobalColor )
 Cypress.Commands.add( 'deleteGlobalColor', deleteGlobalColor )
 Cypress.Commands.add( 'adjustGlobalTypography', adjustGlobalTypography )
 Cypress.Commands.add( 'resetGlobalTypography', resetGlobalTypography )
+Cypress.Commands.add( 'forceTypographyStyles', forceTypographyStyles )
 
 /**
  * Command for adding or editing a global color in Stackable Settings.
@@ -244,4 +245,25 @@ function resetGlobalTypography( selector = 'h1' ) {
 		.find( 'button' )
 		.contains( 'Reset' )
 		.click( { force: true } )
+}
+
+/**
+ * Command for forcing typography styles in Stackable Settings page.
+ *
+ */
+function forceTypographyStyles() {
+	cy.visit( '/wp-admin/options-general.php?page=stackable' )
+	const selector = () => cy
+		.get( 'article[id="global-settings"]' )
+		.find( 'button[class="ugb-admin-toggle-setting__button"], button[role="switch"]' )
+
+	selector()
+		.invoke( 'attr', 'aria-checked' )
+		.then( checked => {
+			if ( checked === 'false' ) {
+				selector()
+					.click( { force: true } )
+				cy.wait( 500 )
+			}
+		} )
 }
