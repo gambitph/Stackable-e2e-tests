@@ -15,25 +15,35 @@ export function withInspectorTabMemory( options = {} ) {
 	} = options
 
 	return function( originalFn, ...args ) {
-		cy.getActiveTab().then( tab => {
-			cy.document().then( doc => {
-				const optionsToPass = args.length === argumentLength ? args.pop() : {}
-				const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
-				// This is for stackable only.
-				// After asserting the frontend, go back to the previous state.
-				if ( ( args.length === argumentLength &&
-					( last( args ).assertFrontend === undefined ||
-					last( args ).assertFrontend ) ) || args.length === ( argumentLength - 1 ) ) {
-					optionsToPass.afterFrontendAssert = () => {
-						cy.openSidebar( 'Settings' )
-						cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
-						cy.collapse( activePanel )
-					}
-					return originalFn( ...args, optionsToPass )
-				}
-				return originalFn( ...[ ...args, optionsToPass ] )
-			} )
+		const optionsToPass = args.length === argumentLength ? args.pop() : {}
+		const subject = args[ 0 ]
+
+		cy.wp().then( wp => {
+			const blockName = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) ).name
+			const blockPlugin = blockName.split( '/' )[ 0 ]
+
+			if ( Array( 'ugb', 'stk' ).includes( blockPlugin ) ) {
+				cy.getActiveTab().then( tab => {
+					cy.document().then( doc => {
+						const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
+						// This is for stackable only.
+						// After asserting the frontend, go back to the previous state.
+						if ( ( args.length === argumentLength &&
+						( last( args ).assertFrontend === undefined ||
+						last( args ).assertFrontend ) ) || args.length === ( argumentLength - 1 ) ) {
+							optionsToPass.afterFrontendAssert = () => {
+								cy.openSidebar( 'Settings' )
+								cy.get( `button[aria-label="${ startCase( tab ) } Tab"]` ).click( { force: true } )
+								cy.collapse( activePanel )
+							}
+							return originalFn( ...args, optionsToPass )
+						}
+					} )
+				} )
+			}
 		} )
+
+		return originalFn( ...[ ...args, optionsToPass ] )
 	}
 }
 
