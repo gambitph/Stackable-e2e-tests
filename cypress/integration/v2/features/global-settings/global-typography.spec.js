@@ -317,7 +317,7 @@ function assertGlobalTypographyTabletMobile( viewport ) {
 }
 
 function globalTypographyUnits( viewport ) {
-	it( `should adjust emFontSize and pxLineHeight units in ${ viewport } of Global Typography`, () => {
+	it( `should adjust emFontSize and pxLineHeight units of Global Typography in ${ viewport }`, () => {
 		cy.setupWP()
 		cy.forceTypographyStyles()
 		// Publish one post to test in blog-posts
