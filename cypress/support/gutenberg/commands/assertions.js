@@ -32,7 +32,7 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 	cy.window().then( win => {
 		cy.document().then( doc => {
 			cy
-				.get( selector )
+				.get( selector || '' )
 				.then( $block => {
 					const element = first( $block )
 
@@ -112,6 +112,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		viewportFrontend = false,
 		afterFrontendAssert = () => {},
 		afterBackendAssert = () => {},
+		activePanel = '',
 	} = options
 
 	cy.savePost()
@@ -188,6 +189,26 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 					cy.wp().then( _wp => {
 						const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
 						cy.selectBlock( name, { clientId } )
+
+						const clickActivePanel = () => cy
+							.get( '.components-panel' )
+							.contains( activePanel )
+							.closest( '.components-panel__body' )
+							.invoke( 'attr', 'class' )
+							.then( classNames => {
+								const parsedClassNames = classNames.split( ' ' )
+								if ( ! parsedClassNames.includes( 'is-opened' ) ) {
+									cy
+										.get( '.components-panel' )
+										.contains( activePanel )
+										.closest( 'button.components-panel__body-toggle' )
+										.click( { force: true } )
+								}
+							} )
+
+						if ( activePanel ) {
+							clickActivePanel()
+						}
 						afterFrontendAssert()
 					} )
 				} )

@@ -336,17 +336,18 @@ function globalColorNativeBlocks() {
 				colors.forEach( ( val, idx ) => {
 					cy
 						.adjust( `${ blockName === 'core/separator' ? 'Color' : 'Text Color' }`, idx + 1 )
+						.assertComputedStyle( {
+							[ `${ blockName === 'core/buttons' ? '.wp-block-button__link' : '' }` ]: {
+								'color': val.color,
+							},
+						}, {
+							'activePanel': 'Color settings',
+						} )
+						// Active panel option is added so that when the test goes back
+						// to the backend, it will open this panel
+						// Gutenberg native blocks can have multiple opened panels
 				} )
 			}
-			colors.forEach( ( val, idx ) => {
-				cy
-					.get( '.components-circular-option-picker__option-wrapper' )
-					.eq( idx )
-					.find( `button[aria-label="Color: ${ val.name }"]` )
-					.should( 'exist' )
-					.invoke( 'attr', 'style', `background-color: ${ val.color }` )
-					.should( 'have.attr', 'style', `background-color: ${ val.color }` )
-			} )
 		} )
 
 		cy.savePost()
