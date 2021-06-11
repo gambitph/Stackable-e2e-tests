@@ -21,6 +21,7 @@ describe( 'Icon Block', registerTests( [
 	desktopAdvanced,
 	tabletAdvanced,
 	mobileAdvanced,
+	blockSpecificTests,
 ] ) )
 
 function blockExist() {
@@ -245,5 +246,28 @@ function advancedTab( viewport ) {
 
 	// Add more block specific tests.
 	iconBlock.assertFrontendStyles()
+}
+
+function blockSpecificTests() {
+	it( 'should execute block specific tests', () => {
+		// Test 1: @see https://github.com/gambitph/Stackable/issues/1206
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/icon' )
+		cy.openInspector( 'ugb/icon', 'Style' )
+		cy.toggleStyle( 'Title' )
+		cy.topToolbar()
+		// select align center in top toolbar
+		// Merge the topToolbar commands first and create Alignment toolbar helper command.
+		cy.collapse( 'General' )
+		cy.adjust( 'Align', 'right' ).assertComputedStyle( {
+			'.ugb-inner-block': {
+				'align': 'right',
+			},
+			'.ugb-icon__icon': {
+				'align-self': 'flex-end',
+			},
+		} )
+	} )
 }
 
