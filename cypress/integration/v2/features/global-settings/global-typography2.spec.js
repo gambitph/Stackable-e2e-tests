@@ -132,6 +132,7 @@ function globalTypography( viewport, desktopOnly ) {
 				 'Letter Spacing': val.letterSpacing,
 			 } )
 		 } )
+		//separator
 
 		 blocks
 			 .filter( blockName => {
@@ -196,7 +197,8 @@ function globalTypography( viewport, desktopOnly ) {
 					 cy.visit( editorUrl )
 				 } )
 			 } )
-	 } )
+	 }
+	 )
 
 	/* const tabletMobileViewports = [ 'Tablet', 'Mobile' ] //testing Mobileview
 	 if ( tabletMobileViewports.includes( viewport ) ) {
@@ -349,3 +351,24 @@ function globalTypography( viewport, desktopOnly ) {
 	 // Blog posts typography test
 }
 
+/*
+function globalTypoNativeBlocks() {
+	it( 'should assert global typography on native blocks', () => {
+		cy.setupWP()
+		cy.newPage()
+
+		const nativeBlocks = [
+			'core/paragraph',
+			'core/list',
+			'core/heading',
+		]
+		//adding a block for each native block
+		nativeBlocks.forEach( blockName => {
+			cy.addBlock( blockName )
+		} )
+		//should then type in sample text for each native block type (list, para, h1-h6)
+		//assertion for applying global typo
+	}
+	)
+}
+*/
