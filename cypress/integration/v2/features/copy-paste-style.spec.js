@@ -27,6 +27,19 @@ function allBlocks() {
 					cy.getBlockAttributes().then( attributes1 => {
 						cy.addBlock( blockName )
 
+						if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
+							if ( name === 'text' ) {
+								cy.openInspector( blockName, 'Style' )
+								cy.toggleStyle( 'Title' )
+								cy.toggleStyle( 'Subtitle' )
+								cy.typeBlock( blockName, '.ugb-text__subtitle', 'Subtitle' )
+							}
+							if ( name === 'heading' ) {
+								cy.typeBlock( blockName, '.ugb-heading__subtitle', 'Subtitle' )
+							}
+							cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title' )
+						}
+
 						// Get the clientId of the blocks to be used as a selector in copy paste command
 						cy.wp().then( wp => {
 							const blocksInEditor = wp.data.select( 'core/block-editor' ).getBlocks()
