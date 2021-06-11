@@ -5,7 +5,7 @@ import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import { blocks } from '~stackable-e2e/config'
 import { registerTests } from '~stackable-e2e/helpers'
 
-describe( 'Global Settings', registerTests( [
+describe( 'Global Colors', registerTests( [
 	adjustGlobalColorTest,
 	changeGlobalColorTest,
 	globalColorNativeBlocks,

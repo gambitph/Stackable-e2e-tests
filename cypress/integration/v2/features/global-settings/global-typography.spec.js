@@ -13,7 +13,7 @@ import { blocks } from '~stackable-e2e/config'
 const [ , tabletGlobalTypo, mobileGlobalTypo ] = responsiveAssertHelper( assertGlobalTypographyTabletMobile, { disableItAssertion: true } )
 const [ desktopUnits, tabletUnits, mobileUnits ] = responsiveAssertHelper( globalTypographyUnits, { disableItAssertion: true } )
 
-describe( 'Global Settings', registerTests( [
+describe( 'Global Typography', registerTests( [
 	assertGlobalTypography,
 	tabletGlobalTypo,
 	mobileGlobalTypo,
