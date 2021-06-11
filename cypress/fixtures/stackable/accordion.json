@@ -103,13 +103,6 @@
     },
     "attrToExclude": {
         "title": "",
-        "showBlockBackground":"",
-        "showBottomSeparator":"",
-        "showBottomSeparatorLayer2":"",
-        "showBottomSeparatorLayer3":"",
-        "showTopSeparator":"",
-        "showTopSeparatorLayer2":"",
-        "showTopSeparatorLayer3":"",
         "showContainerLink":"",
         "container1NewTab":"",
         "container1NoFollow":"",
