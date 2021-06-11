@@ -202,9 +202,19 @@
         "customCSS":"/* Text container */\n.ugb-text {\n\tcolor: red;\n}\n\n/* Text title */\n.ugb-text__title {\n\t\n}\n\n/* Text subtitle */\n.ugb-text__subtitle {\n\t\n}\n\n/* Text content */\n.ugb-text__text {\n\t\n}",
         "className":"is-text",
         "title":"Text block 1",
-        "subtitle":"Text subtitle 1"
+        "subtitle":"Text subtitle 1",
+        "text1":"Text 1",
+        "text2":"Text 2",
+        "text3":"Text 3",
+        "text4":"Text 4"
     },
     "attrToExclude": {
+        "title":"",
+        "subtitle":"",
+        "text1":"",
+        "text2":"",
+        "text3":"",
+        "text4":"",
         "blockBackgroundBackgroundMediaId":"",
         "imageUrl":"",
         "columns":"",

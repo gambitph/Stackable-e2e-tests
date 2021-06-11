@@ -26,18 +26,21 @@ function allBlocks() {
 					cy.setBlockAttribute( block.attributes )
 					cy.getBlockAttributes().then( attributes1 => {
 						cy.addBlock( blockName )
-
-						if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
-							if ( name === 'text' ) {
-								cy.openInspector( blockName, 'Style' )
-								cy.toggleStyle( 'Title' )
-								cy.toggleStyle( 'Subtitle' )
-								cy.typeBlock( blockName, '.ugb-text__subtitle', 'Subtitle' )
-							}
-							if ( name === 'heading' ) {
-								cy.typeBlock( blockName, '.ugb-heading__subtitle', 'Subtitle' )
-							}
-							cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title' )
+						// Enter some text into these blocks first
+						if ( name === 'text' ) {
+							cy.setBlockAttribute( {
+								'showTitle': true,
+								'showSubtitle': true,
+								'title': 'Text copy',
+								'subtitle': 'Text subtitle copy',
+								'text1': 'Lorem ipsum dolor',
+							} )
+						}
+						if ( name === 'heading' ) {
+							cy.typeBlock( blockName, `.ugb-${ name }__subtitle`, 'Subtitle', 1 )
+						}
+						if ( name === 'expand' ) {
+							cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title', 1 )
 						}
 
 						// Get the clientId of the blocks to be used as a selector in copy paste command
@@ -59,14 +62,31 @@ function allBlocks() {
 							const attributes1WithOmittedValues = omit( attributes1, attrToExclude )
 							const attributes2WithOmittedValues = omit( attributes2, attrToExclude )
 
-							// For debugging only. Checks which key values are not equal.
+							const attributesThatAreNotEqual = []
+							// For debugging. Checks which key values are not equal and stores them into attributesThatAreNotEqual.
 							Object.keys( attributes1WithOmittedValues ).forEach( key1 => {
 								Object.keys( attributes2WithOmittedValues ).forEach( () => {
 									if ( attributes1WithOmittedValues[ key1 ] !== attributes2WithOmittedValues[ key1 ] ) {
-										// console.log( key1, attributes1WithOmittedValues[ key1 ] )
+										if ( attributesThatAreNotEqual.indexOf( key1 ) === -1 ) {
+											attributesThatAreNotEqual.push( key1 )
+										}
 									}
 								} )
 							} )
+							if ( attributesThatAreNotEqual.length ) {
+								attributesThatAreNotEqual.forEach( attr => {
+									Cypress.log( {
+										name: 'checkAttribute',
+										displayName: 'checkAttribute',
+										message: attr,
+										consoleProps: () => {
+											return {
+												checkAttribute: attr,
+											}
+										},
+									} )
+								} )
+							}
 							expect( isEqual( attributes1WithOmittedValues, attributes2WithOmittedValues ) ).toBeTruthy()
 
 							if ( block.attrContent ) {
@@ -79,8 +99,6 @@ function allBlocks() {
 						} )
 					} )
 				} )
-				cy.deleteBlock( blockName, 0 )
-				cy.deleteBlock( blockName, 0 )
 				cy.savePost()
 			} )
 	} )
