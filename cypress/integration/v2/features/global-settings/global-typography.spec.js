@@ -198,6 +198,7 @@ function globalTypography( viewport, desktopOnly ) {
 			} )
 	} )
 
+	/*
 	const tabletMobileViewports = [ 'Tablet', 'Mobile' ]
 	if ( tabletMobileViewports.includes( viewport ) ) {
 		cy.addBlock( 'core/paragraph' )
@@ -276,7 +277,7 @@ function globalTypography( viewport, desktopOnly ) {
 					cy.visit( editorUrl )
 				} )
 			} )
-	}
+	} */
 
 	// Test fontSize em and lineHeight px values for all viewports
 	const emFontSize = [ 4.2, 4.1, 3.9, 3.8, 3.7, 3.6, 3.5 ]
@@ -298,6 +299,7 @@ function globalTypography( viewport, desktopOnly ) {
 		} )
 	} )
 
+	/*
 	blocks
 		.filter( blockName => {
 			// Blocks that do not have typography module / dynamic block
@@ -342,7 +344,7 @@ function globalTypography( viewport, desktopOnly ) {
 					} )
 				}
 			} )
-		} )
+		} ) */
 
 	// TODOs:
 	// TypeError - Cannot read property originalContent of null
