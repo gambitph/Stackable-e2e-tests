@@ -129,6 +129,8 @@ function assertGlobalTypography() {
 	it( 'should assert all global typography options', () => {
 		cy.setupWP()
 		cy.forceTypographyStyles()
+		// Global settings should still load in the frontend.
+		cy.loadFrontendJsCssFiles()
 		// Publish one post to test in blog-posts
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
@@ -227,6 +229,8 @@ function assertGlobalTypographyTabletMobile( viewport ) {
 		if ( Array( 'Tablet', 'Mobile' ).includes( viewport ) ) {
 			cy.setupWP()
 			cy.forceTypographyStyles()
+			// Global settings should still load in the frontend.
+			cy.loadFrontendJsCssFiles()
 			// Publish one post to test in blog-posts
 			cy.registerPosts( { numOfPosts: 1 } )
 			cy.newPage()
@@ -319,6 +323,8 @@ function globalTypographyUnits( viewport ) {
 	it( `should adjust emFontSize and pxLineHeight units of Global Typography in ${ viewport }`, () => {
 		cy.setupWP()
 		cy.forceTypographyStyles()
+		// Global settings should still load in the frontend.
+		cy.loadFrontendJsCssFiles()
 		// Publish one post to test in blog-posts
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()

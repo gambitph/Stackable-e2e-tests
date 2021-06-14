@@ -64,6 +64,8 @@ const blocksWithSeparator = [
 function adjustGlobalColorTest() {
 	it( 'should adjust global colors and assert the color picker in blocks', () => {
 		cy.setupWP()
+		// Global settings should still load in the frontend.
+		cy.loadFrontendJsCssFiles()
 		// Publish one post to test global colors in blog-posts
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
@@ -96,8 +98,8 @@ function adjustGlobalColorTest() {
 			.forEach( blockName => {
 				const name = blockName.split( '/' ).pop()
 
-				cy.addBlock( blockName ).as( 'block' )
-				const block = registerBlockSnapshots( 'block' )
+				cy.addBlock( blockName ).as( blockName )
+				const block = registerBlockSnapshots( blockName )
 				cy.openInspector( blockName, 'Style' )
 
 				// Check if the Global colors are added in blocks
@@ -175,6 +177,8 @@ function adjustGlobalColorTest() {
 function changeGlobalColorTest() {
 	it( 'should assert the changing of global color', () => {
 		cy.setupWP()
+		// Global settings should still load in the frontend.
+		cy.loadFrontendJsCssFiles()
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
 
@@ -300,6 +304,8 @@ function changeGlobalColorTest() {
 function globalColorNativeBlocks() {
 	it( 'should assert global colors in native blocks', () => {
 		cy.setupWP()
+		// Global settings should still load in the frontend.
+		cy.loadFrontendJsCssFiles()
 		cy.newPage()
 
 		const nativeBlocks = [
@@ -357,6 +363,8 @@ function globalColorNativeBlocks() {
 function deleteGlobalColorTest() {
 	it( 'should assert deleted global color values', () => {
 		cy.setupWP()
+		// Global settings should still load in the frontend.
+		cy.loadFrontendJsCssFiles()
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
 
