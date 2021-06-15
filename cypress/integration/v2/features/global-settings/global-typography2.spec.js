@@ -1,21 +1,12 @@
 /**
  * External dependencies
  */
-import { range } from 'lodash'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import {
-	 responsiveAssertHelper,
 	 registerTests,
 } from '~stackable-e2e/helpers'
 
-import { blocks } from '~stackable-e2e/config'
-
-const [ desktopGlobal, tabletGlobal, mobileGlobal ] = responsiveAssertHelper( globalTypoNativeBlocks, { tab: 'Global Typography on Native Blocks' } )
-
 describe( 'Global Settings', registerTests( [
-	 desktopGlobal,
-	 tabletGlobal,
-	 mobileGlobal,
+	 globalTypoNativeBlocks,
 ] ) )
 
 const globalTypo = [
@@ -90,187 +81,29 @@ const nativeBlocks = [
 	'core/heading',
 ]
 
-function globalTypoNativeBlocks( viewport, desktopOnly ) {
+function globalTypoNativeBlocks() {
 	it( 'should assert global typography on native blocks', () => {
 		cy.setupWP()
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
 
-		desktopOnly( () => {
-			cy.addBlock( 'core / paragraph' )
-			globalTypo.forEach( val => {
-				cy.adjustGlobalTypoNativeBlocks( val.tag, {
-					'Font Family': val.font,
-					'Size': {
-						value: val.size,
-						unit: 'px',
-					},
-					'Weight': val.weight,
-					'Transform': val.transform,
-					'Line-Height': {
-						value: val.lineHeight,
-						unit: 'em',
-					},
-					'Letter Spacing': val.letterSpacing,
-				} )
-			} )
-
-			/*
-		//adding a block for each native block
+		// add the native blocks
 		nativeBlocks.forEach( blockName => {
 			cy.addBlock( blockName )
-		} )
-		*/
-			//should then type in sample text for each native block type (list, para, h1-h6)
-			//assertion for applying global typo
-
-			blocks
-
-			/*
-				.filter( blockName => {
-					const blacklist = [
-						'core/embed',
-						'core/latest-posts',
-						'core/html',
-						'core/cover',
-						'core/buttons',
-						'core/media-text',
-						'core/separator',
-						'core/image',
-						'core/gallery',
-						'core/quote',
-						'core/shortcode',
-						'core/archives',
-						'core/audio',
-						'core/categories',
-						'core/pullquote',
-						'core/social-links',
-						'core/spacer',
-						'core/video',
-						'core/calendar',
-						'core/code',
-						'core/columns',
-						'core/file',
-						'core/group',
-						'core/latest-comments',
-						'core/more',
-						'core/nextpage',
-						'core/preformatted',
-						'core/rss',
-						'core/table',
-						'core/tag-cloud',
-						'core/verse',
-						'core/search',
-					]
-					return ! blacklist.includes( blockName )
-				} )
-				*/
-
-				.forEach( blockName => {
-					const name = blockName.split( '/' ).pop()
-
-					cy.addBlock( blockName ).as( 'block' )
-					const block = registerBlockSnapshots( 'block' )
-					cy.openInspector( blockName, 'Style' )
-
-					if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
-						if ( name === 'text' ) {
-							cy.toggleStyle( 'Title' )
-						}
-						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
-					}
-
-					globalTypo.forEach( val => {
-						if ( nativeBlocks.includes( blockName ) ) {
-							cy.collapse( 'Title' )
-							cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-								[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
-									'font-family': `${ val.font }, sans-serif`,
-									'font-size': `${ val.size }px`,
-									'font-weight': val.weight,
-									'text-transform': val.transform,
-									'line-height': `${ val.lineHeight }em`,
-									'letter-spacing': `${ val.letterSpacing }px`,
-								},
-							} 	)
-						}
-
-						if ( nativeBlocks.includes( blockName ) ) {
-							cy.toggleStyle( 'Block Title' )
-							cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-								[ `.ugb-${ name } .ugb-block-title` ]: {
-									'font-family': `${ val.font }, sans-serif`,
-									'font-size': `${ val.size }px`,
-									'font-weight': val.weight,
-									'text-transform': val.transform,
-									'line-height': `${ val.lineHeight }em`,
-									'letter-spacing': `${ val.letterSpacing }px`,
-								},
-							} )
-						}
-					} )
-
-					cy.getPostUrls().then( ( { editorUrl } ) => {
-						block.assertFrontendStyles()
-						cy.visit( editorUrl )
-					} )
-				} )
-		} )
-
-		const emFontSize = [ 4.2, 4.1, 3.9, 3.8, 3.7, 3.6, 3.5 ]
-		const pxLineHeight = [ 64, 58, 54, 48, 44, 38, 34 ]
-
-		cy.addBlock( 'core/paragraph' )
-		range( 1, 8 ).forEach( idx => {
-			cy.globalTypoNativeBlocks( globalTypo[ idx - 1 ].tag, {
-				'Size': {
-					value: emFontSize[ idx - 1 ],
-					unit: 'em',
-					viewport,
-				},
-				'Line-Height': {
-					value: pxLineHeight[ idx - 1 ],
-					unit: 'px',
-					viewport,
+			cy
+				.get( `.wp-block[data-type='${ blockName }']` )
+				.type( 'Block Title', { force: true } )
+				//if
+			cy.selectBlock( blockName ).assertComputedStyle( {
+				'': {
+					'font-family': `${ globalTypo[ 6 ].font }, sans-serif`,
+					'font-size': `${ globalTypo[ 6 ].size }px`,
+					'font-weight': globalTypo[ 6 ].weight,
+					'text-transform': globalTypo[ 6 ].transform,
+					'line-height': `${ globalTypo[ 6 ].lineHeight }em`,
+					'letter-spacing': `${ globalTypo[ 6 ].letterSpacing }px`,
 				},
 			} )
 		} )
-		blocks
-			.forEach( blockName => {
-				const name = blockName.split( '/' ).pop()
-
-				// Adjust preview to the current viewport
-				// We need to do this because Title HTML tag does not have viewport controls.
-				cy.changePreviewMode( viewport )
-				cy.openInspector( blockName, 'Style' )
-				cy.selectBlock( blockName )
-
-				range( 1, 8 ).forEach( idx => {
-					if ( nativeBlocks.includes( blockName ) ) {
-						cy.collapse( 'Title' )
-						cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
-							[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
-								'font-size': `${ emFontSize[ idx - 1 ] }em`,
-								'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
-							},
-						} )
-					}
-
-					if ( nativeBlocks.includes( blockName ) ) {
-						cy.toggleStyle( 'Block Title' )
-						cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
-							[ `.ugb-${ name } .ugb-block-title` ]: {
-								'font-size': `${ emFontSize[ idx - 1 ] }em`,
-								'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
-							},
-						} )
-					}
-				} )
-			} )
 	} )
-	//if typography inside a block is adjusted, the global typo should not be applied
-	/*
-	[]	test for typography inside a block being adjusted
-	[]	assert that global typo was not applied to changes inside a block
-	*/
 }
