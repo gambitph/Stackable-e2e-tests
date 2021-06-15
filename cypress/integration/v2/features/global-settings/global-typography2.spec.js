@@ -8,7 +8,7 @@ import {
 	 registerTests,
 } from '~stackable-e2e/helpers'
 
-import { coreblocks } from '~gutenberg-e2e/config'
+import { blocks } from '~stackable-e2e/config'
 
 const [ desktopGlobal, tabletGlobal, mobileGlobal ] = responsiveAssertHelper( globalTypoNativeBlocks, { tab: 'Global Typography on Native Blocks' } )
 
@@ -124,7 +124,7 @@ function globalTypoNativeBlocks( viewport, desktopOnly ) {
 			//should then type in sample text for each native block type (list, para, h1-h6)
 			//assertion for applying global typo
 
-			coreblocks
+			blocks
 
 			/*
 				.filter( blockName => {
@@ -235,7 +235,7 @@ function globalTypoNativeBlocks( viewport, desktopOnly ) {
 				},
 			} )
 		} )
-		coreblocks
+		blocks
 			.forEach( blockName => {
 				const name = blockName.split( '/' ).pop()
 
