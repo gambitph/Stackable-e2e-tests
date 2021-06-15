@@ -113,102 +113,105 @@ function globalTypoNativeBlocks() {
 					'Letter Spacing': val.letterSpacing,
 				} )
 			} )
-		} )
+
+			/*
 		//adding a block for each native block
 		nativeBlocks.forEach( blockName => {
 			cy.addBlock( blockName )
 		} )
-		//should then type in sample text for each native block type (list, para, h1-h6)
-		//assertion for applying global typo
+		*/
+			//should then type in sample text for each native block type (list, para, h1-h6)
+			//assertion for applying global typo
 
-		blocks
-			.filter( blockName => {
-				const blacklist = [
-					'core/embed',
-					'core/latest-posts',
-					'core/html',
-					'core/cover',
-					'core/buttons',
-					'core/media-text',
-					'core/separator',
-					'core/image',
-					'core/gallery',
-					'core/quote',
-					'core/shortcode',
-					'core/archives',
-					'core/audio',
-					'core/categories',
-					'core/pullquote',
-					'core/social-links',
-					'core/spacer',
-					'core/video',
-					'core/calendar',
-					'core/code',
-					'core/columns',
-					'core/file',
-					'core/group',
-					'core/latest-comments',
-					'core/more',
-					'core/nextpage',
-					'core/preformatted',
-					'core/rss',
-					'core/table',
-					'core/tag-cloud',
-					'core/verse',
-					'core/search',
-				]
-				return ! blacklist.includes( blockName )
-			} )
-
-			.forEach( blockName => {
-				const name = blockName.split( '/' ).pop()
-
-				cy.addBlock( blockName ).as( 'block' )
-				const block = registerBlockSnapshots( 'block' )
-				cy.openInspector( blockName, 'Style' )
-
-				if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
-					if ( name === 'text' ) {
-						cy.toggleStyle( 'Title' )
-					}
-					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
-				}
-
-				globalTypo.forEach( val => {
-					if ( nativeBlocks.includes( blockName ) ) {
-						cy.collapse( 'Title' )
-						cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-							[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
-								'font-family': `${ val.font }, sans-serif`,
-								'font-size': `${ val.size }px`,
-								'font-weight': val.weight,
-								'text-transform': val.transform,
-								'line-height': `${ val.lineHeight }em`,
-								'letter-spacing': `${ val.letterSpacing }px`,
-							},
-						} 	)
-					}
-
-					if ( nativeBlocks.includes( blockName ) ) {
-						cy.toggleStyle( 'Block Title' )
-						cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-							[ `.ugb-${ name } .ugb-block-title` ]: {
-								'font-family': `${ val.font }, sans-serif`,
-								'font-size': `${ val.size }px`,
-								'font-weight': val.weight,
-								'text-transform': val.transform,
-								'line-height': `${ val.lineHeight }em`,
-								'letter-spacing': `${ val.letterSpacing }px`,
-							},
-						} )
-					}
+			blocks
+				.filter( blockName => {
+					const blacklist = [
+						'core/embed',
+						'core/latest-posts',
+						'core/html',
+						'core/cover',
+						'core/buttons',
+						'core/media-text',
+						'core/separator',
+						'core/image',
+						'core/gallery',
+						'core/quote',
+						'core/shortcode',
+						'core/archives',
+						'core/audio',
+						'core/categories',
+						'core/pullquote',
+						'core/social-links',
+						'core/spacer',
+						'core/video',
+						'core/calendar',
+						'core/code',
+						'core/columns',
+						'core/file',
+						'core/group',
+						'core/latest-comments',
+						'core/more',
+						'core/nextpage',
+						'core/preformatted',
+						'core/rss',
+						'core/table',
+						'core/tag-cloud',
+						'core/verse',
+						'core/search',
+					]
+					return ! blacklist.includes( blockName )
 				} )
 
-				cy.getPostUrls().then( ( { editorUrl } ) => {
-					block.assertFrontendStyles()
-					cy.visit( editorUrl )
+				.forEach( blockName => {
+					const name = blockName.split( '/' ).pop()
+
+					cy.addBlock( blockName ).as( 'block' )
+					const block = registerBlockSnapshots( 'block' )
+					cy.openInspector( blockName, 'Style' )
+
+					if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
+						if ( name === 'text' ) {
+							cy.toggleStyle( 'Title' )
+						}
+						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
+					}
+
+					globalTypo.forEach( val => {
+						if ( nativeBlocks.includes( blockName ) ) {
+							cy.collapse( 'Title' )
+							cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
+								[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
+									'font-family': `${ val.font }, sans-serif`,
+									'font-size': `${ val.size }px`,
+									'font-weight': val.weight,
+									'text-transform': val.transform,
+									'line-height': `${ val.lineHeight }em`,
+									'letter-spacing': `${ val.letterSpacing }px`,
+								},
+							} 	)
+						}
+
+						if ( nativeBlocks.includes( blockName ) ) {
+							cy.toggleStyle( 'Block Title' )
+							cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
+								[ `.ugb-${ name } .ugb-block-title` ]: {
+									'font-family': `${ val.font }, sans-serif`,
+									'font-size': `${ val.size }px`,
+									'font-weight': val.weight,
+									'text-transform': val.transform,
+									'line-height': `${ val.lineHeight }em`,
+									'letter-spacing': `${ val.letterSpacing }px`,
+								},
+							} )
+						}
+					} )
+
+					cy.getPostUrls().then( ( { editorUrl } ) => {
+						block.assertFrontendStyles()
+						cy.visit( editorUrl )
+					} )
 				} )
-			} )
+		} )
 
 		const emFontSize = [ 4.2, 4.1, 3.9, 3.8, 3.7, 3.6, 3.5 ]
 		const pxLineHeight = [ 64, 58, 54, 48, 44, 38, 34 ]
