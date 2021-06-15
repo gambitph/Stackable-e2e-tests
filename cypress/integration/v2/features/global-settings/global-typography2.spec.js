@@ -231,5 +231,37 @@ function globalTypoNativeBlocks( viewport, desktopOnly ) {
 				},
 			} )
 		} )
+		blocks
+			.forEach( blockName => {
+				const name = blockName.split( '/' ).pop()
+
+				// Adjust preview to the current viewport
+				// We need to do this because Title HTML tag does not have viewport controls.
+				cy.changePreviewMode( viewport )
+				cy.openInspector( blockName, 'Style' )
+				cy.selectBlock( blockName )
+
+				range( 1, 8 ).forEach( idx => {
+					if ( nativeBlocks.includes( blockName ) ) {
+						cy.collapse( 'Title' )
+						cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
+							[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
+								'font-size': `${ emFontSize[ idx - 1 ] }em`,
+								'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
+							},
+						} )
+					}
+
+					if ( nativeBlocks.includes( blockName ) ) {
+						cy.toggleStyle( 'Block Title' )
+						cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
+							[ `.ugb-${ name } .ugb-block-title` ]: {
+								'font-size': `${ emFontSize[ idx - 1 ] }em`,
+								'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
+							},
+						} )
+					}
+				} )
+			} )
 	} )
 }
