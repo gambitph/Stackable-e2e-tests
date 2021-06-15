@@ -18,7 +18,7 @@ describe( 'Global Settings', registerTests( [
 	 mobileGlobal,
 ] ) ) //Viewports
 
-function globalTypoNativeBlocks() {
+function globalTypoNativeBlocks( viewport, desktopOnly ) {
 	it( 'should assert global typography on native blocks', () => {
 		cy.setupWP()
 		cy.newPage()
@@ -222,12 +222,12 @@ function globalTypoNativeBlocks() {
 				'Size': {
 					value: emFontSize[ idx - 1 ],
 					unit: 'em',
-					//viewport,
+					viewport,
 				},
 				'Line-Height': {
 					value: pxLineHeight[ idx - 1 ],
 					unit: 'px',
-					//viewport,
+					viewport,
 				},
 			} )
 		} )
