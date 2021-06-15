@@ -98,7 +98,7 @@ function globalTypoNativeBlocks( viewport, desktopOnly ) {
 		desktopOnly( () => {
 			cy.addBlock( 'core / paragraph' )
 			globalTypo.forEach( val => {
-				cy.adjustGlobalTypography( val.tag, {
+				cy.adjustGlobalTypoNativeBlocks( val.tag, {
 					'Font Family': val.font,
 					'Size': {
 						value: val.size,
@@ -221,7 +221,7 @@ function globalTypoNativeBlocks( viewport, desktopOnly ) {
 
 		cy.addBlock( 'core/paragraph' )
 		range( 1, 8 ).forEach( idx => {
-			cy.adjustGlobalTypography( globalTypo[ idx - 1 ].tag, {
+			cy.globalTypoNativeBlocks( globalTypo[ idx - 1 ].tag, {
 				'Size': {
 					value: emFontSize[ idx - 1 ],
 					unit: 'em',
