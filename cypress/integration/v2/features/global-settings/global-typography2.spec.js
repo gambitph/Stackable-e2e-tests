@@ -16,85 +16,85 @@ describe( 'Global Settings', registerTests( [
 	 desktopGlobal,
 	 tabletGlobal,
 	 mobileGlobal,
-] ) ) //Viewports
+] ) )
+const globalTypo = [
+	{
+		tag: 'h1',
+		font: 'Abel',
+		size: 92,
+		weight: 'bold',
+		transform: 'uppercase',
+		lineHeight: 1.3,
+		letterSpacing: 2.1,
+	},
+	{
+		tag: 'h2',
+		font: 'Aclonica',
+		size: 66,
+		weight: '900',
+		transform: 'capitalize',
+		lineHeight: 1.2,
+		letterSpacing: 1.1,
+	},
+	{
+		tag: 'h3',
+		font: 'ABeeZee',
+		size: 50,
+		weight: '100',
+		transform: 'lowercase',
+		lineHeight: 1.1,
+		letterSpacing: 1.5,
+	},
+	{
+		tag: 'h4',
+		font: 'Acme',
+		size: 38,
+		weight: '300',
+		transform: 'uppercase',
+		lineHeight: 2.7,
+		letterSpacing: 1.8,
+	},
+	{
+		tag: 'h5',
+		font: 'Akronim',
+		size: 24,
+		weight: '500',
+		transform: 'capitalize',
+		lineHeight: 2.1,
+		letterSpacing: 3.9,
+	},
+	{
+		tag: 'h6',
+		font: 'Actor',
+		size: 16,
+		weight: '600',
+		transform: 'uppercase',
+		lineHeight: 1.4,
+		letterSpacing: 3.5,
+	},
+	{
+		tag: 'p',
+		font: 'Alice',
+		size: 15,
+		weight: '200',
+		transform: 'lowercase',
+		lineHeight: 1.3,
+		letterSpacing: 0.1,
+	},
+]
+
+const nativeBlocks = [
+	'core/paragraph',
+	'core/list',
+	'core/heading',
+]
 
 function globalTypoNativeBlocks( viewport, desktopOnly ) {
 	it( 'should assert global typography on native blocks', () => {
 		cy.setupWP()
+		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
 
-		const globalTypo = [
-			{
-				tag: 'h1',
-				font: 'Abel',
-				size: 92,
-				weight: 'bold',
-				transform: 'uppercase',
-				lineHeight: 1.3,
-				letterSpacing: 2.1,
-			},
-			{
-				tag: 'h2',
-				font: 'Aclonica',
-				size: 66,
-				weight: '900',
-				transform: 'capitalize',
-				lineHeight: 1.2,
-				letterSpacing: 1.1,
-			},
-			{
-				tag: 'h3',
-				font: 'ABeeZee',
-				size: 50,
-				weight: '100',
-				transform: 'lowercase',
-				lineHeight: 1.1,
-				letterSpacing: 1.5,
-			},
-			{
-				tag: 'h4',
-				font: 'Acme',
-				size: 38,
-				weight: '300',
-				transform: 'uppercase',
-				lineHeight: 2.7,
-				letterSpacing: 1.8,
-			},
-			{
-				tag: 'h5',
-				font: 'Akronim',
-				size: 24,
-				weight: '500',
-				transform: 'capitalize',
-				lineHeight: 2.1,
-				letterSpacing: 3.9,
-			},
-			{
-				tag: 'h6',
-				font: 'Actor',
-				size: 16,
-				weight: '600',
-				transform: 'uppercase',
-				lineHeight: 1.4,
-				letterSpacing: 3.5,
-			},
-			{
-				tag: 'p',
-				font: 'Alice',
-				size: 15,
-				weight: '200',
-				transform: 'lowercase',
-				lineHeight: 1.3,
-				letterSpacing: 0.1,
-			},
-		]
-
-		const nativeBlocks = [
-			'core/paragraph',
-			'core/list',
-			'core/heading',
-		]
-		// eslint-disable-next-line no-undef
 		desktopOnly( () => {
 			cy.addBlock( 'core / paragraph' )
 			globalTypo.forEach( val => {
@@ -124,6 +124,8 @@ function globalTypoNativeBlocks( viewport, desktopOnly ) {
 			//assertion for applying global typo
 
 			blocks
+
+			/*
 				.filter( blockName => {
 					const blacklist = [
 						'core/embed',
@@ -161,6 +163,7 @@ function globalTypoNativeBlocks( viewport, desktopOnly ) {
 					]
 					return ! blacklist.includes( blockName )
 				} )
+				*/
 
 				.forEach( blockName => {
 					const name = blockName.split( '/' ).pop()
