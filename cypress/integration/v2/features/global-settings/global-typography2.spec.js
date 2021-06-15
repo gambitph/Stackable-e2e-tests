@@ -94,6 +94,26 @@ function globalTypoNativeBlocks() {
 			'core/list',
 			'core/heading',
 		]
+		// eslint-disable-next-line no-undef
+		desktopOnly( () => {
+			cy.addBlock( 'core / paragraph' )
+			globalTypo.forEach( val => {
+				cy.adjustGlobalTypography( val.tag, {
+					'Font Family': val.font,
+					'Size': {
+						value: val.size,
+						unit: 'px',
+					},
+					'Weight': val.weight,
+					'Transform': val.transform,
+					'Line-Height': {
+						value: val.lineHeight,
+						unit: 'em',
+					},
+					'Letter Spacing': val.letterSpacing,
+				} )
+			} )
+		} )
 		//adding a block for each native block
 		nativeBlocks.forEach( blockName => {
 			cy.addBlock( blockName )
