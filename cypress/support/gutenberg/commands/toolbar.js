@@ -58,9 +58,12 @@ export function adjustToolbar( name, callback = () => {}, options = {} ) {
 /**
  * Command for changing the heading level of core/heading
  *
+ * @param {string} blockName
+ * @param {string | number | Object} blockSelector
  * @param {string} level
  */
-export function changeHeadingLevel( level ) {
+export function changeHeadingLevel( blockName, blockSelector, level ) {
+	cy.selectBlock( blockName, blockSelector )
 	cy.adjustToolbar( 'Change heading level', () => {
 		cy
 			.get( '.components-toolbar-group' )
