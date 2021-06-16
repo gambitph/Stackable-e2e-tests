@@ -6,13 +6,13 @@ import { containsRegExp } from '~common/util'
 /**
  * Register functions to cypress commands.
  */
-Cypress.Commands.add( 'topToolbar', topToolbar )
+Cypress.Commands.add( 'selectTopToolbar', selectTopToolbar )
 Cypress.Commands.add( 'adjustToolbar', adjustToolbar )
 
 /**
  * Command for setting the toolbar to the top.
  */
-export function topToolbar() {
+export function selectTopToolbar() {
 	const options = () => cy
 		.get( '.edit-post-more-menu' )
 		.find( 'button[aria-label="Options"]' )
@@ -46,7 +46,7 @@ export function adjustToolbar( name, callback = () => {}, options = {} ) {
 		parentSelector = '',
 	} = options
 
-	cy.topToolbar()
+	cy.selectTopToolbar()
 	cy
 		.get( `.block-editor-block-toolbar${ parentSelector ? parentSelector : '' }` )
 		.find( `button[aria-label="${ name }"], button[tooltip="${ name }"]` )
