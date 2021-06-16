@@ -251,23 +251,38 @@ function advancedTab( viewport ) {
 function blockSpecificTests() {
 	it( 'should execute block specific tests', () => {
 		// Test 1: @see https://github.com/gambitph/Stackable/issues/1206
+
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/icon' )
+		cy.addBlock( 'ugb/icon' ).as( 'iconBlock' )
+		const iconBlock = registerBlockSnapshots( 'iconBlock' )
 		cy.openInspector( 'ugb/icon', 'Style' )
 		cy.toggleStyle( 'Title' )
-		cy.topToolbar()
-		// select align center in top toolbar
-		// Merge the topToolbar commands first and create Alignment toolbar helper command.
+
+		// Set the block alignment to align center in toolbar
+		cy.adjustToolbar( 'Align', () => {
+			cy
+				.get( '.components-popover__content' )
+				.contains( 'Align center' )
+				.click( { force: true } )
+		}, {
+			buttonOrder: '0',
+		} )
+
 		cy.collapse( 'General' )
 		cy.adjust( 'Align', 'right' ).assertComputedStyle( {
-			'.ugb-inner-block': {
-				'align': 'right',
+			'.ugb-icon': {
+				'justify-content': 'flex-end',
 			},
-			'.ugb-icon__icon': {
-				'align-self': 'flex-end',
+			'.ugb-inner-block': {
+				'text-align': 'right',
+			},
+			'.ugb-icon__title': {
+				'text-align': 'right',
 			},
 		} )
+
+		iconBlock.assertFrontendStyles()
 	} )
 }
 

@@ -44,12 +44,22 @@ export function selectTopToolbar() {
 export function adjustToolbar( name, callback = () => {}, options = {} ) {
 	const {
 		parentSelector = '',
+		buttonOrder, // If buttons have the same aria-label get the order number in the toolbar
 	} = options
 
 	cy.selectTopToolbar()
-	cy
+
+	const selector = () => cy
 		.get( `.block-editor-block-toolbar${ parentSelector ? parentSelector : '' }` )
 		.find( `button[aria-label="${ name }"], button[tooltip="${ name }"]` )
-		.click( { force: true } )
+
+	if ( buttonOrder ) {
+		selector()
+			.eq( buttonOrder )
+			.click( { force: true } )
+	} else {
+		selector()
+			.click( { force: true } )
+	}
 	callback()
 }
