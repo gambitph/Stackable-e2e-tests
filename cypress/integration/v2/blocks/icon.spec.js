@@ -266,7 +266,7 @@ function blockSpecificTests() {
 				.contains( 'Align center' )
 				.click( { force: true } )
 		}, {
-			buttonOrder: '0',
+			parentSelector: '.components-dropdown-menu:nth-of-type(1)',
 		} )
 
 		cy.collapse( 'General' )
