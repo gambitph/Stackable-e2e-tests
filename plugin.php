@@ -84,6 +84,8 @@ if ( isset( $_GET[ 'setup' ] ) ) {
 		update_option( 'stackable_icons_fa_version', '' );
 		update_option( 'stackable_load_v1_styles', '' );
 		update_option( 'stackable_show_pro_notices', '' );
+		update_option( 'stackable_optimization_settings', false );
+		update_option( 'stackable_optimize_script_load', false );
 
 		// Get all pages in the site.
 		$all_pages = get_posts( array(
