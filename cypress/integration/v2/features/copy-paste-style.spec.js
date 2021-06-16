@@ -52,7 +52,8 @@ function allBlocks() {
 									clientIds.push( blockObj.clientId )
 								}
 							} )
-							cy.copyPasteStyles( blockName, { clientId: clientIds[ 0 ] }, { clientId: clientIds[ 1 ] } )
+							cy.copyStyle( blockName, { clientId: clientIds[ 0 ] } )
+							cy.pasteStyle( blockName, { clientId: clientIds[ 1 ] } )
 						} )
 
 						const attrToExclude = Object.keys( block.attrToExclude )
