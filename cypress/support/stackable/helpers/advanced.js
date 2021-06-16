@@ -246,6 +246,11 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 		} )
 
 		if ( viewport === 'Desktop' ) {
+			// Test Custom Attributes
+			_collapse( 'Custom Attributes', () => {
+				_adjust( 'Custom Attributes', 'data-type="some-text"', { viewport }, 'assertHtmlAttribute', selector, 'data-type', 'some-text' )
+			} )
+
 			//Test Custom CSS
 			_collapse( 'Custom CSS', () => {
 				const assertionObj = {}
