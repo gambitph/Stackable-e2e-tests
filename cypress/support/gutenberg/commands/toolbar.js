@@ -8,6 +8,8 @@ import { containsRegExp } from '~common/util'
  */
 Cypress.Commands.add( 'selectTopToolbar', selectTopToolbar )
 Cypress.Commands.add( 'adjustToolbar', adjustToolbar )
+Cypress.Commands.add( 'changeAlignment', changeAlignment )
+Cypress.Commands.add( 'changeTextAlignment', changeTextAlignment )
 
 /**
  * Command for setting the toolbar to the top.
@@ -53,4 +55,42 @@ export function adjustToolbar( name, callback = () => {}, options = {} ) {
 		.click( { force: true } )
 
 	callback()
+}
+
+/**
+ * Command for changing the block alignment in the toolbar
+ *
+ * @param {string} blockName
+ * @param {string | number | Object} blockSelector
+ * @param {string} alignment
+ */
+export function changeAlignment( blockName, blockSelector, alignment ) {
+	cy.selectBlock( blockName, blockSelector )
+	cy.adjustToolbar( 'Align', () => {
+		cy
+			.get( '.components-popover__content' )
+			.contains( containsRegExp( alignment ) )
+			.click( { force: true } )
+	}, {
+		parentSelector: '.components-dropdown-menu:contains(Change alignment)',
+	} )
+}
+
+/**
+ * Command for changing the text alignment in the toolbar
+ *
+ * @param {string} blockName
+ * @param {string | number | Object} blockSelector
+ * @param {string} alignment
+ */
+export function changeTextAlignment( blockName, blockSelector, alignment ) {
+	cy.selectBlock( blockName, blockSelector )
+	cy.adjustToolbar( 'Align', () => {
+		cy
+			.get( '.components-popover__content' )
+			.contains( containsRegExp( alignment ) )
+			.click( { force: true } )
+	}, {
+		parentSelector: '.components-dropdown-menu:contains(Change text alignment)',
+	} )
 }

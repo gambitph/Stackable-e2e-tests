@@ -260,14 +260,7 @@ function blockSpecificTests() {
 		cy.toggleStyle( 'Title' )
 
 		// Set the block alignment to align center in toolbar
-		cy.adjustToolbar( 'Align', () => {
-			cy
-				.get( '.components-popover__content' )
-				.contains( 'Align center' )
-				.click( { force: true } )
-		}, {
-			parentSelector: '.components-dropdown-menu:nth-of-type(1)',
-		} )
+		cy.changeAlignment( 'ugb/icon', 0, 'Align center' )
 
 		cy.collapse( 'General' )
 		cy.adjust( 'Align', 'right' ).assertComputedStyle( {
