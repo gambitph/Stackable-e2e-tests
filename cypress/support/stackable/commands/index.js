@@ -31,4 +31,4 @@ import './editor'
 import './global-settings'
 import './inspector'
 import './toolbar'
-
+import './settings'

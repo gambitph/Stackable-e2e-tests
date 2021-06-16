@@ -15,21 +15,22 @@ import {
 /**
  * Register functions to Cypress Commands.
  */
-Cypress.Commands.add( 'addGlobalColor', addGlobalColor )
+Cypress.Commands.add( 'addEditGlobalColor', addEditGlobalColor )
 Cypress.Commands.add( 'resetGlobalColor', resetGlobalColor )
 Cypress.Commands.add( 'deleteGlobalColor', deleteGlobalColor )
 Cypress.Commands.add( 'adjustGlobalTypography', adjustGlobalTypography )
 Cypress.Commands.add( 'resetGlobalTypography', resetGlobalTypography )
 
 /**
- * Command for adding a global color in Stackable Settings.
+ * Command for adding or editing a global color in Stackable Settings.
  *
  * @param {Object} options
  */
-function addGlobalColor( options = {} ) {
+function addEditGlobalColor( options = {} ) {
 	const {
 		name = '',
 		color = '',
+		currName = '',
 	} = options
 
 	cy.openSidebar( 'Stackable Settings' )
@@ -48,7 +49,7 @@ function addGlobalColor( options = {} ) {
 			}
 
 			cy
-				.get( 'button[aria-label="Add New Color"]' )
+				.get( `button[aria-label="${ currName ? currName : 'Add New Color' }"]` )
 				.click( { force: true } )
 				.then( () => {
 					// Type the color if defined.
@@ -59,6 +60,7 @@ function addGlobalColor( options = {} ) {
 							.closest( '.components-color-picker__inputs-field' )
 							.find( 'input' )
 							.click( { force: true } )
+							.clear( { force: true } )
 							.type( `{selectall}${ color }{enter}` )
 					}
 
@@ -70,6 +72,7 @@ function addGlobalColor( options = {} ) {
 							.closest( '.components-color-picker__input-field' )
 							.find( 'input' )
 							.click( { force: true } )
+							.clear( { force: true } )
 							.type( `{selectall}${ name }{enter}` )
 					}
 
