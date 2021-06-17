@@ -1,0 +1,26 @@
+{
+    "attributes":{
+        "design":"bar",
+        "color":"#cd2653",
+        "hrMarginTop":10,
+        "hrMarginBottom":10,
+        "height":5,
+        "width":42,
+        "uniqueClass":"ugb-ce18eea",
+        "marginTop":1,
+        "marginRight":2,
+        "marginBottom":3,
+        "marginLeft":4,
+        "paddingTop":1,
+        "paddingRight":2,
+        "paddingBottom":3,
+        "paddingLeft":4,
+        "blockHeight":75,
+        "blockWidth":2295,
+        "blockVerticalAlign":"center",
+        "blockHorizontalAlign":"center",
+        "contentAlign":"right",
+        "tabletContentAlign":"right",
+        "mobileContentAlign":"right"
+    }
+}
