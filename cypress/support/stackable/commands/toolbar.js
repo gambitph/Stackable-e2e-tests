@@ -1,33 +1,41 @@
 /**
+ * Internal dependencies
+ */
+import { containsRegExp } from '~common/util'
+
+/**
  * Register functions to cypress commands.
  */
 // Toolbar Controls
-Cypress.Commands.add( 'copyPasteStyles', copyPasteStyles )
+Cypress.Commands.add( 'copyStyle', copyStyle )
+Cypress.Commands.add( 'pasteStyle', pasteStyle )
 
 /**
- * Stackable Command for copying & pasting the styles of a block.
+ * Stackable Command for copying the styles of a block.
  *
  * @param {string} subject
  * @param {string | number | Object} blockToCopy
+ */
+export function copyStyle( subject, blockToCopy ) {
+	cy.selectBlock( subject, blockToCopy )
+	cy.adjustToolbar( 'Copy & Paste Styles', () => {
+		cy
+			.contains( containsRegExp( 'Copy Styles' ) )
+			.click( { force: true } )
+	} )
+}
+
+/**
+ * Stackable Command for pasting the styles of a block.
+ *
+ * @param {string} subject
  * @param {string | number | Object} blockToPaste
  */
-export function copyPasteStyles( subject, blockToCopy, blockToPaste ) {
-	cy.topToolbar()
-	cy.selectBlock( subject, blockToCopy )
-	cy
-		.get( 'button[tooltip="Copy & Paste Styles"]' )
-		.click( { force: true } )
-	cy
-		.contains( 'Copy Styles' )
-		.click( { force: true } )
-
+export function pasteStyle( subject, blockToPaste ) {
 	cy.selectBlock( subject, blockToPaste )
-	if ( ! cy.contains( 'Paste Styles' ) ) {
+	cy.adjustToolbar( 'Copy & Paste Styles', () => {
 		cy
-			.get( 'button[tooltip="Copy & Paste Styles"]' )
+			.contains( containsRegExp( 'Paste Styles' ) )
 			.click( { force: true } )
-	}
-	cy
-		.contains( 'Paste Styles' )
-		.click( { force: true } )
+	} )
 }
