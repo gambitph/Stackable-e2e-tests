@@ -100,36 +100,6 @@
         "className":"is-accordion",
         "title":"Accordion 1"
     },
-    "attrToExclude": {
-        "title": "",
-        "showBlockTitle":"",
-        "showBlockDescription":"",
-        "blockBackgroundBackgroundMediaId":"",
-        "showContainerLink":"",
-        "container1NewTab":"",
-        "container1NoFollow":"",
-        "container1Title":"",
-        "container1Url":"",
-        "container2NewTab":"",
-        "container2NoFollow":"",
-        "container2Title":"",
-        "container2Url":"",
-        "container3NewTab":"",
-        "container3NoFollow":"",
-        "container3Title":"",
-        "container3Url":"",
-        "container4NewTab":"",
-        "container4NoFollow":"",
-        "container4Title":"",
-        "container4Url":"",
-        "columns":"",
-        "tabletColumns":"",
-        "mobileColumns":"",
-        "blockTitle":"",
-        "blockDescription":"",
-        "anchor":"",
-        "uniqueClass": ""
-    },
     "attrContent": {
         "title": ""
     }

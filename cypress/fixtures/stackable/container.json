@@ -172,33 +172,5 @@
         "mobileContentAlign":"right",
         "customCSS":"/* Container */\n.ugb-container {\n\tcolor: red;\n}\n\n/* Container content wrapper */\n.ugb-container .ugb-container__content-wrapper {\n\t\n}\n\n/* All content */\n.ugb-container .ugb-container__content-wrapper * {\n\t\n}",
         "className":"is-container"
-    },
-    "attrToExclude": {
-        "blockBackgroundBackgroundMediaId":"",
-        "imageUrl":"",
-        "showContainerLink":"",
-        "container1NewTab":"",
-        "container1NoFollow":"",
-        "container1Title":"",
-        "container1Url":"",
-        "container2NewTab":"",
-        "container2NoFollow":"",
-        "container2Title":"",
-        "container2Url":"",
-        "container3NewTab":"",
-        "container3NoFollow":"",
-        "container3Title":"",
-        "container3Url":"",
-        "container4NewTab":"",
-        "container4NoFollow":"",
-        "container4Title":"",
-        "container4Url":"",
-        "columns":"",
-        "tabletColumns":"",
-        "mobileColumns":"",
-        "blockTitle":"",
-        "blockDescription":"",
-        "anchor":"",
-        "uniqueClass": ""
     }
 }
