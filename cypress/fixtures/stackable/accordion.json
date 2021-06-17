@@ -51,7 +51,6 @@
         "titleBottomMargin":19,
         "titleTabletBottomMargin":20,
         "titleMobileBottomMargin":21,
-        "uniqueClass":"ugb-48d65fc",
         "blockTag":"section",
         "blockOpacity":0.9,
         "tabletBlockOpacity":0.8,
@@ -103,6 +102,9 @@
     },
     "attrToExclude": {
         "title": "",
+        "showBlockTitle":"",
+        "showBlockDescription":"",
+        "blockBackgroundBackgroundMediaId":"",
         "showContainerLink":"",
         "container1NewTab":"",
         "container1NoFollow":"",

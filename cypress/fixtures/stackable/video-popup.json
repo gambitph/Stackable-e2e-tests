@@ -1,6 +1,6 @@
 {
     "attributes":{
-        "videoLink":"https://www.youtube.com/watch?v=oacaq_1TkMU",
+        "videoLink":"https://youtu.be/nc5Lj90BzSQ",
         "width":2000,
         "height":400,
         "borderRadius":12,
@@ -16,7 +16,6 @@
         "columnBorderWidthBottom":2,
         "columnBorderWidthLeft":2,
         "hoverEffect":"lower",
-        "uniqueClass":"ugb-738e6f8",
         "blockTag":"div",
         "blockOpacity":1,
         "tabletBlockOpacity":1,
@@ -55,7 +54,7 @@
         "align":"full",
         "blockBackgroundBackgroundColorType":"gradient",
         "blockBackgroundBackgroundColor":"#cd2653",
-        "blockBackgroundTabletBackgroundMediaUrl":"http://e2etest.local/wp-content/uploads/2021/06/pexels-faik-akmd-1025469-scaled.jpg",
+        "blockBackgroundTabletBackgroundMediaUrl":"http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
         "blockBackgroundBackgroundColorOpacity":1,
         "showTopSeparator":true,
         "showBottomSeparator":true,
@@ -133,6 +132,39 @@
         "blockDescriptionMobileLineHeight":1.5,
         "blockDescriptionTabletAlign":"center",
         "blockDescriptionMobileAlign":"center",
-        "blockDescriptionColor":"#ffffff"   
+        "blockDescriptionColor":"#ffffff",
+        "blockTitle":"Video popup 1",
+        "blockDescription":"Description for video popup 1"
+    },
+    "attrToExclude": {
+        "showBlockTitle":"",
+        "showBlockDescription":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "showContainerLink":"",
+        "container1NewTab":"",
+        "container1NoFollow":"",
+        "container1Title":"",
+        "container1Url":"",
+        "container2NewTab":"",
+        "container2NoFollow":"",
+        "container2Title":"",
+        "container2Url":"",
+        "container3NewTab":"",
+        "container3NoFollow":"",
+        "container3Title":"",
+        "container3Url":"",
+        "container4NewTab":"",
+        "container4NoFollow":"",
+        "container4Title":"",
+        "container4Url":"",
+        "columns":"",
+        "tabletColumns":"",
+        "mobileColumns":"",
+        "blockTitle":"",
+        "blockDescription":"",
+        "anchor":"",
+        "uniqueClass": ""
+    },
+    "attrContent": {
     }
 }
