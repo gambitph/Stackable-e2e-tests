@@ -246,6 +246,13 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 		} )
 
 		if ( viewport === 'Desktop' ) {
+			// Test Custom Attributes
+			_collapse( 'Custom Attributes', () => {
+				_adjust( 'Custom Attributes', 'data-type="some-text"', { viewport }, 'assertHtmlAttribute', selector, 'data-type', 'some-text' )
+				_adjust( 'Custom Attributes', 'data-type="some-text" aria-label="block"', { viewport }, 'assertHtmlAttribute', selector, 'aria-label', 'block' )
+				_adjust( 'Custom Attributes', 'data-type="some-text" aria-label="block" data-title="title123"', { viewport }, 'assertHtmlAttribute', selector, 'data-title', 'title123' )
+			} )
+
 			//Test Custom CSS
 			_collapse( 'Custom CSS', () => {
 				const assertionObj = {}
