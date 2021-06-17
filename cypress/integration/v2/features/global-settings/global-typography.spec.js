@@ -21,7 +21,15 @@ describe( 'Global Typography', registerTests( [
 	tabletUnits,
 	mobileUnits,
 ] ) )
-
+describe( 'Global Settings', registerTests( [
+	globalTypoNativeBlocks,
+] ) )
+//added native blocks
+const nativeBlocks = [
+	'core/paragraph',
+	'core/list',
+	'core/heading',
+]
 const globalTypo = [
 	{
 		tag: 'h1',
@@ -414,5 +422,33 @@ function globalTypographyUnits( viewport ) {
 					cy.visit( editorUrl )
 				} )
 			} )
+	} )
+}
+
+function globalTypoNativeBlocks() {
+	it( 'should assert global typography on native blocks', () => {
+	   cy.setupWP()
+	   cy.registerPosts( { numOfPosts: 1 } )
+	   cy.newPage()
+
+	   // add the native blocks
+	   nativeBlocks.forEach( blockName => {
+		   cy.addBlock( blockName )
+		   cy
+			   .get( `.wp-block[data-type='${ blockName }']` )
+			   .type( 'Block Title', { force: true } )
+			//if cy.get returns a heading type, test using changeHeadingLevel
+			//else,ifblock is a paragraph, run this:
+		   cy.selectBlock( blockName ).assertComputedStyle( {
+			   '': {
+				   'font-family': `${ globalTypo[ 6 ].font }, sans-serif`,
+				   'font-size': `${ globalTypo[ 6 ].size }px`,
+				   'font-weight': globalTypo[ 6 ].weight,
+				   'text-transform': globalTypo[ 6 ].transform,
+				   'line-height': `${ globalTypo[ 6 ].lineHeight }em`,
+				   'letter-spacing': `${ globalTypo[ 6 ].letterSpacing }px`,
+			   },
+		   } )
+	   } )
 	} )
 }

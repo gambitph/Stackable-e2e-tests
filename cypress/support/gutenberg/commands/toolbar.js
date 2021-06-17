@@ -8,6 +8,7 @@ import { containsRegExp } from '~common/util'
  */
 Cypress.Commands.add( 'selectTopToolbar', selectTopToolbar )
 Cypress.Commands.add( 'adjustToolbar', adjustToolbar )
+Cypress.Commands.add( 'changeHeadingLevel', changeHeadingLevel )
 
 /**
  * Command for setting the toolbar to the top.
@@ -52,4 +53,21 @@ export function adjustToolbar( name, callback = () => {}, options = {} ) {
 		.find( `button[aria-label="${ name }"], button[tooltip="${ name }"]` )
 		.click( { force: true } )
 	callback()
+}
+
+/**
+ * Command for changing the heading level of core/heading
+ *
+ * @param {string} blockName
+ * @param {string | number | Object} blockSelector
+ * @param {string} level
+ */
+export function changeHeadingLevel( blockName, blockSelector, level ) {
+	cy.selectBlock( blockName, blockSelector )
+	cy.adjustToolbar( 'Change heading level', () => {
+		cy
+			.get( '.components-toolbar-group' )
+			.find( `button[aria-label="${ level }"]` )
+			.click( { force: true } )
+	} )
 }
