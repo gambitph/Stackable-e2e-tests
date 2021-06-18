@@ -222,6 +222,9 @@
 		"description3":"Team 1"
     },
     "attrContent": {
+        "image1Url":"",
+        "image2Url":"",
+        "image3Url":"",
         "name1":"",
 		"name2":"",
 		"name3":"",

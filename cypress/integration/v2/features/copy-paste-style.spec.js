@@ -225,13 +225,8 @@ const attrToExclude = [
 	'videoLink',
 	'videoID',
 	'video-popup3',
-	// // image box, count up, team member to be removed when bug's fixed~
-	// 'showOverlay',
-	// 'showArrow',
-	// 'showIcon',
-	// 'showPinterest',
-	// 'showLinkedin',
-	// 'showYoutube',
+	// header
+	'showButton2',
 ]
 
 function allBlocks() {
@@ -264,6 +259,34 @@ function allBlocks() {
 						}
 						if ( name === 'expand' ) {
 							cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title', 1 )
+						}
+						const blockAttributes = Object.keys( block.attributes )
+						const imageAttributes = [
+							'imageUrl',
+							'image1Url',
+							'image2Url',
+							'image3Url',
+							'image4Url',
+							'imageId',
+							'image1Id',
+							'image2Id',
+							'image3Id',
+							'image4Id',
+						]
+						const imageAttrsPresent = blockAttributes.filter( val => imageAttributes.includes( val ) )
+						// Set a different image URL for the 2nd block created for content assertion. Also set imageIds.
+						if ( imageAttrsPresent ) {
+							imageAttrsPresent.forEach( val => {
+								if ( val.includes( 'Id' ) ) {
+									cy.setBlockAttribute( {
+										[ val ]: 1010,
+									} )
+								} else {
+									cy.setBlockAttribute( {
+										[ val ]: Cypress.env( 'DUMMY_IMAGE_URL2' ),
+									} )
+								}
+							} )
 						}
 
 						// Get the clientId of the blocks to be used as a selector in copy paste command

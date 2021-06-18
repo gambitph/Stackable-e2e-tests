@@ -155,10 +155,14 @@
         "button2Url":"https://www.google.com/",
         "button3Url":"https://www.google.com/",
         "button4Url":"https://www.google.com/",
-        "image1Url":"https://www.google.com/",
-        "image2Url":"https://www.google.com/",
-        "image3Url":"https://www.google.com/",
-        "image4Url":"https://www.google.com/"
+        "image1Url":"http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
+        "image2Url":"http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
+        "image3Url":"http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
+        "image4Url":"http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
+        "image1Id":380,
+        "image2Id":380,
+        "image3Id":380,
+        "image4Id":380
     },
     "attrContent": {
         "title1":"",

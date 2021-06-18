@@ -176,6 +176,9 @@
         "button3Url":"https://www.google.com/"
     },
     "attrContent": {
+        "image1Url":"",
+        "image2Url":"",
+        "image3Url":"",
         "title1":"",
 		"title2":"",
 		"title3":"",

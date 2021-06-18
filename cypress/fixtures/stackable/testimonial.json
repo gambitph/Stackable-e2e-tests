@@ -217,6 +217,9 @@
 		"position3":"Test 1"
     },
     "attrContent": {
+        "image1Url":"",
+        "image2Url":"",
+        "image3Url":"",
         "testimonial1":"",
 		"testimonial2":"",
 		"testimonial3":"",

@@ -99,7 +99,6 @@
         "loadMoreButtonText":"Click for more"
     },
     "attrContent": {
-        "loadMoreButtonText":"",
         "blockTitle":"",
         "blockDescription":""
     }
