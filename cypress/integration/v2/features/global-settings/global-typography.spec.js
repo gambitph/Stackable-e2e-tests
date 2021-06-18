@@ -1,18 +1,21 @@
 /**
  * External dependencies
  */
-import { range } from 'lodash'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
+
+//import { range } from 'lodash'
+//import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
+/*
 import {
 	responsiveAssertHelper,
 	registerTests,
 } from '~stackable-e2e/helpers'
+*/
+//import { blocks } from '~stackable-e2e/config'
 
-import { blocks } from '~stackable-e2e/config'
+//const [ , tabletGlobalTypo, mobileGlobalTypo ] = responsiveAssertHelper( assertGlobalTypographyTabletMobile, { disableItAssertion: true } )
+//const [ desktopUnits, tabletUnits, mobileUnits ] = responsiveAssertHelper( globalTypographyUnits, { disableItAssertion: true } )
 
-const [ , tabletGlobalTypo, mobileGlobalTypo ] = responsiveAssertHelper( assertGlobalTypographyTabletMobile, { disableItAssertion: true } )
-const [ desktopUnits, tabletUnits, mobileUnits ] = responsiveAssertHelper( globalTypographyUnits, { disableItAssertion: true } )
-
+/*
 describe( 'Global Typography', registerTests( [
 	assertGlobalTypography,
 	tabletGlobalTypo,
@@ -21,14 +24,16 @@ describe( 'Global Typography', registerTests( [
 	tabletUnits,
 	mobileUnits,
 ] ) )
+*/
+import { registerTests } from '~stackable-e2e/helpers'
 describe( 'Global Settings', registerTests( [
-	globalTypoNativeBlocks,
+	globalTypoNativeBlocks, globalTypoBlockAdjust,
 ] ) )
 //added native blocks
 const nativeBlocks = [
+	'core/heading',
 	'core/paragraph',
 	'core/list',
-	'core/heading',
 ]
 const globalTypo = [
 	{
@@ -96,6 +101,7 @@ const globalTypo = [
 	},
 ]
 
+/*
 const blocksWithTitle = [
 	'ugb/accordion',
 	'ugb/heading',
@@ -424,20 +430,34 @@ function globalTypographyUnits( viewport ) {
 			} )
 	} )
 }
-
+*/
 function globalTypoNativeBlocks() {
 	it( 'should assert global typography on native blocks', () => {
 	   cy.setupWP()
 	   cy.registerPosts( { numOfPosts: 1 } )
 	   cy.newPage()
+	   cy.wait( 5000 )
 
 	   // add the native blocks
 	   nativeBlocks.forEach( blockName => {
 		   cy.addBlock( blockName )
+		   cy.wait( 10000 )
 		   cy
-			   .get( `.wp-block[data-type='${ blockName }']` )
+			   .get( `.wp-block[data-type='${ blockName }']`, { timeout: 10000 } )
 			   .type( 'Block Title', { force: true } )
 			//if cy.get returns a heading type, test using changeHeadingLevel
+			cy.changeHeadingLevel( blockName, 0, 'Heading 1' ).assertComputedStyle(
+				{
+					'': {
+						'font-family': `${ globalTypo[ 6 ].font }, sans-serif`,
+						'font-size': `${ globalTypo[ 6 ].size }px`,
+						'font-weight': globalTypo[ 6 ].weight,
+						'text-transform': globalTypo[ 6 ].transform,
+						'line-height': `${ globalTypo[ 6 ].lineHeight }em`,
+						'letter-spacing': `${ globalTypo[ 6 ].letterSpacing }px`,
+
+					},
+				} )
 			//else,ifblock is a paragraph, run this:
 		   cy.selectBlock( blockName ).assertComputedStyle( {
 			   '': {
@@ -452,3 +472,11 @@ function globalTypoNativeBlocks() {
 	   } )
 	} )
 }
+
+function globalTypoBlockAdjust() {
+	it( 'should not allow Global Typography to be applied on an adjusted block', () => {
+		cy.wait( 5000 )
+	}
+	)
+}
+
