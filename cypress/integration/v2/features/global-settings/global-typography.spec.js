@@ -2,20 +2,20 @@
  * External dependencies
  */
 
-//import { range } from 'lodash'
-//import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
-/*
+import { range } from 'lodash'
+
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
+
 import {
 	responsiveAssertHelper,
 	registerTests,
 } from '~stackable-e2e/helpers'
-*/
-//import { blocks } from '~stackable-e2e/config'
 
-//const [ , tabletGlobalTypo, mobileGlobalTypo ] = responsiveAssertHelper( assertGlobalTypographyTabletMobile, { disableItAssertion: true } )
-//const [ desktopUnits, tabletUnits, mobileUnits ] = responsiveAssertHelper( globalTypographyUnits, { disableItAssertion: true } )
+import { blocks } from '~stackable-e2e/config'
 
-/*
+const [ , tabletGlobalTypo, mobileGlobalTypo ] = responsiveAssertHelper( assertGlobalTypographyTabletMobile, { disableItAssertion: true } )
+const [ desktopUnits, tabletUnits, mobileUnits ] = responsiveAssertHelper( globalTypographyUnits, { disableItAssertion: true } )
+
 describe( 'Global Typography', registerTests( [
 	assertGlobalTypography,
 	tabletGlobalTypo,
@@ -24,8 +24,44 @@ describe( 'Global Typography', registerTests( [
 	tabletUnits,
 	mobileUnits,
 ] ) )
-*/
-import { registerTests } from '~stackable-e2e/helpers'
+
+const blocksWithTitle = [
+	'ugb/accordion',
+	'ugb/heading',
+	'ugb/text',
+	'ugb/icon',
+	'ugb/feature-grid',
+	'ugb/image-box',
+	'ugb/feature',
+	'ugb/cta',
+	'ugb/card',
+	'ugb/header',
+	'ugb/count-up',
+	'ugb/pricing-box',
+	'ugb/notification',
+	'ugb/number-box',
+	'ugb/expand',
+]
+
+const blocksWithBlockTitle = [
+	'ugb/columns',
+	'ugb/icon-list',
+	'ugb/video-popup',
+	'ugb/testimonial',
+	'ugb/team-member',
+]
+
+// Blocks that do not have typography module / dynamic
+const blacklist = [
+	'ugb/container',
+	'ugb/button',
+	'ugb/blockquote',
+	'ugb/divider',
+	'ugb/spacer',
+	'ugb/separator',
+	'ugb/blog-posts',
+]
+
 describe( 'Global Settings', registerTests( [
 	globalTypoNativeBlocks, globalTypoBlockAdjust,
 ] ) )
@@ -35,6 +71,7 @@ const nativeBlocks = [
 	'core/paragraph',
 	'core/list',
 ]
+
 const globalTypo = [
 	{
 		tag: 'h1',
@@ -99,44 +136,6 @@ const globalTypo = [
 		lineHeight: 1.3,
 		letterSpacing: 0.1,
 	},
-]
-
-/*
-const blocksWithTitle = [
-	'ugb/accordion',
-	'ugb/heading',
-	'ugb/text',
-	'ugb/icon',
-	'ugb/feature-grid',
-	'ugb/image-box',
-	'ugb/feature',
-	'ugb/cta',
-	'ugb/card',
-	'ugb/header',
-	'ugb/count-up',
-	'ugb/pricing-box',
-	'ugb/notification',
-	'ugb/number-box',
-	'ugb/expand',
-]
-
-const blocksWithBlockTitle = [
-	'ugb/columns',
-	'ugb/icon-list',
-	'ugb/video-popup',
-	'ugb/testimonial',
-	'ugb/team-member',
-]
-
-// Blocks that do not have typography module / dynamic
-const blacklist = [
-	'ugb/container',
-	'ugb/button',
-	'ugb/blockquote',
-	'ugb/divider',
-	'ugb/spacer',
-	'ugb/separator',
-	'ugb/blog-posts',
 ]
 
 function assertGlobalTypography() {
@@ -430,53 +429,80 @@ function globalTypographyUnits( viewport ) {
 			} )
 	} )
 }
-*/
+
+const nativeHeading = [
+	'Heading 1',
+	'Heading 2',
+	'Heading 3',
+	'Heading 4',
+	'Heading 5',
+	'Heading 6',
+]
 function globalTypoNativeBlocks() {
 	it( 'should assert global typography on native blocks', () => {
-	   cy.setupWP()
-	   cy.registerPosts( { numOfPosts: 1 } )
-	   cy.newPage()
-	   cy.wait( 5000 )
+		cy.setupWP()
+		cy.wait( 5000 )
+		cy.newPage()
 
-	   // add the native blocks
 	   nativeBlocks.forEach( blockName => {
-		   cy.addBlock( blockName )
-		   cy.wait( 10000 )
-		   cy
-			   .get( `.wp-block[data-type='${ blockName }']`, { timeout: 10000 } )
-			   .type( 'Block Title', { force: true } )
-			//if cy.get returns a heading type, test using changeHeadingLevel
-			cy.changeHeadingLevel( blockName, 0, 'Heading 1' ).assertComputedStyle(
-				{
-					'': {
-						'font-family': `${ globalTypo[ 6 ].font }, sans-serif`,
-						'font-size': `${ globalTypo[ 6 ].size }px`,
-						'font-weight': globalTypo[ 6 ].weight,
-						'text-transform': globalTypo[ 6 ].transform,
-						'line-height': `${ globalTypo[ 6 ].lineHeight }em`,
-						'letter-spacing': `${ globalTypo[ 6 ].letterSpacing }px`,
+			cy.addBlock( blockName )
+			cy
+				.get( `.wp-block[data-type='${ blockName }'` )
+				.type( 'Block Title', { force: true } )
 
-					},
+			if ( blockName === 'core/heading' ) {
+				range( 1, 7 ).forEach( idx => {
+					cy.changeHeadingLevel( blockName, 0, nativeHeading[ idx - 1 ] )
+					cy.adjustGlobalTypography( globalTypo[ idx - 1 ].tag, {
+						'Font Family': globalTypo[ idx - 1 ].font,
+						'Size': {
+							value: globalTypo[ idx - 1 ].size,
+							unit: 'px',
+						},
+						'Weight': globalTypo[ idx - 1 ].weight,
+						'Transform': globalTypo[ idx - 1 ].transform,
+						'Line-Height': {
+							value: globalTypo[ idx - 1 ].lineHeight,
+							unit: 'em',
+						},
+						'Letter Spacing': globalTypo[ idx - 1 ].letterSpacing,
+					} )
 				} )
-			//else,ifblock is a paragraph, run this:
-		   cy.selectBlock( blockName ).assertComputedStyle( {
-			   '': {
-				   'font-family': `${ globalTypo[ 6 ].font }, sans-serif`,
-				   'font-size': `${ globalTypo[ 6 ].size }px`,
-				   'font-weight': globalTypo[ 6 ].weight,
-				   'text-transform': globalTypo[ 6 ].transform,
-				   'line-height': `${ globalTypo[ 6 ].lineHeight }em`,
-				   'letter-spacing': `${ globalTypo[ 6 ].letterSpacing }px`,
-			   },
-		   } )
-	   } )
+			} else if ( blockName === 'core/paragraph' || blockName === 'core/list' ) {
+				cy.adjustGlobalTypography( globalTypo[ 6 ].tag, {
+					'Font Family': globalTypo[ 6 ].font,
+					'Size': {
+						value: globalTypo[ 6 ].size,
+						unit: 'px',
+					},
+					'Weight': globalTypo[ 6 ].weight,
+					'Transform': globalTypo[ 6 ].transform,
+					'Line-Height': {
+						value: globalTypo[ 6 ].lineHeight,
+						unit: 'em',
+					},
+					'Letter Spacing': globalTypo[ 6 ].letterSpacing,
+				} )
+			}
+		} )
 	} )
 }
 
 function globalTypoBlockAdjust() {
 	it( 'should not allow Global Typography to be applied on an adjusted block', () => {
+		cy.setupWP()
 		cy.wait( 5000 )
-	}
-	)
-}
+		cy.newPage()
 
+		cy.addBlock( 'core/heading' )
+		cy
+			.get( '.wp-block[data-type=\'core/heading\'' )
+			.type( 'Heading Block', { force: true } )
+		cy.addBlock( 'core/paragraph' )
+			.get( '.wp-block[data-type=\'core/paragraph\'' )
+			.type( 'Paragraph Block', { force: true } )
+		//adjust heading typography (native)
+		//adjust global typography
+		//assert that global typo would not affect adjusted block
+	} )
+}
