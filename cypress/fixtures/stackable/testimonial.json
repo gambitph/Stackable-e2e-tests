@@ -216,6 +216,9 @@
 		"position2":"Test 1",
 		"position3":"Test 1"
     },
+    "attrToExclude": {
+
+    },
     "attrContent": {
         "image1Url":"",
         "image2Url":"",

@@ -90,5 +90,15 @@
         "tabletContentAlign":"center",
         "mobileContentAlign":"right",
         "className":"is-column"
+    },
+    "attrToExclude": {
+        "showContainerLink":"",
+        "container1NewTab":"",
+        "container1NoFollow":"",
+        "container1Title":"",
+        "container1Url":"",
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":""
     }
 }

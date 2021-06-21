@@ -100,6 +100,24 @@
         "button2Text":"button 2",
         "button3Text":"button 3"
     },
+    "attrToExclude": {
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "button1Url":"",
+        "button1NewTab":"",
+        "button1NoFollow":"",
+        "button2Url":"",
+        "button2NewTab":"",
+        "button2NoFollow":"",
+        "button3Url":"",
+        "button3NewTab":"",
+        "button3NoFollow":"",
+        "button1Text":"",
+        "button2Text":"",
+        "button3Text":""
+    },
     "attrContent": {
         "button1Text":"",
         "button2Text":"",

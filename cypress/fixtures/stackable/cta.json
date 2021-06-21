@@ -106,6 +106,23 @@
         "buttonText":"Click me",
         "buttonUrl":"https://www.google.com/"
     },
+    "attrToExclude": {
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "showContainerLink":"",
+        "container1NewTab":"",
+        "container1NoFollow":"",
+        "container1Title":"",
+        "container1Url":"",
+        "title":"",
+        "description":"",
+        "buttonText":"",
+        "buttonUrl":"",
+        "buttonNewTab":"",
+        "buttonNoFollow":""
+    },
     "attrContent": {
         "title":"",
         "description":"",

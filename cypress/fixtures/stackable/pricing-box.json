@@ -266,6 +266,9 @@
         "button2Url":"https://www.google.com/",
         "button3Url":"https://www.google.com/"
     },
+    "attrToExclude": {
+
+    },
     "attrContent": {
         "image1Url":"",
         "image2Url":"",

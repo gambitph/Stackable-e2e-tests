@@ -98,6 +98,29 @@
         "showLoadMoreButton":true,
         "loadMoreButtonText":"Click for more"
     },
+    "attrToExclude": {
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "showBlockTitle":"",
+        "showBlockDescription":"",
+        "blockTitle":"",
+        "blockDescription":"",
+        "columns":"",
+        "tabletColumns":"",
+        "mobileColumns":"",
+        "numberOfItems":"",
+        "order":"",
+        "orderBy":"",
+        "postType":"",
+        "taxonomyType":"",
+        "taxonomy":"",
+        "taxonomyFilterType":"",
+        "postOffset":"",
+        "postExclude":"",
+        "postInclude":""
+    },
     "attrContent": {
         "blockTitle":"",
         "blockDescription":""

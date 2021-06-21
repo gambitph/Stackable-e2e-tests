@@ -188,6 +188,9 @@
 		"description2":"Numbox 1",
 		"description3":"Numbox 1"
     },
+    "attrToExclude": {
+
+    },
     "attrContent": {
         "num1":"",
 		"num2":"",

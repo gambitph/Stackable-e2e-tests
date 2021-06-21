@@ -108,6 +108,18 @@
         "bottomSeparatorLayer3FlipHorizontally":true,
         "text":"Blockquote 1 Lorem ipsum dolor sit amet"
     },
+    "attrToExclude": {
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "showContainerLink":"",
+        "container1NewTab":"",
+        "container1NoFollow":"",
+        "container1Title":"",
+        "container1Url":"",
+        "text":""
+    },
     "attrContent": {
         "text":""
     }

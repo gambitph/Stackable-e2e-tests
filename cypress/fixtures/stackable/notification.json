@@ -149,6 +149,9 @@
 		"buttonText":"Notif 1",
         "buttonUrl":"https://www.google.com/"
     },
+    "attrToExclude": {
+
+    },
     "attrContent": {
         "title":"",
 		"description":"",

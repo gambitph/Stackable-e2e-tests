@@ -207,6 +207,9 @@
         "text3":"Text 3",
         "text4":"Text 4"
     },
+    "attrToExclude": {
+
+    },
     "attrContent": {
         "title":"",
         "subtitle":"",

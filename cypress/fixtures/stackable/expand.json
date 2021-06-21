@@ -23,6 +23,28 @@
         "paddingRight":2,
         "paddingBottom":3,
         "paddingLeft":4,
-        "contentAlign":"left"
+        "contentAlign":"left",
+        "lessLabel":"less",
+        "moreLabel":"more",
+        "text":"<p>Sample</p>",
+        "moreText":"<p>Sample more</p>",
+        "title":"Expand 1"
+    },
+    "attrToExclude": {
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "lessLabel":"",
+        "moreLabel":"",
+        "text":"",
+        "moreText":"",
+        "title":""
+    },
+    "attrContent": {
+        "lessLabel":"",
+        "moreLabel":"",
+        "text":"",
+        "moreText":"",
+        "title":""
     }
 }

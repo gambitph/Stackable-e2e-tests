@@ -158,6 +158,9 @@
 		"url7":"https://www.google.com/",
 		"url8":"https://www.google.com/"
     },
+    "attrToExclude": {
+
+    },
     "attrContent": {
         "title1":"",
 		"title2":"",

@@ -136,6 +136,9 @@
         "blockTitle":"Video popup 1",
         "blockDescription":"Description for video popup 1"
     },
+    "attrToExclude": {
+
+    },
     "attrContent": {
         "blockTitle":"",
         "blockDescription":""

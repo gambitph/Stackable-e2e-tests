@@ -143,6 +143,9 @@
         "blockDescription":"Description for icon list 1",
         "text": "<li>icon list 1</li><li>something 1</li><li>Line 3</li><li>Line 4</li><li>Line 5</li><li>Line 6</li>"
     },
+    "attrToExclude": {
+
+    },
     "attrContent": {
         "text":"",
         "blockTitle":"",

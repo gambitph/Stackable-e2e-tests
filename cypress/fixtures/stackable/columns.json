@@ -172,6 +172,19 @@
         "blockDescription":"Description for columns 1",
         "className":"is-columns"
     },
+    "attrToExclude": {
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "showBlockTitle":"",
+        "showBlockDescription":"",
+        "blockTitle":"",
+        "blockDescription":"",
+        "columns":"",
+        "tabletColumns":"",
+        "mobileColumns":""
+    },
     "attrContent": {
         "blockTitle": "",
         "blockDescription": ""

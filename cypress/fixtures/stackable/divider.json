@@ -21,5 +21,10 @@
         "contentAlign":"right",
         "tabletContentAlign":"right",
         "mobileContentAlign":"right"
+    },
+    "attrToExclude": {
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":""
     }
 }

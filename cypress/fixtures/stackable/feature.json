@@ -138,6 +138,26 @@
         "imageAlt":"Feature 1",
         "buttonUrl":"https://www.google.com/"
     },
+    "attrToExclude": {
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "title":"",
+		"description":"",
+		"buttonText":"",
+        "imageUrl":"",
+        "imageId":"",
+        "imageAlt":"",
+        "buttonUrl":"",
+        "buttonNewTab":"",
+        "buttonNoFollow":"",
+        "showContainerLink":"",
+        "container1NewTab":"",
+        "container1NoFollow":"",
+        "container1Title":"",
+        "container1Url":""
+    },
     "attrContent": {
         "title":"",
 		"description":"",

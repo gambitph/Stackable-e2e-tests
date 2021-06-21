@@ -221,6 +221,9 @@
 		"description2":"Team 1",
 		"description3":"Team 1"
     },
+    "attrToExclude": {
+
+    },
     "attrContent": {
         "image1Url":"",
         "image2Url":"",

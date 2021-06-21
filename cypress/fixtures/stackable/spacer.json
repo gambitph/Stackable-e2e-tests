@@ -80,5 +80,8 @@
         "hideMobile":true,
         "customCSS":"/* Spacer container */\n.ugb-spacer {\n\tcolor: red;\n}",
         "className":"is-spacer"
+    },
+    "attrToExclude": {
+
     }
 }

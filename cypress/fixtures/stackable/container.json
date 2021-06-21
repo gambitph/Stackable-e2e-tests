@@ -171,6 +171,23 @@
         "tabletContentAlign":"center",
         "mobileContentAlign":"right",
         "customCSS":"/* Container */\n.ugb-container {\n\tcolor: red;\n}\n\n/* Container content wrapper */\n.ugb-container .ugb-container__content-wrapper {\n\t\n}\n\n/* All content */\n.ugb-container .ugb-container__content-wrapper * {\n\t\n}",
-        "className":"is-container"
+        "className":"is-container",
+        "imageUrl":"http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
+        "imageId":310
+    },
+    "attrToExclude": {
+        "showContainerLink":"",
+        "container1NewTab":"",
+        "container1NoFollow":"",
+        "container1Title":"",
+        "container1Url":"",
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "imageUrl":""
+    },
+    "attrContent": {
+        "imageUrl":""
     }
 }

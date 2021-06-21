@@ -181,6 +181,9 @@
         "link3Url":"https://www.google.com/",
         "link4Url":"https://www.google.com/"
     },
+    "attrToExclude": {
+
+    },
     "attrContent": {
         "subtitle1":"",
 		"subtitle2":"",

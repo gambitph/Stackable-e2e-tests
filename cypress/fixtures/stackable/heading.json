@@ -107,6 +107,9 @@
         "title":"Title heading",
         "subtitle":"description heading"
     },
+    "attrToExclude": {
+
+    },
     "attrContent": {
         "title": "",
         "subtitle":""
