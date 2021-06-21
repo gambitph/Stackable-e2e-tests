@@ -36,6 +36,7 @@ function switchColumnLayout() {
 			cy.get( selector ).should( 'exist' )
 			cy.deleteBlock( 'ugb/columns' )
 		} )
+		cy.savePost()
 	} )
 }
 
