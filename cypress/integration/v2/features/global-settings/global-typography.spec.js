@@ -432,10 +432,9 @@ function globalTypographyUnits( viewport ) {
 function globalTypoNativeBlocks() {
 	it( 'should assert global typography on native blocks', () => {
 		cy.setupWP()
-		cy.wait( 5000 )
 		cy.newPage()
-		cy.addBlock( 'ugb/divider' )
-		range( 1, 7 ).forEach( idx => {
+		cy.addBlock( 'ugb/divider' ) //placeholder
+		range( 1, 8 ).forEach( idx => {
 			cy.adjustGlobalTypography( globalTypo[ idx - 1 ].tag, {
 				'Font Family': globalTypo[ idx - 1 ].font,
 				'Size': {
@@ -459,28 +458,28 @@ function globalTypoNativeBlocks() {
 				.type( 'Block Title', { force: true } )
 
 			if ( blockName === 'core/heading' ) {
-				range( 1, 6 ).forEach( idx => {
+				range( 1, 7 ).forEach( idx => {
 					cy.changeHeadingLevel( blockName, 0, `Heading ${ idx }` )
 					cy.selectBlock( blockName ).assertComputedStyle( {
 						'': {
-							'Font Family': globalTypo[ idx - 1 ].font,
-							'Size': `${ globalTypo[ idx - 1 ].size }px`,
-							'Weight': globalTypo[ idx - 1 ].weight,
-							'Transform': globalTypo[ idx - 1 ].transform,
-							'Line-Height': `${ globalTypo[ idx - 1 ].lineHeight }em`,
-							'Letter Spacing': `${ globalTypo[ idx - 1 ].letterSpacing }px`,
+							'font-family': `${ globalTypo[ idx - 1 ].font }, sans-serif`,
+							'font-size': `${ globalTypo[ idx - 1 ].size }px`,
+							'font-weight': globalTypo[ idx - 1 ].weight,
+							'text-transform': globalTypo[ idx - 1 ].transform,
+							'line-height': `${ globalTypo[ idx - 1 ].lineHeight }em`,
+							'letter-spacing': `${ globalTypo[ idx - 1 ].letterSpacing }px`,
 						},
 					} )
 				} )
 			} else if ( blockName === 'core/paragraph' || blockName === 'core/list' ) {
 				cy.selectBlock( blockName ).assertComputedStyle( {
 					[ `${ blockName === 'core/paragraph' ? '' : 'li' }` ]: {
-						'Font Family': globalTypo[ 6 ].font,
-						'Size': `${ globalTypo[ 6 ].size }px`,
-						'Weight': globalTypo[ 6 ].weight,
-						'Transform': globalTypo[ 6 ].transform,
-						'Line-Height': `${ globalTypo[ 6 ].lineHeight }em`,
-						'Letter Spacing': `${ globalTypo[ 6 ].letterSpacing }px`,
+						'font-family': `${ globalTypo[ 6 ].font }, sans-serif`,
+						'font-size': `${ globalTypo[ 6 ].size }px`,
+						'font-weight': globalTypo[ 6 ].weight,
+						'text-transform': globalTypo[ 6 ].transform,
+						'line-height': `${ globalTypo[ 6 ].lineHeight }em`,
+						'letter-spacing': `${ globalTypo[ 6 ].letterSpacing }px`,
 					},
 				} )
 			}
@@ -491,7 +490,6 @@ function globalTypoNativeBlocks() {
 function globalTypoBlockAdjust() {
 	it( 'should not allow Global Typography to be applied on an adjusted block', () => {
 		cy.setupWP()
-		cy.wait( 5000 )
 		cy.newPage()
 
 		cy.addBlock( 'ugb/accordion' )
@@ -517,21 +515,19 @@ function globalTypoBlockAdjust() {
 		cy.adjust( 'Typography', {
 			'Font Family': 'Acme',
 			'Size': 38,
-			'Weight': 300,
+			'Weight': '300',
 			'Transform': 'uppercase',
-			'Line Height': 2.7,
+			'Line-Height': 2.7,
 			'Letter Spacing': 1.8,
 		} ).assertComputedStyle( {
 			'.ugb-accordion__title': {
-				'Font Family': globalTypo[ 3 ].font,
-				'Size': `${ globalTypo[ 3 ].size }px`,
-				'Weight': globalTypo[ 3 ].weight,
-				'Transform': globalTypo[ 3 ].transform,
-				'Line-Height': `${ globalTypo[ 3 ].lineHeight }em`,
-				'Letter Spacing': `${ globalTypo[ 3 ].letterSpacing }px`,
+				'font-family': `${ globalTypo[ 3 ].font }, sans-serif`,
+				'font-size': `${ globalTypo[ 3 ].size }px`,
+				'font-weight': globalTypo[ 3 ].weight,
+				'text-transform': globalTypo[ 3 ].transform,
+				'line-height': `${ globalTypo[ 3 ].lineHeight }em`,
+				'letter-spacing': `${ globalTypo[ 3 ].letterSpacing }px`,
 			},
 		} )
-
-		//assert that global typo would not affect adjusted block
 	} )
 }
