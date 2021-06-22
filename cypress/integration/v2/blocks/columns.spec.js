@@ -93,7 +93,7 @@ function styleTab( viewport, desktopOnly ) {
 	if ( viewport !== 'Mobile' ) {
 		cy.adjust( 'Column Widths', [ 67, 33 ], { viewport } ).assertComputedStyle( {
 			'.ugb-columns__item': {
-				'grid-template-columns': '1.34fr 0.66fr',
+				'grid-template-columns': `${ viewport === 'Desktop' ? '1.34fr 0.66fr' : '1.14fr 0.66fr' }`,
 			},
 		}, {
 			assertFrontend: false,
