@@ -82,6 +82,11 @@
         "className":"is-spacer"
     },
     "attrToExclude": {
-
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":""
+    },
+    "attrContent": {
+        "customAttributes":""
     }
 }

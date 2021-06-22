@@ -105,13 +105,19 @@
         "customCSS":"/* Heading container */\n.ugb-heading {\n\tcolor: red;\n}\n\n/* Heading title */\n.ugb-heading__title {\n\t\n}\n\n/* Heading subtitle */\n.ugb-heading__subtitle {\n\t\n}\n\n/* Heading top line */\n.ugb-heading .ugb-heading__top-line {\n\t\n}\n\n/* Heading bottom line */\n.ugb-heading .ugb-heading__bottom-line {\n\t\n}",
         "className":"is-heading",
         "title":"Title heading",
-        "subtitle":"description heading"
+        "subtitle":"description heading",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
-
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "title":"",
+		"subtitle":""
     },
     "attrContent": {
         "title": "",
-        "subtitle":""
+        "subtitle":"",
+        "customAttributes":""
     }
 }

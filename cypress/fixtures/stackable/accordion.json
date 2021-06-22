@@ -98,7 +98,8 @@
         "tabletContentAlign":"center",
         "mobileContentAlign":"right",
         "className":"is-accordion",
-        "title":"Accordion 1"
+        "title":"Accordion 1",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
         "anchor":"",
@@ -107,6 +108,7 @@
         "title":""
     },
     "attrContent": {
-        "title": ""
+        "title": "",
+        "customAttributes":""
     }
 }

@@ -186,10 +186,43 @@
 		"title3":"Numbox 1",
 		"description1":"Numbox 1",
 		"description2":"Numbox 1",
-		"description3":"Numbox 1"
+		"description3":"Numbox 1",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
-
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "num1":"",
+		"num2":"",
+		"num3":"",
+		"title1":"",
+		"title2":"",
+		"title3":"",
+		"description1":"",
+		"description2":"",
+		"description3":"",
+        "showBlockTitle":"",
+        "showBlockDescription":"",
+        "blockTitle":"",
+        "blockDescription":"",
+        "showContainerLink":"",
+        "container1NewTab":"",
+        "container1NoFollow":"",
+        "container1Title":"",
+        "container1Url":"",
+        "container2NewTab":"",
+        "container2NoFollow":"",
+        "container2Title":"",
+        "container2Url":"",
+        "container3NewTab":"",
+        "container3NoFollow":"",
+        "container3Title":"",
+        "container3Url":"",
+        "columns":"",
+        "tabletColumns":"",
+        "mobileColumns":""
     },
     "attrContent": {
         "num1":"",
@@ -202,6 +235,7 @@
 		"description2":"",
 		"description3":"",
         "blockTitle":"",
-        "blockDescription":""
+        "blockDescription":"",
+        "customAttributes":""
     }
 }

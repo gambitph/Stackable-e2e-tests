@@ -170,7 +170,8 @@
         "mobileContentAlign":"right",
         "blockTitle":"Columns 1",
         "blockDescription":"Description for columns 1",
-        "className":"is-columns"
+        "className":"is-columns",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
         "anchor":"",
@@ -187,6 +188,7 @@
     },
     "attrContent": {
         "blockTitle": "",
-        "blockDescription": ""
+        "blockDescription": "",
+        "customAttributes":""
     }
 }

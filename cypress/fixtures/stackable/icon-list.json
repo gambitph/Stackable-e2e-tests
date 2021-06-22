@@ -4,18 +4,18 @@
         "iconSize":22,
         "iconTabletSize":22,
         "iconMobileSize":22,
-        "columns":3,
-        "tabletColumns":3,
-        "mobileColumns":3,
+        "columns":4,
+        "tabletColumns":4,
+        "mobileColumns":4,
         "displayAsGrid":true,
         "gap":13,
         "rotation":4,
-        "icon1":"\u003csvg data-prefix=\u0022fas\u0022 data-icon=\u0022info-circle\u0022 class=\u0022svg-inline\u002d\u002dfa fa-info-circle fa-w-16\u0022 role=\u0022img\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022 viewBox=\u00220 0 512 512\u0022\u003e\u003cpath fill=\u0022currentColor\u0022 d=\u0022M256 8C119.043 8 8 119.083 8 256c0 136.997 111.043 248 248 248s248-111.003 248-248C504 119.083 392.957 8 256 8zm0 110c23.196 0 42 18.804 42 42s-18.804 42-42 42-42-18.804-42-42 18.804-42 42-42zm56 254c0 6.627-5.373 12-12 12h-88c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h12v-64h-12c-6.627 0-12-5.373-12-12v-24c0-6.627 5.373-12 12-12h64c6.627 0 12 5.373 12 12v100h12c6.627 0 12 5.373 12 12v24z\u0022\u003e\u003c/path\u003e\u003c/svg\u003e",
-        "icon2":"\u003csvg data-prefix=\u0022fas\u0022 data-icon=\u0022baby-carriage\u0022 class=\u0022svg-inline\u002d\u002dfa fa-baby-carriage fa-w-16\u0022 role=\u0022img\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022 viewBox=\u00220 0 512 512\u0022\u003e\u003cpath fill=\u0022currentColor\u0022 d=\u0022M144.8 17c-11.3-17.8-37.2-22.8-54-9.4C35.3 51.9 0 118 0 192h256L144.8 17zM496 96h-48c-35.3 0-64 28.7-64 64v64H0c0 50.6 23 96.4 60.3 130.7C25.7 363.6 0 394.7 0 432c0 44.2 35.8 80 80 80s80-35.8 80-80c0-8.9-1.8-17.2-4.4-25.2 21.6 5.9 44.6 9.2 68.4 9.2s46.9-3.3 68.4-9.2c-2.7 8-4.4 16.3-4.4 25.2 0 44.2 35.8 80 80 80s80-35.8 80-80c0-37.3-25.7-68.4-60.3-77.3C425 320.4 448 274.6 448 224v-64h48c8.8 0 16-7.2 16-16v-32c0-8.8-7.2-16-16-16zM80 464c-17.6 0-32-14.4-32-32s14.4-32 32-32 32 14.4 32 32-14.4 32-32 32zm320-32c0 17.6-14.4 32-32 32s-32-14.4-32-32 14.4-32 32-32 32 14.4 32 32z\u0022\u003e\u003c/path\u003e\u003c/svg\u003e",
-        "icon3":"\u003csvg data-prefix=\u0022fas\u0022 data-icon=\u0022window-close\u0022 class=\u0022svg-inline\u002d\u002dfa fa-window-close fa-w-16\u0022 role=\u0022img\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022 viewBox=\u00220 0 512 512\u0022\u003e\u003cpath fill=\u0022currentColor\u0022 d=\u0022M464 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-83.6 290.5c4.8 4.8 4.8 12.6 0 17.4l-40.5 40.5c-4.8 4.8-12.6 4.8-17.4 0L256 313.3l-66.5 67.1c-4.8 4.8-12.6 4.8-17.4 0l-40.5-40.5c-4.8-4.8-4.8-12.6 0-17.4l67.1-66.5-67.1-66.5c-4.8-4.8-4.8-12.6 0-17.4l40.5-40.5c4.8-4.8 12.6-4.8 17.4 0l66.5 67.1 66.5-67.1c4.8-4.8 12.6-4.8 17.4 0l40.5 40.5c4.8 4.8 4.8 12.6 0 17.4L313.3 256l67.1 66.5z\u0022\u003e\u003c/path\u003e\u003c/svg\u003e",
-        "icon4":"\u003csvg data-prefix=\u0022fas\u0022 data-icon=\u0022window-maximize\u0022 class=\u0022svg-inline\u002d\u002dfa fa-window-maximize fa-w-16\u0022 role=\u0022img\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022 viewBox=\u00220 0 512 512\u0022\u003e\u003cpath fill=\u0022currentColor\u0022 d=\u0022M464 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm-16 160H64v-84c0-6.6 5.4-12 12-12h360c6.6 0 12 5.4 12 12v84z\u0022\u003e\u003c/path\u003e\u003c/svg\u003e",
-        "icon5":"\u003csvg data-prefix=\u0022far\u0022 data-icon=\u0022window-close\u0022 class=\u0022svg-inline\u002d\u002dfa fa-window-close fa-w-16\u0022 role=\u0022img\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022 viewBox=\u00220 0 512 512\u0022\u003e\u003cpath fill=\u0022currentColor\u0022 d=\u0022M464 32H48C21.5 32 0 53.5 0 80v352c0 26.5 21.5 48 48 48h416c26.5 0 48-21.5 48-48V80c0-26.5-21.5-48-48-48zm0 394c0 3.3-2.7 6-6 6H54c-3.3 0-6-2.7-6-6V86c0-3.3 2.7-6 6-6h404c3.3 0 6 2.7 6 6v340zM356.5 194.6L295.1 256l61.4 61.4c4.6 4.6 4.6 12.1 0 16.8l-22.3 22.3c-4.6 4.6-12.1 4.6-16.8 0L256 295.1l-61.4 61.4c-4.6 4.6-12.1 4.6-16.8 0l-22.3-22.3c-4.6-4.6-4.6-12.1 0-16.8l61.4-61.4-61.4-61.4c-4.6-4.6-4.6-12.1 0-16.8l22.3-22.3c4.6-4.6 12.1-4.6 16.8 0l61.4 61.4 61.4-61.4c4.6-4.6 12.1-4.6 16.8 0l22.3 22.3c4.7 4.6 4.7 12.1 0 16.8z\u0022\u003e\u003c/path\u003e\u003c/svg\u003e",
-        "icon6":"\u003csvg data-prefix=\u0022fas\u0022 data-icon=\u0022disease\u0022 class=\u0022svg-inline\u002d\u002dfa fa-disease fa-w-16\u0022 role=\u0022img\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022 viewBox=\u00220 0 512 512\u0022\u003e\u003cpath fill=\u0022currentColor\u0022 d=\u0022M472.29 195.9l-67.06-23c-19.28-6.6-33.54-20.92-38.14-38.31l-16-60.45c-11.58-43.77-76.57-57.13-110-22.62L195 99.24c-13.26 13.71-33.54 20.93-54.2 19.31l-71.9-5.62c-52-4.07-86.93 44.89-59 82.84l38.54 52.42c11.08 15.07 12.82 33.86 4.64 50.24l-28.43 57C4 396.67 47.46 440.29 98.11 429.23l70-15.28c20.11-4.39 41.45 0 57.07 11.73l54.32 40.83c39.32 29.56 101 7.57 104.45-37.22l4.7-61.86c1.35-17.8 12.8-33.87 30.63-43l62-31.74c44.84-22.96 39.55-80.17-8.99-96.79zM160 256a32 32 0 1 1 32-32 32 32 0 0 1-32 32zm128 96a32 32 0 1 1 32-32 32 32 0 0 1-32 32zm16-128a16 16 0 1 1 16-16 16 16 0 0 1-16 16z\u0022\u003e\u003c/path\u003e\u003c/svg\u003e",
+        "icon1":"\u003csvg data-prefix=\u0022fas\u0022 data-icon=\u0022info\u0022 class=\u0022svg-inline\u002d\u002dfa fa-info fa-w-6\u0022 role=\u0022img\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022 viewBox=\u00220 0 192 512\u0022\u003e\u003cpath fill=\u0022currentColor\u0022 d=\u0022M20 424.229h20V279.771H20c-11.046 0-20-8.954-20-20V212c0-11.046 8.954-20 20-20h112c11.046 0 20 8.954 20 20v212.229h20c11.046 0 20 8.954 20 20V492c0 11.046-8.954 20-20 20H20c-11.046 0-20-8.954-20-20v-47.771c0-11.046 8.954-20 20-20zM96 0C56.235 0 24 32.235 24 72s32.235 72 72 72 72-32.235 72-72S135.764 0 96 0z\u0022\u003e\u003c/path\u003e\u003c/svg\u003e",
+        "icon2":"\u003csvg data-prefix=\u0022fas\u0022 data-icon=\u0022info\u0022 class=\u0022svg-inline\u002d\u002dfa fa-info fa-w-6\u0022 role=\u0022img\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022 viewBox=\u00220 0 192 512\u0022\u003e\u003cpath fill=\u0022currentColor\u0022 d=\u0022M20 424.229h20V279.771H20c-11.046 0-20-8.954-20-20V212c0-11.046 8.954-20 20-20h112c11.046 0 20 8.954 20 20v212.229h20c11.046 0 20 8.954 20 20V492c0 11.046-8.954 20-20 20H20c-11.046 0-20-8.954-20-20v-47.771c0-11.046 8.954-20 20-20zM96 0C56.235 0 24 32.235 24 72s32.235 72 72 72 72-32.235 72-72S135.764 0 96 0z\u0022\u003e\u003c/path\u003e\u003c/svg\u003e",
+        "icon3":"\u003csvg data-prefix=\u0022fas\u0022 data-icon=\u0022info\u0022 class=\u0022svg-inline\u002d\u002dfa fa-info fa-w-6\u0022 role=\u0022img\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022 viewBox=\u00220 0 192 512\u0022\u003e\u003cpath fill=\u0022currentColor\u0022 d=\u0022M20 424.229h20V279.771H20c-11.046 0-20-8.954-20-20V212c0-11.046 8.954-20 20-20h112c11.046 0 20 8.954 20 20v212.229h20c11.046 0 20 8.954 20 20V492c0 11.046-8.954 20-20 20H20c-11.046 0-20-8.954-20-20v-47.771c0-11.046 8.954-20 20-20zM96 0C56.235 0 24 32.235 24 72s32.235 72 72 72 72-32.235 72-72S135.764 0 96 0z\u0022\u003e\u003c/path\u003e\u003c/svg\u003e",
+        "icon4":"\u003csvg data-prefix=\u0022fas\u0022 data-icon=\u0022info\u0022 class=\u0022svg-inline\u002d\u002dfa fa-info fa-w-6\u0022 role=\u0022img\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022 viewBox=\u00220 0 192 512\u0022\u003e\u003cpath fill=\u0022currentColor\u0022 d=\u0022M20 424.229h20V279.771H20c-11.046 0-20-8.954-20-20V212c0-11.046 8.954-20 20-20h112c11.046 0 20 8.954 20 20v212.229h20c11.046 0 20 8.954 20 20V492c0 11.046-8.954 20-20 20H20c-11.046 0-20-8.954-20-20v-47.771c0-11.046 8.954-20 20-20zM96 0C56.235 0 24 32.235 24 72s32.235 72 72 72 72-32.235 72-72S135.764 0 96 0z\u0022\u003e\u003c/path\u003e\u003c/svg\u003e",
+        "icon5":"\u003csvg data-prefix=\u0022fas\u0022 data-icon=\u0022info\u0022 class=\u0022svg-inline\u002d\u002dfa fa-info fa-w-6\u0022 role=\u0022img\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022 viewBox=\u00220 0 192 512\u0022\u003e\u003cpath fill=\u0022currentColor\u0022 d=\u0022M20 424.229h20V279.771H20c-11.046 0-20-8.954-20-20V212c0-11.046 8.954-20 20-20h112c11.046 0 20 8.954 20 20v212.229h20c11.046 0 20 8.954 20 20V492c0 11.046-8.954 20-20 20H20c-11.046 0-20-8.954-20-20v-47.771c0-11.046 8.954-20 20-20zM96 0C56.235 0 24 32.235 24 72s32.235 72 72 72 72-32.235 72-72S135.764 0 96 0z\u0022\u003e\u003c/path\u003e\u003c/svg\u003e",
+        "icon6":"\u003csvg data-prefix=\u0022fas\u0022 data-icon=\u0022info\u0022 class=\u0022svg-inline\u002d\u002dfa fa-info fa-w-6\u0022 role=\u0022img\u0022 xmlns=\u0022http://www.w3.org/2000/svg\u0022 viewBox=\u00220 0 192 512\u0022\u003e\u003cpath fill=\u0022currentColor\u0022 d=\u0022M20 424.229h20V279.771H20c-11.046 0-20-8.954-20-20V212c0-11.046 8.954-20 20-20h112c11.046 0 20 8.954 20 20v212.229h20c11.046 0 20 8.954 20 20V492c0 11.046-8.954 20-20 20H20c-11.046 0-20-8.954-20-20v-47.771c0-11.046 8.954-20 20-20zM96 0C56.235 0 24 32.235 24 72s32.235 72 72 72 72-32.235 72-72S135.764 0 96 0z\u0022\u003e\u003c/path\u003e\u003c/svg\u003e",
         "marginTop":12,
         "marginRight":23,
         "marginBottom":31,
@@ -141,14 +141,24 @@
         "blockBackgroundFixedBackground":true,
         "blockTitle":"Icon list 1",
         "blockDescription":"Description for icon list 1",
-        "text": "<li>icon list 1</li><li>something 1</li><li>Line 3</li><li>Line 4</li><li>Line 5</li><li>Line 6</li>"
+        "text": "<li>icon list 1</li><li>something 1</li><li>Line 3</li><li>Line 4</li><li>Line 5</li><li>Line 6</li>",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
-
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "showBlockTitle":"",
+        "showBlockDescription":"",
+        "blockTitle":"",
+        "blockDescription":"",
+        "text":""
     },
     "attrContent": {
         "text":"",
         "blockTitle":"",
-        "blockDescription":""
+        "blockDescription":"",
+        "customAttributes":""
     }
 }

@@ -134,13 +134,28 @@
         "blockDescriptionMobileAlign":"center",
         "blockDescriptionColor":"#ffffff",
         "blockTitle":"Video popup 1",
-        "blockDescription":"Description for video popup 1"
+        "blockDescription":"Description for video popup 1",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
-
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "showBlockTitle":"",
+        "showBlockDescription":"",
+        "blockTitle":"",
+        "blockDescription":"",
+        "previewBackgroundMediaUrl":"",
+        "previewBackgroundMediaId":"",
+        "videoLink":"",
+        "videoID":"",
+        "video-popup3":""
     },
     "attrContent": {
+        "videoLink":"",
         "blockTitle":"",
-        "blockDescription":""
+        "blockDescription":"",
+        "customAttributes":""
     }
 }

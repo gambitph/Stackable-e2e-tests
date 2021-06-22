@@ -104,7 +104,8 @@
         "title":"CTA 1",
         "description":"Description for CTA 1",
         "buttonText":"Click me",
-        "buttonUrl":"https://www.google.com/"
+        "buttonUrl":"https://www.google.com/",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
         "anchor":"",
@@ -127,6 +128,7 @@
         "title":"",
         "description":"",
         "buttonText":"",
-        "buttonUrl":""
+        "buttonUrl":"",
+        "customAttributes":""
     }
 }

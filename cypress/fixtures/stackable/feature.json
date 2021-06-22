@@ -136,7 +136,8 @@
 		"description":"Feature 1",
 		"buttonText":"Feature 1",
         "imageAlt":"Feature 1",
-        "buttonUrl":"https://www.google.com/"
+        "buttonUrl":"https://www.google.com/",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
         "anchor":"",
@@ -164,6 +165,7 @@
 		"buttonText":"",
         "imageUrl":"",
         "imageAlt":"",
-        "buttonUrl":""
+        "buttonUrl":"",
+        "customAttributes":""
     }
 }

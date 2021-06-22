@@ -168,9 +168,13 @@
 		"description1":"Count 1",
 		"description2":"Count 1",
 		"description3":"Count 1",
-		"description4":"Count 1"
+		"description4":"Count 1",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
+        "columns":"",
+        "tabletColumns":"",
+        "mobileColumns":"",
         "title1":"",
 		"title2":"",
 		"title3":"",
@@ -231,6 +235,7 @@
         "icon3":"",
         "icon4":"",
         "blockTitle":"",
-        "blockDescription":""
+        "blockDescription":"",
+        "customAttributes":""
     }
 }

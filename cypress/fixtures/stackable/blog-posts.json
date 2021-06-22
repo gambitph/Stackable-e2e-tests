@@ -96,7 +96,8 @@
         "blockTitle":"Blog Posts 1",
         "blockDescription":"Description for posts 1",
         "showLoadMoreButton":true,
-        "loadMoreButtonText":"Click for more"
+        "loadMoreButtonText":"Click for more",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
         "anchor":"",
@@ -123,6 +124,7 @@
     },
     "attrContent": {
         "blockTitle":"",
-        "blockDescription":""
+        "blockDescription":"",
+        "customAttributes":""
     }
 }

@@ -173,7 +173,8 @@
 		"button3Text":"Button 1",
         "button1Url":"https://www.google.com/",
         "button2Url":"https://www.google.com/",
-        "button3Url":"https://www.google.com/"
+        "button3Url":"https://www.google.com/",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
         "anchor":"",
@@ -248,6 +249,7 @@
         "button2Url":"",
         "button3Url":"",
         "blockTitle":"",
-        "blockDescription":""
+        "blockDescription":"",
+        "customAttributes":""
     }
 }

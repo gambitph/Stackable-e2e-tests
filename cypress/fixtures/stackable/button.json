@@ -98,7 +98,8 @@
         "contentAlign":"right",
         "button1Text":"button 1",
         "button2Text":"button 2",
-        "button3Text":"button 3"
+        "button3Text":"button 3",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
         "anchor":"",
@@ -121,6 +122,7 @@
     "attrContent": {
         "button1Text":"",
         "button2Text":"",
-        "button3Text":""
+        "button3Text":"",
+        "customAttributes":""
     }
 }

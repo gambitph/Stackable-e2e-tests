@@ -173,7 +173,8 @@
         "customCSS":"/* Container */\n.ugb-container {\n\tcolor: red;\n}\n\n/* Container content wrapper */\n.ugb-container .ugb-container__content-wrapper {\n\t\n}\n\n/* All content */\n.ugb-container .ugb-container__content-wrapper * {\n\t\n}",
         "className":"is-container",
         "imageUrl":"http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
-        "imageId":310
+        "imageId":310,
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
         "showContainerLink":"",
@@ -185,9 +186,11 @@
         "uniqueClass":"",
         "customAttributes":"",
         "blockBackgroundBackgroundMediaId":"",
-        "imageUrl":""
+        "imageUrl":"",
+        "imageId":""
     },
     "attrContent": {
-        "imageUrl":""
+        "imageUrl":"",
+        "customAttributes":""
     }
 }

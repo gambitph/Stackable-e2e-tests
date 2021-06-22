@@ -28,7 +28,8 @@
         "moreLabel":"more",
         "text":"<p>Sample</p>",
         "moreText":"<p>Sample more</p>",
-        "title":"Expand 1"
+        "title":"Expand 1",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
         "anchor":"",
@@ -45,6 +46,7 @@
         "moreLabel":"",
         "text":"",
         "moreText":"",
-        "title":""
+        "title":"",
+        "customAttributes":""
     }
 }

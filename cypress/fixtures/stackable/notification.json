@@ -147,15 +147,31 @@
         "title":"Notif 1",
 		"description":"Notif 1",
 		"buttonText":"Notif 1",
-        "buttonUrl":"https://www.google.com/"
+        "buttonUrl":"https://www.google.com/",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
-
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "title":"",
+		"description":"",
+		"buttonText":"",
+        "buttonUrl":"",
+        "buttonNewTab":"",
+        "buttonNoFollow":"",
+        "showContainerLink":"",
+        "container1NewTab":"",
+        "container1NoFollow":"",
+        "container1Title":"",
+        "container1Url":""
     },
     "attrContent": {
         "title":"",
 		"description":"",
 		"buttonText":"",
-        "buttonUrl":""
+        "buttonUrl":"",
+        "customAttributes":""
     }
 }

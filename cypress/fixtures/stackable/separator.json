@@ -30,9 +30,15 @@
         "layer3Flip":true,
         "tabletBlockOpacity":1,
         "mobileBlockOpacity":1,
-        "hideTablet":true  
+        "hideTablet":true,
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
-
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":""
+    },
+    "attrContent": {
+        "customAttributes":""
     }
 }

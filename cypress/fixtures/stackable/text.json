@@ -1,5 +1,6 @@
 {
     "attributes": {
+        "columns":4,
         "showTitle":true,
         "titleTag":"h4",
         "titleFontFamily":"Acme",
@@ -205,10 +206,23 @@
         "text1":"Text 1",
         "text2":"Text 2",
         "text3":"Text 3",
-        "text4":"Text 4"
+        "text4":"Text 4",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
-
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "columns":"",
+        "tabletColumns":"",
+        "mobileColumns":"",
+        "title":"",
+        "subtitle":"",
+        "text1":"",
+        "text2":"",
+        "text3":"",
+        "text4":""
     },
     "attrContent": {
         "title":"",
@@ -216,6 +230,7 @@
         "text1":"",
         "text2":"",
         "text3":"",
-        "text4":""
+        "text4":"",
+        "customAttributes":""
     }
 }

@@ -125,10 +125,30 @@
 		"button2Text":"Header 1",
         "buttonUrl":"https://www.google.com/",
         "button2Url":"https://www.google.com/",
-        "showButton2":true
+        "showButton2":true,
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
-
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "blockBackgroundBackgroundMediaId":"",
+        "title":"",
+		"subtitle":"",
+		"buttonText":"",
+		"button2Text":"",
+        "buttonUrl":"",
+        "buttonNewTab":"",
+        "buttonNoFollow":"",
+        "button2Url":"",
+        "button2NewTab":"",
+        "button2NoFollow":"",
+        "showContainerLink":"",
+        "container1NewTab":"",
+        "container1NoFollow":"",
+        "container1Title":"",
+        "container1Url":"",
+        "showButton2":""
     },
     "attrContent": {
         "title":"",
@@ -136,6 +156,7 @@
 		"buttonText":"",
 		"button2Text":"",
         "buttonUrl":"",
-        "button2Url":""
+        "button2Url":"",
+        "customAttributes":""
     }
 }

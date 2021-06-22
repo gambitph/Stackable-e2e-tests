@@ -20,11 +20,15 @@
         "blockHorizontalAlign":"center",
         "contentAlign":"right",
         "tabletContentAlign":"right",
-        "mobileContentAlign":"right"
+        "mobileContentAlign":"right",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
         "anchor":"",
         "uniqueClass":"",
+        "customAttributes":""
+    },
+    "attrContent": {
         "customAttributes":""
     }
 }

@@ -162,7 +162,12 @@
         "image1Id":380,
         "image2Id":380,
         "image3Id":380,
-        "image4Id":380
+        "image4Id":380,
+        "image1Alt":"Feat grid 1",
+        "image2Alt":"Feat grid 1",
+        "image3Alt":"Feat grid 1",
+        "image4Alt":"Feat grid 1",
+        "customAttributes":[["data-id","my-title"]]
     },
     "attrToExclude": {
         "anchor":"",
@@ -224,9 +229,17 @@
 		"description4":"",
         "columns":"",
         "tabletColumns":"",
-        "mobileColumns":""
+        "mobileColumns":"",
+        "image1Alt":"",
+        "image2Alt":"",
+        "image3Alt":"",
+        "image4Alt":""
     },
     "attrContent": {
+        "image1Alt":"",
+        "image2Alt":"",
+        "image3Alt":"",
+        "image4Alt":"",
         "title1":"",
 		"title2":"",
 		"title3":"",
@@ -248,6 +261,7 @@
         "image3Url":"",
         "image4Url":"",
         "blockTitle":"",
-        "blockDescription":""
+        "blockDescription":"",
+        "customAttributes":""
     }
 }

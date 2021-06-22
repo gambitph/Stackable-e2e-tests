@@ -100,5 +100,8 @@
         "anchor":"",
         "uniqueClass":"",
         "customAttributes":""
+    },
+    "attrContent": {
+        "customAttributes":""
     }
 }
