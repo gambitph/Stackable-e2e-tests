@@ -1,0 +1,52 @@
+{
+    "attributes":{
+        "textFontFamily":"lato",
+        "textFontWeight":"400",
+        "textLetterSpacing":-1.3,
+        "textFontSize":25,
+        "textLineHeight":1.5,
+        "textColor":"#000000",
+        "linkFontSize":18,
+        "linkColor":"#2675cf",
+        "textAlign":"left",
+        "textTabletAlign":"left",
+        "textMobileAlign":"left",
+        "linkAlign":"center",
+        "titleBottomMargin":-3,
+        "textBottomMargin":19,
+        "linkBottomMargin":2,
+        "marginTop":1,
+        "marginRight":2,
+        "marginBottom":3,
+        "marginLeft":4,
+        "paddingTop":1,
+        "paddingRight":2,
+        "paddingBottom":3,
+        "paddingLeft":4,
+        "contentAlign":"left",
+        "lessLabel":"less",
+        "moreLabel":"more",
+        "text":"<p>Sample</p>",
+        "moreText":"<p>Sample more</p>",
+        "title":"Expand 1",
+        "customAttributes":[["data-id","my-title"]]
+    },
+    "attrToExclude": {
+        "anchor":"",
+        "uniqueClass":"",
+        "customAttributes":"",
+        "lessLabel":"",
+        "moreLabel":"",
+        "text":"",
+        "moreText":"",
+        "title":""
+    },
+    "attrContent": {
+        "lessLabel":"",
+        "moreLabel":"",
+        "text":"",
+        "moreText":"",
+        "title":"",
+        "customAttributes":""
+    }
+}
