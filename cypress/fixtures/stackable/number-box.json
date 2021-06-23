@@ -187,7 +187,20 @@
 		"description1":"Numbox 1",
 		"description2":"Numbox 1",
 		"description3":"Numbox 1",
-        "customAttributes":[["data-id","my-title"]]
+        "customAttributes":[["data-id","my-title"]],
+        "showContainerLink":true,
+        "container1NewTab":true,
+        "container1NoFollow":true,
+        "container1Title":"Stackable Site",
+        "container1Url":"https://wpstackable.com/",
+        "container2NewTab":true,
+        "container2NoFollow":true,
+        "container2Title":"Stackable Site",
+        "container2Url":"https://wpstackable.com/",
+        "container3NewTab":true,
+        "container3NoFollow":true,
+        "container3Title":"Stackable Site",
+        "container3Url":"https://wpstackable.com/"
     },
     "attrToExclude": {
         "anchor":"",
@@ -236,6 +249,12 @@
 		"description3":"",
         "blockTitle":"",
         "blockDescription":"",
-        "customAttributes":""
+        "customAttributes":"",
+        "container1Title":"",
+        "container1Url":"",
+        "container2Title":"",
+        "container2Url":"",
+        "container3Title":"",
+        "container3Url":""
     }
 }

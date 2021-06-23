@@ -107,7 +107,12 @@
         "bottomSeparatorLayer2FlipHorizontally":true,
         "bottomSeparatorLayer3FlipHorizontally":true,
         "text":"Blockquote 1 Lorem ipsum dolor sit amet",
-        "customAttributes":[["data-id","my-title"]]
+        "customAttributes":[["data-id","my-title"]],
+        "showContainerLink":true,
+        "container1NewTab":true,
+        "container1NoFollow":true,
+        "container1Title":"Stackable Site",
+        "container1Url":"https://wpstackable.com/"
     },
     "attrToExclude": {
         "anchor":"",
@@ -123,6 +128,8 @@
     },
     "attrContent": {
         "text":"",
-        "customAttributes":""
+        "customAttributes":"",
+        "container1Title":"",
+        "container1Url":""
     }
 }
