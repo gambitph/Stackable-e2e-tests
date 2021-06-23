@@ -1,0 +1,18 @@
+{
+    "attributes": {
+        "minHeight":20,
+        "minHeightUnit":"vw",
+        "customGradient":"linear-gradient(160deg,rgb(209,209,228) 0%,rgb(118,181,209) 28%,rgb(228,209,209) 100%)",
+        "className":"is-style-twentytwentyone-border",
+        "style": {
+            "spacing": {
+                "padding": {
+                    "top":"21px",
+                    "right":"22px",
+                    "bottom":"23px",
+                    "left":"24px"
+                }
+            }
+        }
+    }
+}

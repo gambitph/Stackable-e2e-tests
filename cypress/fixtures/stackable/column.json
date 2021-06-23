@@ -89,7 +89,10 @@
         "contentAlign":"left",
         "tabletContentAlign":"center",
         "mobileContentAlign":"right",
-        "className":"is-column"
+        "className":"is-column",
+        "container1NewTab":true,
+        "container1Title":"Stackable Site",
+        "container1Url":"https://wpstackable.com/"
     },
     "attrToExclude": {
         "showContainerLink":"",
@@ -102,6 +105,8 @@
         "customAttributes":""
     },
     "attrContent": {
-        "customAttributes":""
+        "customAttributes":"",
+        "container1Title":"",
+        "container1Url":""
     }
 }

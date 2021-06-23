@@ -8,11 +8,12 @@ import { registerTests } from '~stackable-e2e/helpers'
 import { blocks } from '~stackable-e2e/config'
 
 describe( 'Copy Paste Styles', registerTests( [
-	allBlocks,
+	stackableBlocks,
+	coreBlocks,
 ] ) )
 
-function allBlocks() {
-	it( 'should copy & paste the attributes of the blocks', () => {
+function stackableBlocks() {
+	it( 'should assert copy paste styles in stackable blocks', () => {
 		cy.setupWP()
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
@@ -123,5 +124,62 @@ function allBlocks() {
 				} )
 				cy.savePost()
 			} )
+	} )
+}
+
+function coreBlocks() {
+	it( 'should assert copy paste styles in native blocks', () => {
+		cy.setupWP()
+		cy.newPage()
+
+		const nativeBlocks = [
+			'core/paragraph',
+			'core/heading',
+			'core/buttons',
+			'core/cover',
+		]
+
+		nativeBlocks.forEach( blockName => {
+			const name = blockName.split( '/' ).pop()
+			cy.addBlock( blockName )
+			cy.addBlock( blockName )
+			cy.fixture( `core/${ name }` ).then( block => {
+				cy.wp().then( wp => {
+					let clientIds = []
+
+					if ( blockName !== 'core/buttons' ) {
+						clientIds = wp.data.select( 'core/block-editor' ).getBlocks().filter( ( { name } ) => name === blockName ).map( ( { clientId } ) => clientId )
+					} else {
+						const innerButtons = wp.data.select( 'core/block-editor' ).getBlocks().filter( ( { name } ) => name === blockName ).map( ( { innerBlocks } ) => innerBlocks )
+						clientIds.push( innerButtons[ 0 ][ 0 ].clientId, innerButtons[ 1 ][ 0 ].clientId )
+					}
+
+					cy.setBlockAttribute( block.attributes, clientIds[ 0 ] )
+					cy.getBlockAttributes( clientIds[ 0 ] ).then( attributes1 => {
+						cy.copyStyle( name === 'buttons' ? 'core/button' : blockName, 0 )
+						cy.pasteStyle( name === 'buttons' ? 'core/button' : blockName, 1 )
+
+						cy.selectBlock( blockName, clientIds[ 1 ] )
+						cy.getBlockAttributes( clientIds[ 1 ] ).then( attributes2 => {
+							if ( block.attrToExclude ) {
+								const attrToExclude = Object.keys( block.attrToExclude )
+								const attributes1WithOmittedValues = omit( attributes1, attrToExclude )
+								const attributes2WithOmittedValues = omit( attributes2, attrToExclude )
+								expect( isEqual( attributes1WithOmittedValues, attributes2WithOmittedValues ) ).toBeTruthy()
+							}
+
+							if ( block.attrContent ) {
+								const attrContent = Object.keys( block.attrContent )
+								attrContent
+									.forEach( attr => {
+										assert.notEqual( attributes1[ attr ], attributes2[ attr ], 'Value not equal ☑️' )
+									} )
+							}
+						} )
+					} )
+				} )
+			} )
+			cy.savePost()
+		} )
 	} )
 }

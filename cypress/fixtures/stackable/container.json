@@ -174,7 +174,10 @@
         "className":"is-container",
         "imageUrl":"http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
         "imageId":310,
-        "customAttributes":[["data-id","my-title"]]
+        "customAttributes":[["data-id","my-title"]],
+        "container1NewTab":true,
+        "container1Title":"Stackable Site",
+        "container1Url":"https://wpstackable.com/"
     },
     "attrToExclude": {
         "showContainerLink":"",
@@ -191,6 +194,8 @@
     },
     "attrContent": {
         "imageUrl":"",
-        "customAttributes":""
+        "customAttributes":"",
+        "container1Title":"",
+        "container1Url":""
     }
 }

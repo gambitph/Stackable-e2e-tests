@@ -105,7 +105,12 @@
         "description":"Description for CTA 1",
         "buttonText":"Click me",
         "buttonUrl":"https://www.google.com/",
-        "customAttributes":[["data-id","my-title"]]
+        "customAttributes":[["data-id","my-title"]],
+        "showContainerLink":true,
+        "container1NewTab":true,
+        "container1NoFollow":true,
+        "container1Title":"Stackable Site",
+        "container1Url":"https://wpstackable.com/"
     },
     "attrToExclude": {
         "anchor":"",
@@ -129,6 +134,8 @@
         "description":"",
         "buttonText":"",
         "buttonUrl":"",
-        "customAttributes":""
+        "customAttributes":"",
+        "container1Title":"",
+        "container1Url":""
     }
 }

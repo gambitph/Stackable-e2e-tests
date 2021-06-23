@@ -126,7 +126,12 @@
         "buttonUrl":"https://www.google.com/",
         "button2Url":"https://www.google.com/",
         "showButton2":true,
-        "customAttributes":[["data-id","my-title"]]
+        "customAttributes":[["data-id","my-title"]],
+        "showContainerLink":true,
+        "container1NewTab":true,
+        "container1NoFollow":true,
+        "container1Title":"Stackable Site",
+        "container1Url":"https://wpstackable.com/"
     },
     "attrToExclude": {
         "anchor":"",
@@ -157,6 +162,8 @@
 		"button2Text":"",
         "buttonUrl":"",
         "button2Url":"",
-        "customAttributes":""
+        "customAttributes":"",
+        "container1Title":"",
+        "container1Url":""
     }
 }

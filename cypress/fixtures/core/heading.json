@@ -1,0 +1,22 @@
+{
+    "attributes": {
+        "content":"Heading",
+        "style": {
+            "typography": {
+                "lineHeight":"1.1"
+            },
+            "color": {
+                "background":"#d7f3ff",
+                "text":"#3e685b"
+            }
+        },
+        "className":"is-heading",
+        "fontSize":"huge"
+    },
+    "attrToExclude": {
+        "content": ""
+    },
+    "attrContent": {
+        "content": ""
+    }
+}

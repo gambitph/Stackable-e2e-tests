@@ -244,7 +244,20 @@
         "social3LinkedinUrl":"https://www.google.com/",
         "social3YoutubeUrl":"https://www.google.com/",
         "social3EmailUrl":"https://www.google.com/",
-        "customAttributes":[["data-id","my-title"]]
+        "customAttributes":[["data-id","my-title"]],
+        "showContainerLink":true,
+        "container1NewTab":true,
+        "container1NoFollow":true,
+        "container1Title":"Stackable Site",
+        "container1Url":"https://wpstackable.com/",
+        "container2NewTab":true,
+        "container2NoFollow":true,
+        "container2Title":"Stackable Site",
+        "container2Url":"https://wpstackable.com/",
+        "container3NewTab":true,
+        "container3NoFollow":true,
+        "container3Title":"Stackable Site",
+        "container3Url":"https://wpstackable.com/"
     },
     "attrToExclude": {
         "anchor":"",
@@ -350,6 +363,12 @@
         "social3EmailUrl":"",
         "blockTitle":"",
         "blockDescription":"",
-        "customAttributes":""
+        "customAttributes":"",
+        "container1Title":"",
+        "container1Url":"",
+        "container2Title":"",
+        "container2Url":"",
+        "container3Title":"",
+        "container3Url":""
     }
 }
