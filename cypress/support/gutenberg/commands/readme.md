@@ -737,7 +737,7 @@
     | Option        | Data type | Default value               | Description                     |
     | ------------- | --------- | --------------------------- | ------------------------------- |
     | customOptions | object    | {}                          | Additional options for controls |
-    | parentElement | string    | '.components-panel\_\_body' | Parent element of base control  |
+    | parentSelector | string    | '.components-panel\_\_body' | Parent element of base control  |
 
     Usage:
 
@@ -766,7 +766,7 @@
     | Option        | Data type | Default value               | Description                     |
     | ------------- | --------- | --------------------------- | ------------------------------- |
     | customOptions | object    | {}                          | Additional options for controls |
-    | parentElement | string    | '.components-panel\_\_body' | Parent element of base control  |
+    | parentSelector | string    | '.components-panel\_\_body' | Parent element of base control  |
 
     Usage:
 
@@ -1051,7 +1051,7 @@
     | Option               | Data type | Default value               | Description                                 |
     | -------------------- | --------- | --------------------------- | ------------------------------------------- |
     | isInPopover          | boolean   | true                        | If the control is in popover                |
-    | customParentSelector | string    | '.components-panel\_\_body' | Parent element of base control              |
+    | parentSelector | string    | '.components-panel\_\_body' | Parent element of base control              |
     | supportedDelimiter   | array     | [ '>', '>div>' ]            | Delimiters that can be used in the selector |
 
     Usage:

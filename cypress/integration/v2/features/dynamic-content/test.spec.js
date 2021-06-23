@@ -1,13 +1,15 @@
 describe( 'Dynamic Content', () => {
 	it( 'should run test', () => {
 		cy.setupWP()
+		// Create a new post
+		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
-		cy.addBlock( 'ugb/card' )
-		cy.adjustDynamicContent( 'ugb/card', 0, '.ugb-card__title:first', {
+		cy.addBlock( 'ugb/cta' )
+		cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
 			source: 'Current Post',
-			fieldName: 'Post Title',
+			fieldName: 'Post Date',
 			fieldOptions: {
-				'Show as link': true,
+				'Date Format': 'd/m/y',
 			},
 		} )
 	} )

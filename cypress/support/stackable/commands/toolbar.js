@@ -73,7 +73,7 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 
 		const selectOption = option => cy
 			.get( '.react-autosuggest__suggestions-container--open' )
-			.contains( containsRegExp( option ) )
+			.contains( option )
 			.click( { force: true } )
 
 		if ( source.length ) {
@@ -92,9 +92,9 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 
 		if ( ! isEmpty( fieldOptions ) ) {
 			keys( fieldOptions ).forEach( fieldOption => {
-				// Test this.
 				cy.adjust( fieldOption, fieldOptions[ fieldOption ], {
-					parentElement: '.stackable-dynamic-content__popover-content',
+					parentSelector: '.stackable-dynamic-content__popover-content',
+					supportedDelimiter: [ ' ' ],
 				} )
 			} )
 		}
