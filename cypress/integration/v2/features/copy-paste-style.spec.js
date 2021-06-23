@@ -139,8 +139,6 @@ function coreBlocks() {
 			'core/cover',
 		]
 
-		// Run buttons again. Failing as we're copying the innerBlock core/button instead of core/buttons
-
 		nativeBlocks.forEach( blockName => {
 			const name = blockName.split( '/' ).pop()
 			cy.addBlock( blockName )
@@ -148,11 +146,14 @@ function coreBlocks() {
 			cy.fixture( `core/${ name }` ).then( block => {
 				cy.wp().then( wp => {
 					let clientIds = []
-					if ( name !== 'buttons' ) {
+
+					if ( blockName !== 'core/buttons' ) {
 						clientIds = wp.data.select( 'core/block-editor' ).getBlocks().filter( ( { name } ) => name === blockName ).map( ( { clientId } ) => clientId )
 					} else {
-						clientIds = wp.data.select( 'core/block-editor' ).getBlocks().filter( ( { name } ) => name === blockName ).map( ( { innerBlocks } ) => innerBlocks ).map( ( { clientId } ) => clientId )
+						const innerButtons = wp.data.select( 'core/block-editor' ).getBlocks().filter( ( { name } ) => name === blockName ).map( ( { innerBlocks } ) => innerBlocks )
+						clientIds.push( innerButtons[ 0 ][ 0 ].clientId, innerButtons[ 1 ][ 0 ].clientId )
 					}
+
 					cy.setBlockAttribute( block.attributes, clientIds[ 0 ] )
 					cy.getBlockAttributes( clientIds[ 0 ] ).then( attributes1 => {
 						cy.copyStyle( name === 'buttons' ? 'core/button' : blockName, 0 )
