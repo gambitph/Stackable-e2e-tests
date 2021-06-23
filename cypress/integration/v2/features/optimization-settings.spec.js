@@ -6,7 +6,16 @@ import { registerTests } from '~stackable-e2e/helpers'
 
 describe( 'Optimization Settings', registerTests( [
 	optimizationSettings,
+	indirectlyAddedBlocks,
 ] ) )
+
+const cssJsSelectors = [
+	'#ugb-style-css-css',
+	'#ugb-style-css-premium-css',
+	'#ugb-block-frontend-js-js-extra',
+	'#ugb-block-frontend-js-js',
+	'#ugb-block-frontend-js-premium-js',
+]
 
 function optimizationSettings() {
 	it( 'should test the optimization setting', () => {
@@ -16,15 +25,6 @@ function optimizationSettings() {
 		cy.savePost()
 		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 			cy.visit( previewUrl )
-
-			const cssJsSelectors = [
-				'#ugb-style-css-css',
-				'#ugb-style-css-premium-css',
-				'#ugb-block-frontend-js-js-extra',
-				'#ugb-block-frontend-js-js',
-				'#ugb-block-frontend-js-premium-js',
-			]
-
 			// Check that the JS and CSS files are loaded in frontend
 			// Even if there are no Stackable blocks added
 			cssJsSelectors.forEach( selector => {
@@ -48,5 +48,34 @@ function optimizationSettings() {
 				cy.get( selector ).should( 'exist' )
 			} )
 		} )
+	} )
+}
+
+function indirectlyAddedBlocks() {
+	it( 'should assert css and js files for indirectly added stackable blocks', () => {
+		cy.setupWP()
+		cy.loadFrontendJsCssFiles()
+
+		// Publish a post with a ugb/card inside it
+		cy.newPost()
+		cy.addBlock( 'ugb/card' )
+		cy.publish()
+
+		cy.newPage()
+		cy.addBlock( 'core/latest-posts' )
+		cy.openSidebar( 'Settings' )
+		cy.collapse( 'Post content settings' )
+		cy.adjust( 'Post content', true )
+		cy.contains( 'Full post' ).click( { force: true } )
+		cy.savePost()
+		cy.getPostUrls().then( ( { previewUrl } ) => {
+			cy.visit( previewUrl )
+			cssJsSelectors.forEach( selector => {
+				// CSS & JS files should be present in frontend
+				cy.get( selector ).should( 'exist' )
+			} )
+		} )
+
+		// Add test for reusable blocks
 	} )
 }
