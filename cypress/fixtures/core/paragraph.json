@@ -1,0 +1,23 @@
+{
+    "attributes": {
+        "content": "Paragraph",
+        "dropCap":true,
+        "style": {
+            "typography": {
+                "lineHeight":"1.7"
+            },
+            "color": {
+                "text":"#4b24ff",
+                "background":"#fffec6"
+            }
+        },
+        "className":"is-paragraph",
+        "fontSize":"small"
+    },
+    "attrToExclude": {
+        "content": ""
+    },
+    "attrContent": {
+        "content": ""
+    }
+}

@@ -1,0 +1,20 @@
+{
+    "attributes": {
+        "borderRadius":32,
+        "style": {
+            "color": {
+                "text":"#4a7688"
+            }
+        },
+        "gradient":"green-to-yellow",
+        "width":75,
+        "text":"Button 1",
+        "className":"is-style-outline is-button"
+    },
+    "attrToExclude": {
+        "text": ""
+    },
+    "attrContent": {
+        "text": ""
+    }
+}
