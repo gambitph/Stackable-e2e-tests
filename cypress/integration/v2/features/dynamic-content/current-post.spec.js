@@ -5,15 +5,15 @@
 import { registerTests } from '~stackable-e2e/helpers'
 
 describe( 'Dynamic Content Current Post', registerTests( [
-	currentPostSource,
+	matchPostDataValues,
 ] ) )
 
 const fields = {
 	'Post Title': 'title',
 	'Post URL': 'link',
 	// 'Post ID': 'id',
-	// 'Post Slug': 'slug',
-	// 'Post Excerpt': 'excerpt',
+	'Post Slug': 'slug',
+	'Post Excerpt': 'excerpt',
 	'Post Date': 'date',
 	'Post Date GMT': 'date_gmt',
 	'Post Modified': 'modified',
@@ -29,17 +29,33 @@ const fields = {
 	// 'Author Last Name',
 	'Comment Number': 'comments_num',
 	'Comment Status': 'comment_status',
-	// 'Featured Image URL': 'featured_image_urls',
+	'Featured Image URL': 'featured_image_urls',
 }
 
-function currentPostSource() {
-	it( 'should assert current post fields of the dynamic content feature', () => {
+function matchPostDataValues() {
+	it( 'should test dynamic content to match the current post data values', () => {
 		cy.setupWP()
 
 		Object.keys( fields ).forEach( fieldName => {
 			cy.newPost()
 			cy.typePostTitle( `${ fieldName } test` )
 			cy.addBlock( 'ugb/cta' )
+
+			if ( fields[ fieldName ] === 'slug' ) {
+				// Publishing automatically creates a slug for the post.
+				cy.publish()
+			}
+
+			if ( fields[ fieldName ] === 'featured_image_urls' ) {
+				cy.addFeaturedImage()
+				cy.savePost()
+			}
+
+			if ( fields[ fieldName ] === 'excerpt' ) {
+				cy.addPostExcerpt( 'This is a sample excerpt.' )
+				cy.savePost()
+			}
+
 			if ( ! Array( 'date', 'date_gmt', 'modified', 'modified_gmt' ).includes( fields[ fieldName ] ) ) {
 				cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
 					source: 'Current Post',
@@ -69,8 +85,10 @@ function currentPostSource() {
 							: data[ fields[ fieldName ] ]
 
 				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+					// Assert in backend.
 					cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
 					cy.visit( previewUrl )
+					// Assert in frontend.
 					cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
 					cy.visit( editorUrl )
 				} )
