@@ -17,6 +17,7 @@ Cypress.Commands.add( 'getPreviewMode', getPreviewMode )
 Cypress.Commands.add( 'publish', publish )
 Cypress.Commands.add( 'savePost', savePost )
 Cypress.Commands.add( 'wp', wp )
+Cypress.Commands.add( 'typePostTitle', typePostTitle )
 
 /**
  * Command for opening a new page in gutenberg editor.
@@ -51,7 +52,8 @@ export function hideAnyGutenbergTip() {
 export function getPostUrls() {
 	return cy.wp().then( wp => {
 		const postID = wp.data.select( 'core/editor' ).getCurrentPostId()
-		const previewUrl = `/?${ ( new URLSearchParams( { 'page_id': postID, 'preview': true } ) ).toString() }`
+		const currentPostType = wp.data.select( 'core/editor' ).getCurrentPostType()
+		const previewUrl = `/?${ ( new URLSearchParams( { [ currentPostType === 'page' ? 'page_id' : 'p' ]: postID, 'preview': true } ) ).toString() }`
 		const editorUrl = `/wp-admin/post.php?${ ( new URLSearchParams( { 'post': postID, 'action': 'edit' } ) ).toString() }`
 		return new Cypress.Promise( resolve => {
 			resolve( {
@@ -194,12 +196,22 @@ export function publish() {
 		} )
 }
 
-/*
-* Command for getting the gutenberg `wp` object.
-*
-*/
+/**
+ * Command for getting the gutenberg `wp` object.
+ */
 export function wp() {
 	cy.wait( 1 )
 	return cy.window().then( win => win.wp )
 }
 
+/**
+ * Command for typing into the post title in the editor.
+ *
+ * @param {string} title
+ */
+export function typePostTitle( title ) {
+	cy
+		.get( '.edit-post-visual-editor__post-title-wrapper' )
+		.find( 'textarea.editor-post-title__input' )
+		.type( title, { force: true } )
+}
