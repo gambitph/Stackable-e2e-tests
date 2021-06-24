@@ -3,20 +3,18 @@
  */
 
 import { range } from 'lodash'
-
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
-
 import {
 	responsiveAssertHelper,
 	registerTests,
 } from '~stackable-e2e/helpers'
-
 import { blocks } from '~stackable-e2e/config'
 
 const [ , tabletGlobalTypo, mobileGlobalTypo ] = responsiveAssertHelper( assertGlobalTypographyTabletMobile, { disableItAssertion: true } )
 const [ desktopUnits, tabletUnits, mobileUnits ] = responsiveAssertHelper( globalTypographyUnits, { disableItAssertion: true } )
 
 describe( 'Global Typography', registerTests( [
+
 	assertGlobalTypography,
 	tabletGlobalTypo,
 	mobileGlobalTypo,
@@ -64,7 +62,7 @@ const blacklist = [
 	'ugb/blog-posts',
 ]
 
-//added native blocks
+// Added native blocks
 const nativeBlocks = [
 	'core/heading',
 	'core/paragraph',
@@ -433,7 +431,7 @@ function globalTypoNativeBlocks() {
 	it( 'should assert global typography on native blocks', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/divider' ) //placeholder
+		cy.addBlock( 'ugb/divider' ) // placeholder
 		range( 1, 8 ).forEach( idx => {
 			cy.adjustGlobalTypography( globalTypo[ idx - 1 ].tag, {
 				'Font Family': globalTypo[ idx - 1 ].font,
@@ -493,7 +491,6 @@ function globalTypoBlockAdjust() {
 		cy.newPage()
 
 		cy.addBlock( 'ugb/accordion' )
-		//adjust global typography
 		cy.adjustGlobalTypography( globalTypo[ 3 ].tag, {
 			'Font Family': globalTypo[ 3 ].font,
 			'Size': {
@@ -509,24 +506,23 @@ function globalTypoBlockAdjust() {
 			'Letter Spacing': globalTypo[ 3 ].letterSpacing,
 		} )
 
-		//adjust heading typography (native)
 		cy.openInspector( 'ugb/accordion', 'Style' )
 		cy.collapse( 'Title' )
 		cy.adjust( 'Typography', {
-			'Font Family': 'Acme',
-			'Size': 38,
-			'Weight': '300',
-			'Transform': 'uppercase',
-			'Line-Height': 2.7,
-			'Letter Spacing': 1.8,
+			'Font Family': 'Adamina',
+			'Size': 32,
+			'Weight': '400',
+			'Transform': 'lowercase',
+			'Line-Height': 2.3,
+			'Letter Spacing': 1.2,
 		} ).assertComputedStyle( {
 			'.ugb-accordion__title': {
-				'font-family': `${ globalTypo[ 3 ].font }, sans-serif`,
-				'font-size': `${ globalTypo[ 3 ].size }px`,
-				'font-weight': globalTypo[ 3 ].weight,
-				'text-transform': globalTypo[ 3 ].transform,
-				'line-height': `${ globalTypo[ 3 ].lineHeight }em`,
-				'letter-spacing': `${ globalTypo[ 3 ].letterSpacing }px`,
+				'font-family': `${ 'Adamina' }, sans-serif`,
+				'font-size': `${ 32 }px`,
+				'font-weight': '400',
+				'text-transform': 'lowercase',
+				'line-height': `${ 2.3 }em`,
+				'letter-spacing': `${ 1.2 }px`,
 			},
 		} )
 	} )
