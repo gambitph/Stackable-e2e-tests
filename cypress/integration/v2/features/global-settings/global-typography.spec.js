@@ -518,11 +518,11 @@ function globalTypoBlockAdjust() {
 		} ).assertComputedStyle( {
 			'.ugb-accordion__title': {
 				'font-family': `${ 'Adamina' }, sans-serif`,
-				'font-size': `${ 32 }px`,
+				'font-size': '32px',
 				'font-weight': '400',
 				'text-transform': 'lowercase',
-				'line-height': `${ 2.3 }em`,
-				'letter-spacing': `${ 1.2 }px`,
+				'line-height': '2.3em',
+				'letter-spacing': '1.2px',
 			},
 		} )
 	} )
