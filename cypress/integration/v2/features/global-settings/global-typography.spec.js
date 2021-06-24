@@ -14,7 +14,6 @@ const [ , tabletGlobalTypo, mobileGlobalTypo ] = responsiveAssertHelper( assertG
 const [ desktopUnits, tabletUnits, mobileUnits ] = responsiveAssertHelper( globalTypographyUnits, { disableItAssertion: true } )
 
 describe( 'Global Typography', registerTests( [
-
 	assertGlobalTypography,
 	tabletGlobalTypo,
 	mobileGlobalTypo,
