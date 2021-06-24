@@ -18,6 +18,7 @@ Cypress.Commands.add( 'publish', publish )
 Cypress.Commands.add( 'savePost', savePost )
 Cypress.Commands.add( 'wp', wp )
 Cypress.Commands.add( 'typePostTitle', typePostTitle )
+Cypress.Commands.add( 'getPostData', getPostData )
 
 /**
  * Command for opening a new page in gutenberg editor.
@@ -214,4 +215,16 @@ export function typePostTitle( title ) {
 		.get( '.edit-post-visual-editor__post-title-wrapper' )
 		.find( 'textarea.editor-post-title__input' )
 		.type( title, { force: true } )
+}
+
+/**
+ * Command that returns the current post's data
+ */
+export function getPostData() {
+	cy.wp().then( wp => {
+		return new Cypress.Promise( resolve => {
+			const data = wp.data.select( 'core/editor' ).getCurrentPost()
+			resolve( data )
+		} )
+	} )
 }
