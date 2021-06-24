@@ -214,7 +214,7 @@ export function typePostTitle( title ) {
 	cy
 		.get( '.edit-post-visual-editor__post-title-wrapper' )
 		.find( 'textarea.editor-post-title__input' )
-		.type( title, { force: true } )
+		.type( `{selectall}${ title }`, { force: true } )
 }
 
 /**
