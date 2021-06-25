@@ -5,6 +5,8 @@ Cypress.Commands.add( 'loginAdmin', loginAdmin )
 Cypress.Commands.add( 'setupWP', setupWP )
 Cypress.Commands.add( 'registerPosts', registerPosts )
 Cypress.Commands.add( 'changeRole', changeRole )
+Cypress.Commands.add( 'editSiteTitle', editSiteTitle )
+Cypress.Commands.add( 'editSiteTagline', editSiteTagline )
 
 /**
  * Command used to enter the login credentials of the admin.
@@ -60,4 +62,46 @@ export function changeRole( args = {} ) {
 		'change-role': 'true',
 	} )
 	cy.visit( '/?' + params.toString() )
+}
+
+/**
+ * Command for editing the site title
+ *
+ * @param {string} title
+ */
+export function editSiteTitle( title ) {
+	cy.visit( '/wp-admin/customize.php' )
+	cy
+		.get( '.customize-pane-parent' )
+		.contains( 'Site Identity' )
+		.click( { force: true } )
+	cy
+		.get( '.customize-pane-child #customize-control-blogname' )
+		.find( 'input[data-customize-setting-link="blogname"]' )
+		.type( `{selectall}${ title }`, { force: true } )
+	cy
+		.get( '#customize-header-actions' )
+		.find( 'input[value="Publish"]' )
+		.click( { force: true } )
+}
+
+/**
+ * Command for editing the site tagline
+ *
+ * @param {string} tagline
+ */
+export function editSiteTagline( tagline ) {
+	cy.visit( '/wp-admin/customize.php' )
+	cy
+		.get( '.customize-pane-parent' )
+		.contains( 'Site Identity' )
+		.click( { force: true } )
+	cy
+		.get( '.customize-pane-child #customize-control-blogdescription' )
+		.find( 'input[data-customize-setting-link="blogdescription"]' )
+		.type( `{selectall}${ tagline }`, { force: true } )
+	cy
+		.get( '#customize-header-actions' )
+		.find( 'input[value="Publish"]' )
+		.click( { force: true } )
 }
