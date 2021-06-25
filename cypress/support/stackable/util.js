@@ -46,16 +46,18 @@ export function modifyLogFunc( options = {} ) {
 /**
  * Function for changing the unit in control.
  *
- * @param {string} unit desired unit
- * @param {string} name selector name
- * @param {boolean} isInPopover if the control is in popover
+ * @param {Object} options
  */
-export function changeUnit( unit = '', name = '', isInPopover = false ) {
+export function changeUnit( options = {} ) {
+	const {
+		unit = '',
+		name = '',
+	} = options
 	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
 
-	const selector = () => cy.getBaseControl( name, { isInPopover } )
+	const selector = () => cy.getBaseControl( name, options )
 
 	if ( unit ) {
 		selector()
@@ -73,16 +75,18 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
 /**
  * Function for changing the viewport in control
  *
- * @param {string} viewport desired viewport
- * @param {string} name selector name
- * @param {boolean} isInPopover if the control is in popover
+ * @param {Object} options
  */
-export function changeControlViewport( viewport = 'Desktop', name = '', isInPopover = false ) {
+export function changeControlViewport( options = {} ) {
+	const {
+		viewport = 'Desktop',
+		name = '',
+	} = options
 	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
 
-	const selector = () => cy.getBaseControl( name, { isInPopover } )
+	const selector = () => cy.getBaseControl( name, options )
 	selector()
 		.then( $baseControl => {
 			if ( $baseControl.find( 'button[aria-label="Desktop"]' ).length ) {
