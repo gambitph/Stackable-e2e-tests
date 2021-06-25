@@ -21,6 +21,7 @@ Cypress.Commands.add( 'typePostTitle', typePostTitle )
 Cypress.Commands.add( 'getPostData', getPostData )
 Cypress.Commands.add( 'addFeaturedImage', addFeaturedImage )
 Cypress.Commands.add( 'addPostExcerpt', addPostExcerpt )
+Cypress.Commands.add( 'addPostSlug', addPostSlug )
 
 /**
  * Command for opening a new page in gutenberg editor.
@@ -269,6 +270,7 @@ export function addFeaturedImage() {
 		selector()
 			.find( 'button.media-button-select:contains(Set featured image)' )
 			.click( { force: true } )
+		cy.savePost()
 	} )
 }
 
@@ -287,4 +289,25 @@ export function addPostExcerpt( text ) {
 	cy
 		.get( '.editor-post-excerpt textarea.components-textarea-control__input' )
 		.type( `{selectall}${ text }`, { force: true } )
+	cy.savePost()
+}
+
+/**
+ * Command for adding a slug to a post
+ *
+ * @param {string} slug
+ */
+export function addPostSlug( slug ) {
+	cy.publish()
+	cy.openSidebar( 'Settings' )
+	cy
+		.get( '.edit-post-sidebar__panel-tabs' )
+		.find( 'li:first-child button.edit-post-sidebar__panel-tab' )
+		.click( { force: true } )
+	cy.collapse( 'Permalink' )
+	cy
+		.get( '.components-base-control:contains(URL Slug)' )
+		.find( 'input[class="components-text-control__input"]' )
+		.type( `{selectall}${ slug }`, { force: true } )
+	cy.publish()
 }

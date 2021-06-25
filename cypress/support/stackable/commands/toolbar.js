@@ -64,7 +64,7 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 		.type( '{selectall}', { force: true } )
 
 	cy.adjustToolbar( 'Dynamic Fields', () => {
-		const clickTheDropdown = option => cy
+		const selectFromSuggestions = option => cy
 			.get( '.stackable-dynamic-content__popover-content' )
 			.contains( containsRegExp( option ) )
 			.parentsUntil( '.components-base-control' )
@@ -77,17 +77,17 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 			.click( { force: true } )
 
 		if ( source.length ) {
-			clickTheDropdown( 'Dynamic Source' )
+			selectFromSuggestions( 'Dynamic Source' )
 			selectOption( source )
 		}
 
 		if ( Array( 'Other Posts', 'Latest Post' ).includes( source ) && post.length ) {
 			// Select a post if source is Other Posts / Latest Post
-			clickTheDropdown( `${ source === 'Other Posts' ? 'Posts/Pages' : 'Nth Latest Post' }` )
+			selectFromSuggestions( `${ source === 'Other Posts' ? 'Posts/Pages' : 'Nth Latest Post' }` )
 			selectOption( post )
 		}
 
-		clickTheDropdown( 'Field' )
+		selectFromSuggestions( 'Field' )
 		selectOption( fieldName )
 
 		if ( ! isEmpty( fieldOptions ) ) {
