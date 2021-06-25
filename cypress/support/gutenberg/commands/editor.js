@@ -269,6 +269,7 @@ export function addFeaturedImage() {
 		selector()
 			.find( 'button.media-button-select:contains(Set featured image)' )
 			.click( { force: true } )
+		cy.savePost()
 	} )
 }
 
@@ -287,4 +288,5 @@ export function addPostExcerpt( text ) {
 	cy
 		.get( '.editor-post-excerpt textarea.components-textarea-control__input' )
 		.type( `{selectall}${ text }`, { force: true } )
+	cy.savePost()
 }

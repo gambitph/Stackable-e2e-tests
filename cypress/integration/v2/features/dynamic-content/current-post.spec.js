@@ -7,12 +7,13 @@ import { registerTests } from '~stackable-e2e/helpers'
 describe( 'Dynamic Content Current Post', registerTests( [
 	matchPostDataValues,
 	adjustFieldOptions,
+	assertChangingFieldValues,
 ] ) )
 
 const fields = {
 	'Post Title': 'title',
 	'Post URL': 'link',
-	// 'Post ID': 'id',
+	'Post ID': 'id',
 	'Post Slug': 'slug',
 	'Post Excerpt': 'excerpt',
 	'Post Date': 'date',
@@ -24,14 +25,18 @@ const fields = {
 	'Author Name': 'name',
 	'Author ID': 'author',
 	'Author Posts URL': 'url',
-	// 'Author Profile Picture URL',
-	// 'Author Posts',
-	// 'Author First Name',
-	// 'Author Last Name',
 	'Comment Number': 'comments_num',
 	'Comment Status': 'comment_status',
 	'Featured Image URL': 'featured_image_urls',
 }
+
+/*
+ * Fields TODO:
+ * Author Profile Picture URL
+ * Author Posts
+ * Author First Name
+ * Author Last Name
+ */
 
 function matchPostDataValues() {
 	it( 'should test dynamic content to match the current post data values', () => {
@@ -99,49 +104,138 @@ function adjustFieldOptions() {
 	it( 'should adjust all field options of each field in current post', () => {
 		cy.setupWP()
 
-		Object.keys( fields ).forEach( fieldName => {
+		const selector = () => cy.get( '.ugb-cta__title' )
+		const createNewPostWithCTA = () => {
 			cy.newPost()
 			cy.addBlock( 'ugb/cta' )
-			const fieldOptions = {}
-
-			if ( Array( 'title', 'link', 'url' ).includes( fields[ fieldName ] ) ) {
-				fieldOptions[ 'Show as link' ] = true
-				fieldOptions[ 'Open in new tab' ] = true
-				if ( fields[ fieldName ] !== 'title' ) {
-					fieldOptions[ 'Custom Text' ] = 'Link Title'
-				}
-			}
-
-			if ( fields[ fieldName ] === 'excerpt' ) {
-				fieldOptions[ 'Excerpt Length' ] = 5
-			}
-
-			if ( Array( 'date', 'date_gmt', 'modified', 'modified_gmt' ).includes( fields[ fieldName ] ) ) {
-				fieldOptions[ 'Date Format' ] = 'Y-m-d H:i:s'
-
-				/*
-				* Options for Date Format:
-				* Y-m-d H:i:s
-				* F j, Y
-				* F j, Y g:i a
-				* d/m/y
-				* custom
-				*/
-			}
-
+		}
+		const save = () => {
+			cy.savePost()
+			// Sometimes the first save does not register and the test fails.
+			cy.savePost()
+		}
+		const adjustField = ( fieldName, fieldOptions = {} ) => {
 			cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
 				source: 'Current Post',
 				fieldName,
 				fieldOptions,
 			} )
-			cy.savePost()
-			cy.savePost()
-
+		}
+		const assertInBackendAndFrontend = ( callback = () => {} ) => {
 			cy.getPostUrls().then( ( { previewUrl } ) => {
-				// Assert in backend.
+				const assertValues = () => {
+					callback()
+				}
+				assertValues()
 				cy.visit( previewUrl )
-				// Assert in frontend.
+				assertValues()
 			} )
+		}
+
+		// Test only the fields with field options.
+		// Post Title options
+		createNewPostWithCTA()
+		cy.typePostTitle( 'Dynamic Content test' )
+		adjustField( 'Post Title', {
+			'Show as link': true,
+			'Open in new tab': true,
+		} )
+		save()
+		assertInBackendAndFrontend( () => {
+			cy.document().then( doc => {
+				const url = doc.URL
+				// Check if the url matches the editor, and new page URL
+				if ( url.match( /(post|post-new)\.php/g ) && url.match( /wp-admin/g ) ) {
+					cy.getPostData().then( data => {
+						selector().contains( 'Dynamic Content test' ).should( 'exist' )
+						selector().find( `a[href="${ data.link }"]` ).should( 'exist' )
+						selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+					} )
+				} else {
+					selector().contains( 'Dynamic Content test' ).should( 'exist' )
+					selector().find( `a[href="${ url.replace( '&preview=true', '' ) }"]` ).should( 'exist' )
+					selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+				}
+			} )
+		} )
+
+		// Post URL options
+		createNewPostWithCTA()
+		adjustField( 'Post URL', {
+			'Show as link': true,
+			'Custom Text': 'This post',
+			'Open in new tab': true,
+		} )
+		save()
+		assertInBackendAndFrontend( () => {
+			cy.document().then( doc => {
+				const url = doc.URL
+				// Check if the url matches the editor, and new page URL
+				if ( url.match( /(post|post-new)\.php/g ) && url.match( /wp-admin/g ) ) {
+					cy.getPostData().then( data => {
+						selector().contains( 'This post' ).should( 'exist' )
+						selector().find( `a[href="${ data.link }"]` ).should( 'exist' )
+						selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+					} )
+				} else {
+					selector().contains( 'This post' ).should( 'exist' )
+					selector().find( `a[href="${ url.replace( '&preview=true', '' ) }"]` ).should( 'exist' )
+					selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+				}
+			} )
+		} )
+
+		// Post Excerpt options
+		createNewPostWithCTA()
+		cy.addPostExcerpt( 'This is a sample excerpt... Lorem ipsum dolor sit amet.' )
+		adjustField( 'Post Excerpt', {
+			'Excerpt Length': 5,
+		} )
+		save()
+		assertInBackendAndFrontend( () => {
+			cy.document().then( doc => {
+				const text = doc.querySelector( '.ugb-cta__title' ).innerText
+				expect( text.split( ' ' ).length ).to.equal( 5 )
+			} )
+		} )
+
+		// For Post Date, Date GMT, Modified & Modified GMT options
+		const dateFields = [ 'Post Date', 'Post Date GMT', 'Post Modified', 'Post Modified GMT' ]
+		const dateFormats = [ 'Y-m-d H:i:s', 'F j, Y', 'F j, Y g:i a', 'd/m/y' ]
+		dateFields.forEach( dateField => {
+			dateFormats.forEach( dateFormat => {
+				createNewPostWithCTA()
+				adjustField( dateField, {
+					'Date Format': dateFormat,
+				} )
+				save()
+				// TODO: Add assertion of date formats.
+			} )
+		} )
+
+		// Author Posts URL options
+		createNewPostWithCTA()
+		adjustField( 'Author Posts URL', {
+			'Show as link': true,
+			'Custom Text': 'This author',
+			'Open in new tab': true,
+		} )
+		save()
+		assertInBackendAndFrontend( () => {
+			selector().contains( 'This author' ).should( 'exist' )
+			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+		} )
+	} )
+}
+
+function assertChangingFieldValues() {
+	it( 'should assert the correct value in frontend after changing post data values', () => {
+		cy.setupWP()
+		cy.newPost()
+		cy.addBlock( 'ugb/cta' )
+		cy.changeAlignment( 'ugb/cta', 0, 'Full width' )
+		cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-feature-grid__title:nth-of-type(1)', {
+			source: 'Current Post',
 		} )
 	} )
 }
