@@ -516,7 +516,7 @@ function globalTypoBlockAdjust() {
 			'Letter Spacing': 1.2,
 		} ).assertComputedStyle( {
 			'.ugb-accordion__title': {
-				'font-family': `${ 'Adamina' }, sans-serif`,
+				'font-family': 'Adamina, sans-serif',
 				'font-size': '32px',
 				'font-weight': '400',
 				'text-transform': 'lowercase',
