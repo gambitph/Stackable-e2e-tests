@@ -20,8 +20,8 @@ describe( 'Global Typography', registerTests( [
 	desktopUnits,
 	tabletUnits,
 	mobileUnits,
-	globalTypoNativeBlocks,
-	globalTypoBlockAdjust,
+	globalTypographyNativeBlocks,
+	globalTypographyBlockAdjust,
 ] ) )
 
 const blocksWithTitle = [
@@ -68,7 +68,7 @@ const nativeBlocks = [
 	'core/list',
 ]
 
-const globalTypo = [
+const willAssertTypographyStyles = [
 	{
 		tag: 'h1',
 		font: 'Abel',
@@ -144,7 +144,7 @@ function assertGlobalTypography() {
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
 		cy.addBlock( 'core/paragraph' )
-		globalTypo.forEach( val => {
+		willAssertTypographyStyles.forEach( val => {
 			cy.adjustGlobalTypography( val.tag, {
 				'Font Family': val.font,
 				'Size': {
@@ -166,7 +166,7 @@ function assertGlobalTypography() {
 		cy.addBlock( 'ugb/blog-posts' )
 		cy.openInspector( 'ugb/blog-posts', 'Style' )
 		cy.collapse( 'Title' )
-		globalTypo.forEach( val => {
+		willAssertTypographyStyles.forEach( val => {
 			cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
 				'.ugb-blog-posts__title': {
 					'font-family': `${ val.font }, sans-serif`,
@@ -195,7 +195,7 @@ function assertGlobalTypography() {
 					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
 				}
 
-				globalTypo.forEach( val => {
+				willAssertTypographyStyles.forEach( val => {
 					if ( blocksWithTitle.includes( blockName ) ) {
 						cy.collapse( 'Title' )
 						cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
@@ -244,7 +244,7 @@ function assertGlobalTypographyTabletMobile( viewport ) {
 			cy.registerPosts( { numOfPosts: 1 } )
 			cy.newPage()
 			cy.addBlock( 'core/paragraph' )
-			globalTypo.forEach( val => {
+			willAssertTypographyStyles.forEach( val => {
 				cy.adjustGlobalTypography( val.tag, {
 					'Size': {
 						value: val.size,
@@ -264,7 +264,7 @@ function assertGlobalTypographyTabletMobile( viewport ) {
 			cy.addBlock( 'ugb/blog-posts' )
 			cy.openInspector( 'ugb/blog-posts', 'Style' )
 			cy.collapse( 'Title' )
-			globalTypo.forEach( val => {
+			willAssertTypographyStyles.forEach( val => {
 				// Adjust preview to the current viewport
 				// We need to do this because Title HTML tag does not have viewport controls.
 				cy.changePreviewMode( viewport )
@@ -297,7 +297,7 @@ function assertGlobalTypographyTabletMobile( viewport ) {
 					cy.changePreviewMode( viewport )
 
 					// Test fontSize px and lineHeight em values for Tablet & Mobile
-					globalTypo.forEach( val => {
+					willAssertTypographyStyles.forEach( val => {
 						if ( blocksWithTitle.includes( blockName ) ) {
 							cy.collapse( 'Title' )
 							cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
@@ -344,7 +344,7 @@ function globalTypographyUnits( viewport ) {
 
 		cy.addBlock( 'core/paragraph' )
 		range( 1, 8 ).forEach( idx => {
-			cy.adjustGlobalTypography( globalTypo[ idx - 1 ].tag, {
+			cy.adjustGlobalTypography( willAssertTypographyStyles[ idx - 1 ].tag, {
 				'Size': {
 					value: emFontSize[ idx - 1 ],
 					unit: 'em',
@@ -367,7 +367,7 @@ function globalTypographyUnits( viewport ) {
 			// Adjust preview to the current viewport
 			// We need to do this because Title HTML tag does not have viewport controls.
 			cy.changePreviewMode( viewport )
-			cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
+			cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx - 1 ].tag ).assertComputedStyle( {
 				'.ugb-blog-posts__title': {
 					'font-size': `${ emFontSize[ idx - 1 ] }em`,
 					'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
@@ -399,7 +399,7 @@ function globalTypographyUnits( viewport ) {
 				range( 1, 8 ).forEach( idx => {
 					if ( blocksWithTitle.includes( blockName ) ) {
 						cy.collapse( 'Title' )
-						cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
+						cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx - 1 ].tag ).assertComputedStyle( {
 							[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
 								'font-size': `${ emFontSize[ idx - 1 ] }em`,
 								'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
@@ -409,7 +409,7 @@ function globalTypographyUnits( viewport ) {
 
 					if ( blocksWithBlockTitle.includes( blockName ) ) {
 						cy.toggleStyle( 'Block Title' )
-						cy.adjust( 'Title HTML Tag', globalTypo[ idx - 1 ].tag ).assertComputedStyle( {
+						cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx - 1 ].tag ).assertComputedStyle( {
 							[ `.ugb-${ name } .ugb-block-title` ]: {
 								'font-size': `${ emFontSize[ idx - 1 ] }em`,
 								'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
@@ -426,25 +426,25 @@ function globalTypographyUnits( viewport ) {
 	} )
 }
 
-function globalTypoNativeBlocks() {
+function globalTypographyNativeBlocks() {
 	it( 'should assert global typography on native blocks', () => {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'ugb/divider' ) // placeholder
 		range( 1, 8 ).forEach( idx => {
-			cy.adjustGlobalTypography( globalTypo[ idx - 1 ].tag, {
-				'Font Family': globalTypo[ idx - 1 ].font,
+			cy.adjustGlobalTypography( willAssertTypographyStyles[ idx - 1 ].tag, {
+				'Font Family': willAssertTypographyStyles[ idx - 1 ].font,
 				'Size': {
-					value: globalTypo[ idx - 1 ].size,
+					value: willAssertTypographyStyles[ idx - 1 ].size,
 					unit: 'px',
 				},
-				'Weight': globalTypo[ idx - 1 ].weight,
-				'Transform': globalTypo[ idx - 1 ].transform,
+				'Weight': willAssertTypographyStyles[ idx - 1 ].weight,
+				'Transform': willAssertTypographyStyles[ idx - 1 ].transform,
 				'Line-Height': {
-					value: globalTypo[ idx - 1 ].lineHeight,
+					value: willAssertTypographyStyles[ idx - 1 ].lineHeight,
 					unit: 'em',
 				},
-				'Letter Spacing': globalTypo[ idx - 1 ].letterSpacing,
+				'Letter Spacing': willAssertTypographyStyles[ idx - 1 ].letterSpacing,
 			} )
 		} )
 
@@ -459,24 +459,24 @@ function globalTypoNativeBlocks() {
 					cy.changeHeadingLevel( blockName, 0, `Heading ${ idx }` )
 					cy.selectBlock( blockName ).assertComputedStyle( {
 						'': {
-							'font-family': `${ globalTypo[ idx - 1 ].font }, sans-serif`,
-							'font-size': `${ globalTypo[ idx - 1 ].size }px`,
-							'font-weight': globalTypo[ idx - 1 ].weight,
-							'text-transform': globalTypo[ idx - 1 ].transform,
-							'line-height': `${ globalTypo[ idx - 1 ].lineHeight }em`,
-							'letter-spacing': `${ globalTypo[ idx - 1 ].letterSpacing }px`,
+							'font-family': `${ willAssertTypographyStyles[ idx - 1 ].font }, sans-serif`,
+							'font-size': `${ willAssertTypographyStyles[ idx - 1 ].size }px`,
+							'font-weight': willAssertTypographyStyles[ idx - 1 ].weight,
+							'text-transform': willAssertTypographyStyles[ idx - 1 ].transform,
+							'line-height': `${ willAssertTypographyStyles[ idx - 1 ].lineHeight }em`,
+							'letter-spacing': `${ willAssertTypographyStyles[ idx - 1 ].letterSpacing }px`,
 						},
 					} )
 				} )
 			} else if ( blockName === 'core/paragraph' || blockName === 'core/list' ) {
 				cy.selectBlock( blockName ).assertComputedStyle( {
 					[ `${ blockName === 'core/paragraph' ? '' : 'li' }` ]: {
-						'font-family': `${ globalTypo[ 6 ].font }, sans-serif`,
-						'font-size': `${ globalTypo[ 6 ].size }px`,
-						'font-weight': globalTypo[ 6 ].weight,
-						'text-transform': globalTypo[ 6 ].transform,
-						'line-height': `${ globalTypo[ 6 ].lineHeight }em`,
-						'letter-spacing': `${ globalTypo[ 6 ].letterSpacing }px`,
+						'font-family': `${ willAssertTypographyStyles[ 6 ].font }, sans-serif`,
+						'font-size': `${ willAssertTypographyStyles[ 6 ].size }px`,
+						'font-weight': willAssertTypographyStyles[ 6 ].weight,
+						'text-transform': willAssertTypographyStyles[ 6 ].transform,
+						'line-height': `${ willAssertTypographyStyles[ 6 ].lineHeight }em`,
+						'letter-spacing': `${ willAssertTypographyStyles[ 6 ].letterSpacing }px`,
 					},
 				} )
 			}
@@ -484,25 +484,25 @@ function globalTypoNativeBlocks() {
 	} )
 }
 
-function globalTypoBlockAdjust() {
+function globalTypographyBlockAdjust() {
 	it( 'should not allow Global Typography to be applied on an adjusted block', () => {
 		cy.setupWP()
 		cy.newPage()
 
 		cy.addBlock( 'ugb/accordion' )
-		cy.adjustGlobalTypography( globalTypo[ 3 ].tag, {
-			'Font Family': globalTypo[ 3 ].font,
+		cy.adjustGlobalTypography( willAssertTypographyStyles[ 3 ].tag, {
+			'Font Family': willAssertTypographyStyles[ 3 ].font,
 			'Size': {
-				value: globalTypo[ 3 ].size,
+				value: willAssertTypographyStyles[ 3 ].size,
 				unit: 'px',
 			},
-			'Weight': globalTypo[ 3 ].weight,
-			'Transform': globalTypo[ 3 ].transform,
+			'Weight': willAssertTypographyStyles[ 3 ].weight,
+			'Transform': willAssertTypographyStyles[ 3 ].transform,
 			'Line-Height': {
-				value: globalTypo[ 3 ].lineHeight,
+				value: willAssertTypographyStyles[ 3 ].lineHeight,
 				unit: 'em',
 			},
-			'Letter Spacing': globalTypo[ 3 ].letterSpacing,
+			'Letter Spacing': willAssertTypographyStyles[ 3 ].letterSpacing,
 		} )
 
 		cy.openInspector( 'ugb/accordion', 'Style' )
