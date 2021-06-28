@@ -55,6 +55,7 @@ export function adjustToolbar( name, callback = () => {}, options = {} ) {
 		.click( { force: true } )
 
 	callback()
+	cy.savePost()
 }
 
 /**

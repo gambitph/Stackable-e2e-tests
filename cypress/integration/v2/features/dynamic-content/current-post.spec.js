@@ -4,10 +4,16 @@
  */
 import { registerTests } from '~stackable-e2e/helpers'
 
+/**
+ * Internal dependencies
+ */
+import { containsRegExp } from '~common/util'
+
 describe( 'Dynamic Content Current Post', registerTests( [
 	matchPostDataValues,
 	adjustFieldOptions,
 	assertChangingFieldValues,
+	assertEmptyValuesInFrontend,
 ] ) )
 
 const fields = {
@@ -232,10 +238,34 @@ function assertChangingFieldValues() {
 	it( 'should assert the correct value in frontend after changing post data values', () => {
 		cy.setupWP()
 		cy.newPost()
+		cy.typePostTitle( 'Dynamic Content Test' )
 		cy.addBlock( 'ugb/cta' )
-		cy.changeAlignment( 'ugb/cta', 0, 'Full width' )
-		cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-feature-grid__title:nth-of-type(1)', {
-			source: 'Current Post',
+
+		const fieldsToUpdate = {
+			'Post Title': 'title',
+			'Post URL': 'link',
+			'Post Slug': 'slug',
+			'Post Excerpt': 'excerpt',
+			'Post Status': 'status',
+			'Comment Number': 'comments_num',
+			'Comment Status': 'comment_status',
+			'Featured Image URL': 'featured_image_urls',
+		}
+
+		Object.keys( fieldsToUpdate ).forEach( fieldName => {
+			// cy.addPostSlug( 'my-new-post' )
+			cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
+				source: 'Current Post',
+				fieldName,
+			} )
+			cy.getPostUrls().then( ( { previewUrl } ) => {
+				cy.visit( previewUrl )
+				cy.get( '.ugb-cta__title' ).contains( containsRegExp( 'Dynamic Content Test' ) ).should( 'exist' )
+			} )
 		} )
 	} )
+}
+
+function assertEmptyValuesInFrontend() {
+
 }
