@@ -51,7 +51,7 @@ const blocksWithBlockTitle = [
 ]
 
 // Blocks that do not have typography module / dynamic
-const blacklist = [
+const blocksWithoutTexts = [
 	'ugb/container',
 	'ugb/button',
 	'ugb/blockquote',
@@ -180,7 +180,7 @@ function assertGlobalTypography() {
 		} )
 
 		blocks
-			.filter( blockName => ! blacklist.includes( blockName ) )
+			.filter( blockName => ! blocksWithoutTexts.includes( blockName ) )
 			.forEach( blockName => {
 				const name = blockName.split( '/' ).pop()
 
@@ -277,7 +277,7 @@ function assertGlobalTypographyTabletMobile( viewport ) {
 			} )
 
 			blocks
-				.filter( blockName => ! blacklist.includes( blockName ) )
+				.filter( blockName => ! blocksWithoutTexts.includes( blockName ) )
 				.forEach( blockName => {
 					const name = blockName.split( '/' ).pop()
 
@@ -376,7 +376,7 @@ function globalTypographyUnits( viewport ) {
 		} )
 
 		blocks
-			.filter( blockName => ! blacklist.includes( blockName ) )
+			.filter( blockName => ! blocksWithoutTexts.includes( blockName ) )
 			.forEach( blockName => {
 				const name = blockName.split( '/' ).pop()
 

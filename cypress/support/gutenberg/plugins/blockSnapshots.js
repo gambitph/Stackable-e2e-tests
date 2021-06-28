@@ -64,10 +64,15 @@ class BlockSnapshots {
 		const self = this
 		cy.wp().then( wp => {
 			cy.get( `@${ self.alias }` ).then( _block => {
-				const block = wp.data.select( 'core/block-editor' ).getBlock( _block.clientId )
-				const blockContent = wp.blocks.getBlockContent( block )
-				cy.get( `@${ self.alias }.contentSnapshots` ).then( $snapShots => {
-					cy.wrap( [ ...$snapShots, blockContent ] ).as( `${ self.alias }.contentSnapshots` )
+				cy.document().then( doc => {
+					const { className } = _block.attributes
+					const blockElement = doc.querySelector( `.${ className }` )
+					const clientId = blockElement.getAttribute( 'data-block' )
+					const block = wp.data.select( 'core/block-editor' ).getBlock( clientId )
+					const blockContent = wp.blocks.getBlockContent( block )
+					cy.get( `@${ self.alias }.contentSnapshots` ).then( $snapShots => {
+						cy.wrap( [ ...$snapShots, blockContent ] ).as( `${ self.alias }.contentSnapshots` )
+					} )
 				} )
 			} )
 		} )
