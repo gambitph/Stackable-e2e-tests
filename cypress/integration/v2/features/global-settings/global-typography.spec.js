@@ -344,14 +344,14 @@ function globalTypographyUnits( viewport ) {
 
 		cy.addBlock( 'core/paragraph' )
 		emFontSize.forEach( ( fontSize, idx ) => {
-			cy.adjustGlobalTypography( willAssertTypographyStyles[ idx - 1 ].tag, {
+			cy.adjustGlobalTypography( willAssertTypographyStyles[ idx ].tag, {
 				'Size': {
 					value: fontSize,
 					unit: 'em',
 					viewport,
 				},
 				'Line-Height': {
-					value: pxLineHeight[ idx - 1 ],
+					value: pxLineHeight[ idx ],
 					unit: 'px',
 					viewport,
 				},
@@ -367,10 +367,10 @@ function globalTypographyUnits( viewport ) {
 			// Adjust preview to the current viewport
 			// We need to do this because Title HTML tag does not have viewport controls.
 			cy.changePreviewMode( viewport )
-			cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx - 1 ].tag ).assertComputedStyle( {
+			cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx ].tag ).assertComputedStyle( {
 				'.ugb-blog-posts__title': {
 					'font-size': `${ fontSize }em`,
-					'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
+					'line-height': `${ pxLineHeight[ idx ] }px`,
 				},
 			} )
 		} )
@@ -399,20 +399,20 @@ function globalTypographyUnits( viewport ) {
 				emFontSize.forEach( ( fontSize, idx ) => {
 					if ( blocksWithTitle.includes( blockName ) ) {
 						cy.collapse( 'Title' )
-						cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx - 1 ].tag ).assertComputedStyle( {
+						cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx ].tag ).assertComputedStyle( {
 							[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
 								'font-size': `${ fontSize }em`,
-								'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
+								'line-height': `${ pxLineHeight[ idx ] }px`,
 							},
 						} )
 					}
 
 					if ( blocksWithBlockTitle.includes( blockName ) ) {
 						cy.toggleStyle( 'Block Title' )
-						cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx - 1 ].tag ).assertComputedStyle( {
+						cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx ].tag ).assertComputedStyle( {
 							[ `.ugb-${ name } .ugb-block-title` ]: {
 								'font-size': `${ fontSize }em`,
-								'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
+								'line-height': `${ pxLineHeight[ idx ] }px`,
 							},
 						} )
 					}
