@@ -123,7 +123,7 @@ function styleTab( viewport, desktopOnly ) {
 			'padding-left': '28px',
 		},
 	} )
-	cy.resetStyle( 'Paddings' )
+	// cy.resetStyle( 'Paddings' )
 	cy.adjust( 'Paddings', [ 3, 4, 5, 6 ], { viewport, unit: 'em' } ).assertComputedStyle( {
 		'.ugb-header__item': {
 			'padding-top': '3em',
@@ -132,7 +132,7 @@ function styleTab( viewport, desktopOnly ) {
 			'padding-left': '6em',
 		},
 	} )
-	cy.resetStyle( 'Paddings' )
+	// cy.resetStyle( 'Paddings' )
 	cy.adjust( 'Paddings', [ 17, 18, 19, 20 ], { viewport, unit: '%' } ).assertComputedStyle( {
 		'.ugb-header__item': {
 			'padding-top': '17%',
@@ -205,16 +205,16 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button1', 'ugb-button--size-large' )
 		cy.adjust( 'Border Radius', 40 )
-		cy.adjust( 'Vertical Padding', 15 )
+		// cy.adjust( 'Vertical Padding', 15 )
 		cy.adjust( 'Horizontal Padding', 43 )
 		cy.adjust( 'Shadow', 4 )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
 			'.ugb-button1': {
 				'background-color': '#a13939',
 				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
-				'padding-top': '15px',
+				// 'padding-top': '15px',
 				'padding-right': '43px',
-				'padding-bottom': '15px',
+				// 'padding-bottom': '15px',
 				'padding-left': '43px',
 				'opacity': '0.6',
 				'border-radius': '40px',
@@ -266,16 +266,16 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Button Size', 'large' )
 			.assertClassName( '.ugb-button2', 'ugb-button--size-large' )
 		cy.adjust( 'Border Radius', 40 )
-		cy.adjust( 'Vertical Padding', 15 )
+		// cy.adjust( 'Vertical Padding', 15 )
 		cy.adjust( 'Horizontal Padding', 43 )
 		cy.adjust( 'Shadow', 4 )
 		cy.adjust( 'Opacity', 0.6 ).assertComputedStyle( {
 			'.ugb-button2': {
 				'background-color': '#a13939',
 				'background-image': 'linear-gradient(138deg, #a13939, #4e59d4)',
-				'padding-top': '15px',
+				// 'padding-top': '15px',
 				'padding-right': '43px',
-				'padding-bottom': '15px',
+				// 'padding-bottom': '15px',
 				'padding-left': '43px',
 				'opacity': '0.6',
 				'border-radius': '40px',

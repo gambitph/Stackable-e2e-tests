@@ -72,6 +72,7 @@ export function toggleStyle( name = 'Block Title', enabled = true ) {
 					.click( { force: true } )
 			}
 		} )
+	cy.collapse( name )
 }
 
 /**

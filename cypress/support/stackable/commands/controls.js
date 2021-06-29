@@ -48,8 +48,8 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 			unit = '',
 		} = options
 
-		changeControlViewport( viewport, name, isInPopover )
-		changeUnit( unit, name, isInPopover )
+		changeControlViewport( viewport, name, isInPopover, { version: 'v3' } )
+		changeUnit( unit, name, isInPopover, { version: 'v3' } )
 	}
 
 	// Handle options with no label
@@ -63,6 +63,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		// Pass our own adjust controls.
 		'.ugb-icon-control__wrapper': 'iconControl',
 		'.ugb-four-range-control': 'fourRangeControl',
+		'.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
 		'.react-autosuggest__input': 'suggestionControl',
 		'.ugb-button-icon-control__wrapper': 'popoverControl',
 		'.ugb-columns-width-control': 'columnControl',
@@ -93,8 +94,8 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 			unit = '',
 		} = options
 
-		changeControlViewport( viewport, name, isInPopover )
-		changeUnit( unit, name, isInPopover )
+		changeControlViewport( viewport, name, isInPopover, { version: 'v3' } )
+		changeUnit( unit, name, isInPopover, { version: 'v3' } )
 	}
 
 	const customOptions = {
@@ -369,9 +370,9 @@ function fourRangeControlReset( name, options = {} ) {
 			}
 
 			selector( isInPopover )
-				.find( 'button' )
-				.contains( containsRegExp( 'Reset' ) )
-				.click( { force: true } )
+				.find( 'button[aria-label="Reset"]' )
+				// .contains( containsRegExp( 'Reset' ) )
+				.click( { force: true, multiple: true } )
 		} )
 }
 
@@ -474,8 +475,8 @@ function iconControlReset( name, options = {} ) {
 	cy.getBaseControl( name, { isInPopover } )
 		.contains( containsRegExp( name ) )
 		.closest( '.components-panel__body>.components-base-control' )
-		.find( 'button' )
-		.contains( 'Reset' )
+		.find( 'button[aria-label="Reset"]' )
+		// .contains( 'Reset' )
 		.click( { force: true } )
 }
 

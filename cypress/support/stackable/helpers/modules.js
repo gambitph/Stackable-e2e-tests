@@ -122,8 +122,8 @@ export const assertBlockBackground = ( selector, options = {}, assertOptions = {
 	} = options
 
 	const _assertBlockBackground = ( viewport, desktopOnly ) => {
-		cy.collapse( 'Block Background' )
 		cy.toggleStyle( 'Block Background' )
+		cy.collapse( 'Block Background' )
 		desktopOnly( () => {
 			cy.adjust( 'Background Color', '#ffffff' )
 			cy.adjust( 'Background Color Opacity', 0.7 ).assertComputedStyle( {

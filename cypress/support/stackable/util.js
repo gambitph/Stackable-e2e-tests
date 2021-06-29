@@ -49,8 +49,13 @@ export function modifyLogFunc( options = {} ) {
  * @param {string} unit desired unit
  * @param {string} name selector name
  * @param {boolean} isInPopover if the control is in popover
+ * @param {Object} options
  */
-export function changeUnit( unit = '', name = '', isInPopover = false ) {
+export function changeUnit( unit = '', name = '', isInPopover = false, options = {} ) {
+	const {
+		version = 'v2',
+	} = options
+
 	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
@@ -60,11 +65,18 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
 	if ( unit ) {
 		selector()
 			.then( $baseControl => {
-				if ( $baseControl.find( '.ugb-base-control-multi-label__units', { log: false } ).length ) {
-					selector()
-						.find( 'button', { log: false } )
-						.contains( containsRegExp( unit ) )
-						.click( { force: true, log: false } )
+				if ( version === 'v2' ) {
+					if ( $baseControl.find( '.ugb-base-control-multi-label__units', { log: false } ).length ) {
+						selector()
+							.find( 'button', { log: false } )
+							.contains( containsRegExp( unit ) )
+							.click( { force: true, log: false } )
+					}
+				} else if ( version === 'v3' ) {
+					if ( $baseControl.find( '.stk-control-label__units' ).length ) {
+						selector().find( '.stk-control-label__units button.is-active' ).click( { force: true } )
+						selector().find( `.stk-control-label__units button[data-value="${ unit }"]` ).click( { force: true } )
+					}
 				}
 			} )
 	}
@@ -76,8 +88,13 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
  * @param {string} viewport desired viewport
  * @param {string} name selector name
  * @param {boolean} isInPopover if the control is in popover
+ * @param {Object} options
  */
-export function changeControlViewport( viewport = 'Desktop', name = '', isInPopover = false ) {
+export function changeControlViewport( viewport = 'Desktop', name = '', isInPopover = false, options = {} ) {
+	const {
+		version = 'v2',
+	} = options
+
 	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
@@ -85,22 +102,38 @@ export function changeControlViewport( viewport = 'Desktop', name = '', isInPopo
 	const selector = () => cy.getBaseControl( name, { isInPopover } )
 	selector()
 		.then( $baseControl => {
-			if ( $baseControl.find( 'button[aria-label="Desktop"]' ).length ) {
-				const hovered = $baseControl.find( 'button[aria-label="Tablet"]' ).length
-				const hover = () => selector().find( 'button[aria-label="Desktop"]' ).trigger( 'mouseover', { force: true } )
-				const selectViewport = () => selector().find( `button[aria-label="${ viewport }"]` ).click( { force: true } )
-				const isActive = () => $baseControl.find( `button.is-active[aria-label="${ viewport }"]` ).length
-				if ( viewport !== 'Desktop' ) {
-					if ( ! hovered ) {
-						hover()
-						selectViewport()
-					} else if ( ! isActive() ) {
+			if ( version === 'v2' ) {
+				if ( $baseControl.find( 'button[aria-label="Desktop"]' ).length ) {
+					const hovered = $baseControl.find( 'button[aria-label="Tablet"]' ).length
+					const hover = () => selector().find( 'button[aria-label="Desktop"]' ).trigger( 'mouseover', { force: true } )
+					const selectViewport = () => selector().find( `button[aria-label="${ viewport }"]` ).click( { force: true } )
+					const isActive = () => $baseControl.find( `button.is-active[aria-label="${ viewport }"]` ).length
+					if ( viewport !== 'Desktop' ) {
+						if ( ! hovered ) {
+							hover()
+							selectViewport()
+						} else if ( ! isActive() ) {
+							selectViewport()
+						}
+					} else if ( hovered ) {
 						selectViewport()
 					}
-				} else if ( hovered ) {
-					selectViewport()
+					cy.wait( 1 )
 				}
-				cy.wait( 1 )
+			} else if ( version === 'v3' ) {
+				if ( $baseControl.find( '.stk-control-responsive-toggle button.is-active' ).length ) {
+					selector().find( '.stk-control-responsive-toggle button.is-active' ).click( { force: true } )
+					selector()
+						.find( '.stk-control-responsive-toggle' )
+						.invoke( 'attr', 'aria-expanded' )
+						.then( ariaExpanded => {
+							if ( ariaExpanded === 'true' ) {
+								selector()
+									.find( `button[aria-label="${ viewport }"]` )
+									.click( { force: true, log: false } )
+							}
+						} )
+				}
 			}
 		} )
 }
