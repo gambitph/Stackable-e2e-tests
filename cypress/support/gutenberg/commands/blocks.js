@@ -62,6 +62,17 @@ export function selectBlock( subject, selector ) {
 					let foundClientId = null
 					let resolveCallback = null
 
+					if ( selector.startsWith( '@' ) ) {
+						return cy.get( selector ).then( $block => {
+							const classNames = $block.attributes.className.split( ' ' ).map( c => `.${ c }` ).join( '' )
+							const blockElement = $body.find( classNames ).parent()
+							const clientId = blockElement.data( 'block' )
+							wp.data.dispatch( 'core/block-editor' )
+								.selectBlock( clientId )
+								.then( dispatchResolver( () => resolve( resolveCallback ) ) )
+						} )
+					}
+
 					willSelectBlock.forEach( ( { clientId } ) => {
 						if ( ! foundClientId && $body.find( `.wp-block[data-block="${ clientId }"]:contains(${ selector })` ).length ) {
 							foundClientId = clientId
