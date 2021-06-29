@@ -343,10 +343,10 @@ function globalTypographyUnits( viewport ) {
 		const pxLineHeight = [ 64, 58, 54, 48, 44, 38, 34 ]
 
 		cy.addBlock( 'core/paragraph' )
-		range( 1, 8 ).forEach( idx => {
+		emFontSize.forEach( ( fontSize, idx ) => {
 			cy.adjustGlobalTypography( willAssertTypographyStyles[ idx - 1 ].tag, {
 				'Size': {
-					value: emFontSize[ idx - 1 ],
+					value: fontSize,
 					unit: 'em',
 					viewport,
 				},
@@ -363,13 +363,13 @@ function globalTypographyUnits( viewport ) {
 		cy.addBlock( 'ugb/blog-posts' )
 		cy.openInspector( 'ugb/blog-posts', 'Style' )
 		cy.collapse( 'Title' )
-		range( 1, 8 ).forEach( idx => {
+		emFontSize.forEach( ( fontSize, idx ) => {
 			// Adjust preview to the current viewport
 			// We need to do this because Title HTML tag does not have viewport controls.
 			cy.changePreviewMode( viewport )
 			cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx - 1 ].tag ).assertComputedStyle( {
 				'.ugb-blog-posts__title': {
-					'font-size': `${ emFontSize[ idx - 1 ] }em`,
+					'font-size': `${ fontSize }em`,
 					'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
 				},
 			} )
@@ -396,12 +396,12 @@ function globalTypographyUnits( viewport ) {
 				cy.changePreviewMode( viewport )
 				cy.openInspector( blockName, 'Style' )
 
-				range( 1, 8 ).forEach( idx => {
+				emFontSize.forEach( ( fontSize, idx ) => {
 					if ( blocksWithTitle.includes( blockName ) ) {
 						cy.collapse( 'Title' )
 						cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx - 1 ].tag ).assertComputedStyle( {
 							[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
-								'font-size': `${ emFontSize[ idx - 1 ] }em`,
+								'font-size': `${ fontSize }em`,
 								'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
 							},
 						} )
@@ -411,7 +411,7 @@ function globalTypographyUnits( viewport ) {
 						cy.toggleStyle( 'Block Title' )
 						cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx - 1 ].tag ).assertComputedStyle( {
 							[ `.ugb-${ name } .ugb-block-title` ]: {
-								'font-size': `${ emFontSize[ idx - 1 ] }em`,
+								'font-size': `${ fontSize }em`,
 								'line-height': `${ pxLineHeight[ idx - 1 ] }px`,
 							},
 						} )
