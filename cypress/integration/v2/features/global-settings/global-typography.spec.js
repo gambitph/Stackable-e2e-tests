@@ -2,7 +2,7 @@
  * External dependencies
  */
 
-import { range } from 'lodash'
+import { lowerCase, range } from 'lodash'
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import {
 	responsiveAssertHelper,
@@ -10,13 +10,13 @@ import {
 } from '~stackable-e2e/helpers'
 import { blocks } from '~stackable-e2e/config'
 
-const [ , tabletGlobalTypo, mobileGlobalTypo ] = responsiveAssertHelper( assertGlobalTypographyTabletMobile, { disableItAssertion: true } )
+const [ desktopGlobalTypography, tabletGlobalTypography, mobileGlobalTypography ] = responsiveAssertHelper( assertGlobalTypography, { disableItAssertion: true } )
 const [ desktopUnits, tabletUnits, mobileUnits ] = responsiveAssertHelper( globalTypographyUnits, { disableItAssertion: true } )
 
 describe( 'Global Typography', registerTests( [
-	assertGlobalTypography,
-	tabletGlobalTypo,
-	mobileGlobalTypo,
+	desktopGlobalTypography,
+	tabletGlobalTypography,
+	mobileGlobalTypography,
 	desktopUnits,
 	tabletUnits,
 	mobileUnits,
@@ -134,50 +134,81 @@ const willAssertTypographyStyles = [
 	},
 ]
 
-function assertGlobalTypography() {
-	it( 'should assert all global typography options', () => {
+function assertGlobalTypography( viewport, desktopOnly ) {
+	it( `should assert all global typography options in ${ lowerCase( viewport ) }`, () => {
 		cy.setupWP()
 		cy.forceTypographyStyles()
-		// Global settings should still load in the frontend.
-		cy.loadFrontendJsCssFiles()
 		// Publish one post to test in blog-posts
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
 		cy.addBlock( 'core/paragraph' )
 		willAssertTypographyStyles.forEach( val => {
-			cy.adjustGlobalTypography( val.tag, {
-				'Font Family': val.font,
-				'Size': {
-					value: val.size,
-					unit: 'px',
-				},
-				'Weight': val.weight,
-				'Transform': val.transform,
-				'Line-Height': {
-					value: val.lineHeight,
-					unit: 'em',
-				},
-				'Letter Spacing': val.letterSpacing,
+			desktopOnly( () => {
+				cy.adjustGlobalTypography( val.tag, {
+					'Font Family': val.font,
+					'Size': {
+						value: val.size,
+						unit: 'px',
+					},
+					'Weight': val.weight,
+					'Transform': val.transform,
+					'Line-Height': {
+						value: val.lineHeight,
+						unit: 'em',
+					},
+					'Letter Spacing': val.letterSpacing,
+				} )
 			} )
+			if ( viewport !== 'Desktop' ) {
+				cy.adjustGlobalTypography( val.tag, {
+					'Size': {
+						value: val.size,
+						unit: 'px',
+						viewport,
+					},
+					'Line-Height': {
+						value: val.lineHeight,
+						unit: 'em',
+						viewport,
+					},
+				} )
+			}
 		} )
+
+		const adjustAssertTypographyStyles = selector => {
+			desktopOnly( () => {
+				willAssertTypographyStyles.forEach( val => {
+					cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
+						[ selector ]: {
+							'font-family': `${ val.font }, sans-serif`,
+							'font-size': `${ val.size }px`,
+							'font-weight': val.weight,
+							'text-transform': val.transform,
+							'line-height': `${ val.lineHeight }em`,
+							'letter-spacing': `${ val.letterSpacing }px`,
+						},
+					} )
+				} )
+			} )
+			if ( viewport !== 'Desktop' ) {
+				willAssertTypographyStyles.forEach( val => {
+					cy.changePreviewMode( viewport )
+					cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
+						[ selector ]: {
+							'font-size': `${ val.size }px`,
+							'line-height': `${ val.lineHeight }em`,
+						},
+					} )
+				} )
+			}
+		}
 
 		// Assert in blog posts first because this is a dynamic block.
 		// It cannot use the block snapshots.
 		cy.addBlock( 'ugb/blog-posts' )
 		cy.openInspector( 'ugb/blog-posts', 'Style' )
 		cy.collapse( 'Title' )
-		willAssertTypographyStyles.forEach( val => {
-			cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-				'.ugb-blog-posts__title': {
-					'font-family': `${ val.font }, sans-serif`,
-					'font-size': `${ val.size }px`,
-					'font-weight': val.weight,
-					'text-transform': val.transform,
-					'line-height': `${ val.lineHeight }em`,
-					'letter-spacing': `${ val.letterSpacing }px`,
-				},
-			} )
-		} )
+		adjustAssertTypographyStyles( '.ugb-blog-posts__title' )
 
 		blocks
 			.filter( blockName => ! blocksWithoutTexts.includes( blockName ) )
@@ -195,35 +226,15 @@ function assertGlobalTypography() {
 					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
 				}
 
-				willAssertTypographyStyles.forEach( val => {
-					if ( blocksWithTitle.includes( blockName ) ) {
-						cy.collapse( 'Title' )
-						cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-							[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
-								'font-family': `${ val.font }, sans-serif`,
-								'font-size': `${ val.size }px`,
-								'font-weight': val.weight,
-								'text-transform': val.transform,
-								'line-height': `${ val.lineHeight }em`,
-								'letter-spacing': `${ val.letterSpacing }px`,
-							},
-						} )
-					}
+				if ( blocksWithTitle.includes( blockName ) ) {
+					cy.collapse( 'Title' )
+					adjustAssertTypographyStyles( `.ugb-${ name === 'count-up' ? 'countup' : name }__title` )
+				}
 
-					if ( blocksWithBlockTitle.includes( blockName ) ) {
-						cy.toggleStyle( 'Block Title' )
-						cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-							[ `.ugb-${ name } .ugb-block-title` ]: {
-								'font-family': `${ val.font }, sans-serif`,
-								'font-size': `${ val.size }px`,
-								'font-weight': val.weight,
-								'text-transform': val.transform,
-								'line-height': `${ val.lineHeight }em`,
-								'letter-spacing': `${ val.letterSpacing }px`,
-							},
-						} )
-					}
-				} )
+				if ( blocksWithBlockTitle.includes( blockName ) ) {
+					cy.toggleStyle( 'Block Title' )
+					adjustAssertTypographyStyles( `.ugb-${ name } .ugb-block-title` )
+				}
 
 				cy.getPostUrls().then( ( { editorUrl } ) => {
 					block.assertFrontendStyles()
@@ -233,107 +244,10 @@ function assertGlobalTypography() {
 	} )
 }
 
-function assertGlobalTypographyTabletMobile( viewport ) {
-	it( `should adjust ${ viewport } settings in Global Typography`, () => {
-		if ( Array( 'Tablet', 'Mobile' ).includes( viewport ) ) {
-			cy.setupWP()
-			cy.forceTypographyStyles()
-			// Global settings should still load in the frontend.
-			cy.loadFrontendJsCssFiles()
-			// Publish one post to test in blog-posts
-			cy.registerPosts( { numOfPosts: 1 } )
-			cy.newPage()
-			cy.addBlock( 'core/paragraph' )
-			willAssertTypographyStyles.forEach( val => {
-				cy.adjustGlobalTypography( val.tag, {
-					'Size': {
-						value: val.size,
-						unit: 'px',
-						viewport,
-					},
-					'Line-Height': {
-						value: val.lineHeight,
-						unit: 'em',
-						viewport,
-					},
-				} )
-			} )
-
-			// Assert in blog posts first because this is a dynamic block.
-			// It cannot use the block snapshots.
-			cy.addBlock( 'ugb/blog-posts' )
-			cy.openInspector( 'ugb/blog-posts', 'Style' )
-			cy.collapse( 'Title' )
-			willAssertTypographyStyles.forEach( val => {
-				// Adjust preview to the current viewport
-				// We need to do this because Title HTML tag does not have viewport controls.
-				cy.changePreviewMode( viewport )
-				cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-					'.ugb-blog-posts__title': {
-						'font-size': `${ val.size }px`,
-						'line-height': `${ val.lineHeight }em`,
-					},
-				} )
-			} )
-
-			blocks
-				.filter( blockName => ! blocksWithoutTexts.includes( blockName ) )
-				.forEach( blockName => {
-					const name = blockName.split( '/' ).pop()
-
-					cy.addBlock( blockName ).as( blockName )
-					const block = registerBlockSnapshots( blockName )
-					cy.openInspector( blockName, 'Style' )
-
-					if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
-						if ( name === 'text' ) {
-							cy.toggleStyle( 'Title' )
-						}
-						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
-					}
-
-					// Adjust preview to the current viewport
-					// We need to do this because Title HTML tag does not have viewport controls.
-					cy.changePreviewMode( viewport )
-
-					// Test fontSize px and lineHeight em values for Tablet & Mobile
-					willAssertTypographyStyles.forEach( val => {
-						if ( blocksWithTitle.includes( blockName ) ) {
-							cy.collapse( 'Title' )
-							cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-								[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
-									'font-size': `${ val.size }px`,
-									'line-height': `${ val.lineHeight }em`,
-								},
-							} )
-						}
-
-						if ( blocksWithBlockTitle.includes( blockName ) ) {
-							cy.toggleStyle( 'Block Title' )
-							cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-								[ `.ugb-${ name } .ugb-block-title` ]: {
-									'font-size': `${ val.size }px`,
-									'line-height': `${ val.lineHeight }em`,
-								},
-							} )
-						}
-					} )
-
-					cy.getPostUrls().then( ( { editorUrl } ) => {
-						block.assertFrontendStyles()
-						cy.visit( editorUrl )
-					} )
-				} )
-		}
-	} )
-}
-
 function globalTypographyUnits( viewport ) {
 	it( `should adjust emFontSize and pxLineHeight units of Global Typography in ${ viewport }`, () => {
 		cy.setupWP()
 		cy.forceTypographyStyles()
-		// Global settings should still load in the frontend.
-		cy.loadFrontendJsCssFiles()
 		// Publish one post to test in blog-posts
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
