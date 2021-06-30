@@ -18,6 +18,7 @@ function optimizationSettings() {
 			cy.visit( previewUrl )
 
 			const cssJsSelectors = [
+				'#ugb-style-css-inline-css',
 				'#ugb-style-css-css',
 				'#ugb-style-css-premium-css',
 				'#ugb-block-frontend-js-js-extra',
