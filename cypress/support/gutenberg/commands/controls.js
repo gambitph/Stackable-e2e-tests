@@ -21,6 +21,7 @@ Cypress.Commands.add( 'textAreaControl', textAreaControl )
 Cypress.Commands.add( 'stylesControl', stylesControl )
 Cypress.Commands.add( 'fontSizeControl', fontSizeControl )
 Cypress.Commands.add( 'urlInputControl', urlInputControl )
+Cypress.Commands.add( 'radioControl', radioControl )
 
 // Adjust Styles
 Cypress.Commands.add( 'adjust', adjust )
@@ -311,6 +312,25 @@ function urlInputControl( name, value, options = {} ) {
 }
 
 /**
+ * Command for adjusting the radio control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ */
+function radioControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+	} = options
+
+	beforeAdjust( name, value, options )
+	cy.getBaseControl( name, { isInPopover } )
+		.find( `.components-radio-control__option:contains(${ value }) input` )
+		.click( { force: true } )
+}
+
+/**
  * Command for adjusting settings.
  *
  * @param {string} name
@@ -358,6 +378,7 @@ export function adjust( name, value, options ) {
 		'.components-text-control__input': 'textControl',
 		'.components-textarea-control__input': 'textAreaControl',
 		'.block-editor-url-input': 'urlInputControl',
+		'.components-radio-control__input': 'radioControl',
 	}
 
 	baseControlSelector()

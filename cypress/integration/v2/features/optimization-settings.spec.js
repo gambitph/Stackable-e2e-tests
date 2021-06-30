@@ -10,6 +10,7 @@ describe( 'Optimization Settings', registerTests( [
 ] ) )
 
 const cssJsSelectors = [
+	'#ugb-style-css-inline-css',
 	'#ugb-style-css-css',
 	'#ugb-style-css-premium-css',
 	'#ugb-block-frontend-js-js-extra',
@@ -62,20 +63,29 @@ function indirectlyAddedBlocks() {
 		cy.publish()
 
 		cy.newPage()
+		// Stackable block inside the core latest posts block
 		cy.addBlock( 'core/latest-posts' )
 		cy.openSidebar( 'Settings' )
 		cy.collapse( 'Post content settings' )
 		cy.adjust( 'Post content', true )
-		cy.contains( 'Full post' ).click( { force: true } )
+		cy.adjust( 'Show:', 'Full post' )
 		cy.savePost()
-		cy.getPostUrls().then( ( { previewUrl } ) => {
-			cy.visit( previewUrl )
-			cssJsSelectors.forEach( selector => {
-				// CSS & JS files should be present in frontend
-				cy.get( selector ).should( 'exist' )
+		const assertFilesExistInFrontend = () => {
+			cy.getPostUrls().then( ( { previewUrl } ) => {
+				cy.visit( previewUrl )
+				cssJsSelectors.forEach( selector => {
+					// CSS & JS files should be present in frontend
+					cy.get( selector ).should( 'exist' )
+				} )
 			} )
-		} )
+		}
+		assertFilesExistInFrontend()
 
-		// Add test for reusable blocks
+		// Stackable block inside a reusable block
+		cy.newPage()
+		cy.addBlock( 'ugb/cta' )
+		cy.addToReusableBlocks( 'ugb/cta', 0 )
+		cy.publish()
+		assertFilesExistInFrontend()
 	} )
 }
