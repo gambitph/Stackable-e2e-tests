@@ -7,6 +7,7 @@ import { registerTests } from '~stackable-e2e/helpers'
 describe( 'Optimization Settings', registerTests( [
 	optimizationSettings,
 	indirectlyAddedBlocks,
+	globalSettingTest,
 ] ) )
 
 const cssJsSelectors = [
@@ -87,5 +88,88 @@ function indirectlyAddedBlocks() {
 		cy.addToReusableBlocks( 'ugb/cta', 0 )
 		cy.publish()
 		assertFilesExistInFrontend()
+	} )
+}
+
+function globalSettingTest() {
+	it( 'should not affect loading of global settings', () => {
+		const globalColors = [
+			{
+				name: 'Aqua',
+				color: '#3fcee8',
+			},
+			{
+				name: 'Stackable Pink',
+				color: '#f00069',
+			},
+		]
+
+		const globalTypography = [
+			{
+				tag: 'h1',
+				font: 'Abel',
+				size: 92,
+				weight: 'bold',
+				transform: 'uppercase',
+				lineHeight: 1.3,
+				letterSpacing: 2.1,
+			},
+			{
+				tag: 'h2',
+				font: 'Aclonica',
+				size: 66,
+				weight: '900',
+				transform: 'capitalize',
+				lineHeight: 1.2,
+				letterSpacing: 1.1,
+			},
+		]
+
+		const globalCssSelectors = [
+			'#ugb-style-global-colors-inline-css',
+			'#stackable-global-typography-google-fonts-css',
+			'#ugb-style-global-typography-inline-css',
+		]
+
+		cy.setupWP()
+		// Turn optimization setting on
+		cy.loadFrontendJsCssFiles()
+		cy.newPage()
+
+		// Add Global colors
+		cy.addBlock( 'core/paragraph' )
+		globalColors.forEach( color => {
+			cy.addEditGlobalColor( {
+				name: color.name,
+				color: color.color,
+			} )
+		} )
+
+		// Add Global typography
+		globalTypography.forEach( typography => {
+			cy.adjustGlobalTypography( typography.tag, {
+				'Font Family': typography.font,
+				'Size': {
+					value: typography.size,
+					unit: 'px',
+				},
+				'Weight': typography.weight,
+				'Transform': typography.transform,
+				'Line-Height': {
+					value: typography.lineHeight,
+					unit: 'em',
+				},
+				'Letter Spacing': typography.letterSpacing,
+			} )
+		} )
+		cy.savePost()
+
+		cy.getPostUrls().then( ( { previewUrl } ) => {
+			cy.visit( previewUrl )
+			globalCssSelectors.forEach( selector => {
+				// Global CSS files should be present in frontend
+				cy.get( selector ).should( 'exist' )
+			} )
+		} )
 	} )
 }
