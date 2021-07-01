@@ -4,6 +4,7 @@
 import {
 	lowerCase, isEmpty,
 } from 'lodash'
+import { registerTests as _registerTests } from '~gutenberg-e2e/helpers'
 
 /**
  * Export Block Module assertions.
@@ -141,24 +142,23 @@ export const assertAligns = ( name, selector, options = {}, assertOptions = {} )
 }
 
 /**
- * Helper function for registering tests.
+ * Helper function for registering stackable tests.
  *
  * @param {Array} testsList
- * @param {Function} onTestsStart
  */
-export const registerTests = ( testsList = [], onTestsStart = () => {
-	beforeEach( () => {
-		cy.server()
-		cy.route( {
-			method: 'GET',
-			url: /stk_design_library/,
-			status: 200,
-		} ).as( 'designLibrary' )
-	} )
-} ) => () => {
-	onTestsStart()
-	testsList.forEach( test => typeof test === 'function' && test() )
-}
+export const registerTests = ( testsList = [] ) => () => _registerTests(
+	testsList,
+	() => {
+		beforeEach( () => {
+			cy.server()
+			cy.route( {
+				method: 'GET',
+				url: /stk_design_library/,
+				status: 200,
+			} ).as( 'designLibrary' )
+		} )
+	}
+)
 
 /**
  * Helper function for creating responsive assertions.

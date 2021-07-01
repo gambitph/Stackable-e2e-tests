@@ -149,7 +149,5 @@ export function removeGlobalCssTransitions() {
 				.join( ' ' ) } }` )
 		.join( ' ' )
 
-	cy.get( '.interface-interface-skeleton__content' ).then( $el => {
-		$el.prepend( `<style>${ styleText }</style>` )
-	} )
+	Cypress.$( 'body' ).prepend( `<style id="e2e-test-inline-styles">${ styleText }</style>` )
 }

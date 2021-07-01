@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { range } from 'lodash'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
 	assertBlockTitleDescriptionContent,
@@ -123,19 +122,17 @@ function styleTab( viewport, desktopOnly ) {
 
 	desktopOnly( () => {
 		cy.collapse( 'Posts Settings' )
-		range( 1, 5 ).forEach( idx => {
-			cy.adjust( 'Number of items', idx )
-			cy
-				.get( '.ugb-block-content' )
-				.find( '.ugb-blog-posts__item' )
-				.should( 'have.length', idx )
-		} )
-
-		cy.adjust( 'Offset', 1 )
+		cy.adjust( 'Number of items', 4 )
 		cy
 			.get( '.ugb-block-content' )
 			.find( '.ugb-blog-posts__item' )
-			.should( 'have.length', 3 )
+			.should( 'have.length', 4 )
+
+		cy.adjust( 'Offset', 2 )
+		cy
+			.get( '.ugb-block-content' )
+			.find( '.ugb-blog-posts__item' )
+			.should( 'have.length', 2 )
 		cy.resetStyle( 'Offset' )
 
 		/**
