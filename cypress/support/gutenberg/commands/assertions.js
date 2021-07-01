@@ -11,15 +11,22 @@ import {
 import {
 	getBlockStringPath, createElementFromHTMLString, withInspectorTabMemory,
 } from '../util'
+import {
+	blockSnapshotsAssertHtmlTag,
+	blockSnapshotsAssertClassName,
+	blockSnapshotsAssertBlockContent,
+	blockSnapshotsAssertComputedStyle,
+	blockSnapshotsAssertHtmlAttribute,
+} from '../plugins/blockSnapshots'
 
 /**
  * Register Cypress Commands
  */
-Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, assertComputedStyle )
-Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, assertClassName )
-Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, assertHtmlTag )
-Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, assertHtmlAttribute )
-Cypress.Commands.add( 'assertBlockContent', { prevSubject: 'element' }, assertBlockContent )
+Cypress.Commands.add( 'assertComputedStyle', { prevSubject: 'element' }, ( ...args ) => blockSnapshotsAssertComputedStyle( assertComputedStyle, ...args ) )
+Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, ( ...args ) => blockSnapshotsAssertClassName( assertClassName, ...args ) )
+Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, ( ...args ) => blockSnapshotsAssertHtmlTag( assertHtmlTag, ...args ) )
+Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, ( ...args ) => blockSnapshotsAssertHtmlAttribute( assertHtmlAttribute, ...args ) )
+Cypress.Commands.add( 'assertBlockContent', { prevSubject: 'element' }, ( ...args ) => blockSnapshotsAssertBlockContent( assertBlockContent, ...args ) )
 
 // Temporary overwrite fix. @see stackable/commands/assertions.js
 Cypress.Commands.overwrite( 'assertComputedStyle', withInspectorTabMemory( { argumentLength: 3 } ) )
@@ -119,7 +126,8 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 	cy.wait( delay )
 
 	cy.wp().then( wp => {
-		const block = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) )
+		const clientId = subject.data( 'block' )
+		const block = wp.data.select( 'core/block-editor' ).getBlock( clientId )
 		const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
 		const blockPath = getBlockStringPath( wp.data.select( 'core/block-editor' ).getBlocks(), subject.data( 'block' ) )
 
