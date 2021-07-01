@@ -64,10 +64,10 @@ class BlockSnapshots {
 		const self = this
 		cy.wp().then( wp => {
 			cy.get( `@${ self.alias }` ).then( _block => {
-				cy.document().then( doc => {
+				cy.get( 'body' ).then( $body => {
 					const { className } = _block.attributes
-					const blockElement = doc.querySelector( `.${ className }` ).parentElement
-					const clientId = blockElement.getAttribute( 'data-block' )
+					const blockElement = $body.find( `.${ className }` ).closest( '[data-block]' )
+					const clientId = blockElement.data( 'block' )
 					// Get the parent block first.
 					const parentBlockClientId = first( wp.data.select( 'core/block-editor' ).getBlockParents( clientId ) )
 					const block = wp.data.select( 'core/block-editor' ).getBlock( parentBlockClientId || clientId )
@@ -103,74 +103,72 @@ class BlockSnapshots {
 		const self = this
 		cy.get( `@${ self.alias }.stubbedStyles` ).then( $stubbedStyles => {
 			cy.get( `@${ self.alias }.contentSnapshots` ).then( $contentSnapshots => {
-				cy.get( `@${ self.alias }` ).then( $block => {
 				// Combine all stubbed styles and content snapshots into one array.
-					const combinedStubbed = $contentSnapshots.map( ( htmlContent, index ) => {
-						return {
-							htmlContent,
-							viewport: $stubbedStyles[ index ].viewport,
-							style: $stubbedStyles[ index ].style,
-						}
-					} )
-
-					if ( ! combinedStubbed.length ) {
-						return
+				const combinedStubbed = $contentSnapshots.map( ( htmlContent, index ) => {
+					return {
+						htmlContent,
+						viewport: $stubbedStyles[ index ].viewport,
+						style: $stubbedStyles[ index ].style,
 					}
+				} )
 
-					cy.savePost()
-					cy.getPostUrls().then( ( { previewUrl } ) => {
-						cy.visit( previewUrl )
-						combinedStubbed.forEach( combinedStubbedContent => {
-							cy.document().then( doc => {
-								const {
-									viewport, htmlContent, style,
-								} = combinedStubbedContent
+				if ( ! combinedStubbed.length ) {
+					return
+				}
 
-								// Create a DOMElement based on the HTML string.
-								const blockElement = createElementFromHTMLString( htmlContent )
-								// Get the class selector.
-								const classSelector = `.${ $block.attributes.className }`
-								// Remove all blocks inside .entry-content.
-								doc.querySelector( '.entry-content' ).innerHTML = ''
+				cy.savePost()
+				cy.getPostUrls().then( ( { previewUrl } ) => {
+					cy.visit( previewUrl )
+					combinedStubbed.forEach( combinedStubbedContent => {
+						cy.document().then( doc => {
+							const {
+								viewport, htmlContent, style,
+							} = combinedStubbedContent
 
-								// Change the viewport.
-								if ( typeof viewport === 'string' ) {
-									if ( viewport !== 'Desktop' ) {
-										cy.viewport( Cypress.config( `viewport${ viewport }Width` ) || Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
-									}
-								} else {
-									cy.viewport(
-										viewport,
-										Cypress.config( 'viewportHeight' )
-									)
+							// Create a DOMElement based on the HTML string.
+							const blockElement = createElementFromHTMLString( htmlContent )
+							// Get the class selector.
+							const classList = Array.from( blockElement.classList ).map( _class => `.${ _class }` ).join( '' )
+							// Remove all blocks inside .entry-content.
+							doc.querySelector( '.entry-content' ).innerHTML = ''
+
+							// Change the viewport.
+							if ( typeof viewport === 'string' ) {
+								if ( viewport !== 'Desktop' ) {
+									cy.viewport( Cypress.config( `viewport${ viewport }Width` ) || Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
 								}
+							} else {
+								cy.viewport(
+									viewport,
+									Cypress.config( 'viewportHeight' )
+								)
+							}
 
-								// Append the stubbed block in .entry-content
-								doc.querySelector( '.entry-content' ).appendChild( blockElement )
+							// Append the stubbed block in .entry-content
+							doc.querySelector( '.entry-content' ).appendChild( blockElement )
 
-								keys( style ).forEach( _selector => {
-									const selector = _selector.split( ':' )
-									const selectorWithSpace = first( selector ).split( ' ' )
-									const [ , ...restOfTheSelectors ] = [ ...selectorWithSpace ]
+							keys( style ).forEach( _selector => {
+								const selector = _selector.split( ':' )
+								const selectorWithSpace = first( selector ).split( ' ' )
+								const [ , ...restOfTheSelectors ] = [ ...selectorWithSpace ]
 
-									const documentSelector = `${ classSelector }${ first( selectorWithSpace ).match( /\./ )
-										?	( classSelector.match( first( selectorWithSpace ) )
-											? ` ${ restOfTheSelectors.join( ' ' ) }`
-											: ` ${ first( selector ) }` )
-										: ` ${ first( selector ) }` }`.trim()
+								const documentSelector = `${ classList }${ first( selectorWithSpace ).match( /\./ )
+									?	( classList.match( first( selectorWithSpace ) )
+										? ` ${ restOfTheSelectors.join( ' ' ) }`
+										: ` ${ first( selector ) }` )
+									: ` ${ first( selector ) }` }`.trim()
 
-									// Assert computed style.
-									_assertComputedStyle(
-										documentSelector,
-										selector.length && last( selector ),
-										style[ _selector ],
-										'Frontend',
-										viewport )
-								} )
-
-								// Revert the viewport
-								cy.viewport( Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
+								// Assert computed style.
+								_assertComputedStyle(
+									documentSelector,
+									selector.length && last( selector ),
+									style[ _selector ],
+									'Frontend',
+									viewport )
 							} )
+
+							// Revert the viewport
+							cy.viewport( Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
 						} )
 					} )
 				} )
