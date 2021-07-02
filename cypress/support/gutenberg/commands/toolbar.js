@@ -11,6 +11,7 @@ Cypress.Commands.add( 'adjustToolbar', adjustToolbar )
 Cypress.Commands.add( 'changeHeadingLevel', changeHeadingLevel )
 Cypress.Commands.add( 'changeAlignment', changeAlignment )
 Cypress.Commands.add( 'changeTextAlignment', changeTextAlignment )
+Cypress.Commands.add( 'addToReusableBlocks', addToReusableBlocks )
 
 /**
  * Command for setting the toolbar to the top.
@@ -111,4 +112,23 @@ export function changeTextAlignment( blockName, blockSelector, alignment ) {
 	}, {
 		parentSelector: '.components-dropdown-menu:contains(Change text alignment)',
 	} )
+}
+
+/**
+ * Command for adding a block as a reusable block
+ *
+ * @param {string} blockName
+ * @param {string | number | Object} blockSelector
+ */
+export function addToReusableBlocks( blockName, blockSelector ) {
+	cy.selectBlock( blockName, blockSelector )
+
+	cy.selectTopToolbar()
+	cy.get( '.block-editor-block-toolbar' )
+		.find( 'button[aria-label="Options"]' )
+		.click( { force: true } )
+
+	cy.get( '.components-dropdown-menu__menu' )
+		.find( 'button.components-menu-item__button:contains(Add to Reusable blocks)' )
+		.click( { force: true } )
 }
