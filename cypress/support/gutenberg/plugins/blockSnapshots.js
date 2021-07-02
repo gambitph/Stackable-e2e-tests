@@ -196,7 +196,11 @@ function assertFrontendStyles( alias ) {
 
 export function blockSnapshotsAssertComputedStyle( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks.find( ( { attributes: { className } } ) => first( args ).attr( 'class' ).match( className ) || first( args ).find( `.${ className }` ).length )
+		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
+			.find( ( { attributes: { className } } ) =>
+				first( args ).attr( 'class' ).match( className ) ||
+				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
+
 		if ( ! isWithBlockSnapshotAlias ) {
 			return originalFn( ...args )
 		}
@@ -226,7 +230,11 @@ export function blockSnapshotsAssertComputedStyle( originalFn, ...args ) {
 
 export function blockSnapshotsAssertClassName( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks.find( ( { attributes: { className } } ) => first( args ).attr( 'class' ).match( className ) || first( args ).find( `.${ className }` ).length )
+		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
+			.find( ( { attributes: { className } } ) =>
+				first( args ).attr( 'class' ).match( className ) ||
+				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
+
 		if ( ! isWithBlockSnapshotAlias ) {
 			return originalFn( ...args )
 		}
@@ -270,7 +278,11 @@ export function blockSnapshotsAssertClassName( originalFn, ...args ) {
 
 export function blockSnapshotsAssertHtmlTag( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks.find( ( { attributes: { className } } ) => first( args ).attr( 'class' ).match( className ) || first( args ).find( `.${ className }` ).length )
+		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
+			.find( ( { attributes: { className } } ) =>
+				first( args ).attr( 'class' ).match( className ) ||
+				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
+
 		if ( ! isWithBlockSnapshotAlias ) {
 			return originalFn( ...args )
 		}
@@ -313,7 +325,11 @@ export function blockSnapshotsAssertHtmlTag( originalFn, ...args ) {
 
 export function blockSnapshotsAssertHtmlAttribute( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks.find( ( { attributes: { className } } ) => first( args ).attr( 'class' ).match( className ) || first( args ).find( `.${ className }` ).length )
+		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
+			.find( ( { attributes: { className } } ) =>
+				first( args ).attr( 'class' ).match( className ) ||
+				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
+
 		if ( ! isWithBlockSnapshotAlias ) {
 			return originalFn( ...args )
 		}
@@ -360,7 +376,11 @@ export function blockSnapshotsAssertHtmlAttribute( originalFn, ...args ) {
 
 export function blockSnapshotsAssertBlockContent( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks.find( ( { attributes: { className } } ) => first( args ).attr( 'class' ).match( className ) || first( args ).find( `.${ className }` ).length )
+		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
+			.find( ( { attributes: { className } } ) =>
+				first( args ).attr( 'class' ).match( className ) ||
+				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
+
 		if ( ! isWithBlockSnapshotAlias ) {
 			return originalFn( ...args )
 		}
