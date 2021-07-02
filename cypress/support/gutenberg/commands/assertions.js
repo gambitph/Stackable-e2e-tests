@@ -91,7 +91,7 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 						assert.equal(
 							computedStyle,
 							expectedStyle,
-							`'${ camelCase( key ) }' expected to be ${ expectedStyle } in ${ assertType }. Found '${ computedStyle }'.`
+							`'${ camelCase( key ) }' expected to be ${ expectedStyle } in ${ assertType }. Found '${ computedStyle }'. Selected '${ selector }'`
 						)
 					} )
 
