@@ -2,18 +2,17 @@
  * External dependencies
  */
 
-import { lowerCase, range } from 'lodash'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
+import { range, lowerCase } from 'lodash'
 import {
 	responsiveAssertHelper,
-	registerTests,
 } from '~stackable-e2e/helpers'
 import { blocks } from '~stackable-e2e/config'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopGlobalTypography, tabletGlobalTypography, mobileGlobalTypography ] = responsiveAssertHelper( assertGlobalTypography, { disableItAssertion: true } )
 const [ desktopUnits, tabletUnits, mobileUnits ] = responsiveAssertHelper( globalTypographyUnits, { disableItAssertion: true } )
 
-describe( 'Global Typography', registerTests( [
+export {
 	desktopGlobalTypography,
 	tabletGlobalTypography,
 	mobileGlobalTypography,
@@ -22,9 +21,9 @@ describe( 'Global Typography', registerTests( [
 	mobileUnits,
 	globalTypographyNativeBlocks,
 	globalTypographyBlockAdjust,
-] ) )
+}
 
-const blocksWithTitle = [
+export const blocksWithTitle = [
 	'ugb/accordion',
 	'ugb/heading',
 	'ugb/text',
@@ -42,7 +41,7 @@ const blocksWithTitle = [
 	'ugb/expand',
 ]
 
-const blocksWithBlockTitle = [
+export const blocksWithBlockTitle = [
 	'ugb/columns',
 	'ugb/icon-list',
 	'ugb/video-popup',
@@ -51,7 +50,7 @@ const blocksWithBlockTitle = [
 ]
 
 // Blocks that do not have typography module / dynamic
-const blocksWithoutTexts = [
+export const blocksWithoutTexts = [
 	'ugb/container',
 	'ugb/button',
 	'ugb/blockquote',
@@ -62,13 +61,13 @@ const blocksWithoutTexts = [
 ]
 
 // Added native blocks
-const nativeBlocks = [
+export const nativeBlocks = [
 	'core/heading',
 	'core/paragraph',
 	'core/list',
 ]
 
-const willAssertTypographyStyles = [
+export const willAssertTypographyStyles = [
 	{
 		tag: 'h1',
 		font: 'Abel',
