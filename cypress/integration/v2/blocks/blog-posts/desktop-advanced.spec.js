@@ -2,5 +2,10 @@
  * External dependencies
  */
 import { registerTests } from '~stackable-e2e/helpers'
-import { desktopAdvanced } from './index'
+
+/**
+ * Internal dependencies
+ */
+import { desktopAdvanced } from './'
+
 describe( 'Blog Posts Block ( Desktop advanced )', registerTests( [ desktopAdvanced ] ) )

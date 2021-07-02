@@ -2,5 +2,10 @@
  * External dependencies
  */
 import { registerTests } from '~stackable-e2e/helpers'
-import { mobileAdvanced } from './index'
+
+/**
+ * Internal dependencies
+ */
+import { mobileAdvanced } from './'
+
 describe( 'Blog Posts Block ( Mobile advanced )', registerTests( [ mobileAdvanced ] ) )
