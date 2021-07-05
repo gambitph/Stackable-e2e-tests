@@ -53,20 +53,12 @@ jobs:
         npm ci
         npm run build --if-present
 
-    - name: Setup Cypress
-      run: |
-        npm ci
-
-    - name: Run WordPress Environment
-      run: wp-env start
-
-    - name: Change Dashboard Setup URL
-      run: |
-        export CYPRESS_API_URL="https://stackable-e2e.herokuapp.com"
-
     - name: Run Test Suite
-      run: |
-        ./node_modules/.bin/cy2 run --record --ci-build-id `Stackable-e2e-tests` --config baseUrl=http://localhost:8889,video=false --env STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=true
+      uses: cypress-io/github-action@v2
+      with:
+        start: wp-env start
+        wait-on: 'http://localhost:8889'
+        command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec=cypress/integration/${{ matrix.stackable-versions }}/**/*.spec.js --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=true --config=baseUrl=http://localhost:8889
 
     - name: Upload Unit Test Results
       if: always()
