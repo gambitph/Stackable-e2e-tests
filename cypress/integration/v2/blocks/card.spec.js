@@ -114,9 +114,11 @@ function styleTab( viewport, desktopOnly ) {
 
 	cy.collapse( 'Image' )
 	desktopOnly( () => {
+		// TODO: Add image from media library to assert Image Size.
 		cy.adjust( 'Image Size', 'thumbnail' )
 		Array( 'image1Url', 'image2Url', 'image3Url' ).forEach( attr => {
 			cy.getBlockAttributes().then( attribute => {
+				cy.log( attribute[ attr ] )
 				expect( attribute[ attr ] ).to.have.string( '150x150' )
 			} )
 		} )

@@ -113,10 +113,10 @@ function styleTab( viewport, desktopOnly ) {
 
 	assertContainer( '.ugb-pricing-box__item', { viewport }, 'column%sBackgroundMediaUrl' )
 
-	range( 1, 4 ).forEach( idx => {
-		cy.setBlockAttribute( {
-			[ `image${ idx }Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-		} )
+	cy.setBlockAttribute( {
+		'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
 	} )
 
 	// Spacing Tab
@@ -186,7 +186,13 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Flip Shape Vertically', true )
 		cy.adjust( 'Stretch Shape Mask', true ).assertClassName( 'img.ugb-img--shape', 'ugb-image--shape-stretch' )
 
-		// We won't be able to assert image size for now since it requires server handling.
+		// TODO: Add image from media library to assert Image Size.
+		cy.adjust( 'Image Size', 'thumbnail' )
+		Array( 'image1Url', 'image2Url', 'image3Url' ).forEach( attr => {
+			cy.getBlockAttributes().then( attribute => {
+				expect( attribute[ attr ] ).to.have.string( '150x150' )
+			} )
+		} )
 	} )
 
 	cy.adjust( 'Image Width', 300, { viewport } ).assertComputedStyle( {

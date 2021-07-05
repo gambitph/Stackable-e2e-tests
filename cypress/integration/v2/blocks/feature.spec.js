@@ -208,7 +208,11 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Flip Shape Vertically', true )
 		cy.adjust( 'Stretch Shape Mask', true ).assertClassName( 'img.ugb-img--shape', 'ugb-image--shape-stretch' )
 
-		// We won't be able to assert image size for now since it requires server handling.
+		// TODO: Add image from media library to assert Image Size.
+		cy.adjust( 'Image Size', 'thumbnail' )
+		cy.getBlockAttributes().then( attribute => {
+			expect( attribute.imageUrl ).to.have.string( '150x150' )
+		} )
 
 		cy.adjust( 'Alt Text (Alternative Text)', 'Hello World!' ).assertHtmlAttribute( '.ugb-img', 'alt', 'Hello World!' )
 	} )

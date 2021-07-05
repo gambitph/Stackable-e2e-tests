@@ -158,8 +158,13 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Flip Shape Vertically', true )
 		cy.adjust( 'Stretch Shape Mask', true ).assertClassName( 'img.ugb-img--shape', 'ugb-image--shape-stretch' )
 
-		// We won't be able to assert image size for now since it requires server handling.
-		// `assertHtmlAttribute` command was introduced for the purpose of asserting html attribute values in a selected DOM Element.
+		// TODO: Add image from media library to assert Image Size.
+		cy.adjust( 'Image Size', 'thumbnail' )
+		Array( 'image1Url', 'image2Url', 'image3Url', 'image4Url' ).forEach( attr => {
+			cy.getBlockAttributes().then( attribute => {
+				expect( attribute[ attr ] ).to.have.string( '150x150' )
+			} )
+		} )
 	} )
 
 	cy.collapse( 'Title' )
