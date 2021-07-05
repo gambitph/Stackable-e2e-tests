@@ -2,18 +2,17 @@
  * External dependencies
  */
 
-import { lowerCase, range } from 'lodash'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
+import { range, lowerCase } from 'lodash'
 import {
 	responsiveAssertHelper,
-	registerTests,
 } from '~stackable-e2e/helpers'
 import { blocks } from '~stackable-e2e/config'
+import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopGlobalTypography, tabletGlobalTypography, mobileGlobalTypography ] = responsiveAssertHelper( assertGlobalTypography, { disableItAssertion: true } )
 const [ desktopUnits, tabletUnits, mobileUnits ] = responsiveAssertHelper( globalTypographyUnits, { disableItAssertion: true } )
 
-describe( 'Global Typography', registerTests( [
+export {
 	desktopGlobalTypography,
 	tabletGlobalTypography,
 	mobileGlobalTypography,
@@ -22,7 +21,7 @@ describe( 'Global Typography', registerTests( [
 	mobileUnits,
 	globalTypographyNativeBlocks,
 	globalTypographyBlockAdjust,
-] ) )
+}
 
 const blocksWithTitle = [
 	'ugb/accordion',
