@@ -155,7 +155,12 @@ function styleTab( viewport, desktopOnly ) {
 
 	desktopOnly( () => {
 		cy.collapse( 'Image' )
-		// TODO: Image Size assertion
+		cy.adjust( 'Image Size', 'thumbnail' )
+		Array( 'image1Url', 'image2Url', 'image3Url' ).forEach( attr => {
+			cy.getBlockAttributes().then( attribute => {
+				expect( attribute[ attr ] ).to.have.string( '150x150' )
+			} )
+		} )
 		cy.adjust( 'Background Image Position', 'center center' )
 		cy.adjust( 'Background Image Repeat', 'repeat-x' )
 		cy.adjust( 'Background Image Size', 'custom' )

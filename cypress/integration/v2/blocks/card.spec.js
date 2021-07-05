@@ -113,9 +113,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertContainer( '.ugb-card__item', { viewport }, 'column%sBackgroundMediaUrl' )
 
 	cy.collapse( 'Image' )
-	// TODO: Image Size assertion
-	// We won't be able to assert image size for now since it requires server handling.
 	desktopOnly( () => {
+		cy.adjust( 'Image Size', 'thumbnail' )
+		Array( 'image1Url', 'image2Url', 'image3Url' ).forEach( attr => {
+			cy.getBlockAttributes().then( attribute => {
+				expect( attribute[ attr ] ).to.have.string( '150x150' )
+			} )
+		} )
 		cy.adjust( 'Background Image Position', 'center center' )
 		cy.adjust( 'Background Image Repeat', 'repeat-x' )
 		cy.adjust( 'Background Image Size', 'custom' )

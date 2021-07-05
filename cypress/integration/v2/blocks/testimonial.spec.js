@@ -136,7 +136,14 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Flip Shape Vertically', true )
 		cy.adjust( 'Stretch Shape Mask', true )
 			.assertClassName( 'img.ugb-img--shape', 'ugb-image--shape-stretch' )
-		// TODO: Image Size assertion
+
+		cy.adjust( 'Image Size', 'thumbnail' )
+		Array( 'image1Url', 'image2Url' ).forEach( attr => {
+			cy.getBlockAttributes().then( attribute => {
+				expect( attribute[ attr ] ).to.have.string( '150x150' )
+			} )
+		} )
+
 		cy.adjust( 'Force square image', true ).assertComputedStyle( {
 			'.ugb-img': {
 				'height': '53px',

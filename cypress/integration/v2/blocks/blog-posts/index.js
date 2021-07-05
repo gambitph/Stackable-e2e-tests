@@ -160,7 +160,14 @@ function styleTab( viewport, desktopOnly ) {
 
 	it( `should assert Featured Image options in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'Featured Image' )
-		// TODO: Add Image Size assertion
+		cy.adjust( 'Image Size', 'thumbnail' )
+		cy
+			.get( '.ugb-blog-posts__featured-image:first' )
+			.find( 'img' )
+			.invoke( 'attr', 'src' )
+			.then( src => {
+				expect( src ).to.have.string( '150x150' )
+			} )
 		cy.adjust( 'Image Height', 357, { viewport } ).assertComputedStyle( {
 			'.ugb-blog-posts__featured-image img': {
 				'height': '357px',
