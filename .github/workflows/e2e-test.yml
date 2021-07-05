@@ -61,8 +61,5 @@ jobs:
       run: wp-env start
 
     - name: Run Test Suite
-      uses: cypress-io/github-action@v2
-      with:
-        start: wp-env start
-        wait-on: 'http://localhost:8889'
-        command: CYPRESS_API_URL="https://stackable-e2e.herokuapp.com/" ./node_modules/.bin/cy2 run --record --parallel --key e2etestkey --ci-build-id "Stackable-e2e-tests" --config baseUrl=http://localhost:8889,video=false --env STACKABLE_PREMIUM_CODE="${{ secrets.STACKABLE_PREMIUM_CODE }}",GITHUB_ACTIONS=true,video=false --spec "cypress/integration/${{ matrix.stackable-versions }}/**/*.spec.js" --browser chrome
+      run: |
+        CYPRESS_API_URL="https://stackable-e2e.herokuapp.com/" ./node_modules/.bin/cy2 run --record --parallel --key e2etestkey --ci-build-id "Stackable-e2e-tests" --config baseUrl=http://localhost:8889,video=false --env STACKABLE_PREMIUM_CODE="${{ secrets.STACKABLE_PREMIUM_CODE }}",GITHUB_ACTIONS=true,video=false --spec "cypress/integration/${{ matrix.stackable-versions }}/**/*.spec.js" --browser chrome
