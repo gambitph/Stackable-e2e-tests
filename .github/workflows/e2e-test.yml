@@ -65,7 +65,7 @@ jobs:
       uses: actions/upload-artifact@v2
       with:
         name: E2E Test Results (${{ matrix.stackable-version }} (container ${{ matrix.containers }}))
-        path: e2e-test-result.xml
+        path: cypress/results/e2e-test-results.xml
 
   publish-test-results:
     name: Publish E2E Test Results
