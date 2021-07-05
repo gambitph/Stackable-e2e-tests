@@ -60,13 +60,9 @@ jobs:
     - name: Run WordPress Environment
       run: wp-env start
 
-    - name: Change Dashboard Setup URL
-      run: |
-        export CYPRESS_API_URL="https://stackable-e2e.herokuapp.com"
-
     - name: Run Test Suite
       run: |
-        ./node_modules/.bin/cy2 run --record --ci-build-id `Stackable-e2e-tests` --config baseUrl=http://localhost:8889,video=false --env STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=true
+        CYPRESS_API_URL="https://stackable-e2e.herokuapp.com/" ./node_modules/.bin/cy2 run --record --parallel --key e2etestkey --ci-build-id "Stackable-e2e-tests" --config baseUrl=http://localhost:8889 --env STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=true --spec "cypress/integration/${{ matrix.stackable-version }}/**/*.spec.js"
 
     - name: Upload Unit Test Results
       if: always()
