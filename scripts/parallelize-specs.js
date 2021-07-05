@@ -29,13 +29,6 @@ function parallelizeSpecs( args ) {
 			}, {} ) )
 		}
 
-		console.log( {
-			browser: args.browser || 'electron',
-			spec: splitFiles.join( ',' ),
-			config,
-			env,
-		} )
-
 		cypress.run( {
 			browser: args.browser || 'electron',
 			spec: splitFiles.join( ',' ),

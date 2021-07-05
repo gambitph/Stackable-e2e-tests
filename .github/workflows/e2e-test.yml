@@ -59,6 +59,12 @@ jobs:
       with:
         start: wp-env start
         wait-on: 'http://localhost:8889'
-        command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec="cypress/integration/${{ matrix.stackable-version }}/**/*.spec.js" --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=true --config=baseUrl=http://localhost:8889
+        command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec=cypress/integration/${{ matrix.stackable-version }}/**/*.spec.js --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=true --config=baseUrl=http://localhost:8889
+
+    - name: Publish Unit Test Results
+      uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
+      with:
+        files: cypress/results/**/*.xml
 
 

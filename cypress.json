@@ -7,6 +7,10 @@
 	"defaultCommandTimeout": 5000,
 	"numTestsKeptInMemory": 5,
 	"experimentalFetchPolyfill": true,
+	"reporter": "junit",
+	"reporterOptions": {
+		"mochaFile": "cypress/results/e2e-test-result.xml"
+	},
 	"retries": {
 		"runMode": 2
 	},
