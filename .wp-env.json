@@ -1,0 +1,5 @@
+{
+	"core": "https://wordpress.org/wordpress-5.7.2.zip",
+	"themes": [ "WordPress/theme-experiments/tt1-blocks#tt1-blocks@0.4.7" ],
+	"plugins": [ ".", "./Stackable" ]
+}

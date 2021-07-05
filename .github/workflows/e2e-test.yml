@@ -1,0 +1,77 @@
+name: E2E Test 
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        containers: [1, 2, 3, 4, 5]
+        stackable-versions: ['v2']
+        test-by: ['(features|theme|integrations)','blocks']
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Cache node modules
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-node-modules
+      with:
+        path: ~/.npm
+        key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('**/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ env.cache-name }}-
+          ${{ runner.os }}-build-
+          ${{ runner.os }}-
+
+    - name: Setup the Stackable Free and Premium Repository
+      run: |
+        git clone https://github.com/gambitph/Stackable.git
+        cd Stackable
+        git clone https://${{ secrets.ACCESS_KEY }}@github.com/bfintal/Stackable-Premium pro__premium_only
+        cd ..
+
+    - name: Setup Node
+      uses: actions/setup-node@v1
+      with:
+        node-version: 14.x
+
+    - name: Install @wordpress/env
+      run: npm install -g @wordpress/env
+
+    - name: Build Stackable Premium
+      run: |
+        cd Stackable
+        npm ci
+        cd pro__premium_only
+        npm ci
+        npm run build --if-present
+
+    - name: Run WordPress Local Environment 
+      run: |
+        wp-env start
+
+    - name: Run Test Suite
+      uses: cypress-io/github-action@v2
+      with:
+        record: true
+        parallel: true
+        group: Stackable E2E ( ${{ matrix.stackable-versions }}/${{ matrix.test-by }} )
+        browser: chrome
+        spec: "cypress/integration/${{ matrix.stackable-versions }}/${{ matrix.test-by }}/**/*.spec.js"
+        config: baseUrl="http://localhost:8889",video=false
+      env:
+        GITHUB_TOKEN: ${{ secrets.ACCESS_KEY }} 
+        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_ACCESS_KEY }}
+        CYPRESS_STACKABLE_PREMIUM_CODE: ${{ secrets.STACKABLE_PREMIUM_CODE }}
+        CYPRESS_GITHUB_ACTIONS: true
+  
+
+

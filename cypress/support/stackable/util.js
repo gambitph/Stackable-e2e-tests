@@ -17,6 +17,7 @@ export function modifyLogFunc( options = {} ) {
 	const {
 		position = 'last',
 		argumentLength = false,
+		additionalArgs = () => ( {} ),
 	} = options
 
 	if ( argumentLength ) {
@@ -24,9 +25,9 @@ export function modifyLogFunc( options = {} ) {
 			if ( args.length === argumentLength ) {
 				const options = args.pop()
 				options.log = Cypress.env( 'DEBUG' ) === 'true'
-				originalFn( ...args, options )
+				originalFn( ...args, Object.assign( options, additionalArgs() || {} ) )
 			}
-			return originalFn( ...args, { log: Cypress.env( 'DEBUG' ) === 'true' } )
+			return originalFn( ...args, Object.assign( { log: Cypress.env( 'DEBUG' ) === 'true' }, additionalArgs() || {} ) )
 		}
 	}
 
