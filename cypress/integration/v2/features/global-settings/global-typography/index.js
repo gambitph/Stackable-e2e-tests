@@ -23,7 +23,7 @@ export {
 	globalTypographyBlockAdjust,
 }
 
-export const blocksWithTitle = [
+const blocksWithTitle = [
 	'ugb/accordion',
 	'ugb/heading',
 	'ugb/text',
@@ -41,7 +41,7 @@ export const blocksWithTitle = [
 	'ugb/expand',
 ]
 
-export const blocksWithBlockTitle = [
+const blocksWithBlockTitle = [
 	'ugb/columns',
 	'ugb/icon-list',
 	'ugb/video-popup',
@@ -50,7 +50,7 @@ export const blocksWithBlockTitle = [
 ]
 
 // Blocks that do not have typography module / dynamic
-export const blocksWithoutTexts = [
+const blocksWithoutTexts = [
 	'ugb/container',
 	'ugb/button',
 	'ugb/blockquote',
@@ -61,13 +61,13 @@ export const blocksWithoutTexts = [
 ]
 
 // Added native blocks
-export const nativeBlocks = [
+const nativeBlocks = [
 	'core/heading',
 	'core/paragraph',
 	'core/list',
 ]
 
-export const willAssertTypographyStyles = [
+const willAssertTypographyStyles = [
 	{
 		tag: 'h1',
 		font: 'Abel',
