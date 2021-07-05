@@ -47,9 +47,22 @@ import {
 function registerAlias( alias ) {
 	cy.wrap( [] ).as( `${ alias }.contentSnapshots` )
 	cy.wrap( [] ).as( `${ alias }.stubbedStyles` )
-	cy.get( `@${ alias }` ).then( $block => {
-		cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks =>
-			cy.wrap( [ ...$blockSnapshotBlocks, Object.assign( $block, { alias } ) ] ).as( 'blockSnapshotBlocks' ) )
+	cy.wp().then( wp => {
+		cy.get( `@${ alias }` ).then( $block => {
+			if ( $block.attributes && $block.clientId ) {
+				// This is to handle passed block object from `addBlock` command
+				cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks =>
+					cy.wrap( [ ...$blockSnapshotBlocks, Object.assign( $block, { alias } ) ] ).as( 'blockSnapshotBlocks' ) )
+				return
+			}
+			// This is to handle passed block element from `selectBlock` command
+			const clientId = $block.data( 'block' )
+			const block = wp.data.select( 'core/block-editor' ).getBlock( clientId )
+			cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks =>
+				cy.wrap( [ ...$blockSnapshotBlocks, Object.assign( block, { alias } ) ] ).as( 'blockSnapshotBlocks' ) )
+			// Normalize the block alias. Always transform it to block object.
+			cy.wrap( block ).as( alias )
+		} )
 	} )
 }
 
@@ -69,9 +82,11 @@ function createContentSnapshot( alias ) {
 				// Get the parent block first.
 				const parentBlockClientId = first( wp.data.select( 'core/block-editor' ).getBlockParents( clientId ) )
 				const block = wp.data.select( 'core/block-editor' ).getBlock( parentBlockClientId || clientId )
-				const blockContent = wp.blocks.getBlockContent( block )
+				const htmlContent = wp.blocks.getBlockContent( block )
 				cy.get( `@${ alias }.contentSnapshots` ).then( $snapShots => {
-					cy.wrap( [ ...$snapShots, blockContent ] ).as( `${ alias }.contentSnapshots` )
+					cy.wrap( [ ...$snapShots, {
+						htmlContent, isParent: ! parentBlockClientId, innerBlockUniqueClass: className,
+					} ] ).as( `${ alias }.contentSnapshots` )
 				} )
 			} )
 		} )
@@ -103,8 +118,12 @@ function assertFrontendStyles( alias ) {
 	cy.get( `@${ alias }.stubbedStyles` ).then( $stubbedStyles => {
 		cy.get( `@${ alias }.contentSnapshots` ).then( $contentSnapshots => {
 			// Combine all stubbed styles and content snapshots into one array.
-			const combinedStubbed = $contentSnapshots.map( ( htmlContent, index ) => {
+			const combinedStubbed = $contentSnapshots.map( ( {
+				isParent, htmlContent, innerBlockUniqueClass,
+			}, index ) => {
 				return {
+					innerBlockUniqueClass,
+					isParent,
 					htmlContent,
 					viewport: $stubbedStyles[ index ].viewport,
 					style: $stubbedStyles[ index ].style,
@@ -121,13 +140,13 @@ function assertFrontendStyles( alias ) {
 				combinedStubbed.forEach( combinedStubbedContent => {
 					cy.document().then( doc => {
 						const {
-							viewport, htmlContent, style,
+							viewport, htmlContent, style, isParent, innerBlockUniqueClass,
 						} = combinedStubbedContent
 
 						// Create a DOMElement based on the HTML string.
 						const blockElement = createElementFromHTMLString( htmlContent )
 						// Get the class selector.
-						const classList = Array.from( blockElement.classList ).map( _class => `.${ _class }` ).join( '' )
+						const classList = ( isParent ? Array.from( blockElement.classList ) : Array.from( blockElement.querySelector( `.${ innerBlockUniqueClass }` ).classList ) ).map( _class => `.${ _class }` ).join( '' )
 						// Remove all blocks inside .entry-content.
 						doc.querySelector( '.entry-content' ).innerHTML = ''
 
@@ -177,7 +196,11 @@ function assertFrontendStyles( alias ) {
 
 export function blockSnapshotsAssertComputedStyle( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks.find( ( { clientId } ) => clientId === first( args ).data( 'block' ) )
+		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
+			.find( ( { attributes: { className } } ) =>
+				first( args ).attr( 'class' ).match( className ) ||
+				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
+
 		if ( ! isWithBlockSnapshotAlias ) {
 			return originalFn( ...args )
 		}
@@ -207,7 +230,11 @@ export function blockSnapshotsAssertComputedStyle( originalFn, ...args ) {
 
 export function blockSnapshotsAssertClassName( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks.find( ( { clientId } ) => clientId === first( args ).data( 'block' ) )
+		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
+			.find( ( { attributes: { className } } ) =>
+				first( args ).attr( 'class' ).match( className ) ||
+				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
+
 		if ( ! isWithBlockSnapshotAlias ) {
 			return originalFn( ...args )
 		}
@@ -251,7 +278,11 @@ export function blockSnapshotsAssertClassName( originalFn, ...args ) {
 
 export function blockSnapshotsAssertHtmlTag( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks.find( ( { clientId } ) => clientId === first( args ).data( 'block' ) )
+		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
+			.find( ( { attributes: { className } } ) =>
+				first( args ).attr( 'class' ).match( className ) ||
+				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
+
 		if ( ! isWithBlockSnapshotAlias ) {
 			return originalFn( ...args )
 		}
@@ -294,7 +325,11 @@ export function blockSnapshotsAssertHtmlTag( originalFn, ...args ) {
 
 export function blockSnapshotsAssertHtmlAttribute( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks.find( ( { clientId } ) => clientId === first( args ).data( 'block' ) )
+		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
+			.find( ( { attributes: { className } } ) =>
+				first( args ).attr( 'class' ).match( className ) ||
+				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
+
 		if ( ! isWithBlockSnapshotAlias ) {
 			return originalFn( ...args )
 		}
@@ -341,7 +376,11 @@ export function blockSnapshotsAssertHtmlAttribute( originalFn, ...args ) {
 
 export function blockSnapshotsAssertBlockContent( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks.find( ( { clientId } ) => clientId === first( args ).data( 'block' ) )
+		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
+			.find( ( { attributes: { className } } ) =>
+				first( args ).attr( 'class' ).match( className ) ||
+				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
+
 		if ( ! isWithBlockSnapshotAlias ) {
 			return originalFn( ...args )
 		}

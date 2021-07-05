@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	last, first, uniqueId,
+	first, uniqueId,
 } from 'lodash'
 
 /**
@@ -38,7 +38,17 @@ export function addBlock( blockName = 'ugb/accordion' ) {
 		return new Cypress.Promise( resolve => {
 			const block = wp.blocks.createBlock( blockName, { className: `e2etest-block-${ uniqueId() }` } )
 			wp.data.dispatch( 'core/editor' ).insertBlock( block )
-				.then( dispatchResolver( () => resolve( last( wp.data.select( 'core/block-editor' ).getBlocks() ) ) ) )
+				.then( dispatchResolver( () => {
+				  // If there are innerBlocks, add unique classes.
+					const newlyAddedBlock = wp.data.select( 'core/block-editor' ).getBlock( block.clientId )
+					if ( newlyAddedBlock.innerBlocks.length ) {
+						newlyAddedBlock.innerBlocks.forEach( ( { clientId } ) => {
+							wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `e2etest-block-${ uniqueId() }` } )
+						} )
+					}
+
+					resolve( newlyAddedBlock )
+				} ) )
 		} )
 	} )
 }
@@ -63,13 +73,13 @@ export function selectBlock( subject, selector ) {
 					let resolveCallback = null
 
 					if ( selector.startsWith( '@' ) ) {
-						return cy.get( selector ).then( $block => {
-							const classNames = $block.attributes.className.split( ' ' ).map( c => `.${ c }` ).join( '' )
-							const blockElement = $body.find( classNames ).parent()
+						cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
+							const foundStaticBlock = $blockSnapshotBlocks.find( ( { alias } ) => alias === selector.replace( '@', '' ) )
+							const blockElement = $body.find( `.${ foundStaticBlock.attributes.className }` ).closest( '[data-block]' )
 							const clientId = blockElement.data( 'block' )
 							wp.data.dispatch( 'core/block-editor' )
 								.selectBlock( clientId )
-								.then( dispatchResolver( () => resolve( resolveCallback ) ) )
+								.then( dispatchResolver( () => resolve( $body.find( `.wp-block[data-block="${ clientId }"]` ) ) ) )
 						} )
 					}
 
