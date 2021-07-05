@@ -12,8 +12,8 @@ import { containsRegExp } from '~common/util'
 describe( 'Dynamic Content Current Post', registerTests( [
 	matchPostDataValues,
 	adjustFieldOptions,
-	assertChangingFieldValues,
-	assertEmptyValuesInFrontend,
+	adjustFieldValues,
+	assertEmptyValues,
 ] ) )
 
 const fields = {
@@ -234,7 +234,7 @@ function adjustFieldOptions() {
 	} )
 }
 
-function assertChangingFieldValues() {
+function adjustFieldValues() {
 	it( 'should assert the correct value in frontend after changing post data values', () => {
 		cy.setupWP()
 		cy.newPost()
@@ -266,6 +266,6 @@ function assertChangingFieldValues() {
 	} )
 }
 
-function assertEmptyValuesInFrontend() {
+function assertEmptyValues() {
 
 }
