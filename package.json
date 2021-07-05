@@ -8,9 +8,7 @@
 		"lint": "npm run lint-js",
 		"lint-js": "wp-scripts lint-js",
 		"chrome": "cypress run --browser chrome",
-		"headless": "cypress run --browser chrome --headless",
-		"cy:run": "cypress run",
-		"cy:run:parallel": "node ./scripts/parallelize-specs.js"
+		"headless": "cypress run --browser chrome --headless"
 	},
 	"keywords": [],
 	"author": "",

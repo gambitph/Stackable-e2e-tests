@@ -8,10 +8,6 @@
 	"defaultCommandTimeout": 5000,
 	"numTestsKeptInMemory": 5,
 	"experimentalFetchPolyfill": true,
-	"reporter": "cypress-multi-reporters",
-	"reporterOptions": {
-		"configFile": "reporter-config.json"
-	},
 	"retries": {
 		"runMode": 2
 	},
