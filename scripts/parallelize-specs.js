@@ -15,8 +15,8 @@ function parallelizeSpecs( args ) {
 		const splitFiles = chunk( files, Math.ceil( files.length / args[ 'total-machines' ] ) )[ args[ 'machine-number' ] - 1 ]
 		const env = config.env
 		if ( args.env ) {
-			Object.assign( env, args.env.split( ',' ).reduce( ( curr, acc ) => {
-				const [ key, value ] = curr
+			Object.assign( env, args.env.split( ',' ).reduce( ( acc, curr ) => {
+				const [ key, value ] = curr.split( '=' )
 				return Object.assign( acc, { [ key ]: trim( value, '"' ) } )
 			}, {} ) )
 		}
