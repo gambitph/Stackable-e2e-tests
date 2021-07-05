@@ -11,6 +11,10 @@
 	"retries": {
 		"runMode": 2
 	},
+  "reporter": "cypress-multi-reporters",
+  "reporterOptions": {
+    "configFile": "reporter-config.json"
+  },
 	"env": {
 		"DEBUG": "false",
 		"INCLUDED_V2_TEST_FILES": [
