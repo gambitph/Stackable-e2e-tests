@@ -13,6 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         containers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        total-machines: [10]
         stackable-versions: ['v2']
 
     steps:
@@ -53,24 +54,11 @@ jobs:
         npm ci
         npm run build --if-present
 
-    - name: Run WordPress Local Environment 
-      run: |
-        wp-env start
-
     - name: Run Test Suite
       uses: cypress-io/github-action@v2
       with:
-        record: true
-        parallel: true
-        group: Stackable E2E ( ${{ matrix.stackable-versions }} )
-        browser: chrome
-        spec: "cypress/integration/${{ matrix.stackable-versions }}/**/*.spec.js"
-        config: baseUrl="http://localhost:8889",video=false
-      env:
-        GITHUB_TOKEN: ${{ secrets.ACCESS_KEY }} 
-        CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_ACCESS_KEY }}
-        CYPRESS_STACKABLE_PREMIUM_CODE: ${{ secrets.STACKABLE_PREMIUM_CODE }}
-        CYPRESS_GITHUB_ACTIONS: true
-  
+        start: wp-env start
+        wait-on: 'http://localhost:8889'
+        command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec=cypress/integration/v2/**/*.spec.js --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=true,baseUrl=http://localhost:8889
 
 

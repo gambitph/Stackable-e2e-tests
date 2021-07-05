@@ -11,8 +11,6 @@ let isStackableActivated = false
 Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 	originalFn( ...args )
 
-	cy.log( 'test' )
-
 	// If the Stackable Premium Code is specified, let's activate Stackable Premium first.
 	// This is mainly used when setting up github action wordpresss environment.
 	if ( Cypress.env( 'STACKABLE_PREMIUM_CODE' ) && ! isStackableActivated ) {
