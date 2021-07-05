@@ -1,7 +1,7 @@
 /* eslint-disable */
 const glob = require( 'glob' )
 const { chunk, trim } = require( 'lodash' )
-const config = require( '../cypress.json' )
+const _config = require( '../cypress.json' )
 const cypress = require( 'cypress' )
 
 /**
@@ -13,20 +13,33 @@ const cypress = require( 'cypress' )
 function parallelizeSpecs( args ) {
 	glob( args.spec, {}, function( err, files ) {
 		const splitFiles = chunk( files, Math.ceil( files.length / args[ 'total-machines' ] ) )[ args[ 'machine-number' ] - 1 ]
-		const env = config.env
+		const env = _config.env || {}
+		const config = _config.config || {}
 		if ( args.env ) {
 			Object.assign( env, args.env.split( ',' ).reduce( ( acc, curr ) => {
 				const [ key, value ] = curr.split( '=' )
 				return Object.assign( acc, { [ key ]: trim( value, '"' ) } )
 			}, {} ) )
 		}
+
+		if ( args.config ) {
+			Object.assign( config, args.config.split( ',' ).reduce( ( acc, curr ) => {
+				const [ key, value ] = curr.split( '=' )
+				return Object.assign( acc, { [ key ]: trim( value, '"' ) } )
+			}, {} ) )
+		}
+
+		console.log( {
+			browser: args.browser || 'electron',
+			spec: splitFiles.join( ',' ),
+			config,
+			env,
+		} )
+
 		cypress.run( {
 			browser: args.browser || 'electron',
 			spec: splitFiles.join( ',' ),
-			config: {
-				baseUrl: args.baseUrl || config.baseUrl,
-				video: !! args.video,
-			},
+			config,
 			env,
 		} )
 	} )
