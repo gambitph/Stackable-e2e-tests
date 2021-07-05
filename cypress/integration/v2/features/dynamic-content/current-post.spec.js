@@ -4,11 +4,6 @@
  */
 import { registerTests } from '~stackable-e2e/helpers'
 
-/**
- * Internal dependencies
- */
-import { containsRegExp } from '~common/util'
-
 describe( 'Dynamic Content Current Post', registerTests( [
 	matchPostDataValues,
 	adjustFieldOptions,
@@ -43,6 +38,26 @@ const fields = {
  * Author First Name
  * Author Last Name
  */
+
+const selector = () => cy.get( '.ugb-cta__title' )
+const createNewPostWithCTA = () => {
+	cy.newPost()
+	cy.addBlock( 'ugb/cta' )
+}
+const adjustField = ( fieldName, fieldOptions = {} ) => {
+	cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
+		source: 'Current Post',
+		fieldName,
+		fieldOptions,
+	} )
+}
+const assertInBackendAndFrontend = ( callback = () => {} ) => {
+	cy.getPostUrls().then( ( { previewUrl } ) => {
+		callback()
+		cy.visit( previewUrl )
+		callback()
+	} )
+}
 
 function matchPostDataValues() {
 	it( 'should test dynamic content to match the current post data values', () => {
@@ -81,10 +96,6 @@ function matchPostDataValues() {
 				fieldOptions,
 			} )
 
-			cy.savePost()
-			// Sometimes the first save does not register and the test fails.
-			cy.savePost()
-
 			cy.getPostData().then( data => {
 				const value = Array( 'date', 'date_gmt', 'modified', 'modified_gmt' ).includes( fields[ fieldName ] )
 					? data[ fields[ fieldName ] ].split( 'T' ).shift()
@@ -109,35 +120,6 @@ function matchPostDataValues() {
 function adjustFieldOptions() {
 	it( 'should adjust all field options of each field in current post', () => {
 		cy.setupWP()
-
-		const selector = () => cy.get( '.ugb-cta__title' )
-		const createNewPostWithCTA = () => {
-			cy.newPost()
-			cy.addBlock( 'ugb/cta' )
-		}
-		const save = () => {
-			cy.savePost()
-			// Sometimes the first save does not register and the test fails.
-			cy.savePost()
-		}
-		const adjustField = ( fieldName, fieldOptions = {} ) => {
-			cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
-				source: 'Current Post',
-				fieldName,
-				fieldOptions,
-			} )
-		}
-		const assertInBackendAndFrontend = ( callback = () => {} ) => {
-			cy.getPostUrls().then( ( { previewUrl } ) => {
-				const assertValues = () => {
-					callback()
-				}
-				assertValues()
-				cy.visit( previewUrl )
-				assertValues()
-			} )
-		}
-
 		// Test only the fields with field options.
 		// Post Title options
 		createNewPostWithCTA()
@@ -146,7 +128,6 @@ function adjustFieldOptions() {
 			'Show as link': true,
 			'Open in new tab': true,
 		} )
-		save()
 		assertInBackendAndFrontend( () => {
 			cy.document().then( doc => {
 				const url = doc.URL
@@ -172,7 +153,6 @@ function adjustFieldOptions() {
 			'Custom Text': 'This post',
 			'Open in new tab': true,
 		} )
-		save()
 		assertInBackendAndFrontend( () => {
 			cy.document().then( doc => {
 				const url = doc.URL
@@ -197,7 +177,6 @@ function adjustFieldOptions() {
 		adjustField( 'Post Excerpt', {
 			'Excerpt Length': 5,
 		} )
-		save()
 		assertInBackendAndFrontend( () => {
 			cy.document().then( doc => {
 				const text = doc.querySelector( '.ugb-cta__title' ).innerText
@@ -214,7 +193,6 @@ function adjustFieldOptions() {
 				adjustField( dateField, {
 					'Date Format': dateFormat,
 				} )
-				save()
 				// TODO: Add assertion of date formats.
 			} )
 		} )
@@ -226,7 +204,6 @@ function adjustFieldOptions() {
 			'Custom Text': 'This author',
 			'Open in new tab': true,
 		} )
-		save()
 		assertInBackendAndFrontend( () => {
 			selector().contains( 'This author' ).should( 'exist' )
 			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
@@ -253,16 +230,22 @@ function adjustFieldValues() {
 		}
 
 		Object.keys( fieldsToUpdate ).forEach( fieldName => {
-			// cy.addPostSlug( 'my-new-post' )
-			cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
-				source: 'Current Post',
-				fieldName,
-			} )
-			cy.getPostUrls().then( ( { previewUrl } ) => {
-				cy.visit( previewUrl )
-				cy.get( '.ugb-cta__title' ).contains( containsRegExp( 'Dynamic Content Test' ) ).should( 'exist' )
-			} )
+			adjustField( fieldName )
 		} )
+
+		// Author Posts URL options
+		createNewPostWithCTA()
+		adjustField( 'Post Title', {
+			'Show as link': true,
+			'Custom Text': 'This author',
+			'Open in new tab': true,
+		} )
+		assertInBackendAndFrontend( () => {
+			selector().contains( 'This author' ).should( 'exist' )
+			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+		} )
+
+		// cy.addPostSlug( 'my-new-post' )
 	} )
 }
 
