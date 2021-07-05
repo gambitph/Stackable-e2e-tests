@@ -1,4 +1,4 @@
-name: E2E Test 
+name: stackable-e2e-tests
 on:
   push:
     branches: [ master ]
@@ -61,7 +61,7 @@ jobs:
       run: wp-env start
 
     - name: Run Test Suite
-      uses: cypress-io/github-actions@v2
+      uses: cypress-io/github-action@v2
       with:
         start: wp-env start
         wait-on: 'http://localhost:8889'
