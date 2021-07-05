@@ -12,9 +12,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3, 4, 5]
+        containers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
         stackable-versions: ['v2']
-        test-by: ['(features|theme|integrations)','blocks']
 
     steps:
     - uses: actions/checkout@v2
@@ -63,9 +62,9 @@ jobs:
       with:
         record: true
         parallel: true
-        group: Stackable E2E ( ${{ matrix.stackable-versions }}/${{ matrix.test-by }} )
+        group: Stackable E2E ( ${{ matrix.stackable-versions }} )
         browser: chrome
-        spec: "cypress/integration/${{ matrix.stackable-versions }}/${{ matrix.test-by }}/**/*.spec.js"
+        spec: "cypress/integration/${{ matrix.stackable-versions }}/**/*.spec.js"
         config: baseUrl="http://localhost:8889",video=false
       env:
         GITHUB_TOKEN: ${{ secrets.ACCESS_KEY }} 
