@@ -8,6 +8,7 @@
 	"numTestsKeptInMemory": 5,
 	"experimentalFetchPolyfill": true,
 	"env": {
+		"STACKABLE_VERSION": 2,
 		"DEBUG": "false",
 		"INCLUDED_V2_TEST_FILES": [
 			"accordion",

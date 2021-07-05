@@ -49,13 +49,8 @@ export function modifyLogFunc( options = {} ) {
  * @param {string} unit desired unit
  * @param {string} name selector name
  * @param {boolean} isInPopover if the control is in popover
- * @param {Object} options
  */
-export function changeUnit( unit = '', name = '', isInPopover = false, options = {} ) {
-	const {
-		version = 'v2',
-	} = options
-
+export function changeUnit( unit = '', name = '', isInPopover = false ) {
 	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
@@ -65,14 +60,14 @@ export function changeUnit( unit = '', name = '', isInPopover = false, options =
 	if ( unit ) {
 		selector()
 			.then( $baseControl => {
-				if ( version === 'v2' ) {
+				if ( Cypress.env( 'STACKABLE_VERSION' ) === 2 ) {
 					if ( $baseControl.find( '.ugb-base-control-multi-label__units', { log: false } ).length ) {
 						selector()
 							.find( 'button', { log: false } )
 							.contains( containsRegExp( unit ) )
 							.click( { force: true, log: false } )
 					}
-				} else if ( version === 'v3' ) {
+				} else if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
 					if ( $baseControl.find( '.stk-control-label__units' ).length ) {
 						selector().find( '.stk-control-label__units button.is-active' ).click( { force: true } )
 						selector().find( `.stk-control-label__units button[data-value="${ unit }"]` ).click( { force: true } )
@@ -88,13 +83,8 @@ export function changeUnit( unit = '', name = '', isInPopover = false, options =
  * @param {string} viewport desired viewport
  * @param {string} name selector name
  * @param {boolean} isInPopover if the control is in popover
- * @param {Object} options
  */
-export function changeControlViewport( viewport = 'Desktop', name = '', isInPopover = false, options = {} ) {
-	const {
-		version = 'v2',
-	} = options
-
+export function changeControlViewport( viewport = 'Desktop', name = '', isInPopover = false ) {
 	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
@@ -102,7 +92,7 @@ export function changeControlViewport( viewport = 'Desktop', name = '', isInPopo
 	const selector = () => cy.getBaseControl( name, { isInPopover } )
 	selector()
 		.then( $baseControl => {
-			if ( version === 'v2' ) {
+			if ( Cypress.env( 'STACKABLE_VERSION' ) === 2 ) {
 				if ( $baseControl.find( 'button[aria-label="Desktop"]' ).length ) {
 					const hovered = $baseControl.find( 'button[aria-label="Tablet"]' ).length
 					const hover = () => selector().find( 'button[aria-label="Desktop"]' ).trigger( 'mouseover', { force: true } )
@@ -120,7 +110,7 @@ export function changeControlViewport( viewport = 'Desktop', name = '', isInPopo
 					}
 					cy.wait( 1 )
 				}
-			} else if ( version === 'v3' ) {
+			} else if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
 				if ( $baseControl.find( '.stk-control-responsive-toggle button.is-active' ).length ) {
 					selector().find( '.stk-control-responsive-toggle button.is-active' ).click( { force: true } )
 					selector()

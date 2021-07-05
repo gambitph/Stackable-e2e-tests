@@ -48,8 +48,8 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 			unit = '',
 		} = options
 
-		changeControlViewport( viewport, name, isInPopover, { version: 'v3' } )
-		changeUnit( unit, name, isInPopover, { version: 'v3' } )
+		changeControlViewport( viewport, name, isInPopover )
+		changeUnit( unit, name, isInPopover )
 	}
 
 	// Handle options with no label
@@ -94,8 +94,8 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 			unit = '',
 		} = options
 
-		changeControlViewport( viewport, name, isInPopover, { version: 'v3' } )
-		changeUnit( unit, name, isInPopover, { version: 'v3' } )
+		changeControlViewport( viewport, name, isInPopover )
+		changeUnit( unit, name, isInPopover )
 	}
 
 	const customOptions = {
@@ -371,8 +371,7 @@ function fourRangeControlReset( name, options = {} ) {
 			}
 
 			selector( isInPopover )
-				.find( 'button[aria-label="Reset"]' )
-				// .contains( containsRegExp( 'Reset' ) )
+				.find( `button${ Cypress.env( 'STACKABLE_VERSION' ) === 3 ? '[aria-label="Reset"]' : ':contains(Reset)' }` )
 				.click( { force: true, multiple: true } )
 		} )
 }
@@ -476,8 +475,7 @@ function iconControlReset( name, options = {} ) {
 	cy.getBaseControl( name, { isInPopover } )
 		.contains( containsRegExp( name ) )
 		.closest( '.components-panel__body>.components-base-control' )
-		.find( 'button[aria-label="Reset"]' )
-		// .contains( 'Reset' )
+		.find( `button${ Cypress.env( 'STACKABLE_VERSION' ) === 3 ? '[aria-label="Reset"]' : ':contains(Reset)' }` )
 		.click( { force: true } )
 }
 
