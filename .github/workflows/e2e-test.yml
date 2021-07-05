@@ -6,8 +6,7 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-
+  build-and-test:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -59,12 +58,30 @@ jobs:
       with:
         start: wp-env start
         wait-on: 'http://localhost:8889'
-        command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec=cypress/integration/${{ matrix.stackable-version }}/**/*.spec.js --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=true --config=baseUrl=http://localhost:8889
+        command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec=cypress/integration/${{ matrix.stackable-versions }}/**/*.spec.js --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=true --config=baseUrl=http://localhost:8889
 
-    - name: Publish Unit Test Results
+    - name: Upload Unit Test Results
+      if: always()
+      uses: actions/upload-artifact@v2
+      with:
+        name: E2E Test Results (${{ matrix.stackable-version }} (container ${{ matrix.containers }}))
+        path: e2e-test-result.xml
+
+  publish-test-results:
+    name: Publish E2E Test Results
+    needs: build-and-test
+    runs-on: ubuntu-latest
+    if: success() || failure()
+
+    steps:
+    - name: Download Artifacts
+      uses: actions/download-artifact@v2
+      with:
+        path: artifacts
+
+    - name: Publish E2E Test Results
       uses: EnricoMi/publish-unit-test-result-action@v1
       if: always()
       with:
-        files: cypress/results/**/*.xml
-
+        files: artifacts/**/*.xml
 
