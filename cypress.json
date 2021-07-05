@@ -9,7 +9,6 @@
 	"experimentalFetchPolyfill": true,
 	"env": {
 		"DEBUG": "false",
-		"FORCE_INCLUDE_ALL_TESTS": "true",
 		"DUMMY_IMAGE_URL": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
 		"DUMMY_IMAGE_URL2": "http://sandbox.gambit.ph/for-test-2/wp-content/uploads/sites/106/2021/02/marek-piwnicki-ZTpW2l8XZkw-unsplash-1-scaled.jpg",
 		"DUMMY_VIDEO_URL": "https://youtu.be/nc5Lj90BzSQ"
