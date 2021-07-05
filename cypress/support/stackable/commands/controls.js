@@ -103,6 +103,7 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 		 'ugb-button-icon-control': 'popoverControlReset',
 		 'ugb-advanced-autosuggest-control': 'suggestionControlClear',
 		 'ugb-four-range-control': 'fourRangeControlReset',
+		 '.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
 		 'ugb-icon-control': 'iconControlReset',
 	}
 
