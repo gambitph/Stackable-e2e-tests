@@ -52,13 +52,6 @@ jobs:
         npm ci
         npm run build --if-present
 
-    - name: Setup Cypress
-      run: |
-        npm ci
-
-    - name: Run WordPress Environment
-      run: wp-env start
-
     - name: Run Test Suite
       uses: cypress-io/github-action@v2
       with:

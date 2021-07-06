@@ -1,6 +1,6 @@
 /* eslint-disable */
 const glob = require( 'glob' )
-const { chunk, trim } = require( 'lodash' )
+const { trim, castArray } = require( 'lodash' )
 const _config = require( '../cypress.json' )
 const cypress = require( 'cypress' )
 
@@ -12,7 +12,11 @@ const cypress = require( 'cypress' )
  */
 function parallelizeSpecs( args ) {
 	glob( args.spec, {}, function( err, files ) {
-		const splitFiles = chunk( files, Math.ceil( files.length / args[ 'total-machines' ] ) )[ args[ 'machine-number' ] - 1 ]
+		const splitFiles = files.reduce( ( acc, curr, idx ) => {
+			acc[ idx % args[ 'total-machines' ] ] = ! Array.isArray( acc[ idx % args[ 'total-machines' ] ] ) ? castArray( curr ) : Array( ...acc[ idx % args[ 'total-machines' ] ], curr )
+			return acc
+		}, Array( args[ 'total-machines' ] ) )
+
 		const env = _config.env || {}
 		const config = _config.config || {}
 		if ( args.env ) {
@@ -31,7 +35,7 @@ function parallelizeSpecs( args ) {
 
 		cypress.run( {
 			browser: args.browser || 'electron',
-			spec: splitFiles.join( ',' ),
+			spec: splitFiles[ args[ 'machine-number' ] - 1 ].join( ',' ),
 			config,
 			env,
 		} ).then( result => {
