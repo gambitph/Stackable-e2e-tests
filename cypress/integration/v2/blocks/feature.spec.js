@@ -133,6 +133,7 @@ function typeContent() {
 }
 
 function styleTab( viewport, desktopOnly ) {
+	cy.log( Cypress.env( 'STACKABLE_PREMIUM_CODE' ) )
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )

@@ -13,7 +13,10 @@ const cypress = require( 'cypress' )
 function parallelizeSpecs( args ) {
 	glob( args.spec, {}, function( err, files ) {
 		const splitFiles = files.reduce( ( acc, curr, idx ) => {
-			acc[ idx % args[ 'total-machines' ] ] = ! Array.isArray( acc[ idx % args[ 'total-machines' ] ] ) ? castArray( curr ) : Array( ...acc[ idx % args[ 'total-machines' ] ], curr )
+			acc[ idx % args[ 'total-machines' ] ] = ! Array.isArray( acc[ idx % args[ 'total-machines' ] ] ) 
+				? castArray( curr ) 
+				: Array( ...acc[ idx % args[ 'total-machines' ] ], curr )
+
 			return acc
 		}, Array( args[ 'total-machines' ] ) )
 
@@ -21,15 +24,15 @@ function parallelizeSpecs( args ) {
 		const config = _config.config || {}
 		if ( args.env ) {
 			Object.assign( env, args.env.split( ',' ).reduce( ( acc, curr ) => {
-				const [ key, value ] = curr.split( '=' )
-				return Object.assign( acc, { [ key ]: trim( value, '"' ) } )
+				const [ key, ...value ] = curr.split( '=' )
+				return Object.assign( acc, { [ key ]: trim( value.join( '=' ), '"' ) } )
 			}, {} ) )
 		}
 
 		if ( args.config ) {
 			Object.assign( config, args.config.split( ',' ).reduce( ( acc, curr ) => {
-				const [ key, value ] = curr.split( '=' )
-				return Object.assign( acc, { [ key ]: trim( value, '"' ) } )
+				const [ key, ...value ] = curr.split( '=' )
+				return Object.assign( acc, { [ key ]: trim( value.join( '=' ), '"' ) } )
 			}, {} ) )
 		}
 
