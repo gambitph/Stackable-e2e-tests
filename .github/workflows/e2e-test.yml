@@ -61,7 +61,7 @@ jobs:
       if: always()
       uses: actions/upload-artifact@v2
       with:
-        name: E2E Test Results (Container ${{ matrix.containers }})
+        name: e2e-test-results-${{ matrix.containers }}
         path: cypress/results/e2e-test-results.xml
 
   publish-test-results:
