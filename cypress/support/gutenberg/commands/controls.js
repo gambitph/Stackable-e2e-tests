@@ -101,24 +101,31 @@ function colorControl( name, value, options = {} ) {
 
 	const selector = () => cy.getBaseControl( name, { isInPopover } )
 
-	if ( typeof value === 'string' && value.match( /^#/ ) ) {
-		// Use custom color.
+	if ( typeof value === 'string' ) {
 		beforeAdjust( name, value, options )
-		selector()
-			.find( 'button' )
-			.contains( 'Custom color' )
-			.click( { force: true } )
+		if ( value.match( /^#/ ) ) {
+		// Use custom color.
+			selector()
+				.find( 'button' )
+				.contains( 'Custom color' )
+				.click( { force: true } )
 
-		cy
-			.get( '.components-popover__content .components-color-picker' )
-			.find( 'input[type="text"]' )
-			.type( `{selectall}${ value }{enter}`, { force: true } )
+			cy
+				.get( '.components-popover__content .components-color-picker' )
+				.find( 'input[type="text"]' )
+				.type( `{selectall}${ value }{enter}`, { force: true } )
 
-		// Declare the variable again
-		selector()
-			.find( 'button' )
-			.contains( containsRegExp( 'Custom color' ) )
-			.click( { force: true } )
+			// Declare the variable again
+			selector()
+				.find( 'button' )
+				.contains( containsRegExp( 'Custom color' ) )
+				.click( { force: true } )
+		} else {
+			// Select based on color name.
+			selector()
+				.find( `button[aria-label="Color: ${ value }"]` )
+				.click( { force: true } )
+		}
 	} else if ( typeof value === 'number' ) {
 		// Get the nth color in the color picker.
 		beforeAdjust( name, value, options )
