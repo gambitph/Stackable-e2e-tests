@@ -3,14 +3,6 @@
  */
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import { blocks } from '~stackable-e2e/config'
-import { registerTests } from '~stackable-e2e/helpers'
-
-describe( 'Global Colors', registerTests( [
-	adjustGlobalColorTest,
-	changeGlobalColorTest,
-	globalColorNativeBlocks,
-	deleteGlobalColorTest,
-] ) )
 
 const colors = [
 	{
@@ -61,7 +53,7 @@ const blocksWithSeparator = [
 	'ugb/blockquote',
 ]
 
-function adjustGlobalColorTest() {
+export function adjustGlobalColorTest() {
 	it( 'should adjust global colors and assert the color picker in blocks', () => {
 		cy.setupWP()
 		// Global settings should still load in the frontend.
@@ -174,7 +166,7 @@ function adjustGlobalColorTest() {
 	} )
 }
 
-function changeGlobalColorTest() {
+export function changeGlobalColorTest() {
 	it( 'should assert the changing of global color', () => {
 		cy.setupWP()
 		// Global settings should still load in the frontend.
@@ -301,7 +293,7 @@ function changeGlobalColorTest() {
 	} )
 }
 
-function globalColorNativeBlocks() {
+export function globalColorNativeBlocks() {
 	it( 'should assert global colors in native blocks', () => {
 		cy.setupWP()
 		// Global settings should still load in the frontend.
@@ -360,7 +352,7 @@ function globalColorNativeBlocks() {
 	} )
 }
 
-function deleteGlobalColorTest() {
+export function deleteGlobalColorTest() {
 	it( 'should assert deleted global color values', () => {
 		cy.setupWP()
 		// Global settings should still load in the frontend.
