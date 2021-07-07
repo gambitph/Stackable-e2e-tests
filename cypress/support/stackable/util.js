@@ -65,6 +65,7 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
 						selector().find( '.stk-control-label__units button.is-active' ).click( { force: true } )
 						selector().find( `.stk-control-label__units button[data-value="${ unit }"]` ).click( { force: true } )
 					}
+					return
 				}
 
 				if ( $baseControl.find( '.ugb-base-control-multi-label__units', { log: false } ).length ) {
@@ -106,6 +107,7 @@ export function changeControlViewport( viewport = 'Desktop', name = '', isInPopo
 							}
 						} )
 				}
+				return
 			}
 
 			if ( $baseControl.find( 'button[aria-label="Desktop"]' ).length ) {
