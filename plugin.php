@@ -68,6 +68,8 @@ if ( isset( $_GET[ 'setup' ] ) ) {
 			$u = new WP_User( $user_id );
 			$u->remove_role( $curr_role );
 			$u->add_role( 'administrator' );
+			// Set stackable_welcome_video_closed to 1.
+			update_user_meta( $user_id, 'stackable_welcome_video_closed', 1 );
 		}
 
 		// Reset all stackable settings.

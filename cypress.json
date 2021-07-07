@@ -1,4 +1,5 @@
 {
+	"projectId": "wufpha",
 	"baseUrl": "http://e2etest.local/",
 	"viewportTabletWidth": 780,
 	"viewportMobileWidth": 360,
@@ -7,6 +8,13 @@
 	"defaultCommandTimeout": 5000,
 	"numTestsKeptInMemory": 5,
 	"experimentalFetchPolyfill": true,
+	"retries": {
+		"runMode": 2
+	},
+  "reporter": "cypress-multi-reporters",
+  "reporterOptions": {
+    "configFile": "reporter-config.json"
+  },
 	"env": {
 		"STACKABLE_VERSION": 2,
 		"DEBUG": "false",
