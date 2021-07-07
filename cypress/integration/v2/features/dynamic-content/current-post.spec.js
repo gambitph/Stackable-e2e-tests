@@ -3,6 +3,7 @@
  * External dependencies
  */
 import { registerTests } from '~stackable-e2e/helpers'
+import { containsRegExp } from '~common/util'
 
 describe( 'Dynamic Content Current Post', registerTests( [
 	matchPostDataValues,
@@ -107,10 +108,10 @@ function matchPostDataValues() {
 
 				cy.getPostUrls().then( ( { previewUrl } ) => {
 					// Assert in backend.
-					cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
+					cy.get( '.ugb-cta__title' ).contains( containsRegExp( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ) ).should( 'exist' )
 					cy.visit( previewUrl )
 					// Assert in frontend.
-					cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
+					cy.get( '.ugb-cta__title' ).contains( containsRegExp( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ) ).should( 'exist' )
 				} )
 			} )
 		} )
@@ -134,12 +135,12 @@ function adjustFieldOptions() {
 				// Check if the url matches the editor, and new page URL
 				if ( url.match( /(post|post-new)\.php/g ) && url.match( /wp-admin/g ) ) {
 					cy.getPostData().then( data => {
-						selector().contains( 'Dynamic Content test' ).should( 'exist' )
+						selector().contains( containsRegExp( 'Dynamic Content test' ) ).should( 'exist' )
 						selector().find( `a[href="${ data.link }"]` ).should( 'exist' )
 						selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
 					} )
 				} else {
-					selector().contains( 'Dynamic Content test' ).should( 'exist' )
+					selector().contains( containsRegExp( 'Dynamic Content test' ) ).should( 'exist' )
 					selector().find( `a[href="${ url.replace( '&preview=true', '' ) }"]` ).should( 'exist' )
 					selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
 				}
@@ -159,12 +160,12 @@ function adjustFieldOptions() {
 				// Check if the url matches the editor, and new page URL
 				if ( url.match( /(post|post-new)\.php/g ) && url.match( /wp-admin/g ) ) {
 					cy.getPostData().then( data => {
-						selector().contains( 'This post' ).should( 'exist' )
+						selector().contains( containsRegExp( 'This post' ) ).should( 'exist' )
 						selector().find( `a[href="${ data.link }"]` ).should( 'exist' )
 						selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
 					} )
 				} else {
-					selector().contains( 'This post' ).should( 'exist' )
+					selector().contains( containsRegExp( 'This post' ) ).should( 'exist' )
 					selector().find( `a[href="${ url.replace( '&preview=true', '' ) }"]` ).should( 'exist' )
 					selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
 				}
@@ -205,7 +206,7 @@ function adjustFieldOptions() {
 			'Open in new tab': true,
 		} )
 		assertInBackendAndFrontend( () => {
-			selector().contains( 'This author' ).should( 'exist' )
+			selector().contains( containsRegExp( 'This author' ) ).should( 'exist' )
 			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
 		} )
 	} )
@@ -214,41 +215,114 @@ function adjustFieldOptions() {
 function adjustFieldValues() {
 	it( 'should assert the correct value in frontend after changing post data values', () => {
 		cy.setupWP()
-		cy.newPost()
-		cy.typePostTitle( 'Dynamic Content Test' )
-		cy.addBlock( 'ugb/cta' )
 
-		const fieldsToUpdate = {
-			'Post Title': 'title',
-			'Post URL': 'link',
-			'Post Slug': 'slug',
-			'Post Excerpt': 'excerpt',
-			'Post Status': 'status',
-			'Comment Number': 'comments_num',
-			'Comment Status': 'comment_status',
-			'Featured Image URL': 'featured_image_urls',
-		}
+		const assertValue = value => selector().contains( containsRegExp( value ) ).should( 'exist' )
 
-		Object.keys( fieldsToUpdate ).forEach( fieldName => {
-			adjustField( fieldName )
-		} )
-
-		// Author Posts URL options
+		// Assert changing the Post Title
 		createNewPostWithCTA()
-		adjustField( 'Post Title', {
-			'Show as link': true,
-			'Custom Text': 'This author',
-			'Open in new tab': true,
-		} )
-		assertInBackendAndFrontend( () => {
-			selector().contains( 'This author' ).should( 'exist' )
-			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+		cy.typePostTitle( 'Dynamic Content Test' )
+		adjustField( 'Post Title' )
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			assertValue( 'Dynamic Content Test' )
+			cy.visit( previewUrl )
+			assertValue( 'Dynamic Content Test' )
+			cy.visit( editorUrl )
+			// Change the value of the Post Title
+			cy.typePostTitle( 'My Post' )
+			cy.visit( previewUrl )
+			// Assert the new value in the frontend.
+			assertValue( 'My Post' )
 		} )
 
-		// cy.addPostSlug( 'my-new-post' )
+		// Assert changing the Post URL
+		createNewPostWithCTA()
+		adjustField( 'Post URL' )
+		cy.getPostUrls().then( ( { previewUrl } ) => {
+			cy.typePostTitle( 'My Post' )
+			cy.publish() // Publishing creates a new URL slug
+			cy.visit( previewUrl )
+			assertValue( `${ Cypress.config( 'baseUrl' ) }my-post/` )
+		} )
+
+		// Assert changing the Post Slug
+		createNewPostWithCTA()
+		cy.publish() // Publishing creates a post slug
+		adjustField( 'Post Slug' )
+		cy.getPostUrls().then( ( { previewUrl } ) => {
+			cy.addPostSlug( 'my-post-slug' )
+			cy.publish()
+			cy.visit( previewUrl )
+			assertValue( 'my-post-slug' )
+		} )
+
+		// Assert changing the Post Excerpt
+		createNewPostWithCTA()
+		cy.addPostExcerpt( 'Sample excerpt for this post.' )
+		adjustField( 'Post Excerpt' )
+		selector().contains( 'Sample excerpt for this post.' ).should( 'exist' )
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			selector().contains( 'Sample excerpt for this post.' ).should( 'exist' )
+			cy.visit( editorUrl )
+			cy.addPostExcerpt( 'Lorem ipsum dolor sit amet.' )
+			cy.visit( previewUrl )
+			selector().contains( 'Lorem ipsum dolor sit amet.' ).should( 'exist' )
+		} )
+
+		// Assert changing the Post Status
+		createNewPostWithCTA()
+		adjustField( 'Post Status' )
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			assertValue( 'draft' )
+			cy.visit( editorUrl )
+			cy.publish()
+			cy.visit( previewUrl )
+			assertValue( 'publish' )
+		} )
+
+		// Assert changing the Comment Status
+		createNewPostWithCTA()
+		adjustField( 'Comment Status' )
+		assertValue( 'open' )
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			assertValue( 'open' )
+			cy.visit( editorUrl )
+			cy.editPostDiscussion( { 'Allow comments': false } )
+			cy.visit( previewUrl )
+			assertValue( 'closed' )
+		} )
+
+		// TODO: Assert changing Comment number, Featured image URL
 	} )
 }
 
 function assertEmptyValues() {
+	it( 'should assert empty values in the frontend', () => {
+		cy.setupWP()
 
+		const willAssertEmptyValue = () => {
+			cy.getPostUrls().then( ( { previewUrl } ) => {
+				cy.visit( previewUrl )
+				selector()
+					.should( $element => {
+						expect( $element.text().trim() ).equal( '' )
+					} )
+			} )
+		}
+
+		const emptyFields = [
+			'Post Slug',
+			'Author First Name',
+			'Author Last Name',
+			'Featured Image URL',
+		]
+
+		emptyFields.forEach( fieldName => {
+			createNewPostWithCTA()
+			adjustField( fieldName )
+			willAssertEmptyValue()
+		} )
+	} )
 }

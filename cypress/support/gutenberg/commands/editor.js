@@ -22,6 +22,7 @@ Cypress.Commands.add( 'getPostData', getPostData )
 Cypress.Commands.add( 'addFeaturedImage', addFeaturedImage )
 Cypress.Commands.add( 'addPostExcerpt', addPostExcerpt )
 Cypress.Commands.add( 'addPostSlug', addPostSlug )
+Cypress.Commands.add( 'editPostDiscussion', editPostDiscussion )
 
 /**
  * Command for opening a new page in gutenberg editor.
@@ -310,4 +311,44 @@ export function addPostSlug( slug ) {
 		.find( 'input[class="components-text-control__input"]' )
 		.type( `{selectall}${ slug }`, { force: true } )
 	cy.publish()
+}
+
+/**
+ * Command for editing the discussion settings of the current post.
+ *
+ * @param {Object} options
+ */
+export function editPostDiscussion( options ) {
+	cy.openSidebar( 'Settings' )
+	cy
+		.get( '.edit-post-sidebar__panel-tabs' )
+		.find( 'li:first-child button.edit-post-sidebar__panel-tab' )
+		.click( { force: true } )
+	cy.collapse( 'Discussion' )
+
+	const selector = name => cy
+		.get( '.components-panel__body:contains(Discussion)' )
+		.find( `.components-base-control__field:contains(${ name })` )
+
+	Object.keys( options ).forEach( optionName => {
+		const optionValue = options[ optionName ]
+
+		selector( optionName ).find( 'svg.components-checkbox-control__checked' ).its( 'length' ).then( length => {
+			// Check if the checkbox is already true
+			if ( length > 0 ) {
+				// If the optionValue is set to false, click the checkbox.
+				if ( ! optionValue ) {
+					selector( optionName )
+						.find( 'input.components-checkbox-control__input' )
+						.click( { force: true } )
+				}
+			} else if ( optionValue ) {
+				// If not yet checked and optionValue is set to true, click the checkbox.
+				selector( optionName )
+					.find( 'input.components-checkbox-control__input' )
+					.click( { force: true } )
+			}
+		} )
+	} )
+	cy.savePost()
 }
