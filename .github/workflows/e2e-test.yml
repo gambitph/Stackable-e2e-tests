@@ -3,7 +3,7 @@ on:
   push:
     branches: [ master ]
 on:
-   pull-request:
+   pull_request:
         branches: [ enable-files-load ]
 
 jobs:
