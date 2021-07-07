@@ -62,7 +62,7 @@ function rangeControlReset( name, options = {} ) {
 
 	beforeAdjust( name, null, options )
 	cy.getBaseControl( name, { isInPopover } )
-		.find( `button${ Cypress.env( 'STACKABLE_VERSION' ) === 3 ? '[aria-label="Reset"]' : ':contains(Reset)' }` )
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
 		.click( { force: true, multiple: true } )
 }
 

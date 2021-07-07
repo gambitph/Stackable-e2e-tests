@@ -60,18 +60,18 @@ export function changeUnit( unit = '', name = '', isInPopover = false ) {
 	if ( unit ) {
 		selector()
 			.then( $baseControl => {
-				if ( Cypress.env( 'STACKABLE_VERSION' ) === 2 ) {
-					if ( $baseControl.find( '.ugb-base-control-multi-label__units', { log: false } ).length ) {
-						selector()
-							.find( 'button', { log: false } )
-							.contains( containsRegExp( unit ) )
-							.click( { force: true, log: false } )
-					}
-				} else if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
+				if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
 					if ( $baseControl.find( '.stk-control-label__units' ).length ) {
 						selector().find( '.stk-control-label__units button.is-active' ).click( { force: true } )
 						selector().find( `.stk-control-label__units button[data-value="${ unit }"]` ).click( { force: true } )
 					}
+				}
+
+				if ( $baseControl.find( '.ugb-base-control-multi-label__units', { log: false } ).length ) {
+					selector()
+						.find( 'button', { log: false } )
+						.contains( containsRegExp( unit ) )
+						.click( { force: true, log: false } )
 				}
 			} )
 	}
@@ -92,25 +92,7 @@ export function changeControlViewport( viewport = 'Desktop', name = '', isInPopo
 	const selector = () => cy.getBaseControl( name, { isInPopover } )
 	selector()
 		.then( $baseControl => {
-			if ( Cypress.env( 'STACKABLE_VERSION' ) === 2 ) {
-				if ( $baseControl.find( 'button[aria-label="Desktop"]' ).length ) {
-					const hovered = $baseControl.find( 'button[aria-label="Tablet"]' ).length
-					const hover = () => selector().find( 'button[aria-label="Desktop"]' ).trigger( 'mouseover', { force: true } )
-					const selectViewport = () => selector().find( `button[aria-label="${ viewport }"]` ).click( { force: true } )
-					const isActive = () => $baseControl.find( `button.is-active[aria-label="${ viewport }"]` ).length
-					if ( viewport !== 'Desktop' ) {
-						if ( ! hovered ) {
-							hover()
-							selectViewport()
-						} else if ( ! isActive() ) {
-							selectViewport()
-						}
-					} else if ( hovered ) {
-						selectViewport()
-					}
-					cy.wait( 1 )
-				}
-			} else if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
+			if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
 				if ( $baseControl.find( '.stk-control-responsive-toggle button.is-active' ).length ) {
 					selector().find( '.stk-control-responsive-toggle button.is-active' ).click( { force: true } )
 					selector()
@@ -124,6 +106,24 @@ export function changeControlViewport( viewport = 'Desktop', name = '', isInPopo
 							}
 						} )
 				}
+			}
+
+			if ( $baseControl.find( 'button[aria-label="Desktop"]' ).length ) {
+				const hovered = $baseControl.find( 'button[aria-label="Tablet"]' ).length
+				const hover = () => selector().find( 'button[aria-label="Desktop"]' ).trigger( 'mouseover', { force: true } )
+				const selectViewport = () => selector().find( `button[aria-label="${ viewport }"]` ).click( { force: true } )
+				const isActive = () => $baseControl.find( `button.is-active[aria-label="${ viewport }"]` ).length
+				if ( viewport !== 'Desktop' ) {
+					if ( ! hovered ) {
+						hover()
+						selectViewport()
+					} else if ( ! isActive() ) {
+						selectViewport()
+					}
+				} else if ( hovered ) {
+					selectViewport()
+				}
+				cy.wait( 1 )
 			}
 		} )
 }
