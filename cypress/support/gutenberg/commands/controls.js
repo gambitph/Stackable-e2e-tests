@@ -62,9 +62,8 @@ function rangeControlReset( name, options = {} ) {
 
 	beforeAdjust( name, null, options )
 	cy.getBaseControl( name, { isInPopover } )
-		.find( 'button' )
-		.contains( containsRegExp( 'Reset' ) )
-		.click( { force: true } )
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+		.click( { force: true, multiple: true } )
 }
 
 /**
