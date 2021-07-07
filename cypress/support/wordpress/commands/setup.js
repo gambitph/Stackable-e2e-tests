@@ -20,19 +20,13 @@ export function loginAdmin() {
  * Command for running the initial setup for the test.
  *
  * @param {Object} args
- * @param {Object} options
  */
-export function setupWP( args = {}, options = {} ) {
-	const {
-		pluginSetupCallback = () => {},
-	} = options
-
+export function setupWP( args = {} ) {
 	const params = new URLSearchParams( {
 		plugins: args.plugins || [],
 		setup: true,
 	} )
 	cy.visit( '/?' + params.toString() )
-	pluginSetupCallback()
 }
 
 /**
