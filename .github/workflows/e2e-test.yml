@@ -2,9 +2,8 @@ name: stackable-e2e-tests
 on:
   push:
     branches: [ master ]
-on:
-   pull_request:
-        branches: [ enable-files-load ]
+  pull_request:
+    branches: [ enable-files-load ]
 
 jobs:
   build-and-test:
