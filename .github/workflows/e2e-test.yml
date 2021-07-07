@@ -4,7 +4,7 @@ on:
     branches: [ master ]
 on:
   pull_request:
-    branches: [ enable-files-load ]
+    branches: [ master ]
 
 jobs:
   build-and-test:
