@@ -3,14 +3,6 @@
  */
 import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import { blocks } from '~stackable-e2e/config'
-import { registerTests } from '~stackable-e2e/helpers'
-
-describe( 'Global Colors', registerTests( [
-	adjustGlobalColorTest,
-	changeGlobalColorTest,
-	globalColorNativeBlocks,
-	deleteGlobalColorTest,
-] ) )
 
 const colors = [
 	{
@@ -61,7 +53,7 @@ const blocksWithSeparator = [
 	'ugb/blockquote',
 ]
 
-function adjustGlobalColorTest() {
+export function adjustGlobalColorTest() {
 	it( 'should adjust global colors and assert the color picker in blocks', () => {
 		cy.setupWP()
 		// Global settings should still load in the frontend.
@@ -85,8 +77,8 @@ function adjustGlobalColorTest() {
 		cy.addBlock( 'ugb/blog-posts' )
 		cy.openInspector( 'ugb/blog-posts', 'Style' )
 		cy.collapse( 'Title' )
-		colors.forEach( ( val, idx ) => {
-			cy.adjust( 'Text Color', idx + 1 ).assertComputedStyle( {
+		colors.forEach( val => {
+			cy.adjust( 'Text Color', val.name ).assertComputedStyle( {
 				'.ugb-blog-posts__title a': {
 					'color': val.color,
 				},
@@ -114,9 +106,9 @@ function adjustGlobalColorTest() {
 
 					cy.collapse( 'Title' )
 					// Assert each added global color in blocks with title
-					colors.forEach( ( val, idx ) => {
+					colors.forEach( val => {
 						cy
-							.adjust( 'Title Color', idx + 1 )
+							.adjust( 'Title Color', val.name )
 							.assertComputedStyle( {
 								[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
 									'color': val.color,
@@ -127,9 +119,9 @@ function adjustGlobalColorTest() {
 
 				if ( blocksWithSeparator.includes( blockName ) ) {
 					cy.collapse( 'Top Separator' )
-					colors.forEach( ( val, idx ) => {
+					colors.forEach( val => {
 						cy
-							.adjust( 'Color', idx + 1 )
+							.adjust( 'Color', val.name )
 							.assertComputedStyle( {
 								'.ugb-top-separator svg': {
 									'fill': val.color,
@@ -140,9 +132,9 @@ function adjustGlobalColorTest() {
 
 				if ( name === 'divider' || name === 'spacer' ) {
 					cy.collapse( 'General' )
-					colors.forEach( ( val, idx ) => {
+					colors.forEach( val => {
 						cy
-							.adjust( `${ blockName === 'ugb/divider' ? 'Color' : 'Background Color' }`, idx + 1 )
+							.adjust( `${ blockName === 'ugb/divider' ? 'Color' : 'Background Color' }`, val.name )
 							.assertComputedStyle( {
 								[ `${ name === 'divider' ? '.ugb-divider__hr' : '.ugb-spacer--inner' }` ]: {
 									'background-color': val.color,
@@ -153,9 +145,9 @@ function adjustGlobalColorTest() {
 
 				if ( name === 'separator' ) {
 					cy.collapse( 'Separator' )
-					colors.forEach( ( val, idx ) => {
+					colors.forEach( val => {
 						cy
-							.adjust( 'Separator Color', idx + 1 )
+							.adjust( 'Separator Color', val.name )
 							.assertComputedStyle( {
 								'.ugb-separator__layer-1': {
 									'fill': val.color,
@@ -174,7 +166,7 @@ function adjustGlobalColorTest() {
 	} )
 }
 
-function changeGlobalColorTest() {
+export function changeGlobalColorTest() {
 	it( 'should assert the changing of global color', () => {
 		cy.setupWP()
 		// Global settings should still load in the frontend.
@@ -301,7 +293,7 @@ function changeGlobalColorTest() {
 	} )
 }
 
-function globalColorNativeBlocks() {
+export function globalColorNativeBlocks() {
 	it( 'should assert global colors in native blocks', () => {
 		cy.setupWP()
 		// Global settings should still load in the frontend.
@@ -339,9 +331,9 @@ function globalColorNativeBlocks() {
 				cy.selectBlock( `${ blockName === 'core/buttons' ? 'core/button' : blockName }` )
 				cy.openSidebar( 'Settings' )
 				cy.collapse( 'Color settings' )
-				colors.forEach( ( val, idx ) => {
+				colors.forEach( val => {
 					cy
-						.adjust( `${ blockName === 'core/separator' ? 'Color' : 'Text Color' }`, idx + 1 )
+						.adjust( `${ blockName === 'core/separator' ? 'Color' : 'Text Color' }`, val.name )
 						.assertComputedStyle( {
 							[ `${ blockName === 'core/buttons' ? '.wp-block-button__link' : '' }` ]: {
 								'color': val.color,
@@ -360,7 +352,7 @@ function globalColorNativeBlocks() {
 	} )
 }
 
-function deleteGlobalColorTest() {
+export function deleteGlobalColorTest() {
 	it( 'should assert deleted global color values', () => {
 		cy.setupWP()
 		// Global settings should still load in the frontend.
