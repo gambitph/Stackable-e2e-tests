@@ -4,7 +4,6 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -62,8 +61,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/icon-list' ).as( 'iconListBlock' )
-		registerBlockSnapshots( 'iconListBlock' )
+		cy.addBlock( 'ugb/icon-list' ).asBlock( 'iconListBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/icon-list', '.block-editor-rich-text__editable', 'Helloo World!! 12' )
 			.assertBlockContent( '.ugb-block-content ul', 'Helloo World!! 12' )
@@ -76,9 +74,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-
-	cy.addBlock( 'ugb/icon-list' ).as( 'iconListBlock' )
-	registerBlockSnapshots( 'iconListBlock' )
+	cy.addBlock( 'ugb/icon-list' ).asBlock( 'iconListBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/icon-list', 'Style' )
 	cy.collapse( 'General' )
 	cy.adjust( 'Columns', 4, { viewport } ).assertComputedStyle( {
@@ -135,14 +131,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-icon-list', { viewport } )
 	assertSeparators( { viewport } )
-	cy.assertFrontendStyles( 'iconListBlock' )
+	cy.assertFrontendStyles( '@iconListBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/icon-list' ).as( 'iconListBlock' )
-	registerBlockSnapshots( 'iconListBlock' )
+	cy.addBlock( 'ugb/icon-list' ).asBlock( 'iconListBlock', { isStatic: true } )
 
 	cy.openInspector( 'ugb/icon-list', 'Advanced' )
 
@@ -156,5 +151,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	cy.assertFrontendStyles( 'iconListBlock' )
+	cy.assertFrontendStyles( '@iconListBlock' )
 }

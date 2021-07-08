@@ -4,7 +4,6 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab, assertContainerLink,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -64,8 +63,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/blockquote' ).as( 'blockquoteBlock' )
-		registerBlockSnapshots( 'blockquoteBlock' )
+		cy.addBlock( 'ugb/blockquote' ).asBlock( 'blockquoteBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/blockquote', '.ugb-blockquote__text', 'Hello World! 1234' )
 			.assertBlockContent( '.ugb-blockquote__text', 'Hello World! 1234' )
@@ -75,8 +73,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/blockquote' ).as( 'blockquoteBlock' )
-	registerBlockSnapshots( 'blockquoteBlock' )
+	cy.addBlock( 'ugb/blockquote' ).asBlock( 'blockquoteBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/blockquote', 'Style' )
 
 	// Test General Alignment
@@ -154,15 +151,13 @@ function styleTab( viewport, desktopOnly ) {
 
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-blockquote__item', { viewport } )
-	cy.assertFrontendStyles( 'blockquoteBlock' )
+	cy.assertFrontendStyles( '@blockquoteBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/blockquote' ).as( 'blockquoteBlock' )
-	registerBlockSnapshots( 'blockquoteBlock' )
-
+	cy.addBlock( 'ugb/blockquote' ).asBlock( 'blockquoteBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/blockquote', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-blockquote', {
@@ -175,6 +170,6 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	cy.assertFrontendStyles( 'blockquoteBlock' )
+	cy.assertFrontendStyles( '@blockquoteBlock' )
 }
 

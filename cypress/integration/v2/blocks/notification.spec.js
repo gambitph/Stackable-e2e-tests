@@ -4,7 +4,6 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, registerTests, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -59,8 +58,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
-		registerBlockSnapshots( 'notificationBlock' )
+		cy.addBlock( 'ugb/notification' ).asBlock( 'notificationBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/notification', '.ugb-notification__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-notification__title', 'Hello World! 1' )
@@ -74,8 +72,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
-	registerBlockSnapshots( 'notificationBlock' )
+	cy.addBlock( 'ugb/notification' ).asBlock( 'notificationBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/notification', 'Style' )
 
 	// Test General options
@@ -313,15 +310,13 @@ function styleTab( viewport, desktopOnly ) {
 	// Test Block Background
 	assertBlockBackground( '.ugb-notification', { viewport } )
 	assertContainerLink( '.ugb-notification__item', { viewport } )
-	cy.assertFrontendStyles( 'notificationBlock' )
+	cy.assertFrontendStyles( '@notificationBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
-	registerBlockSnapshots( 'notificationBlock' )
-
+	cy.addBlock( 'ugb/notification' ).asBlock( 'notificationBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/notification', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-notification', {
@@ -337,5 +332,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	cy.assertFrontendStyles( 'notificationBlock' )
+	cy.assertFrontendStyles( '@notificationBlock' )
 }

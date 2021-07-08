@@ -5,7 +5,6 @@ import { range, startCase } from 'lodash'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertContainer, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -67,8 +66,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )
-		registerBlockSnapshots( 'teamMemberBlock' )
+		cy.addBlock( 'ugb/team-member' ).asBlock( 'teamMemberBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__name', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-team-member__name', 'Hello World! 1' )
@@ -85,8 +83,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )
-	registerBlockSnapshots( 'teamMemberBlock' )
+	cy.addBlock( 'ugb/team-member' ).asBlock( 'teamMemberBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/team-member', 'Style' )
 
 	// General Tab
@@ -333,15 +330,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-team-member', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-team-member__item', { viewport } )
-	cy.assertFrontendStyles( 'teamMemberBlock' )
+	cy.assertFrontendStyles( '@teamMemberBlock' )
 }
 
 function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )
-	registerBlockSnapshots( 'teamMemberBlock' )
-
+	cy.addBlock( 'ugb/team-member' ).asBlock( 'teamMemberBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/team-member', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-team-member', {
@@ -377,5 +372,5 @@ function advancedTab( viewport, desktopOnly ) {
 			cy.adjust( 'Stretch Shape Mask', true ).assertClassName( `.ugb-team-member__item${ idx } img.ugb-img--shape`, 'ugb-image--shape-stretch' )
 		} )
 	} )
-	cy.assertFrontendStyles( 'teamMemberBlock' )
+	cy.assertFrontendStyles( '@teamMemberBlock' )
 }

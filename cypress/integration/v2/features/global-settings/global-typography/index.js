@@ -7,7 +7,6 @@ import {
 	responsiveAssertHelper,
 } from '~stackable-e2e/helpers'
 import { blocks } from '~stackable-e2e/config'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopGlobalTypography, tabletGlobalTypography, mobileGlobalTypography ] = responsiveAssertHelper( assertGlobalTypography, { disableItAssertion: true } )
 const [ desktopUnits, tabletUnits, mobileUnits ] = responsiveAssertHelper( globalTypographyUnits, { disableItAssertion: true } )
@@ -213,9 +212,7 @@ function assertGlobalTypography( viewport, desktopOnly ) {
 			.filter( blockName => ! blocksWithoutTexts.includes( blockName ) )
 			.forEach( blockName => {
 				const name = blockName.split( '/' ).pop()
-
-				cy.addBlock( blockName ).as( blockName )
-				registerBlockSnapshots( blockName )
+				cy.addBlock( blockName ).asBlock( blockName, { isStatic: true } )
 				cy.openInspector( blockName, 'Style' )
 
 				if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
@@ -236,7 +233,7 @@ function assertGlobalTypography( viewport, desktopOnly ) {
 				}
 
 				cy.getPostUrls().then( ( { editorUrl } ) => {
-					cy.assertFrontendStyles( blockName )
+					cy.assertFrontendStyles( `@${ blockName }` )
 					cy.visit( editorUrl )
 				} )
 			} )
@@ -292,9 +289,7 @@ function globalTypographyUnits( viewport ) {
 			.filter( blockName => ! blocksWithoutTexts.includes( blockName ) )
 			.forEach( blockName => {
 				const name = blockName.split( '/' ).pop()
-
-				cy.addBlock( blockName ).as( blockName )
-				registerBlockSnapshots( blockName )
+				cy.addBlock( blockName ).asBlock( blockName, { isStatic: true } )
 				cy.openInspector( blockName, 'Style' )
 
 				if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
@@ -332,7 +327,7 @@ function globalTypographyUnits( viewport ) {
 				} )
 
 				cy.getPostUrls().then( ( { editorUrl } ) => {
-					cy.assertFrontendStyles( blockName )
+					cy.assertFrontendStyles( `@${ blockName }` )
 					cy.visit( editorUrl )
 				} )
 			} )

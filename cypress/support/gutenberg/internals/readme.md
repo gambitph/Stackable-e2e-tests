@@ -13,13 +13,16 @@ import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 function desktopStyles( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
-	registerblockSnapshots( 'accordionBlock' )
+	cy.addBlock( 'ugb/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
 
 	// More tests...
 	// All assertion commands will no longer assert the frontend every call.
 	// Instead, block snapshots will be stubbed and can be enqueued before the end of the test
 
 	// Enqueue all block snapshots and assert frontend styles
-	cy.assertFrontendStyles( 'accordionBlock' )
+ 	// Enqueue all block snapshots and assert frontend styles
+ 	cy.assertFrontendStyles( '@accordionBlock' )
+	// Alternatively, you can chain it after `selectBlock` command.
+ 	cy.selectBlock( 'ugb/accordion' ,'@accordionBlock' ).assertFrontendStyles()
+}
 ```

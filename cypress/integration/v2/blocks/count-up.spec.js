@@ -4,7 +4,6 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, responsiveAssertHelper, registerTests, assertBlockTitleDescriptionContent, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -63,8 +62,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
-		registerBlockSnapshots( 'countUpBlock' )
+		cy.addBlock( 'ugb/count-up' ).asBlock( 'countUpBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/count-up', '.ugb-countup__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-countup__title', 'Hello World! 1' )
@@ -81,8 +79,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
-	registerBlockSnapshots( 'countUpBlock' )
+	cy.addBlock( 'ugb/count-up' ).asBlock( 'countUpBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/count-up', 'Style' )
 
 	cy.collapse( 'General' )
@@ -262,14 +259,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-count-up', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-countup__item', { viewport } )
-	cy.assertFrontendStyles( 'countUpBlock' )
+	cy.assertFrontendStyles( '@countUpBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
-	registerBlockSnapshots( 'countUpBlock' )
+	cy.addBlock( 'ugb/count-up' ).asBlock( 'countUpBlock', { isStatic: true } )
 
 	cy.openInspector( 'ugb/count-up', 'Advanced' )
 
@@ -284,5 +280,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	cy.assertFrontendStyles( 'countUpBlock' )
+	cy.assertFrontendStyles( '@countUpBlock' )
 }

@@ -4,7 +4,6 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, registerTests, assertBlockTitleDescriptionContent, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import { range, startCase } from 'lodash'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -83,8 +82,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
-		registerBlockSnapshots( 'featureGridBlock' )
+		cy.addBlock( 'ugb/feature-grid' ).asBlock( 'featureGridBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-feature-grid__title', 'Hello World! 1' )
@@ -101,9 +99,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
-	registerBlockSnapshots( 'featureGridBlock' )
-
+	cy.addBlock( 'ugb/feature-grid' ).asBlock( 'featureGridBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/feature-grid', 'Style' )
 
 	cy.collapse( 'General' )
@@ -313,15 +309,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-feature-grid', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-feature-grid__item', { viewport } )
-	cy.assertFrontendStyles( 'featureGridBlock' )
+	cy.assertFrontendStyles( '@featureGridBlock' )
 }
 
 function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
-	registerBlockSnapshots( 'featureGridBlock' )
-
+	cy.addBlock( 'ugb/feature-grid' ).asBlock( 'featureGridBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/feature-grid', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-feature-grid', {
@@ -358,6 +352,6 @@ function advancedTab( viewport, desktopOnly ) {
 			cy.adjust( 'Stretch Shape Mask', true ).assertClassName( `.ugb-feature-grid__item${ idx } img.ugb-img--shape`, 'ugb-image--shape-stretch' )
 		} )
 	} )
-	cy.assertFrontendStyles( 'featureGridBlock' )
+	cy.assertFrontendStyles( '@featureGridBlock' )
 }
 

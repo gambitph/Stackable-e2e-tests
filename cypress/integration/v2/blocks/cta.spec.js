@@ -4,7 +4,6 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, registerTests, responsiveAssertHelper, assertAligns, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -91,8 +90,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/cta' ).as( 'ctaBlock' )
-		registerBlockSnapshots( 'ctaBlock' )
+		cy.addBlock( 'ugb/cta' ).asBlock( 'ctaBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/cta', '.ugb-cta__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-cta__title', 'Hello World! 1' )
@@ -106,8 +104,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/cta' ).as( 'ctaBlock' )
-	registerBlockSnapshots( 'ctaBlock' )
+	cy.addBlock( 'ugb/cta' ).asBlock( 'ctaBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/cta', 'Style' )
 
 	// Test General options
@@ -273,15 +270,13 @@ function styleTab( viewport, desktopOnly ) {
 
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-cta__item', { viewport } )
-	cy.assertFrontendStyles( 'ctaBlock' )
+	cy.assertFrontendStyles( '@ctaBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/cta' ).as( 'ctaBlock' )
-	registerBlockSnapshots( 'ctaBlock' )
-
+	cy.addBlock( 'ugb/cta' ).asBlock( 'ctaBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/cta', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-cta', {
@@ -294,5 +289,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	cy.assertFrontendStyles( 'ctaBlock' )
+	cy.assertFrontendStyles( '@ctaBlock' )
 }
