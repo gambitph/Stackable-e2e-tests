@@ -5,7 +5,6 @@ import { range } from 'lodash'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertBlockTitleDescriptionContent, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -72,8 +71,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/image-box' ).as( 'imageBoxBlock' )
-		registerBlockSnapshots( 'imageBoxBlock' )
+		cy.addBlock( 'ugb/image-box' ).asBlock( 'imageBoxBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__subtitle', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-image-box__subtitle', 'Hello World! 1' )
@@ -90,8 +88,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/image-box' ).as( 'imageBoxBlock' )
-	registerBlockSnapshots( 'imageBoxBlock' )
+	cy.addBlock( 'ugb/image-box' ).asBlock( 'imageBoxBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/image-box', 'Style' )
 
 	cy.collapse( 'General' )
@@ -375,15 +372,13 @@ function styleTab( viewport, desktopOnly ) {
 	// Test Separators
 	assertSeparators( { viewport } )
 
-	cy.assertFrontendStyles( 'imageBoxBlock' )
+	cy.assertFrontendStyles( '@imageBoxBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/image-box' ).as( 'imageBoxBlock' )
-	registerBlockSnapshots( 'imageBoxBlock' )
-
+	cy.addBlock( 'ugb/image-box' ).asBlock( 'imageBoxBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/image-box', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-image-box', {
@@ -397,5 +392,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	cy.assertFrontendStyles( 'imageBoxBlock' )
+	cy.assertFrontendStyles( '@imageBoxBlock' )
 }

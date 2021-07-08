@@ -4,7 +4,6 @@
 import {
 	assertBlockExist, blockErrorTest, switchLayouts, switchDesigns, assertAligns, assertBlockBackground, assertSeparators, registerTests, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -65,8 +64,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/text' ).as( 'textBlock' )
-		registerBlockSnapshots( 'textBlock' )
+		cy.addBlock( 'ugb/text' ).asBlock( 'textBlock', { isStatic: true } )
 
 		cy.openInspector( 'ugb/text', 'Style' )
 		cy.toggleStyle( 'Title' )
@@ -84,8 +82,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/text' ).as( 'textBlock' )
-	registerBlockSnapshots( 'textBlock' )
+	cy.addBlock( 'ugb/text' ).asBlock( 'textBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/text', 'Style' )
 
 	// Test General options
@@ -230,15 +227,13 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Top and Bottom Separator
 	assertSeparators( { viewport } )
-	cy.assertFrontendStyles( 'textBlock' )
+	cy.assertFrontendStyles( '@textBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/text' ).as( 'textBlock' )
-	registerBlockSnapshots( 'textBlock' )
-
+	cy.addBlock( 'ugb/text' ).asBlock( 'textBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/text', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-text', {
@@ -249,5 +244,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	cy.assertFrontendStyles( 'textBlock' )
+	cy.assertFrontendStyles( '@textBlock' )
 }
