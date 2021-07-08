@@ -35,7 +35,7 @@ function optimizationSettings() {
 			} )
 
 			// Turn on optimization setting in Stackable settings page
-			cy.enableOptimization()
+			cy.loadFrontendJsCssFiles()
 			cy.visit( previewUrl )
 			// CSS & JS files should not be present because there are no Stackable blocks.
 			cssJsSelectors.forEach( selector => {

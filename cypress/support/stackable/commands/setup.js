@@ -17,7 +17,7 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 		cy.activateLicense()
 	}
 	// Enable optimization setting by default.
-	cy.enableOptimization()
+	cy.loadFrontendJsCssFiles()
 } )
 
 function _activateLicense() {

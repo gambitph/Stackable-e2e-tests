@@ -2,7 +2,7 @@
  * Register functions to Cypress Commands.
  */
 Cypress.Commands.add( 'forceTypographyStyles', forceTypographyStyles )
-Cypress.Commands.add( 'enableOptimization', enableOptimization )
+Cypress.Commands.add( 'loadFrontendJsCssFiles', loadFrontendJsCssFiles )
 Cypress.Commands.add( 'disableOptimization', disableOptimization )
 
 /**
@@ -27,11 +27,25 @@ function forceTypographyStyles() {
 }
 
 /**
- * Command for enabling optimization setting in Stackable settings.
+ * Command for loading JS and CSS files across entire site in Stackable
+ * Settings page.
+ *
  */
-export function enableOptimization() {
-	const params = new URLSearchParams( { 'enable-optimization': 'true' } )
-	cy.visit( '/?' + params.toString() )
+function loadFrontendJsCssFiles() {
+	cy.visit( '/wp-admin/options-general.php?page=stackable' )
+	const selector = () => cy
+		.get( 'article[id="optimization-settings"]' )
+		.find( 'button[class="ugb-admin-toggle-setting__button"], button[role="switch"]' )
+
+	selector()
+		.invoke( 'attr', 'aria-checked' )
+		.then( checked => {
+			if ( checked === 'false' ) {
+				selector()
+					.click( { force: true } )
+				cy.wait( 500 )
+			}
+		} )
 }
 
 /**
