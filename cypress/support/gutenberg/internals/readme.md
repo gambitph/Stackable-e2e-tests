@@ -22,7 +22,7 @@ function desktopStyles( viewport, desktopOnly ) {
 	// Enqueue all block snapshots and assert frontend styles
  	// Enqueue all block snapshots and assert frontend styles
  	cy.assertFrontendStyles( '@accordionBlock' )
-  // Alternatively, you can chain it after `selectBlock` command.
- 	cy.selectBlock( 'ugb/accordion' ,'@accordionBlock' )assertFrontendStyles()
+	// Alternatively, you can chain it after `selectBlock` command.
+ 	cy.selectBlock( 'ugb/accordion' ,'@accordionBlock' ).assertFrontendStyles()
 }
 ```

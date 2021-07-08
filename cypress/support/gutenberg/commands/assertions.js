@@ -512,9 +512,9 @@ export function assertFrontendStyles( subject, alias ) {
 
 			if ( ! isWithBlockSnapshotAlias ) {
 				throw new Error( 'The selected block is not static. Set `isStatic` to true to use this command.' )
-			} else {
-				alias = `@${ isWithBlockSnapshotAlias.alias }`
 			}
+
+			alias = `@${ isWithBlockSnapshotAlias.alias }`
 		}
 
 		cy.get( `${ alias }.stubbedStyles` ).then( $stubbedStyles => {
