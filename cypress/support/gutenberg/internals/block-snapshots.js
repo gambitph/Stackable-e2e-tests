@@ -4,21 +4,20 @@
  * we can overwrite `getComputedStyle` to stub all generated HTML contents and CSS objects for future assertions.
  *
  * Usage:
- * // import registerBlockSnapshots to create an instance of BlockSnapshots
- * import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
  *
  * function desktopStyles( viewport, desktopOnly ) {
  * 	cy.setupWP()
  * 	cy.newPage()
- * 	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
- * 	const accordionBlock = registerblockSnapshots( 'accordionBlock' )
+ * 	cy.addBlock( 'ugb/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
  *
  * 	// More tests...
  * 	// All assertion commands will no longer assert the frontend every call.
  * 	// Instead, block snapshots will be stubbed and can be enqueued before the end of the test
  *
  * 	// Enqueue all block snapshots and assert frontend styles
- * 	cy.assertFrontendStyles( alias )
+ * 	cy.assertFrontendStyles( '@accordionBlock' )
+ *  // Alternatively, you can chain it after `selectBlock` command.
+ * 	cy.selectBlock( 'ugb/accordion', '@accordionBlock' )assertFrontendStyles()
  * }
  */
 
@@ -28,48 +27,13 @@
 import {
 	createElementFromHTMLString,
 } from '../util'
-import { _assertComputedStyle } from '../commands/assertions'
 
 /**
  * External dependencies
  */
 import {
-	first, keys, last, isBoolean, cloneDeep, toUpper,
+	first, isBoolean, cloneDeep, toUpper,
 } from 'lodash'
-
-/**
- * Register functions to Cypress Commands.
- */
-Cypress.Commands.add( 'assertFrontendStyles', assertFrontendStyles )
-
-/**
- * Asynchronously initialize contentSnapshots and stubbedStyles
- * using Cypress alias.
- *
- * @param {string} alias
- * @see https://docs.cypress.io/guides/core-concepts/variables-and-aliases.html
- */
-function registerAlias( alias ) {
-	cy.wrap( [] ).as( `${ alias }.contentSnapshots` )
-	cy.wrap( [] ).as( `${ alias }.stubbedStyles` )
-	cy.wp().then( wp => {
-		cy.get( `@${ alias }` ).then( $block => {
-			if ( $block.attributes && $block.clientId ) {
-				// This is to handle passed block object from `addBlock` command
-				cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks =>
-					cy.wrap( [ ...$blockSnapshotBlocks, Object.assign( $block, { alias } ) ] ).as( 'blockSnapshotBlocks' ) )
-				return
-			}
-			// This is to handle passed block element from `selectBlock` command
-			const clientId = $block.data( 'block' )
-			const block = wp.data.select( 'core/block-editor' ).getBlock( clientId )
-			cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks =>
-				cy.wrap( [ ...$blockSnapshotBlocks, Object.assign( block, { alias } ) ] ).as( 'blockSnapshotBlocks' ) )
-			// Normalize the block alias. Always transform it to block object.
-			cy.wrap( block ).as( alias )
-		} )
-	} )
-}
 
 /**
  * Asynchronously stub the current block snapshot and save its
@@ -109,92 +73,6 @@ function stubStyles( alias, style, viewport ) {
 	cy.get( `@${ alias }.stubbedStyles` ).then( $stubbedStyles => {
 		$stubbedStyles.push( { style, viewport } )
 		cy.wrap( $stubbedStyles ).as( `${ alias }.stubbedStyles` ).then( () => {
-		} )
-	} )
-}
-
-/**
- * Enqueue all stubbed html contents to the frontend.
- * Individually assert its computed style.
- *
- * @param {string} alias
- */
-export function assertFrontendStyles( alias ) {
-	cy.get( `@${ alias }.stubbedStyles` ).then( $stubbedStyles => {
-		cy.get( `@${ alias }.contentSnapshots` ).then( $contentSnapshots => {
-			// Combine all stubbed styles and content snapshots into one array.
-			const combinedStubbed = $contentSnapshots.map( ( {
-				isParent, htmlContent, innerBlockUniqueClass,
-			}, index ) => {
-				return {
-					innerBlockUniqueClass,
-					isParent,
-					htmlContent,
-					viewport: $stubbedStyles[ index ].viewport,
-					style: $stubbedStyles[ index ].style,
-				}
-			} )
-
-			if ( ! combinedStubbed.length ) {
-				return
-			}
-
-			cy.savePost()
-			cy.getPostUrls().then( ( { previewUrl } ) => {
-				cy.visit( previewUrl )
-				combinedStubbed.forEach( combinedStubbedContent => {
-					cy.document().then( doc => {
-						const {
-							viewport, htmlContent, style, isParent, innerBlockUniqueClass,
-						} = combinedStubbedContent
-
-						// Create a DOMElement based on the HTML string.
-						const blockElement = createElementFromHTMLString( htmlContent )
-						// Get the class selector.
-						const classList = ( isParent ? Array.from( blockElement.classList ) : Array.from( blockElement.querySelector( `.${ innerBlockUniqueClass }` ).classList ) ).map( _class => `.${ _class }` ).join( '' )
-						// Remove all blocks inside .entry-content.
-						doc.querySelector( '.entry-content' ).innerHTML = ''
-
-						// Change the viewport.
-						if ( typeof viewport === 'string' ) {
-							if ( viewport !== 'Desktop' ) {
-								cy.viewport( Cypress.config( `viewport${ viewport }Width` ) || Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
-							}
-						} else {
-							cy.viewport(
-								viewport,
-								Cypress.config( 'viewportHeight' )
-							)
-						}
-
-						// Append the stubbed block in .entry-content
-						doc.querySelector( '.entry-content' ).appendChild( blockElement )
-
-						keys( style ).forEach( _selector => {
-							const selector = _selector.split( ':' )
-							const selectorWithSpace = first( selector ).split( ' ' )
-							const [ , ...restOfTheSelectors ] = [ ...selectorWithSpace ]
-
-							const documentSelector = `${ classList }${ first( selectorWithSpace ).match( /\./ )
-								?	( classList.match( first( selectorWithSpace ) )
-									? ` ${ restOfTheSelectors.join( ' ' ) }`
-									: ` ${ first( selector ) }` )
-								: ` ${ first( selector ) }` }`.trim()
-
-							// Assert computed style.
-							_assertComputedStyle(
-								documentSelector,
-								selector.length && last( selector ),
-								style[ _selector ],
-								'Frontend',
-								viewport )
-						} )
-
-						// Revert the viewport
-						cy.viewport( Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
-					} )
-				} )
-			} )
 		} )
 	} )
 }
@@ -416,14 +294,4 @@ export function blockSnapshotsAssertBlockContent( originalFn, ...args ) {
 		}
 		return modifiedFn( ...[ ...args, {} ] )
 	} )
-}
-
-/**
- * Function used to register block snapshots in
- * block tests.
- *
- * @param {string} alias
- */
-export const registerBlockSnapshots = alias => {
-	registerAlias( alias )
 }

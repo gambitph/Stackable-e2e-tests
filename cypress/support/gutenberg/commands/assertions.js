@@ -17,7 +17,7 @@ import {
 	blockSnapshotsAssertBlockContent,
 	blockSnapshotsAssertComputedStyle,
 	blockSnapshotsAssertHtmlAttribute,
-} from '../plugins/blockSnapshots'
+} from '../internals'
 
 /**
  * Register Cypress Commands
@@ -27,6 +27,7 @@ Cypress.Commands.add( 'assertClassName', { prevSubject: 'element' }, ( ...args )
 Cypress.Commands.add( 'assertHtmlTag', { prevSubject: 'element' }, ( ...args ) => blockSnapshotsAssertHtmlTag( assertHtmlTag, ...args ) )
 Cypress.Commands.add( 'assertHtmlAttribute', { prevSubject: 'element' }, ( ...args ) => blockSnapshotsAssertHtmlAttribute( assertHtmlAttribute, ...args ) )
 Cypress.Commands.add( 'assertBlockContent', { prevSubject: 'element' }, ( ...args ) => blockSnapshotsAssertBlockContent( assertBlockContent, ...args ) )
+Cypress.Commands.add( 'assertFrontendStyles', { prevSubject: 'optional' }, assertFrontendStyles )
 
 // Temporary overwrite fix. @see stackable/commands/assertions.js
 Cypress.Commands.overwrite( 'assertComputedStyle', withInspectorTabMemory( { argumentLength: 3 } ) )
@@ -486,6 +487,119 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 						} )
 					}
 				} )
+		} )
+	} )
+}
+
+/**
+ * Command for asserting frontend styles of static blocks.
+ *
+ * Enqueue all stubbed html contents to the frontend.
+ * Individually assert its computed style.
+ *
+ * @param {HTMLDocument} subject
+ * @param {string} alias
+ */
+export function assertFrontendStyles( subject, alias ) {
+	cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
+		if ( subject ) {
+			if ( ! subject.attributes && ! subject.clientId ) {
+				throw new Error( 'Invalid chain function call. `assertFrontendStyles` should be called after `cy.selectBlock` command.' )
+			}
+
+			const isWithBlockSnapshotAlias = $blockSnapshotBlocks
+				.find( ( { attributes: { className } } ) => className === first( subject ).attributes.className )
+
+			if ( ! isWithBlockSnapshotAlias ) {
+				throw new Error( 'The selected block is not static. Set `isStatic` to true to use this command.' )
+			} else {
+				alias = `@${ isWithBlockSnapshotAlias.alias }`
+			}
+		}
+
+		cy.get( `${ alias }.stubbedStyles` ).then( $stubbedStyles => {
+			cy.get( `${ alias }.contentSnapshots` ).then( $contentSnapshots => {
+				// Combine all stubbed styles and content snapshots into one array.
+				const combinedStubbed = $contentSnapshots.map( ( {
+					isParent, htmlContent, innerBlockUniqueClass,
+				}, index ) => {
+					return {
+						innerBlockUniqueClass,
+						isParent,
+						htmlContent,
+						viewport: $stubbedStyles[ index ].viewport,
+						style: $stubbedStyles[ index ].style,
+					}
+				} )
+
+				if ( ! combinedStubbed.length ) {
+					return
+				}
+
+				cy.savePost()
+				cy.getPostUrls().then( ( { previewUrl } ) => {
+					cy.visit( previewUrl )
+					combinedStubbed.forEach( combinedStubbedContent => {
+						cy.document().then( doc => {
+							const {
+								viewport, htmlContent, style, isParent, innerBlockUniqueClass,
+							} = combinedStubbedContent
+
+							// Create a DOMElement based on the HTML string.
+							const blockElement = createElementFromHTMLString( htmlContent )
+							// Get the class selector.
+							const classList = ( isParent
+								? Array.from( blockElement.classList )
+								: Array.from( blockElement.querySelector( `.${ innerBlockUniqueClass }` ).classList ) ).map( _class => `.${ _class }` ).join( '' )
+
+							// Remove all blocks inside .entry-content.
+							doc.querySelector( '.entry-content' ).innerHTML = ''
+
+							// Change the viewport.
+							if ( typeof viewport === 'string' ) {
+								if ( viewport !== 'Desktop' ) {
+									cy.viewport( Cypress.config( `viewport${ viewport }Width` ) || Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
+								}
+							} else {
+								cy.viewport(
+									viewport,
+									Cypress.config( 'viewportHeight' )
+								)
+							}
+
+							// Append the stubbed block in .entry-content
+							doc.querySelector( '.entry-content' ).appendChild( blockElement )
+
+							keys( style ).forEach( _selector => {
+								const selector = _selector.split( ':' )
+								const selectorWithSpace = first( selector ).split( ' ' )
+								const [ , ...restOfTheSelectors ] = [ ...selectorWithSpace ]
+
+								const documentSelector = `${ classList }${ first( selectorWithSpace ).match( /\./ )
+									?	( classList.match( first( selectorWithSpace ) )
+										? ` ${ restOfTheSelectors.join( ' ' ) }`
+										: ` ${ first( selector ) }` )
+									: ` ${ first( selector ) }` }`.trim()
+
+								// Assert computed style.
+								_assertComputedStyle(
+									documentSelector,
+									selector.length && last( selector ),
+									style[ _selector ],
+									'Frontend',
+									viewport )
+							} )
+
+							// Revert the viewport
+							cy.viewport( Cypress.config( 'viewportWidth' ), Cypress.config( 'viewportHeight' ) )
+
+							// Cleanup. Removed asserted entries.
+							cy.wrap( [] ).as( `${ alias.replace( '@', '' ) }.stubbedStyles` )
+							cy.wrap( [] ).as( `${ alias.replace( '@', '' ) }.contentSnapshots` )
+						} )
+					} )
+				} )
+			} )
 		} )
 	} )
 }

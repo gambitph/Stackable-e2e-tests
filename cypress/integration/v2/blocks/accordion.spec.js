@@ -7,7 +7,6 @@ import { blocks } from '~stackable-e2e/config'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -71,8 +70,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
-		registerBlockSnapshots( 'accordionBlock' )
+		cy.addBlock( 'ugb/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', 'Hello World! 1234' )
 			.assertBlockContent( '.ugb-accordion__title', 'Hello World! 1234' )
@@ -139,8 +137,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.deleteBlock( 'ugb/accordion', 'Accordion 1' )
 	} )
 
-	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
-	registerBlockSnapshots( 'accordionBlock' )
+	cy.addBlock( 'ugb/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
 
 	// Test General Reverse Arrow and Alignment
 	cy.openInspector( 'ugb/accordion', 'Style' )
@@ -217,14 +214,13 @@ function styleTab( viewport, desktopOnly ) {
 			} )
 	} )
 
-	cy.assertFrontendStyles( 'accordionBlock' )
+	cy.assertFrontendStyles( '@accordionBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
-	registerBlockSnapshots( 'accordionBlock' )
+	cy.addBlock( 'ugb/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
 
 	cy.openInspector( 'ugb/accordion', 'Advanced' )
 
@@ -239,5 +235,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	cy.assertFrontendStyles( 'accordionBlock' )
+	cy.assertFrontendStyles( '@accordionBlock' )
 }
