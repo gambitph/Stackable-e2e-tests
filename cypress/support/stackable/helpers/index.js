@@ -67,9 +67,9 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 	designs.forEach( ( design, index ) => {
 		cy.addBlock( blockName )
 		cy.openInspector( blockName, 'Layout', index )
-		if ( ! index ) {
-			cy.wait( '@designLibrary' )
-		}
+		// if ( ! index ) {
+		// 	cy.wait( '@designLibrary' )
+		// }
 		cy.adjustDesign( design )
 	} )
 	cy.savePost()

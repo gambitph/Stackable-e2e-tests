@@ -7,7 +7,7 @@
 	"viewportHeight": 660,
 	"defaultCommandTimeout": 5000,
 	"numTestsKeptInMemory": 5,
-	"experimentalFetchPolyfill": true,
+	"experimentalFetchPolyfill": false,
 	"retries": {
 		"runMode": 2
 	},
