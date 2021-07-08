@@ -4,7 +4,7 @@
  */
 import { registerTests } from '~stackable-e2e/helpers'
 describe( 'Dynamic Content - Site', registerTests( [
-	matchPostData, changePostData,
+	matchSiteData, adjustSiteData,
 ] ) )
 
 const fields = {
@@ -12,9 +12,11 @@ const fields = {
 	'Site Tagline': 'tagline',
 	'Site URL': 'url',
 }
+//const to add post, blocks
+//const to adjust fields
 
-function matchPostData() {
-	it( 'should match the corresponding post data', () => {
+function matchSiteData() {
+	it( 'should match the site data', () => {
 		cy.setupWP()
 
 		Object.keys( fields ).forEach( fieldName => {
@@ -22,7 +24,7 @@ function matchPostData() {
 			cy.newPost()
 			cy.typePostTitle( `${ fieldName } test` )
 			cy.addBlock( 'ugb/cta' )
-
+			//add code for adjusting site settings
 			cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
 				source: 'Site',
 				fieldName,
@@ -33,8 +35,16 @@ function matchPostData() {
 	} )
 }
 
-function changePostData() {
-	it( 'change and assert data settings', () => {
-		cy.setupWP()
+function adjustSiteData() {
+	it( 'should adjust the site data', () => {
+		cy.visit( 'http://e2etest.local/wp-admin/' )
+		//find and click customize
+		//find 'site identity' and edit fields for site title, tagline
+		//click 'publish'
 	} )
 }
+
+/*function for adjusting siteData, could also be added to DC-commands
+> need additional commands?? could write them on my own as well
+> get site data -> adjust DC toolbars and output site data -> adjust site data -> assert changes
+*/
