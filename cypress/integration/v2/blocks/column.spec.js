@@ -46,7 +46,7 @@ function columnStyleTab( viewport, desktopOnly ) {
 	cy.newPage()
 	cy.addBlock( 'ugb/columns' )
 	cy.selectBlock( 'ugb/column' ).as( 'columnBlock' )
-	const columnBlock = registerBlockSnapshots( 'columnBlock' )
+	registerBlockSnapshots( 'columnBlock' )
 
 	cy.openInspector( 'ugb/column', 'Layout', '@columnBlock' )
 	cy.adjustLayout( 'Basic' )
@@ -141,7 +141,7 @@ function columnStyleTab( viewport, desktopOnly ) {
 		cy.selectBlock( 'ugb/column', '@columnBlock' )
 	} )
 	assertContainerLink( '.ugb-column__item', { viewport } )
-	columnBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'columnBlock' )
 }
 
 function columnAdvancedTab( viewport ) {
@@ -149,10 +149,10 @@ function columnAdvancedTab( viewport ) {
 	cy.newPage()
 	cy.addBlock( 'ugb/columns' )
 	cy.selectBlock( 'ugb/column' ).as( 'columnBlock' )
-	const columnBlock = registerBlockSnapshots( 'columnBlock' )
+	registerBlockSnapshots( 'columnBlock' )
 
 	cy.addInnerBlock( 'ugb/column', 'ugb/card', '@columnBlock' )
 	cy.openInspector( 'ugb/column', 'Advanced', '@columnBlock' )
 	assertAdvancedTab( '.ugb-column', { viewport } )
-	columnBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'columnBlock' )
 }

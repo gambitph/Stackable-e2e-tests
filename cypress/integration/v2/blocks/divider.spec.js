@@ -42,7 +42,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/divider' ).as( 'dividerBlock' )
-	const dividerBlock = registerBlockSnapshots( 'dividerBlock' )
+	registerBlockSnapshots( 'dividerBlock' )
 	cy.openInspector( 'ugb/divider', 'Style' )
 
 	// Test General options
@@ -67,19 +67,19 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
-	dividerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'dividerBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/divider' ).as( 'dividerBlock' )
-	const dividerBlock = registerBlockSnapshots( 'dividerBlock' )
+	registerBlockSnapshots( 'dividerBlock' )
 
 	cy.openInspector( 'ugb/divider', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-divider', { viewport } )
 
 	// Add more block specific tests.
-	dividerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'dividerBlock' )
 }

@@ -48,7 +48,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
-	const headingBlock = registerBlockSnapshots( 'headingBlock' )
+	registerBlockSnapshots( 'headingBlock' )
 	cy.openInspector( 'ugb/heading', 'Style' )
 
 	// Test General Alignment
@@ -183,14 +183,14 @@ function styleTab( viewport, desktopOnly ) {
 			'margin-bottom': '12px',
 		},
 	} )
-	headingBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'headingBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
-	const headingBlock = registerBlockSnapshots( 'headingBlock' )
+	registerBlockSnapshots( 'headingBlock' )
 
 	cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Title here' )
 	cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Subtitle here' )
@@ -205,5 +205,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	headingBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'headingBlock' )
 }

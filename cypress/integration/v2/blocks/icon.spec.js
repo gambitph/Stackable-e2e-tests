@@ -62,7 +62,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/icon' ).as( 'iconBlock' )
-	const iconBlock = registerBlockSnapshots( 'iconBlock' )
+	registerBlockSnapshots( 'iconBlock' )
 	cy.openInspector( 'ugb/icon', 'Style' )
 
 	// Test General options
@@ -225,14 +225,14 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Top and Bottom Separator
 	assertSeparators( { viewport } )
-	iconBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'iconBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/icon' ).as( 'iconBlock' )
-	const iconBlock = registerBlockSnapshots( 'iconBlock' )
+	registerBlockSnapshots( 'iconBlock' )
 
 	cy.openInspector( 'ugb/icon', 'Advanced' )
 
@@ -245,7 +245,7 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	iconBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'iconBlock' )
 }
 
 function blockSpecificTests() {
@@ -255,7 +255,7 @@ function blockSpecificTests() {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'ugb/icon' ).as( 'iconBlock' )
-		const iconBlock = registerBlockSnapshots( 'iconBlock' )
+		registerBlockSnapshots( 'iconBlock' )
 		cy.openInspector( 'ugb/icon', 'Style' )
 		cy.toggleStyle( 'Title' )
 
@@ -275,7 +275,7 @@ function blockSpecificTests() {
 			},
 		} )
 
-		iconBlock.assertFrontendStyles()
+		cy.assertFrontendStyles( 'iconBlock' )
 	} )
 }
 

@@ -68,7 +68,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/button' ).as( 'buttonBlock' )
-	const buttonBlock = registerBlockSnapshots( 'buttonBlock' )
+	registerBlockSnapshots( 'buttonBlock' )
 	cy.openInspector( 'ugb/button', 'Style' )
 
 	cy.collapse( 'General' )
@@ -178,14 +178,14 @@ function styleTab( viewport, desktopOnly ) {
 
 	assertBlockBackground( '.ugb-button-wrapper', { viewport } )
 	assertSeparators( { viewport } )
-	buttonBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'buttonBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/button' ).as( 'buttonBlock' )
-	const buttonBlock = registerBlockSnapshots( 'buttonBlock' )
+	registerBlockSnapshots( 'buttonBlock' )
 
 	cy.openInspector( 'ugb/button', 'Advanced' )
 
@@ -199,5 +199,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	buttonBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'buttonBlock' )
 }

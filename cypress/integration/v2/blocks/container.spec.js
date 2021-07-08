@@ -59,7 +59,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/container' ).as( 'containerBlock' )
-	const containerBlock = registerBlockSnapshots( 'containerBlock' )
+	registerBlockSnapshots( 'containerBlock' )
 	cy.openInspector( 'ugb/container', 'Style' )
 
 	// General Tab
@@ -200,14 +200,14 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-container', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-container__wrapper', { viewport } )
-	containerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'containerBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/container' ).as( 'containerBlock' )
-	const containerBlock = registerBlockSnapshots( 'containerBlock' )
+	registerBlockSnapshots( 'containerBlock' )
 
 	cy.openInspector( 'ugb/container', 'Advanced' )
 
@@ -220,5 +220,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	containerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'containerBlock' )
 }

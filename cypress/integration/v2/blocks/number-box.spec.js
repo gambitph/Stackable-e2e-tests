@@ -82,7 +82,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )
-	const numberBoxBlock = registerBlockSnapshots( 'numberBoxBlock' )
+	registerBlockSnapshots( 'numberBoxBlock' )
 	cy.openInspector( 'ugb/number-box', 'Style' )
 
 	// General Tab
@@ -253,14 +253,14 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-number-box', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-number-box__item', { viewport } )
-	numberBoxBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'numberBoxBlock' )
 }
 
 function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )
-	const numberBoxBlock = registerBlockSnapshots( 'numberBoxBlock' )
+	registerBlockSnapshots( 'numberBoxBlock' )
 
 	cy.openInspector( 'ugb/number-box', 'Advanced' )
 
@@ -289,5 +289,5 @@ function advancedTab( viewport, desktopOnly ) {
 			} )
 		} )
 	} )
-	numberBoxBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'numberBoxBlock' )
 }

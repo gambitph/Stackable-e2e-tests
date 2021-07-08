@@ -215,7 +215,7 @@ function assertGlobalTypography( viewport, desktopOnly ) {
 				const name = blockName.split( '/' ).pop()
 
 				cy.addBlock( blockName ).as( blockName )
-				const block = registerBlockSnapshots( blockName )
+				registerBlockSnapshots( blockName )
 				cy.openInspector( blockName, 'Style' )
 
 				if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
@@ -236,7 +236,7 @@ function assertGlobalTypography( viewport, desktopOnly ) {
 				}
 
 				cy.getPostUrls().then( ( { editorUrl } ) => {
-					block.assertFrontendStyles()
+					cy.assertFrontendStyles( blockName )
 					cy.visit( editorUrl )
 				} )
 			} )
@@ -294,7 +294,7 @@ function globalTypographyUnits( viewport ) {
 				const name = blockName.split( '/' ).pop()
 
 				cy.addBlock( blockName ).as( blockName )
-				const block = registerBlockSnapshots( blockName )
+				registerBlockSnapshots( blockName )
 				cy.openInspector( blockName, 'Style' )
 
 				if ( Array( 'heading', 'text', 'expand' ).includes( name ) ) {
@@ -332,7 +332,7 @@ function globalTypographyUnits( viewport ) {
 				} )
 
 				cy.getPostUrls().then( ( { editorUrl } ) => {
-					block.assertFrontendStyles()
+					cy.assertFrontendStyles( blockName )
 					cy.visit( editorUrl )
 				} )
 			} )

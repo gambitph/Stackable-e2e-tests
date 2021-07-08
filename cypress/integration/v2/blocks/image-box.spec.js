@@ -91,7 +91,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/image-box' ).as( 'imageBoxBlock' )
-	const imageBoxBlock = registerBlockSnapshots( 'imageBoxBlock' )
+	registerBlockSnapshots( 'imageBoxBlock' )
 	cy.openInspector( 'ugb/image-box', 'Style' )
 
 	cy.collapse( 'General' )
@@ -375,14 +375,14 @@ function styleTab( viewport, desktopOnly ) {
 	// Test Separators
 	assertSeparators( { viewport } )
 
-	imageBoxBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'imageBoxBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/image-box' ).as( 'imageBoxBlock' )
-	const imageBoxBlock = registerBlockSnapshots( 'imageBoxBlock' )
+	registerBlockSnapshots( 'imageBoxBlock' )
 
 	cy.openInspector( 'ugb/image-box', 'Advanced' )
 
@@ -397,5 +397,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	imageBoxBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'imageBoxBlock' )
 }

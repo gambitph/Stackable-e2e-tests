@@ -64,7 +64,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/video-popup' ).as( 'videoPopupBlock' )
-	const videoPopupBlock = registerBlockSnapshots( 'videoPopupBlock' )
+	registerBlockSnapshots( 'videoPopupBlock' )
 	cy.openInspector( 'ugb/video-popup', 'Style' )
 
 	cy.setBlockAttribute( {
@@ -124,14 +124,14 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-video-popup', { viewport } )
 	assertSeparators( { viewport } )
-	videoPopupBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'videoPopupBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/video-popup' ).as( 'videoPopupBlock' )
-	const videoPopupBlock = registerBlockSnapshots( 'videoPopupBlock' )
+	registerBlockSnapshots( 'videoPopupBlock' )
 
 	cy.openInspector( 'ugb/video-popup', 'Advanced' )
 
@@ -146,6 +146,6 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	videoPopupBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'videoPopupBlock' )
 }
 

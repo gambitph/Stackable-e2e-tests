@@ -88,7 +88,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/testimonial' ).as( 'testimonialBlock' )
-	const testimonialBlock = registerBlockSnapshots( 'testimonialBlock' )
+	registerBlockSnapshots( 'testimonialBlock' )
 	cy.openInspector( 'ugb/testimonial', 'Style' )
 
 	cy.collapse( 'General' )
@@ -257,14 +257,14 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-testimonial', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-testimonial__item', { viewport } )
-	testimonialBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'testimonialBlock' )
 }
 
 function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/testimonial' ).as( 'testimonialBlock' )
-	const testimonialBlock = registerBlockSnapshots( 'testimonialBlock' )
+	registerBlockSnapshots( 'testimonialBlock' )
 
 	cy.openInspector( 'ugb/testimonial', 'Advanced' )
 
@@ -301,5 +301,5 @@ function advancedTab( viewport, desktopOnly ) {
 			cy.adjust( 'Stretch Shape Mask', true ).assertClassName( `.ugb-testimonial__item${ idx } img.ugb-img--shape`, 'ugb-image--shape-stretch' )
 		} )
 	} )
-	testimonialBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'testimonialBlock' )
 }

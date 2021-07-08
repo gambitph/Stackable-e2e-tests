@@ -18,7 +18,7 @@
  * 	// Instead, block snapshots will be stubbed and can be enqueued before the end of the test
  *
  * 	// Enqueue all block snapshots and assert frontend styles
- * 	accordionBlock.assertFrontendStyles
+ * 	cy.assertFrontendStyles( alias )
  * }
  */
 
@@ -36,6 +36,11 @@ import { _assertComputedStyle } from '../commands/assertions'
 import {
 	first, keys, last, isBoolean, cloneDeep, toUpper,
 } from 'lodash'
+
+/**
+ * Register functions to Cypress Commands.
+ */
+Cypress.Commands.add( 'assertFrontendStyles', assertFrontendStyles )
 
 /**
  * Asynchronously initialize contentSnapshots and stubbedStyles
@@ -114,7 +119,7 @@ function stubStyles( alias, style, viewport ) {
  *
  * @param {string} alias
  */
-function assertFrontendStyles( alias ) {
+export function assertFrontendStyles( alias ) {
 	cy.get( `@${ alias }.stubbedStyles` ).then( $stubbedStyles => {
 		cy.get( `@${ alias }.contentSnapshots` ).then( $contentSnapshots => {
 			// Combine all stubbed styles and content snapshots into one array.
@@ -415,13 +420,10 @@ export function blockSnapshotsAssertBlockContent( originalFn, ...args ) {
 
 /**
  * Function used to register block snapshots in
- * block tests. It also overwrites assertion commands.
+ * block tests.
  *
  * @param {string} alias
  */
 export const registerBlockSnapshots = alias => {
 	registerAlias( alias )
-
-	return { assertFrontendStyles: () => assertFrontendStyles( alias ) }
 }
-

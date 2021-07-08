@@ -85,7 +85,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/text' ).as( 'textBlock' )
-	const textBlock = registerBlockSnapshots( 'textBlock' )
+	registerBlockSnapshots( 'textBlock' )
 	cy.openInspector( 'ugb/text', 'Style' )
 
 	// Test General options
@@ -230,14 +230,14 @@ function styleTab( viewport, desktopOnly ) {
 
 	// Test Top and Bottom Separator
 	assertSeparators( { viewport } )
-	textBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'textBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/text' ).as( 'textBlock' )
-	const textBlock = registerBlockSnapshots( 'textBlock' )
+	registerBlockSnapshots( 'textBlock' )
 
 	cy.openInspector( 'ugb/text', 'Advanced' )
 
@@ -249,5 +249,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	textBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'textBlock' )
 }

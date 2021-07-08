@@ -78,7 +78,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.newPage()
 
 	cy.addBlock( 'ugb/icon-list' ).as( 'iconListBlock' )
-	const iconListBlock = registerBlockSnapshots( 'iconListBlock' )
+	registerBlockSnapshots( 'iconListBlock' )
 	cy.openInspector( 'ugb/icon-list', 'Style' )
 	cy.collapse( 'General' )
 	cy.adjust( 'Columns', 4, { viewport } ).assertComputedStyle( {
@@ -135,14 +135,14 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockTitleDescription( { viewport } )
 	assertBlockBackground( '.ugb-icon-list', { viewport } )
 	assertSeparators( { viewport } )
-	iconListBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'iconListBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/icon-list' ).as( 'iconListBlock' )
-	const iconListBlock = registerBlockSnapshots( 'iconListBlock' )
+	registerBlockSnapshots( 'iconListBlock' )
 
 	cy.openInspector( 'ugb/icon-list', 'Advanced' )
 
@@ -156,5 +156,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	iconListBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'iconListBlock' )
 }

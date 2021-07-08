@@ -102,7 +102,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
-	const featureGridBlock = registerBlockSnapshots( 'featureGridBlock' )
+	registerBlockSnapshots( 'featureGridBlock' )
 
 	cy.openInspector( 'ugb/feature-grid', 'Style' )
 
@@ -313,14 +313,14 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-feature-grid', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-feature-grid__item', { viewport } )
-	featureGridBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'featureGridBlock' )
 }
 
 function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/feature-grid' ).as( 'featureGridBlock' )
-	const featureGridBlock = registerBlockSnapshots( 'featureGridBlock' )
+	registerBlockSnapshots( 'featureGridBlock' )
 
 	cy.openInspector( 'ugb/feature-grid', 'Advanced' )
 
@@ -358,6 +358,6 @@ function advancedTab( viewport, desktopOnly ) {
 			cy.adjust( 'Stretch Shape Mask', true ).assertClassName( `.ugb-feature-grid__item${ idx } img.ugb-img--shape`, 'ugb-image--shape-stretch' )
 		} )
 	} )
-	featureGridBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'featureGridBlock' )
 }
 

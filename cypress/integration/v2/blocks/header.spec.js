@@ -101,7 +101,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/header' ).as( 'headerBlock' )
-	const headerBlock = registerBlockSnapshots( 'headerBlock' )
+	registerBlockSnapshots( 'headerBlock' )
 	cy.openInspector( 'ugb/header', 'Style' )
 
 	cy.collapse( 'General' )
@@ -324,14 +324,14 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-header', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-header__item', { viewport } )
-	headerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'headerBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/header' ).as( 'headerBlock' )
-	const headerBlock = registerBlockSnapshots( 'headerBlock' )
+	registerBlockSnapshots( 'headerBlock' )
 
 	cy.openInspector( 'ugb/header', 'Advanced' )
 
@@ -346,5 +346,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	headerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'headerBlock' )
 }

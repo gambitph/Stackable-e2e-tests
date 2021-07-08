@@ -50,7 +50,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/separator' ).as( 'separatorBlock' )
-	const separatorBlock = registerBlockSnapshots( 'separatorBlock' )
+	registerBlockSnapshots( 'separatorBlock' )
 	cy.openInspector( 'ugb/separator', 'Style' )
 
 	desktopOnly( () => {
@@ -270,14 +270,14 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 	} )
-	separatorBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'separatorBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/separator' ).as( 'separatorBlock' )
-	const separatorBlock = registerBlockSnapshots( 'separatorBlock' )
+	registerBlockSnapshots( 'separatorBlock' )
 
 	cy.openInspector( 'ugb/separator', 'Advanced' )
 
@@ -295,5 +295,5 @@ function advancedTab( viewport ) {
 		],
 	 } )
 
-	separatorBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'separatorBlock' )
 }

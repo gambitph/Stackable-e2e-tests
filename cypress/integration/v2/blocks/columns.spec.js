@@ -73,7 +73,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )
-	const columnsBlock = registerBlockSnapshots( 'columnsBlock' )
+	registerBlockSnapshots( 'columnsBlock' )
 	cy.openInspector( 'ugb/columns', 'Style' )
 
 	cy.collapse( 'General' )
@@ -179,14 +179,14 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-columns', { viewport } )
 	assertSeparators( { viewport } )
 
-	columnsBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'columnsBlock' )
 }
 
 function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )
-	const columnsBlock = registerBlockSnapshots( 'columnsBlock' )
+	registerBlockSnapshots( 'columnsBlock' )
 
 	cy.openInspector( 'ugb/columns', 'Advanced' )
 
@@ -210,5 +210,5 @@ function advancedTab( viewport, desktopOnly ) {
 	} )
 
 	// Add more block specific tests.
-	columnsBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'columnsBlock' )
 }

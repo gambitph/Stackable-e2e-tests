@@ -86,7 +86,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )
-	const teamMemberBlock = registerBlockSnapshots( 'teamMemberBlock' )
+	registerBlockSnapshots( 'teamMemberBlock' )
 	cy.openInspector( 'ugb/team-member', 'Style' )
 
 	// General Tab
@@ -333,14 +333,14 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-team-member', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-team-member__item', { viewport } )
-	teamMemberBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'teamMemberBlock' )
 }
 
 function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/team-member' ).as( 'teamMemberBlock' )
-	const teamMemberBlock = registerBlockSnapshots( 'teamMemberBlock' )
+	registerBlockSnapshots( 'teamMemberBlock' )
 
 	cy.openInspector( 'ugb/team-member', 'Advanced' )
 
@@ -377,5 +377,5 @@ function advancedTab( viewport, desktopOnly ) {
 			cy.adjust( 'Stretch Shape Mask', true ).assertClassName( `.ugb-team-member__item${ idx } img.ugb-img--shape`, 'ugb-image--shape-stretch' )
 		} )
 	} )
-	teamMemberBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'teamMemberBlock' )
 }

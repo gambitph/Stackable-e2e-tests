@@ -36,7 +36,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/spacer' ).as( 'spacerBlock' )
-	const spacerBlock = registerBlockSnapshots( 'spacerBlock' )
+	registerBlockSnapshots( 'spacerBlock' )
 	cy.openInspector( 'ugb/spacer', 'Style' )
 
 	cy.collapse( 'General' )
@@ -161,19 +161,19 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	assertSeparators( { viewport } )
-	spacerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'spacerBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/spacer' ).as( 'spacerBlock' )
-	const spacerBlock = registerBlockSnapshots( 'spacerBlock' )
+	registerBlockSnapshots( 'spacerBlock' )
 
 	cy.openInspector( 'ugb/spacer', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-spacer', { viewport } )
 
 	// Add more block specific tests.
-	spacerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'spacerBlock' )
 }

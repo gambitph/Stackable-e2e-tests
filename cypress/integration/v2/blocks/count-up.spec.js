@@ -82,7 +82,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
-	const countUpBlock = registerBlockSnapshots( 'countUpBlock' )
+	registerBlockSnapshots( 'countUpBlock' )
 	cy.openInspector( 'ugb/count-up', 'Style' )
 
 	cy.collapse( 'General' )
@@ -262,14 +262,14 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-count-up', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-countup__item', { viewport } )
-	countUpBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'countUpBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/count-up' ).as( 'countUpBlock' )
-	const countUpBlock = registerBlockSnapshots( 'countUpBlock' )
+	registerBlockSnapshots( 'countUpBlock' )
 
 	cy.openInspector( 'ugb/count-up', 'Advanced' )
 
@@ -284,5 +284,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	countUpBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'countUpBlock' )
 }

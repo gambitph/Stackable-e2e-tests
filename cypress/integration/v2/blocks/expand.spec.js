@@ -53,7 +53,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )
-	const expandBlock = registerBlockSnapshots( 'expandBlock' )
+	registerBlockSnapshots( 'expandBlock' )
 	cy.openInspector( 'ugb/expand', 'Style' )
 
 	// Test General options
@@ -119,14 +119,14 @@ function styleTab( viewport, desktopOnly ) {
 			'margin-bottom': '39px',
 		},
 	} )
-	expandBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'expandBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )
-	const expandBlock = registerBlockSnapshots( 'expandBlock' )
+	registerBlockSnapshots( 'expandBlock' )
 
 	cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Title here' )
 	cy.typeBlock( 'ugb/expand', '.ugb-expand__less-text', 'Less Text here' )
@@ -146,6 +146,6 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	expandBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'expandBlock' )
 }
 

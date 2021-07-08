@@ -14,12 +14,12 @@ function desktopStyles( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
-	const accordionBlock = registerblockSnapshots( 'accordionBlock' )
+	registerblockSnapshots( 'accordionBlock' )
 
 	// More tests...
 	// All assertion commands will no longer assert the frontend every call.
 	// Instead, block snapshots will be stubbed and can be enqueued before the end of the test
 
 	// Enqueue all block snapshots and assert frontend styles
-	accordionBlock.assertFrontendStyles
+	cy.assertFrontendStyles( 'accordionBlock' )
 ```

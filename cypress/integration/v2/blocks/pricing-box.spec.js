@@ -96,7 +96,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/pricing-box' ).as( 'pricingBoxBlock' )
-	const pricingBoxBlock = registerBlockSnapshots( 'pricingBoxBlock' )
+	registerBlockSnapshots( 'pricingBoxBlock' )
 	cy.openInspector( 'ugb/pricing-box', 'Style' )
 
 	// General Tab
@@ -393,14 +393,14 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-pricing-box', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-pricing-box__item', { viewport } )
-	pricingBoxBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'pricingBoxBlock' )
 }
 
 function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/pricing-box' ).as( 'pricingBoxBlock' )
-	const pricingBoxBlock = registerBlockSnapshots( 'pricingBoxBlock' )
+	registerBlockSnapshots( 'pricingBoxBlock' )
 
 	cy.openInspector( 'ugb/pricing-box', 'Advanced' )
 
@@ -442,5 +442,5 @@ function advancedTab( viewport, desktopOnly ) {
 			cy.adjust( 'Stretch Shape Mask', true ).assertClassName( `.ugb-pricing-box__item${ idx } img.ugb-img--shape`, 'ugb-image--shape-stretch' )
 		} )
 	} )
-	pricingBoxBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'pricingBoxBlock' )
 }

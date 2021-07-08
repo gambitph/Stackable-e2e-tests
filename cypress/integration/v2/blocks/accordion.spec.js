@@ -140,7 +140,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
-	const accordionBlock = registerBlockSnapshots( 'accordionBlock' )
+	registerBlockSnapshots( 'accordionBlock' )
 
 	// Test General Reverse Arrow and Alignment
 	cy.openInspector( 'ugb/accordion', 'Style' )
@@ -217,14 +217,14 @@ function styleTab( viewport, desktopOnly ) {
 			} )
 	} )
 
-	accordionBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'accordionBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
-	const accordionBlock = registerBlockSnapshots( 'accordionBlock' )
+	registerBlockSnapshots( 'accordionBlock' )
 
 	cy.openInspector( 'ugb/accordion', 'Advanced' )
 
@@ -239,5 +239,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	accordionBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'accordionBlock' )
 }

@@ -76,7 +76,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/blockquote' ).as( 'blockquoteBlock' )
-	const blockquoteBlock = registerBlockSnapshots( 'blockquoteBlock' )
+	registerBlockSnapshots( 'blockquoteBlock' )
 	cy.openInspector( 'ugb/blockquote', 'Style' )
 
 	// Test General Alignment
@@ -154,14 +154,14 @@ function styleTab( viewport, desktopOnly ) {
 
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-blockquote__item', { viewport } )
-	blockquoteBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'blockquoteBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/blockquote' ).as( 'blockquoteBlock' )
-	const blockquoteBlock = registerBlockSnapshots( 'blockquoteBlock' )
+	registerBlockSnapshots( 'blockquoteBlock' )
 
 	cy.openInspector( 'ugb/blockquote', 'Advanced' )
 
@@ -175,6 +175,6 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	blockquoteBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'blockquoteBlock' )
 }
 

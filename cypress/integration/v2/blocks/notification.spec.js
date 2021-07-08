@@ -75,7 +75,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
-	const notificationBlock = registerBlockSnapshots( 'notificationBlock' )
+	registerBlockSnapshots( 'notificationBlock' )
 	cy.openInspector( 'ugb/notification', 'Style' )
 
 	// Test General options
@@ -313,14 +313,14 @@ function styleTab( viewport, desktopOnly ) {
 	// Test Block Background
 	assertBlockBackground( '.ugb-notification', { viewport } )
 	assertContainerLink( '.ugb-notification__item', { viewport } )
-	notificationBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'notificationBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/notification' ).as( 'notificationBlock' )
-	const notificationBlock = registerBlockSnapshots( 'notificationBlock' )
+	registerBlockSnapshots( 'notificationBlock' )
 
 	cy.openInspector( 'ugb/notification', 'Advanced' )
 
@@ -337,5 +337,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	notificationBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'notificationBlock' )
 }

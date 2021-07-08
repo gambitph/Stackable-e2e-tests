@@ -107,7 +107,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/cta' ).as( 'ctaBlock' )
-	const ctaBlock = registerBlockSnapshots( 'ctaBlock' )
+	registerBlockSnapshots( 'ctaBlock' )
 	cy.openInspector( 'ugb/cta', 'Style' )
 
 	// Test General options
@@ -273,14 +273,14 @@ function styleTab( viewport, desktopOnly ) {
 
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-cta__item', { viewport } )
-	ctaBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'ctaBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/cta' ).as( 'ctaBlock' )
-	const ctaBlock = registerBlockSnapshots( 'ctaBlock' )
+	registerBlockSnapshots( 'ctaBlock' )
 
 	cy.openInspector( 'ugb/cta', 'Advanced' )
 
@@ -294,5 +294,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	ctaBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'ctaBlock' )
 }

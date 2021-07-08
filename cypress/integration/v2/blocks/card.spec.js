@@ -94,7 +94,7 @@ function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
-	const cardBlock = registerBlockSnapshots( 'cardBlock' )
+	registerBlockSnapshots( 'cardBlock' )
 	cy.openInspector( 'ugb/card', 'Style' )
 
 	cy.collapse( 'General' )
@@ -319,14 +319,14 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-card', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-card__item', { viewport } )
-	cardBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'cardBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
-	const cardBlock = registerBlockSnapshots( 'cardBlock' )
+	registerBlockSnapshots( 'cardBlock' )
 
 	cy.openInspector( 'ugb/card', 'Advanced' )
 
@@ -343,5 +343,5 @@ function advancedTab( viewport ) {
 	 } )
 
 	// Add more block specific tests.
-	cardBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( 'cardBlock' )
 }
