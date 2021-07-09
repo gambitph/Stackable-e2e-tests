@@ -8,7 +8,7 @@ import {
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
-const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { disableItAssertion: true } )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 export {
 	blockExist,
@@ -76,9 +76,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	// eslint-disable-next-line no-undef
-	afterEach( () => {
-		cy.assertFrontendStyles( '@columnsBlock' )
-	} )
+	afterEach( () => cy.assertFrontendStyles( '@columnsBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'General' )
@@ -192,32 +190,30 @@ function styleTab( viewport, desktopOnly ) {
 }
 
 function advancedTab( viewport, desktopOnly ) {
-	it( `should assert advanced options in ${ lowerCase( viewport ) }`, () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/columns' ).asBlock( 'columnsBlock', { isStatic: true } )
-		cy.openInspector( 'ugb/columns', 'Advanced' )
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/columns' ).asBlock( 'columnsBlock', { isStatic: true } )
+	cy.openInspector( 'ugb/columns', 'Advanced' )
 
-		assertAdvancedTab( '.ugb-columns', {
-			viewport,
-			customCssSelectors: [
-				'.ugb-columns__item',
-			],
-		} )
-		desktopOnly( () => {
-			cy.collapse( 'Responsive' )
-			cy.adjust( 'Collapsed Row Gap', 500 ).assertComputedStyle( {
-				'.ugb-columns__item': {
-					'grid-row-gap': '500',
-				},
-			}, {
-				assertBackend: false,
-				viewportFrontend: 'Mobile',
-			} )
-			// TODO: Collapsed Col. Arrangement
-		} )
-
-		// Add more block specific tests.
-		cy.assertFrontendStyles( '@columnsBlock' )
+	assertAdvancedTab( '.ugb-columns', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-columns__item',
+		],
 	} )
+	desktopOnly( () => {
+		cy.collapse( 'Responsive' )
+		cy.adjust( 'Collapsed Row Gap', 500 ).assertComputedStyle( {
+			'.ugb-columns__item': {
+				'grid-row-gap': '500',
+			},
+		}, {
+			assertBackend: false,
+			viewportFrontend: 'Mobile',
+		} )
+		// TODO: Collapsed Col. Arrangement
+	} )
+
+	// Add more block specific tests.
+	cy.assertFrontendStyles( '@columnsBlock' )
 }

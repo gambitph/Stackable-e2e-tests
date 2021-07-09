@@ -9,7 +9,7 @@ import {
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
-const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { disableItAssertion: true } )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 export {
 	blockExist,
@@ -146,9 +146,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	// eslint-disable-next-line no-undef
-	afterEach( () => {
-		cy.assertFrontendStyles( 'accordionBlock' )
-	} )
+	afterEach( () => cy.assertFrontendStyles( 'accordionBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'General' )
@@ -229,23 +227,21 @@ function styleTab( viewport, desktopOnly ) {
 }
 
 function advancedTab( viewport ) {
-	it( `should assert advanced options in ${ lowerCase( viewport ) }`, () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
-		cy.openInspector( 'ugb/accordion', 'Advanced' )
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
+	cy.openInspector( 'ugb/accordion', 'Advanced' )
 
-		assertAdvancedTab( '.ugb-accordion', {
-			viewport,
-			customCssSelectors: [
-				'.ugb-accordion__heading',
-				'.ugb-accordion__title',
-				'.ugb-accordion__arrow',
-				'.ugb-accordion__content',
-			],
-		} )
-
-		// Add more block specific tests.
-		cy.assertFrontendStyles( '@accordionBlock' )
+	assertAdvancedTab( '.ugb-accordion', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-accordion__heading',
+			'.ugb-accordion__title',
+			'.ugb-accordion__arrow',
+			'.ugb-accordion__content',
+		],
 	} )
+
+	// Add more block specific tests.
+	cy.assertFrontendStyles( '@accordionBlock' )
 }

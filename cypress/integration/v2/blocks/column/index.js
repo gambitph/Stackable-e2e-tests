@@ -7,7 +7,7 @@ import {
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
-const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { disableItAssertion: true } )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 export {
 	switchColumnLayout,
@@ -53,9 +53,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	// eslint-disable-next-line no-undef
-	afterEach( () => {
-		cy.assertFrontendStyles( '@columnBlock' )
-	} )
+	afterEach( () => cy.assertFrontendStyles( '@columnBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'General' )
@@ -160,15 +158,13 @@ function styleTab( viewport, desktopOnly ) {
 }
 
 function advancedTab( viewport ) {
-	it( `should assert advanced options in ${ lowerCase( viewport ) }`, () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/columns' )
-		cy.selectBlock( 'ugb/column' ).asBlock( 'columnBlock', { isStatic: true } )
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/columns' )
+	cy.selectBlock( 'ugb/column' ).asBlock( 'columnBlock', { isStatic: true } )
 
-		cy.addInnerBlock( 'ugb/column', 'ugb/card', '@columnBlock' )
-		cy.openInspector( 'ugb/column', 'Advanced', '@columnBlock' )
-		assertAdvancedTab( '.ugb-column', { viewport } )
-		cy.assertFrontendStyles( '@columnBlock' )
-	} )
+	cy.addInnerBlock( 'ugb/column', 'ugb/card', '@columnBlock' )
+	cy.openInspector( 'ugb/column', 'Advanced', '@columnBlock' )
+	assertAdvancedTab( '.ugb-column', { viewport } )
+	cy.assertFrontendStyles( '@columnBlock' )
 }

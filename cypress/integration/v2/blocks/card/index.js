@@ -7,7 +7,7 @@ import {
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
-const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { disableItAssertion: true } )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 export {
 	blockExist,
@@ -98,9 +98,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	// eslint-disable-next-line no-undef
-	afterEach( () => {
-		cy.assertFrontendStyles( '@cardBlock' )
-	} )
+	afterEach( () => cy.assertFrontendStyles( '@cardBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'General' )
@@ -341,26 +339,24 @@ function styleTab( viewport, desktopOnly ) {
 }
 
 function advancedTab( viewport ) {
-	it( `should assert advanced options in ${ lowerCase( viewport ) }`, () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'ugb/card' ).asBlock( 'cardBlock', { isStatic: true } )
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( 'ugb/card' ).asBlock( 'cardBlock', { isStatic: true } )
 
-		cy.openInspector( 'ugb/card', 'Advanced' )
+	cy.openInspector( 'ugb/card', 'Advanced' )
 
-		assertAdvancedTab( '.ugb-card', {
-			viewport,
-			verticalAlignSelector: '.ugb-card__content',
-			customCssSelectors: [
-				'.ugb-card__title',
-				'.ugb-card__subtitle',
-				'.ugb-card__description',
-				'.ugb-button',
-				'.ugb-button--inner',
-			],
+	assertAdvancedTab( '.ugb-card', {
+		viewport,
+		verticalAlignSelector: '.ugb-card__content',
+		customCssSelectors: [
+			'.ugb-card__title',
+			'.ugb-card__subtitle',
+			'.ugb-card__description',
+			'.ugb-button',
+			'.ugb-button--inner',
+		],
 		 } )
 
-		// Add more block specific tests.
-		cy.assertFrontendStyles( '@cardBlock' )
-	} )
+	// Add more block specific tests.
+	cy.assertFrontendStyles( '@cardBlock' )
 }
