@@ -1,14 +1,15 @@
 /**
  * External dependencies
  */
+import { lowerCase } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertAdvancedTab,
+	assertBlockExist, blockErrorTest, switchLayouts, assertAligns, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
-const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
-describe( 'Divider Block', registerTests( [
+export {
 	blockExist,
 	blockError,
 	switchLayout,
@@ -18,7 +19,7 @@ describe( 'Divider Block', registerTests( [
 	desktopAdvanced,
 	tabletAdvanced,
 	mobileAdvanced,
-] ) )
+}
 
 function blockExist() {
 	it( 'should show the block', assertBlockExist( 'ugb/divider', '.ugb-divider' ) )
@@ -38,34 +39,40 @@ function switchLayout() {
 }
 
 function styleTab( viewport, desktopOnly ) {
-	cy.setupWP()
-	cy.newPage()
-	cy.addBlock( 'ugb/divider' ).asBlock( 'dividerBlock', { isStatic: true } )
-	cy.openInspector( 'ugb/divider', 'Style' )
-
-	// Test General options
-	cy.collapse( 'General' )
-
-	desktopOnly( () => {
-		cy.adjust( 'Color', '#000000' )
-		cy.adjust( 'Height / Size', 9 )
-		cy.adjust( 'Width (%)', 68 ).assertComputedStyle( {
-			'.ugb-divider__hr': {
-				'background-color': '#000000',
-				'height': '9px',
-				'width': '68%',
-			},
-		} )
-		cy.adjust( 'Vertical Margin', 32 ).assertComputedStyle( {
-			'.ugb-block-content': {
-				'margin-top': '32px',
-				'margin-bottom': '32px',
-			},
-		} )
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'ugb/divider' ).asBlock( 'dividerBlock', { isStatic: true } )
+		cy.openInspector( 'ugb/divider', 'Style' )
 	} )
 
-	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
-	cy.assertFrontendStyles( '@dividerBlock' )
+	// eslint-disable-next-line no-undef
+	afterEach( () => cy.assertFrontendStyles( '@dividerBlock' ) )
+
+	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {
+		// Test General options
+		cy.collapse( 'General' )
+
+		desktopOnly( () => {
+			cy.adjust( 'Color', '#000000' )
+			cy.adjust( 'Height / Size', 9 )
+			cy.adjust( 'Width (%)', 68 ).assertComputedStyle( {
+				'.ugb-divider__hr': {
+					'background-color': '#000000',
+					'height': '9px',
+					'width': '68%',
+				},
+			} )
+			cy.adjust( 'Vertical Margin', 32 ).assertComputedStyle( {
+				'.ugb-block-content': {
+					'margin-top': '32px',
+					'margin-bottom': '32px',
+				},
+			} )
+		} )
+
+		assertAligns( 'Align', '.ugb-inner-block', { viewport } )
+	} )
 }
 
 function advancedTab( viewport ) {
