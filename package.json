@@ -8,7 +8,8 @@
 		"lint": "npm run lint-js",
 		"lint-js": "wp-scripts lint-js",
 		"chrome": "cypress run --browser chrome",
-		"headless": "cypress run --browser chrome --headless"
+		"headless": "cypress run --browser chrome --headless",
+		"cy:run:parallel": "node ./scripts/parallelize-specs.js"
 	},
 	"keywords": [],
 	"author": "",
@@ -17,13 +18,17 @@
 		"@wordpress/eslint-plugin": "^7.1.0",
 		"cypress": "^5.1.0",
 		"cypress-jest-adapter": "^0.1.1",
+		"cypress-multi-reporters": "^1.5.0",
 		"eslint": "^7.8.1",
 		"eslint-plugin-jest": "^24.0.0",
 		"lodash": "^4.17.20",
+		"mocha-junit-reporter": "^2.0.0",
 		"prettier": "^2.1.1"
 	},
 	"dependencies": {
 		"@cypress/webpack-preprocessor": "^5.5.0",
+		"args-parser": "^1.2.0",
+		"glob": "^7.1.7",
 		"husky": "^4.3.8",
 		"lint-staged": "^10.5.3",
 		"stylelint": "^13.9.0",

@@ -4,16 +4,17 @@
  */
 import { registerTests } from '~stackable-e2e/helpers'
 describe( 'Dynamic Content - Site', registerTests( [
-	matchSiteData, adjustSiteData,
+	/*matchSiteData,*/ adjustSiteData,
 ] ) )
 
+/*
 const fields = {
 	'Site Title': 'title',
 	'Site Tagline': 'tagline',
 	'Site URL': 'url',
 }
 //const to add post, blocks
-//const to adjust fields
+//const to adjust site DC fields
 
 function matchSiteData() {
 	it( 'should match the site data', () => {
@@ -34,7 +35,7 @@ function matchSiteData() {
 		} )
 	} )
 }
-
+*/
 function adjustSiteData() {
 	it( 'should adjust the site data', () => {
 		cy.visit( 'http://e2etest.local/wp-admin/' )
