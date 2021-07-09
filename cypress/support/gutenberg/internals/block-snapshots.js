@@ -72,8 +72,7 @@ function createContentSnapshot( alias ) {
 function stubStyles( alias, style, viewport ) {
 	cy.get( `@${ alias }.stubbedStyles` ).then( $stubbedStyles => {
 		$stubbedStyles.push( { style, viewport } )
-		cy.wrap( $stubbedStyles ).as( `${ alias }.stubbedStyles` ).then( () => {
-		} )
+		cy.wrap( $stubbedStyles ).as( `${ alias }.stubbedStyles` )
 	} )
 }
 
