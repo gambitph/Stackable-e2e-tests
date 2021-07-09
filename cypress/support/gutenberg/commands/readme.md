@@ -207,7 +207,7 @@
 
 6. assertFrontendStyles
 
-    - Command for asserting or asserting frontend styles of static blocks. Enqueue all stubbed html contents to the frontend. Individually assert its computed style.
+    - Command for asserting frontend styles of static blocks. Enqueue all stubbed html contents to the frontend. Individually assert its computed style.
 
     Syntax
 
