@@ -205,6 +205,33 @@
 
     - `.assertBlockContent()` requires being chained off to commands such as `cy.typeBlock()`
 
+6. assertFrontendStyles
+
+    - Command for asserting frontend styles of static blocks. Enqueue all stubbed html contents to the frontend. Individually assert its computed style.
+
+    Syntax
+
+    ```jsx
+    cy.assertFrontendStyles( alias )
+    cy.selectBlock( blockName, alias ).assertFrontendStyles()
+    ```
+
+    Arguments:
+
+    - subject - HTMLDocument
+    - alias - string
+
+    Usage:
+
+    ```jsx
+    cy.assertFrontendStyles( '@accordionBlock' )
+    cy.selectBlock( 'ugb/accordion', '@accordionBlock' ).assertFrontendStyles()
+    ```
+
+    Rules/Requirements:
+
+    - Alternatively, `.assertFrontendStyles()` can be chained off to `cy.selectBlock()`.
+
 ---
 
 ### attributes.js

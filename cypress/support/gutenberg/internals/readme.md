@@ -7,19 +7,18 @@
 Usage:
 
 ```jsx
-// import registerBlockSnapshots to create an instance of BlockSnapshots
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
-
 function desktopStyles( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
-	const accordionBlock = registerblockSnapshots( 'accordionBlock' )
+	cy.addBlock( 'ugb/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
 
 	// More tests...
 	// All assertion commands will no longer assert the frontend every call.
 	// Instead, block snapshots will be stubbed and can be enqueued before the end of the test
 
-	// Enqueue all block snapshots and assert frontend styles
-	accordionBlock.assertFrontendStyles
+ 	// Enqueue all block snapshots and assert frontend styles
+ 	cy.assertFrontendStyles( '@accordionBlock' )
+	// Alternatively, you can chain it after `selectBlock` command.
+ 	cy.selectBlock( 'ugb/accordion' ,'@accordionBlock' ).assertFrontendStyles()
+}
 ```

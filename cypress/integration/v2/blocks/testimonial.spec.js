@@ -5,7 +5,6 @@ import { range } from 'lodash'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -69,8 +68,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/testimonial' ).as( 'testimonialBlock' )
-		registerBlockSnapshots( 'testimonialBlock' )
+		cy.addBlock( 'ugb/testimonial' ).asBlock( 'testimonialBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__body', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-testimonial__body', 'Hello World! 1' )
@@ -87,8 +85,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/testimonial' ).as( 'testimonialBlock' )
-	const testimonialBlock = registerBlockSnapshots( 'testimonialBlock' )
+	cy.addBlock( 'ugb/testimonial' ).asBlock( 'testimonialBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/testimonial', 'Style' )
 
 	cy.collapse( 'General' )
@@ -257,15 +254,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-testimonial', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-testimonial__item', { viewport } )
-	testimonialBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@testimonialBlock' )
 }
 
 function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/testimonial' ).as( 'testimonialBlock' )
-	const testimonialBlock = registerBlockSnapshots( 'testimonialBlock' )
-
+	cy.addBlock( 'ugb/testimonial' ).asBlock( 'testimonialBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/testimonial', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-testimonial', {
@@ -301,5 +296,5 @@ function advancedTab( viewport, desktopOnly ) {
 			cy.adjust( 'Stretch Shape Mask', true ).assertClassName( `.ugb-testimonial__item${ idx } img.ugb-img--shape`, 'ugb-image--shape-stretch' )
 		} )
 	} )
-	testimonialBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@testimonialBlock' )
 }

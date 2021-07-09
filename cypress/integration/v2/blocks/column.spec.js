@@ -4,7 +4,6 @@
 import {
 	registerTests, responsiveAssertHelper, assertAdvancedTab, assertAligns, assertContainer, assertContainerLink,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ columnDesktopStyle, columnTabletStyle, columnMobileStyle ] = responsiveAssertHelper( columnStyleTab )
 const [ columnDesktopAdvanced, columnTabletAdvanced, columnMobileAdvanced ] = responsiveAssertHelper( columnAdvancedTab, { tab: 'Advanced' } )
@@ -45,8 +44,7 @@ function columnStyleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/columns' )
-	cy.selectBlock( 'ugb/column' ).as( 'columnBlock' )
-	const columnBlock = registerBlockSnapshots( 'columnBlock' )
+	cy.selectBlock( 'ugb/column' ).asBlock( 'columnBlock', { isStatic: true } )
 
 	cy.openInspector( 'ugb/column', 'Layout', '@columnBlock' )
 	cy.adjustLayout( 'Basic' )
@@ -141,18 +139,17 @@ function columnStyleTab( viewport, desktopOnly ) {
 		cy.selectBlock( 'ugb/column', '@columnBlock' )
 	} )
 	assertContainerLink( '.ugb-column__item', { viewport } )
-	columnBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@columnBlock' )
 }
 
 function columnAdvancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/columns' )
-	cy.selectBlock( 'ugb/column' ).as( 'columnBlock' )
-	const columnBlock = registerBlockSnapshots( 'columnBlock' )
+	cy.selectBlock( 'ugb/column' ).asBlock( 'columnBlock', { isStatic: true } )
 
 	cy.addInnerBlock( 'ugb/column', 'ugb/card', '@columnBlock' )
 	cy.openInspector( 'ugb/column', 'Advanced', '@columnBlock' )
 	assertAdvancedTab( '.ugb-column', { viewport } )
-	columnBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@columnBlock' )
 }

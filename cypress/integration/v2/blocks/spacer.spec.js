@@ -8,7 +8,6 @@ import {
 import {
 	assertBlockExist, blockErrorTest, assertSeparators, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -35,8 +34,7 @@ function blockError() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/spacer' ).as( 'spacerBlock' )
-	const spacerBlock = registerBlockSnapshots( 'spacerBlock' )
+	cy.addBlock( 'ugb/spacer' ).asBlock( 'spacerBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/spacer', 'Style' )
 
 	cy.collapse( 'General' )
@@ -161,19 +159,17 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	assertSeparators( { viewport } )
-	spacerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@spacerBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/spacer' ).as( 'spacerBlock' )
-	const spacerBlock = registerBlockSnapshots( 'spacerBlock' )
-
+	cy.addBlock( 'ugb/spacer' ).asBlock( 'spacerBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/spacer', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-spacer', { viewport } )
 
 	// Add more block specific tests.
-	spacerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@spacerBlock' )
 }

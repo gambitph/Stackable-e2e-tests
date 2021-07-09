@@ -20,6 +20,7 @@ Cypress.Commands.add( 'selectBlock', selectBlock )
 Cypress.Commands.add( 'typeBlock', typeBlock )
 Cypress.Commands.add( 'deleteBlock', deleteBlock )
 Cypress.Commands.add( 'addInnerBlock', addInnerBlock )
+Cypress.Commands.add( 'asBlock', { prevSubject: true }, asBlock )
 
 /**
  * Command for asserting block error.
@@ -172,3 +173,49 @@ export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/ac
 		} )
 	} )
 }
+
+/**
+ * Command for setting block alias.
+ * Instead of yielding the DOM element, we
+ * will yield the block object.
+ *
+ * @param {Object} subject
+ * @param {string} alias
+ * @param {Object} options
+ */
+export function asBlock( subject, alias, options = {} ) {
+	const {
+		isStatic = false,
+	} = options
+
+	cy.wrap( subject ).as( alias )
+
+	if ( ! isStatic ) {
+		return
+	}
+
+	/**
+	 * Asynchronously initialize contentSnapshots and stubbedStyles
+	 * using Cypress alias.
+	 *
+	 * @see https://docs.cypress.io/guides/core-concepts/variables-and-aliases.html
+	 */
+	cy.wrap( [] ).as( `${ alias }.contentSnapshots` )
+	cy.wrap( [] ).as( `${ alias }.stubbedStyles` )
+	cy.wp().then( wp => {
+		if ( subject.attributes && subject.clientId ) {
+			// This is to handle passed block object from `addBlock` command
+			cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks =>
+				cy.wrap( [ ...$blockSnapshotBlocks, Object.assign( subject, { alias } ) ] ).as( 'blockSnapshotBlocks' ) )
+			return
+		}
+		// This is to handle passed block element from `selectBlock` command
+		const clientId = subject.data( 'block' )
+		const block = wp.data.select( 'core/block-editor' ).getBlock( clientId )
+		cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks =>
+			cy.wrap( [ ...$blockSnapshotBlocks, Object.assign( block, { alias } ) ] ).as( 'blockSnapshotBlocks' ) )
+		// Normalize the block alias. Always transform it to block object.
+		cy.wrap( block ).as( alias )
+	} )
+}
+
