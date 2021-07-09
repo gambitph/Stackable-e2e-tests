@@ -4,10 +4,9 @@
  */
 import { registerTests } from '~stackable-e2e/helpers'
 describe( 'Dynamic Content - Site', registerTests( [
-	/*matchSiteData,*/ adjustSiteData,
+	 adjustSiteData, matchSiteData,
 ] ) )
 
-/*
 const fields = {
 	'Site Title': 'title',
 	'Site Tagline': 'tagline',
@@ -15,6 +14,32 @@ const fields = {
 }
 //const to add post, blocks
 //const to adjust site DC fields
+
+function adjustSiteData() {
+	it( 'should adjust the site data', () => {
+		cy.loginAdmin()
+		//find and click customize
+		cy
+			.contains( 'Customize Your Site' )
+			.click( { force: true } )
+		//find 'site identity' and edit fields for site title, tagline
+		cy
+			.contains( 'Site Identity' )
+			.click( { force: true } )
+
+		cy
+			.get( '[id$=-input-blogname]' ).clear( { force: true } )
+			.type( 'Test Site Title', { force: true } )
+			.get( '[id$=-input-blogdescription]' ).clear( { force: true } )
+			.type( 'Test Site Tagline', { force: true } )
+			//type tagline test
+		cy
+			//.get( 'button' )
+			.contains( 'Publish' )
+			.click( { force: true } )
+		//click 'publish'
+	} )
+}
 
 function matchSiteData() {
 	it( 'should match the site data', () => {
@@ -33,15 +58,6 @@ function matchSiteData() {
 			//assert
 			cy.savePost()
 		} )
-	} )
-}
-*/
-function adjustSiteData() {
-	it( 'should adjust the site data', () => {
-		cy.visit( 'http://e2etest.local/wp-admin/' )
-		//find and click customize
-		//find 'site identity' and edit fields for site title, tagline
-		//click 'publish'
 	} )
 }
 
