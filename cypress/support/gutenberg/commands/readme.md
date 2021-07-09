@@ -412,6 +412,38 @@
     cy.addInnerBlock( "ugb/container", "ugb/card" )
     ```
 
+7. asBlock
+
+    - Command for setting block alias.
+
+    Syntax:
+
+    ```jsx
+    .asBlock( alias )
+    .asBlock( alias, options )
+    ```
+
+    Arguments:
+
+    - alias - string
+    - options - Object
+
+    Options:
+
+    | Option    | Data type   | Default value | Description               |
+    | --------- | ----------- | ------------- | ------------------------- |
+    | isStatic  | boolean     | false         | If the block is static    |
+
+    Usage:
+
+    ```jsx
+    cy.addBlock( 'ugb/container' ).asBlock( 'containerBlock', { isStatic: true } )
+    cy.selectBlock( 'ugb/column' ).asBlock( 'columnBlock', { isStatic: true } )
+    ```
+
+    Rules/Requirements:
+    - `.asBlock()` requires being chained off to commands such as `cy.addBlock()` and `cy.selectBlock()`.
+
 ---
 
 ### controls.js
