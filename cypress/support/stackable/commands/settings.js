@@ -3,6 +3,7 @@
  */
 Cypress.Commands.add( 'forceTypographyStyles', forceTypographyStyles )
 Cypress.Commands.add( 'loadFrontendJsCssFiles', loadFrontendJsCssFiles )
+Cypress.Commands.add( 'disableOptimization', disableOptimization )
 
 /**
  * Command for forcing typography styles in Stackable Settings page.
@@ -45,4 +46,12 @@ function loadFrontendJsCssFiles() {
 				cy.wait( 500 )
 			}
 		} )
+}
+
+/**
+ * Command for disabling optimization setting in Stackable settings.
+ */
+export function disableOptimization() {
+	const params = new URLSearchParams( { 'disable-optimization': 'true' } )
+	cy.visit( '/?' + params.toString() )
 }
