@@ -5,7 +5,6 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import { startCase, range } from 'lodash'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
@@ -65,8 +64,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )
-		registerBlockSnapshots( 'numberBoxBlock' )
+		cy.addBlock( 'ugb/number-box' ).asBlock( 'numberBoxBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-number-box__title', 'Hello World! 1' )
@@ -81,8 +79,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )
-	const numberBoxBlock = registerBlockSnapshots( 'numberBoxBlock' )
+	cy.addBlock( 'ugb/number-box' ).asBlock( 'numberBoxBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/number-box', 'Style' )
 
 	// General Tab
@@ -253,15 +250,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-number-box', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-number-box__item', { viewport } )
-	numberBoxBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@numberBoxBlock' )
 }
 
 function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/number-box' ).as( 'numberBoxBlock' )
-	const numberBoxBlock = registerBlockSnapshots( 'numberBoxBlock' )
-
+	cy.addBlock( 'ugb/number-box' ).asBlock( 'numberBoxBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/number-box', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-number-box', {
@@ -289,5 +284,5 @@ function advancedTab( viewport, desktopOnly ) {
 			} )
 		} )
 	} )
-	numberBoxBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@numberBoxBlock' )
 }

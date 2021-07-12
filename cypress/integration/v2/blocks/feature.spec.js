@@ -5,7 +5,6 @@ import { startCase } from 'lodash'
 import {
 	assertAligns, assertBlockBackground, assertBlockExist, assertContainerLink, assertSeparators, assertTypography, blockErrorTest, switchDesigns, switchLayouts, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -120,8 +119,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
-		registerBlockSnapshots( 'featureBlock' )
+		cy.addBlock( 'ugb/feature' ).asBlock( 'featureBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/feature', '.ugb-feature__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-feature__title', 'Hello World! 1' )
@@ -135,9 +133,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
-	const featureBlock = registerBlockSnapshots( 'featureBlock' )
-
+	cy.addBlock( 'ugb/feature' ).asBlock( 'featureBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/feature', 'Style' )
 
 	// General Tab
@@ -323,15 +319,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-feature', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-feature__item', { viewport } )
-	featureBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@featureBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/feature' ).as( 'featureBlock' )
-	const featureBlock = registerBlockSnapshots( 'featureBlock' )
-
+	cy.addBlock( 'ugb/feature' ).asBlock( 'featureBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/feature', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-feature', {
@@ -346,5 +340,5 @@ function advancedTab( viewport ) {
 
 	// Add more block specific tests.
 
-	featureBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@featureBlock' )
 }

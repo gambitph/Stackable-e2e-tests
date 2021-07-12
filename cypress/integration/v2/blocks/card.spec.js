@@ -4,7 +4,6 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, registerTests, assertContainerLink, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -73,8 +72,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
-		registerBlockSnapshots( 'cardBlock' )
+		cy.addBlock( 'ugb/card' ).asBlock( 'cardBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/card', '.ugb-card__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-card__title', 'Hello World! 1' )
@@ -93,8 +91,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
-	const cardBlock = registerBlockSnapshots( 'cardBlock' )
+	cy.addBlock( 'ugb/card' ).asBlock( 'cardBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/card', 'Style' )
 
 	cy.collapse( 'General' )
@@ -319,14 +316,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-card', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-card__item', { viewport } )
-	cardBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@cardBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/card' ).as( 'cardBlock' )
-	const cardBlock = registerBlockSnapshots( 'cardBlock' )
+	cy.addBlock( 'ugb/card' ).asBlock( 'cardBlock', { isStatic: true } )
 
 	cy.openInspector( 'ugb/card', 'Advanced' )
 
@@ -343,5 +339,5 @@ function advancedTab( viewport ) {
 	 } )
 
 	// Add more block specific tests.
-	cardBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@cardBlock' )
 }

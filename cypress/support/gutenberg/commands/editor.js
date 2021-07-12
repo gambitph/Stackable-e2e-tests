@@ -75,9 +75,18 @@ export function waitUntil( callback = () => true, options = {} ) {
 	const {
 		initialDelay = 20,
 		interval = 300,
+		timeout = 60000,
 	} = options
+	let timer = 0
+	const appendTimer = time => {
+		timer += time
+		if ( timer >= timeout ) {
+			throw new Error( '`waitUntil` function timed out.' )
+		}
+	}
 	let done = false
 	cy.wait( initialDelay, { log: false } )
+	appendTimer( initialDelay )
 
 	const check = () => {
 		if ( done ) {
@@ -85,6 +94,7 @@ export function waitUntil( callback = () => true, options = {} ) {
 		}
 
 		cy.wait( interval, { log: false } ).then( () => {
+			appendTimer( interval )
 			callback( toggle => done = toggle )
 			check()
 		} )

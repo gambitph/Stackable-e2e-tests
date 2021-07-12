@@ -3,7 +3,6 @@
  * @type {Cypress.PluginConfig}
  */
 const webpack = require( '@cypress/webpack-preprocessor' )
-const stackableTestConfig = require( './stackable-config' )
 
 module.exports = ( on, config ) => {
 	on( 'file:preprocessor', webpack( {
@@ -11,5 +10,5 @@ module.exports = ( on, config ) => {
 		watchOptions: {},
 	} ) )
 
-	return stackableTestConfig( on, config )
+	return config
 }

@@ -6,7 +6,6 @@ import { blocks } from '~stackable-e2e/config'
 import {
 	assertBlockExist, blockErrorTest, switchLayouts, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAdvancedTab, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -61,8 +60,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )
-		registerBlockSnapshots( 'columnsBlock' )
+		cy.addBlock( 'ugb/columns' ).asBlock( 'columnsBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/columns', 'Style' )
 
 		assertBlockTitleDescriptionContent( 'ugb/columns' )
@@ -72,8 +70,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )
-	const columnsBlock = registerBlockSnapshots( 'columnsBlock' )
+	cy.addBlock( 'ugb/columns' ).asBlock( 'columnsBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/columns', 'Style' )
 
 	cy.collapse( 'General' )
@@ -179,15 +176,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-columns', { viewport } )
 	assertSeparators( { viewport } )
 
-	columnsBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@columnsBlock' )
 }
 
 function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/columns' ).as( 'columnsBlock' )
-	const columnsBlock = registerBlockSnapshots( 'columnsBlock' )
-
+	cy.addBlock( 'ugb/columns' ).asBlock( 'columnsBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/columns', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-columns', {
@@ -210,5 +205,5 @@ function advancedTab( viewport, desktopOnly ) {
 	} )
 
 	// Add more block specific tests.
-	columnsBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@columnsBlock' )
 }

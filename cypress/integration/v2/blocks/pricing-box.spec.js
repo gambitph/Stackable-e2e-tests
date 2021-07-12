@@ -5,7 +5,6 @@ import { range, startCase } from 'lodash'
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, registerTests, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertAligns, assertContainer, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -69,8 +68,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/pricing-box' ).as( 'pricingBoxBlock' )
-		registerBlockSnapshots( 'pricingBoxBlock' )
+		cy.addBlock( 'ugb/pricing-box' ).asBlock( 'pricingBoxBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/pricing-box', '.ugb-pricing-box__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-pricing-box__title', 'Hello World! 1' )
@@ -95,8 +93,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/pricing-box' ).as( 'pricingBoxBlock' )
-	const pricingBoxBlock = registerBlockSnapshots( 'pricingBoxBlock' )
+	cy.addBlock( 'ugb/pricing-box' ).asBlock( 'pricingBoxBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/pricing-box', 'Style' )
 
 	// General Tab
@@ -393,15 +390,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-pricing-box', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-pricing-box__item', { viewport } )
-	pricingBoxBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@pricingBoxBlock' )
 }
 
 function advancedTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/pricing-box' ).as( 'pricingBoxBlock' )
-	const pricingBoxBlock = registerBlockSnapshots( 'pricingBoxBlock' )
-
+	cy.addBlock( 'ugb/pricing-box' ).asBlock( 'pricingBoxBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/pricing-box', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-pricing-box', {
@@ -442,5 +437,5 @@ function advancedTab( viewport, desktopOnly ) {
 			cy.adjust( 'Stretch Shape Mask', true ).assertClassName( `.ugb-pricing-box__item${ idx } img.ugb-img--shape`, 'ugb-image--shape-stretch' )
 		} )
 	} )
-	pricingBoxBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@pricingBoxBlock' )
 }

@@ -21,6 +21,7 @@ Cypress.Commands.add( 'textAreaControl', textAreaControl )
 Cypress.Commands.add( 'stylesControl', stylesControl )
 Cypress.Commands.add( 'fontSizeControl', fontSizeControl )
 Cypress.Commands.add( 'urlInputControl', urlInputControl )
+Cypress.Commands.add( 'radioControl', radioControl )
 
 // Adjust Styles
 Cypress.Commands.add( 'adjust', adjust )
@@ -77,9 +78,8 @@ function rangeControlReset( name, options = {} ) {
 
 	beforeAdjust( name, null, options )
 	selector()
-		.find( 'button' )
-		.contains( containsRegExp( 'Reset' ) )
-		.click( { force: true } )
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+		.click( { force: true, multiple: true } )
 }
 
 /**
@@ -130,24 +130,31 @@ function colorControl( name, value, options = {} ) {
 		supportedDelimiter,
 	} )
 
-	if ( typeof value === 'string' && value.match( /^#/ ) ) {
-		// Use custom color.
+	if ( typeof value === 'string' ) {
 		beforeAdjust( name, value, options )
-		selector()
-			.find( 'button' )
-			.contains( 'Custom color' )
-			.click( { force: true } )
+		if ( value.match( /^#/ ) ) {
+		// Use custom color.
+			selector()
+				.find( 'button' )
+				.contains( 'Custom color' )
+				.click( { force: true } )
 
-		cy
-			.get( '.components-popover__content .components-color-picker' )
-			.find( 'input[type="text"]' )
-			.type( `{selectall}${ value }{enter}`, { force: true } )
+			cy
+				.get( '.components-popover__content .components-color-picker' )
+				.find( 'input[type="text"]' )
+				.type( `{selectall}${ value }{enter}`, { force: true } )
 
-		// Declare the variable again
-		selector()
-			.find( 'button' )
-			.contains( containsRegExp( 'Custom color' ) )
-			.click( { force: true } )
+			// Declare the variable again
+			selector()
+				.find( 'button' )
+				.contains( containsRegExp( 'Custom color' ) )
+				.click( { force: true } )
+		} else {
+			// Select based on color name.
+			selector()
+				.find( `button[aria-label="Color: ${ value }"]` )
+				.click( { force: true } )
+		}
 	} else if ( typeof value === 'number' ) {
 		// Get the nth color in the color picker.
 		beforeAdjust( name, value, options )
@@ -387,6 +394,25 @@ function urlInputControl( name, value, options = {} ) {
 }
 
 /**
+ * Command for adjusting the radio control.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ */
+function radioControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+	} = options
+
+	beforeAdjust( name, value, options )
+	cy.getBaseControl( name, { isInPopover } )
+		.find( `.components-radio-control__option:contains(${ value }) input` )
+		.click( { force: true } )
+}
+
+/**
  * Command for adjusting settings.
  *
  * @param {string} name
@@ -435,6 +461,7 @@ export function adjust( name, value, options ) {
 		'.components-text-control__input': 'textControl',
 		'.components-textarea-control__input': 'textAreaControl',
 		'.block-editor-url-input': 'urlInputControl',
+		'.components-radio-control__input': 'radioControl',
 	}
 
 	baseControlSelector()

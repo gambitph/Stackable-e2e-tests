@@ -5,7 +5,6 @@
 import {
 	assertBlockExist, blockErrorTest, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -34,8 +33,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
-		registerBlockSnapshots( 'headingBlock' )
+		cy.addBlock( 'ugb/heading' ).asBlock( 'headingBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-heading__title', 'Hello World! 1' )
@@ -47,8 +45,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
-	const headingBlock = registerBlockSnapshots( 'headingBlock' )
+	cy.addBlock( 'ugb/heading' ).asBlock( 'headingBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/heading', 'Style' )
 
 	// Test General Alignment
@@ -183,14 +180,13 @@ function styleTab( viewport, desktopOnly ) {
 			'margin-bottom': '12px',
 		},
 	} )
-	headingBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@headingBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/heading' ).as( 'headingBlock' )
-	const headingBlock = registerBlockSnapshots( 'headingBlock' )
+	cy.addBlock( 'ugb/heading' ).asBlock( 'headingBlock', { isStatic: true } )
 
 	cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Title here' )
 	cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Subtitle here' )
@@ -205,5 +201,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	headingBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@headingBlock' )
 }
