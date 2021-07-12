@@ -95,14 +95,19 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/card' ).asBlock( 'cardBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/card', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 3 )
+		cy.setBlockAttribute( {
+			'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		} )
 	} )
 
 	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@cardBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {
-		cy.collapse( 'General' )
-		cy.adjust( 'Columns', 3 )
 		cy.get( '.ugb-card__item3' ).should( 'exist' )
 		assertAligns( 'Align', '.ugb-inner-block', { viewport } )
 	} )
@@ -113,11 +118,6 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Image options in ${ lowerCase( viewport ) }`, () => {
-		cy.setBlockAttribute( {
-			'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-			'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-			'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-		} )
 		cy.collapse( 'Image' )
 		// TODO: Image Size assertion
 		// We won't be able to assert image size for now since it requires server handling.

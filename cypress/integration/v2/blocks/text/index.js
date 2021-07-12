@@ -197,7 +197,8 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Spacing options in ${ lowerCase( viewport ) }`, () => {
-	// Test Spacing options
+		cy.toggleStyle( 'Text' )
+		cy.toggleStyle( 'Subtitle' )
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Paddings', [ 25, 26, 27, 28 ], { viewport, unit: 'px' } ).assertComputedStyle( {
 			'.ugb-text__text-wrapper': {

@@ -84,6 +84,8 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/number-box' ).asBlock( 'numberBoxBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/number-box', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 3 )
 	} )
 
 	// eslint-disable-next-line no-undef

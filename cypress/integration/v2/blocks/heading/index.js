@@ -123,7 +123,7 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 	} )
 
-	it( `should assert Top Line options in ${ lowerCase( viewport ) }`, () => {
+	it( `should assert Bottom Line options in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'Bottom Line' )
 		cy.toggleStyle( 'Bottom Line' )
 		desktopOnly( () => {
@@ -150,7 +150,7 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 		cy.adjust( 'Align', 'right', { viewport } ).assertComputedStyle( {
-			'.ugb-heading__top-line': {
+			'.ugb-heading__bottom-line': {
 				'margin-right': '0px',
 				'margin-left': 'auto',
 			},

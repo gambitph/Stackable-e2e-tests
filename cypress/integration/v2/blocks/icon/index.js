@@ -62,6 +62,8 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/icon' ).asBlock( 'iconBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/icon', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Number of Icons / Columns', 4 )
 	} )
 
 	// eslint-disable-next-line no-undef
@@ -191,6 +193,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Spacing options in ${ lowerCase( viewport ) }`, () => {
+		cy.toggleStyle( 'Title' )
 		// Test Spacing options
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Paddings', [ 25, 26, 27, 28 ], { viewport, unit: 'px' } ).assertComputedStyle( {

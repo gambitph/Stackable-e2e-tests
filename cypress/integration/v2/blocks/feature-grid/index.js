@@ -104,6 +104,14 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/feature-grid' ).asBlock( 'featureGridBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/feature-grid', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 3 )
+		cy.setBlockAttribute( {
+			'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image4Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		} )
 	} )
 
 	// eslint-disable-next-line no-undef
@@ -122,12 +130,6 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Image options in ${ lowerCase( viewport ) }`, () => {
-		cy.setBlockAttribute( {
-			'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-			'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-			'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-			'image4Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-		} )
 		cy.collapse( 'Image' )
 		cy.adjust( 'Image Width', 29, { viewport } ).assertComputedStyle( {
 			'.ugb-img': {

@@ -88,6 +88,12 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/testimonial' ).asBlock( 'testimonialBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/testimonial', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 2 )
+		cy.setBlockAttribute( {
+			'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		} )
 	} )
 
 	// eslint-disable-next-line no-undef
@@ -107,11 +113,6 @@ function styleTab( viewport, desktopOnly ) {
 
 	it( `should assert Container options in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'Container' )
-		cy.setBlockAttribute( {
-			'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-			'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-		} )
-
 		assertContainer( '.ugb-testimonial__item', { viewport }, 'column%sBackgroundMediaUrl' )
 	} )
 

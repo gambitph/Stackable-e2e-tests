@@ -89,6 +89,13 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/team-member' ).asBlock( 'teamMemberBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/team-member', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 3 )
+		range( 1, 4 ).forEach( idx => {
+			cy.setBlockAttribute( {
+				[ `image${ idx }Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
+			} )
+		} )
 	} )
 
 	// eslint-disable-next-line no-undef
@@ -97,7 +104,6 @@ function styleTab( viewport, desktopOnly ) {
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {
 		// General Tab
 		cy.collapse( 'General' )
-
 		cy.adjust( 'Columns', 3 )
 		desktopOnly( () => {
 			cy.get( '.ugb-team-member__item3' ).should( 'exist' )
@@ -170,12 +176,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Image options in ${ lowerCase( viewport ) }`, () => {
-	// Image Tab
-		range( 1, 4 ).forEach( idx => {
-			cy.setBlockAttribute( {
-				[ `image${ idx }Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-			} )
-		} )
+		// Image Tab
 		cy.collapse( 'Image' )
 		desktopOnly( () => {
 			cy.adjust( 'Shape', {

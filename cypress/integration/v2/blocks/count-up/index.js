@@ -83,6 +83,8 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/count-up' ).asBlock( 'countUpBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/count-up', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 2 )
 	} )
 
 	// eslint-disable-next-line no-undef
@@ -175,6 +177,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Spacing options in ${ lowerCase( viewport ) }`, () => {
+		cy.toggleStyle( 'Icon' )
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Paddings', [ 25, 26, 27, 28 ], { viewport, unit: 'px' } ).assertComputedStyle( {
 			'.ugb-countup__item': {

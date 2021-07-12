@@ -136,6 +136,9 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/feature' ).asBlock( 'featureBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/feature', 'Style' )
+		cy.setBlockAttribute( {
+			'imageUrl': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		} )
 	} )
 
 	// eslint-disable-next-line no-undef
@@ -176,9 +179,6 @@ function styleTab( viewport, desktopOnly ) {
 
 	it( `should assert Image options in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'Image' )
-		cy.setBlockAttribute( {
-			'imageUrl': Cypress.env( 'DUMMY_IMAGE_URL' ),
-		} )
 		cy.adjust( 'Border Radius', 33 )
 		cy.adjust( 'Image Width', 300, { viewport } ).assertComputedStyle( {
 			'.ugb-img': {

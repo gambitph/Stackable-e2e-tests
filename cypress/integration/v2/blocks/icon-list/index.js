@@ -78,6 +78,8 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/icon-list' ).asBlock( 'iconListBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/icon-list', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 4, { viewport } )
 	} )
 
 	// eslint-disable-next-line no-undef

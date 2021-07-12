@@ -98,6 +98,13 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/pricing-box' ).asBlock( 'pricingBoxBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/pricing-box', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 3 )
+		range( 1, 4 ).forEach( idx => {
+			cy.setBlockAttribute( {
+				[ `image${ idx }Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
+			} )
+		} )
 	} )
 
 	// eslint-disable-next-line no-undef
@@ -175,11 +182,6 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Image options in ${ lowerCase( viewport ) }`, () => {
-		range( 1, 4 ).forEach( idx => {
-			cy.setBlockAttribute( {
-				[ `image${ idx }Url` ]: Cypress.env( 'DUMMY_IMAGE_URL' ),
-			} )
-		} )
 		// Image Tab
 		cy.collapse( 'Image' )
 		desktopOnly( () => {

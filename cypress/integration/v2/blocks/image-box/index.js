@@ -91,6 +91,11 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/image-box' ).asBlock( 'imageBoxBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/image-box', 'Style' )
+		cy.setBlockAttribute( {
+			'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+			'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
+		} )
 	} )
 
 	// eslint-disable-next-line no-undef
@@ -153,11 +158,6 @@ function styleTab( viewport, desktopOnly ) {
 
 	it( `should assert Image options in ${ lowerCase( viewport ) }`, () => {
 		desktopOnly( () => {
-			cy.setBlockAttribute( {
-				'image1Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-				'image2Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-				'image3Url': Cypress.env( 'DUMMY_IMAGE_URL' ),
-			} )
 			cy.collapse( 'Image' )
 			// TODO: Image Size assertion
 			cy.adjust( 'Background Image Position', 'center center' )
@@ -328,7 +328,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	it( `should assert Arrow options in ${ lowerCase( viewport ) }`, () => {
 		// Test Arrow options
-		cy.collapse( 'Arrow' )
+		cy.toggleStyle( 'Arrow' )
 		desktopOnly( () => {
 			cy.adjust( 'Color', '#000000' ).assertComputedStyle( {
 				'.ugb-image-box__arrow svg': {
@@ -350,6 +350,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Spacing options in ${ lowerCase( viewport ) }`, () => {
+		cy.toggleStyle( 'Arrow' )
 		// Test Spacing options
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Paddings', [ 25, 26, 27, 28 ], { viewport, unit: 'px' } ).assertComputedStyle( {

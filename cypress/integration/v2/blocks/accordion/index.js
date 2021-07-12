@@ -146,7 +146,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	// eslint-disable-next-line no-undef
-	afterEach( () => cy.assertFrontendStyles( 'accordionBlock' ) )
+	afterEach( () => cy.assertFrontendStyles( '@accordionBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'General' )
