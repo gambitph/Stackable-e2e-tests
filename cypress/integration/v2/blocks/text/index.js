@@ -86,6 +86,10 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/text' ).asBlock( 'textBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/text', 'Style' )
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 2 )
+		cy.typeBlock( 'ugb/text', '.ugb-text__text-1', 'Text 1' )
+		cy.typeBlock( 'ugb/text', '.ugb-text__text-2', 'Text 2' )
 	} )
 
 	// eslint-disable-next-line no-undef
@@ -119,7 +123,6 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Text options in ${ lowerCase( viewport ) }`, () => {
-		cy.typeBlock( 'ugb/text', '.ugb-text__text-1', 'Hellooo World!!! 123' )
 		// Test Text options
 		cy.collapse( 'Text' )
 
@@ -197,7 +200,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Spacing options in ${ lowerCase( viewport ) }`, () => {
-		cy.toggleStyle( 'Text' )
+		cy.toggleStyle( 'Title' )
 		cy.toggleStyle( 'Subtitle' )
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Paddings', [ 25, 26, 27, 28 ], { viewport, unit: 'px' } ).assertComputedStyle( {

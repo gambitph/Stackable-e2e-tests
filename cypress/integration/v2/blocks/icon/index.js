@@ -107,6 +107,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Icon options in ${ lowerCase( viewport ) }`, () => {
+		cy.toggleStyle( 'Title' )
 		// Test Icon options
 		cy.collapse( 'Icon' )
 		desktopOnly( () => {

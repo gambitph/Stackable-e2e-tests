@@ -229,7 +229,7 @@ function styleTab( viewport, desktopOnly ) {
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/accordion' ).as( 'accordionBlock' )
+	cy.addBlock( 'ugb/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/accordion', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-accordion', {

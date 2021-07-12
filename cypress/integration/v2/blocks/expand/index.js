@@ -54,6 +54,11 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/expand' ).asBlock( 'expandBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/expand', 'Style' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Title' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-text', 'Less text' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-toggle-text', 'Show more link' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-text', 'More text here. Lorem Ipsum.' )
+		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-toggle-text', 'Show less link' )
 	} )
 
 	// eslint-disable-next-line no-undef
@@ -65,7 +70,6 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Title options in ${ lowerCase( viewport ) }`, () => {
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Title here' )
 		cy.collapse( 'Title' )
 		desktopOnly( () => {
 			cy.adjust( 'Title HTML Tag', 'h6' )
@@ -81,8 +85,6 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Text options in ${ lowerCase( viewport ) }`, () => {
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-text', 'Less Text here' )
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-text', 'More text here' )
 		cy.collapse( 'Text' )
 		desktopOnly( () => {
 			cy.adjust( 'Text Color', '#742f2f' ).assertComputedStyle( {
@@ -96,8 +98,6 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Link options in ${ lowerCase( viewport ) }`, () => {
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__more-toggle-text', 'More Toggle Text here' )
-		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-toggle-text', 'Less Toggle Text here' )
 		cy.collapse( 'Link' )
 		desktopOnly( () => {
 			cy.adjust( 'Link Color', '#742f2f' ).assertComputedStyle( {

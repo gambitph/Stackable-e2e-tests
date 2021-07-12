@@ -158,6 +158,8 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Spacing options in ${ lowerCase( viewport ) }`, () => {
+		cy.toggleStyle( 'Top Line' )
+		cy.toggleStyle( 'Bottom Line' )
 		cy.collapse( 'Spacing' )
 		cy.adjust( 'Top Line', 36, { viewport } ).assertComputedStyle( {
 			'.ugb-heading__top-line': {
