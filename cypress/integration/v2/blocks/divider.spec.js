@@ -4,7 +4,6 @@
 import {
 	assertBlockExist, blockErrorTest, switchLayouts, assertAligns, registerTests, responsiveAssertHelper, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -41,8 +40,7 @@ function switchLayout() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/divider' ).as( 'dividerBlock' )
-	const dividerBlock = registerBlockSnapshots( 'dividerBlock' )
+	cy.addBlock( 'ugb/divider' ).asBlock( 'dividerBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/divider', 'Style' )
 
 	// Test General options
@@ -67,19 +65,17 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	assertAligns( 'Align', '.ugb-inner-block', { viewport } )
-	dividerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@dividerBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/divider' ).as( 'dividerBlock' )
-	const dividerBlock = registerBlockSnapshots( 'dividerBlock' )
-
+	cy.addBlock( 'ugb/divider' ).asBlock( 'dividerBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/divider', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-divider', { viewport } )
 
 	// Add more block specific tests.
-	dividerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@dividerBlock' )
 }

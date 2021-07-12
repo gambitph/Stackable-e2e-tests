@@ -5,7 +5,6 @@ import { blocks } from '~stackable-e2e/config'
 import {
 	assertAligns, assertBlockBackground, assertBlockExist, assertContainerLink, assertSeparators, blockErrorTest, switchLayouts, registerTests, responsiveAssertHelper, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -58,8 +57,7 @@ function switchLayout() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/container' ).as( 'containerBlock' )
-	const containerBlock = registerBlockSnapshots( 'containerBlock' )
+	cy.addBlock( 'ugb/container' ).asBlock( 'containerBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/container', 'Style' )
 
 	// General Tab
@@ -200,14 +198,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-container', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-container__wrapper', { viewport } )
-	containerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@containerBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/container' ).as( 'containerBlock' )
-	const containerBlock = registerBlockSnapshots( 'containerBlock' )
+	cy.addBlock( 'ugb/container' ).asBlock( 'containerBlock', { isStatic: true } )
 
 	cy.openInspector( 'ugb/container', 'Advanced' )
 
@@ -220,5 +217,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	containerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@containerBlock' )
 }

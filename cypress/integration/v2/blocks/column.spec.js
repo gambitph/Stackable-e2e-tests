@@ -44,10 +44,11 @@ function columnStyleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/columns' )
+	cy.selectBlock( 'ugb/column' ).asBlock( 'columnBlock', { isStatic: true } )
 
-	cy.openInspector( 'ugb/column', 'Layout' )
+	cy.openInspector( 'ugb/column', 'Layout', '@columnBlock' )
 	cy.adjustLayout( 'Basic' )
-	cy.openInspector( 'ugb/column', 'Style' )
+	cy.openInspector( 'ugb/column', 'Style', '@columnBlock' )
 	cy.collapse( 'General' )
 
 	const aligns = [ 'flex-start', 'center', 'flex-end' ]
@@ -116,7 +117,7 @@ function columnStyleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Link Hover Color', '#ba89df' )
 
 		// Add a ugb/card block inside the column
-		cy.addInnerBlock( 'ugb/column', 'ugb/card' )
+		cy.addInnerBlock( 'ugb/column', 'ugb/card', '@columnBlock' )
 		cy.openInspector( 'ugb/card', 'Style' )
 		cy.collapse( 'Button' )
 		cy.adjust( 'Design', 'link' ).assertComputedStyle( {
@@ -135,17 +136,20 @@ function columnStyleTab( viewport, desktopOnly ) {
 		} )
 
 		// Go back to ugb/column
-		cy.selectBlock( 'ugb/column' )
+		cy.selectBlock( 'ugb/column', '@columnBlock' )
 	} )
 	assertContainerLink( '.ugb-column__item', { viewport } )
+	cy.assertFrontendStyles( '@columnBlock' )
 }
 
 function columnAdvancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
 	cy.addBlock( 'ugb/columns' )
+	cy.selectBlock( 'ugb/column' ).asBlock( 'columnBlock', { isStatic: true } )
 
-	cy.addInnerBlock( 'ugb/column', 'ugb/card' )
-	cy.openInspector( 'ugb/column', 'Advanced' )
+	cy.addInnerBlock( 'ugb/column', 'ugb/card', '@columnBlock' )
+	cy.openInspector( 'ugb/column', 'Advanced', '@columnBlock' )
 	assertAdvancedTab( '.ugb-column', { viewport } )
+	cy.assertFrontendStyles( '@columnBlock' )
 }

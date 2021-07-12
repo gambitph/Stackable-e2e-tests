@@ -48,39 +48,42 @@ function addEditGlobalColor( options = {} ) {
 					.click( { force: true } )
 			}
 
+			cy.waitUntil( done => cy.document().then( doc => done( doc.querySelector( currName ? `button[aria-label="${ currName }"]` : '.ugb-global-settings-color-picker__add-icon' ) ) ) )
+
 			cy
-				.get( `button[aria-label="${ currName ? currName : 'Add New Color' }"]` )
+				.get( currName ? `button[aria-label="${ currName }"]` : '.ugb-global-settings-color-picker__add-icon' )
 				.click( { force: true } )
-				.then( () => {
-					// Type the color if defined.
-					if ( color ) {
-						cy
-							.get( '.components-color-picker__inputs-field' )
-							.contains( containsRegExp( 'Color value in hexadecimal' ) )
-							.closest( '.components-color-picker__inputs-field' )
-							.find( 'input' )
-							.click( { force: true } )
-							.clear( { force: true } )
-							.type( `{selectall}${ color }{enter}` )
-					}
 
-					// Type the name if defined.
-					if ( name ) {
-						cy
-							.get( '.components-color-picker__input-field' )
-							.contains( containsRegExp( 'Style name' ) )
-							.closest( '.components-color-picker__input-field' )
-							.find( 'input' )
-							.click( { force: true } )
-							.clear( { force: true } )
-							.type( `{selectall}${ name }{enter}` )
-					}
+			// Wait for input field to appear.
+			cy.waitUntil( done => cy.document().then( doc => done( doc.querySelector( '.components-color-picker__inputs-field' ) ) ) )
+			// Type the color if defined.
+			if ( color ) {
+				cy
+					.get( '.components-color-picker__inputs-field' )
+					.contains( containsRegExp( 'Color value in hexadecimal' ) )
+					.closest( '.components-color-picker__inputs-field' )
+					.find( 'input' )
+					.click( { force: true } )
+					.clear( { force: true } )
+					.type( `{selectall}${ color }{enter}` )
+			}
 
-					// Click outside the popover to close it.
-					cy
-						.get( '.ugb-global-settings-color-picker' )
-						.click( { force: true } )
-				} )
+			// Type the name if defined.
+			if ( name ) {
+				cy
+					.get( '.components-color-picker__input-field' )
+					.contains( containsRegExp( 'Style name' ) )
+					.closest( '.components-color-picker__input-field' )
+					.find( 'input' )
+					.click( { force: true } )
+					.clear( { force: true } )
+					.type( `{selectall}${ name }{enter}` )
+			}
+
+			// Click outside the popover to close it.
+			cy
+				.get( '.ugb-global-settings-color-picker' )
+				.click( { force: true } )
 		} )
 }
 

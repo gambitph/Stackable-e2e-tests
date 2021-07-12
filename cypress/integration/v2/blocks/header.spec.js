@@ -4,7 +4,6 @@
 import {
 	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, registerTests, assertAligns, assertBlockBackground, assertSeparators, responsiveAssertHelper, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -85,8 +84,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/header' ).as( 'headerBlock' )
-		registerBlockSnapshots( 'headerBlock' )
+		cy.addBlock( 'ugb/header' ).asBlock( 'headerBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/header', '.ugb-header__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-header__title', 'Hello World! 1' )
@@ -100,8 +98,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/header' ).as( 'headerBlock' )
-	const headerBlock = registerBlockSnapshots( 'headerBlock' )
+	cy.addBlock( 'ugb/header' ).asBlock( 'headerBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/header', 'Style' )
 
 	cy.collapse( 'General' )
@@ -324,15 +321,13 @@ function styleTab( viewport, desktopOnly ) {
 	assertBlockBackground( '.ugb-header', { viewport } )
 	assertSeparators( { viewport } )
 	assertContainerLink( '.ugb-header__item', { viewport } )
-	headerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@headerBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/header' ).as( 'headerBlock' )
-	const headerBlock = registerBlockSnapshots( 'headerBlock' )
-
+	cy.addBlock( 'ugb/header' ).asBlock( 'headerBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/header', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-header', {
@@ -346,5 +341,5 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	headerBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@headerBlock' )
 }

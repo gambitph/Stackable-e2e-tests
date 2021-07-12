@@ -4,7 +4,6 @@
 import {
 	assertBlockExist, blockErrorTest, assertAligns, registerTests, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
@@ -33,8 +32,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )
-		registerBlockSnapshots( 'expandBlock' )
+		cy.addBlock( 'ugb/expand' ).asBlock( 'expandBlock', { isStatic: true } )
 
 		cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-expand__title', 'Hello World! 1' )
@@ -52,8 +50,7 @@ function typeContent() {
 function styleTab( viewport, desktopOnly ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )
-	const expandBlock = registerBlockSnapshots( 'expandBlock' )
+	cy.addBlock( 'ugb/expand' ).asBlock( 'expandBlock', { isStatic: true } )
 	cy.openInspector( 'ugb/expand', 'Style' )
 
 	// Test General options
@@ -119,14 +116,13 @@ function styleTab( viewport, desktopOnly ) {
 			'margin-bottom': '39px',
 		},
 	} )
-	expandBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@expandBlock' )
 }
 
 function advancedTab( viewport ) {
 	cy.setupWP()
 	cy.newPage()
-	cy.addBlock( 'ugb/expand' ).as( 'expandBlock' )
-	const expandBlock = registerBlockSnapshots( 'expandBlock' )
+	cy.addBlock( 'ugb/expand' ).asBlock( 'expandBlock', { isStatic: true } )
 
 	cy.typeBlock( 'ugb/expand', '.ugb-expand__title', 'Title here' )
 	cy.typeBlock( 'ugb/expand', '.ugb-expand__less-text', 'Less Text here' )
@@ -146,6 +142,6 @@ function advancedTab( viewport ) {
 	} )
 
 	// Add more block specific tests.
-	expandBlock.assertFrontendStyles()
+	cy.assertFrontendStyles( '@expandBlock' )
 }
 

@@ -1,3 +1,4 @@
+[![Stackable E2E Tests](https://github.com/gambitph/Stackable-e2e-tests/workflows/stackable-e2e-tests/badge.svg)](https://github.com/gambitph/Stackable-e2e-tests/actions)
 # End-to-end Integration and Acceptance Testing for Stackable
 
 ## Getting Started

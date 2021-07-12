@@ -58,6 +58,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		// Pass our own adjust controls.
 		'.ugb-icon-control__wrapper': 'iconControl',
 		'.ugb-four-range-control': 'fourRangeControl',
+		'.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
 		'.react-autosuggest__input': 'suggestionControl',
 		'.ugb-button-icon-control__wrapper': 'popoverControl',
 		'.ugb-columns-width-control': 'columnControl',
@@ -92,6 +93,7 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 		 'ugb-button-icon-control': 'popoverControlReset',
 		 'ugb-advanced-autosuggest-control': 'suggestionControlClear',
 		 'ugb-four-range-control': 'fourRangeControlReset',
+		 '.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
 		 'ugb-icon-control': 'iconControlReset',
 	}
 
@@ -388,9 +390,8 @@ function fourRangeControlReset( name, options = {} ) {
 			}
 
 			selector( isInPopover )
-				.find( 'button' )
-				.contains( containsRegExp( 'Reset' ) )
-				.click( { force: true } )
+				.find( `button${ Cypress.env( 'STACKABLE_VERSION' ) === 3 ? '[aria-label="Reset"]' : ':contains(Reset)' }` )
+				.click( { force: true, multiple: true } )
 		} )
 }
 
@@ -501,8 +502,7 @@ function iconControlReset( name, options = {} ) {
 	cy.getBaseControl( name, { isInPopover } )
 		.contains( containsRegExp( name ) )
 		.closest( '.components-panel__body>.components-base-control' )
-		.find( 'button' )
-		.contains( 'Reset' )
+		.find( `button${ Cypress.env( 'STACKABLE_VERSION' ) === 3 ? '[aria-label="Reset"]' : ':contains(Reset)' }` )
 		.click( { force: true } )
 }
 
