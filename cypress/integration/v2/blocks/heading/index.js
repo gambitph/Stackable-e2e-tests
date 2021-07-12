@@ -49,6 +49,8 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/heading' ).asBlock( 'headingBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/heading', 'Style' )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Helloo World!! 12' )
 	} )
 
 	// eslint-disable-next-line no-undef
