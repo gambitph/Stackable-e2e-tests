@@ -5,6 +5,7 @@ import { registerTests } from '~stackable-e2e/helpers'
 
 describe( 'Dynamic Content Other Posts', registerTests( [
 	matchPostDataValues,
+	adjustFieldOptions,
 ] ) )
 
 const fields = {
@@ -34,6 +35,26 @@ const fields = {
  * Author First Name
  * Author Last Name
  */
+
+const selector = () => cy.get( '.ugb-cta__title' )
+const adjustField = ( fieldName, fieldOptions = {} ) => {
+	cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
+		source: 'Other Posts',
+		post: 'First Post',
+		fieldName,
+		fieldOptions,
+	} )
+}
+const assertInBackendAndFrontend = ( callback = () => {} ) => {
+	cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+		callback()
+		cy.visit( previewUrl )
+		callback()
+		cy.visit( editorUrl )
+		cy.deleteBlock( 'ugb/cta' )
+		cy.addBlock( 'ugb/cta' )
+	} )
+}
 
 function matchPostDataValues() {
 	it( 'should test dynamic content to match the selected post data values', () => {
@@ -91,6 +112,88 @@ function matchPostDataValues() {
 				cy.deleteBlock( 'ugb/cta' )
 			} )
 		} )
+		cy.savePost()
 	} )
 }
 
+function adjustFieldOptions() {
+	it( 'should adjust all field options of each field in other post', () => {
+		cy.setupWP()
+		// Add a post and set its post data
+		cy.newPost()
+		cy.addBlock( 'core/paragraph' )
+		cy.typePostTitle( 'First Post' )
+		cy.addFeaturedImage()
+		cy.addPostExcerpt( 'Hello World! Sample excerpt here. Lorem ipsum' )
+		cy.addPostSlug( 'my-first-post' )
+		cy.publish()
+
+		let postData
+		cy.getPostData().then( data => {
+			// Save this post's data for Other Posts assertion.
+			postData = data
+		} )
+
+		cy.newPage()
+		cy.addBlock( 'ugb/cta' )
+
+		// Post Title options
+		adjustField( 'Post Title', {
+			'Show as link': true,
+			'Open in new tab': true,
+		} )
+		assertInBackendAndFrontend( () => {
+			selector().contains( postData.title ).should( 'exist' )
+			selector().find( `a[href="${ postData.link }"]` ).should( 'exist' )
+			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+		} )
+
+		// Post URL options
+		adjustField( 'Post URL', {
+			'Show as link': true,
+			'Custom Text': 'This post',
+			'Open in new tab': true,
+		} )
+		assertInBackendAndFrontend( () => {
+			selector().contains( 'This post' ).should( 'exist' )
+			selector().find( `a[href="${ postData.link }"]` ).should( 'exist' )
+			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+		} )
+
+		// Post Excerpt options
+		adjustField( 'Post Excerpt', {
+			'Excerpt Length': 5,
+		} )
+		assertInBackendAndFrontend( () => {
+			cy.document().then( doc => {
+				const text = doc.querySelector( '.ugb-cta__title' ).innerText
+				expect( text.split( ' ' ).length ).to.equal( 5 )
+			} )
+		} )
+
+		// For Post Date, Date GMT, Modified & Modified GMT options
+		const dateFields = [ 'Post Date', 'Post Date GMT', 'Post Modified', 'Post Modified GMT' ]
+		const dateFormats = [ 'Y-m-d H:i:s', 'F j, Y', 'F j, Y g:i a', 'd/m/y' ]
+		dateFields.forEach( dateField => {
+			dateFormats.forEach( dateFormat => {
+				adjustField( dateField, {
+					'Date Format': dateFormat,
+				} )
+				// TODO: Add assertion of date formats.
+				assertInBackendAndFrontend()
+			} )
+		} )
+
+		// Author Posts URL options.
+		adjustField( 'Author Posts URL', {
+			'Show as link': true,
+			'Custom Text': 'This author',
+			'Open in new tab': true,
+		} )
+		assertInBackendAndFrontend( () => {
+			selector().contains( 'This author' ).should( 'exist' )
+			selector().find( `a[href="${ postData.author_info.url }"]` ).should( 'exist' )
+			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+		} )
+	} )
+}
