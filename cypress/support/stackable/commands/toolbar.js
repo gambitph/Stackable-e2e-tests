@@ -105,4 +105,7 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 			.find( 'button.apply-changes-button' )
 			.click( { force: true } )
 	} )
+	cy.savePost()
+
+	cy.savePost()
 }
