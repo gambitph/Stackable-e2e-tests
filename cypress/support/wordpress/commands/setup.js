@@ -65,7 +65,7 @@ export function changeRole( args = {} ) {
 }
 
 /**
- * Command for editing the site title
+ * Command for editing the site title in the customizer.
  *
  * @param {string} title
  */
@@ -86,7 +86,7 @@ export function editSiteTitle( title ) {
 }
 
 /**
- * Command for editing the site tagline
+ * Command for editing the site tagline in the customizer.
  *
  * @param {string} tagline
  */
