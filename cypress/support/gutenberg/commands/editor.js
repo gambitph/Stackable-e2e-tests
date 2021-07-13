@@ -19,9 +19,9 @@ Cypress.Commands.add( 'savePost', savePost )
 Cypress.Commands.add( 'wp', wp )
 Cypress.Commands.add( 'typePostTitle', typePostTitle )
 Cypress.Commands.add( 'getPostData', getPostData )
-Cypress.Commands.add( 'addFeaturedImage', addFeaturedImage )
 Cypress.Commands.add( 'addPostExcerpt', addPostExcerpt )
 Cypress.Commands.add( 'addPostSlug', addPostSlug )
+Cypress.Commands.add( 'addFeaturedImage', addFeaturedImage )
 
 /**
  * Command for opening a new page in gutenberg editor.
@@ -244,48 +244,7 @@ export function getPostData() {
 }
 
 /**
- * Command for adding a featured image to a post.
- */
-export function addFeaturedImage() {
-	cy.getPostUrls().then( ( { editorUrl } ) => {
-		// Save the current post as we're going to register a post.
-		cy.savePost()
-		// Register one post to be able to add an image to media library.
-		cy.registerPosts( { numOfPosts: 1 } )
-		cy.visit( editorUrl )
-		cy.openSidebar( 'Settings' )
-		cy
-			.get( '.edit-post-sidebar__panel-tabs' )
-			.find( 'li:first-child button.edit-post-sidebar__panel-tab' )
-			.click( { force: true } )
-		cy.collapse( 'Featured image' )
-		cy
-			.get( '.editor-post-featured-image' )
-			.contains( containsRegExp( 'Set featured image' ) )
-			.click( { force: true } )
-
-		const selector = () => cy
-			.get( '.media-modal-content' )
-
-		selector()
-			.find( '.media-frame-router' )
-			.contains( containsRegExp( 'Media Library' ) )
-			.click( { force: true } )
-
-		selector()
-			.find( 'ul.attachments li.attachment' )
-			.eq( 0 )
-			.click( { force: true } )
-
-		selector()
-			.find( 'button.media-button-select:contains(Set featured image)' )
-			.click( { force: true } )
-		cy.savePost()
-	} )
-}
-
-/**
- * Command for adding an excerpt to a post.
+ * Command for adding an excerpt to the current post.
  *
  * @param {string} text
  */
@@ -320,4 +279,46 @@ export function addPostSlug( slug ) {
 		.find( 'input[class="components-text-control__input"]' )
 		.type( `{selectall}${ slug }`, { force: true } )
 	cy.publish()
+}
+
+/**
+ * Command for adding a featured image to a post.
+ */
+export function addFeaturedImage() {
+	cy.getPostUrls().then( ( { editorUrl } ) => {
+		// Save the current post as we're going to register a post.
+		cy.savePost()
+		// Register one post to be able to add one image to media library.
+		// TODO: Find a better way to add an image to the media library.
+		cy.registerPosts( { numOfPosts: 1 } )
+		cy.visit( editorUrl )
+		cy.openSidebar( 'Settings' )
+		cy
+			.get( '.edit-post-sidebar__panel-tabs' )
+			.find( 'li:first-child button.edit-post-sidebar__panel-tab' )
+			.click( { force: true } )
+		cy.collapse( 'Featured image' )
+		cy
+			.get( '.editor-post-featured-image' )
+			.contains( containsRegExp( 'Set featured image' ) )
+			.click( { force: true } )
+
+		const selector = () => cy
+			.get( '.media-modal-content' )
+
+		selector()
+			.find( '.media-frame-router' )
+			.contains( containsRegExp( 'Media Library' ) )
+			.click( { force: true } )
+
+		selector()
+			.find( 'ul.attachments li.attachment' )
+			.eq( 0 )
+			.click( { force: true } )
+
+		selector()
+			.find( 'button.media-button-select:contains(Set featured image)' )
+			.click( { force: true } )
+		cy.savePost()
+	} )
 }

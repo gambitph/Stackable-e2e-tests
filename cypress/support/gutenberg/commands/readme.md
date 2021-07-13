@@ -1023,6 +1023,97 @@
     } )
     ```
 
+10. typePostTitle
+
+    - Command for typing into the post title in the editor.
+
+    Syntax:
+
+    ```jsx
+    cy.typePostTitle( title )
+    ```
+
+    Arguments:
+    - title - string
+
+    Usage:
+
+    ```jsx
+    cy.typePostTitle( 'My Title' )
+    ```
+
+11. getPostData
+
+    - Command that returns the current post's data.
+
+    Syntax:
+
+    ```jsx
+    cy.getPostData()
+    ```
+
+    Usage:
+
+    ```jsx
+    cy.getPostData().then( data => {
+        // access the current post's data here
+    } )
+    ```
+
+12. addPostExcerpt
+
+    - Command for adding an excerpt to the current post.
+
+    Syntax:
+
+    ```jsx
+    cy.addPostExcerpt( text )
+    ```
+
+    Arguments:
+    - text - string
+
+    Usage:
+
+    ```jsx
+    cy.addPostExcerpt( 'A sample post excerpt.' )
+    ```
+
+13. addPostSlug
+
+    - Command for adding a slug to the current post.
+
+    Syntax:
+
+    ```jsx
+    cy.addPostSlug( slug )
+    ```
+
+    Arguments:
+    - slug - string
+
+    Usage:
+
+    ```jsx
+    cy.addPostSlug( 'my-post-slug' )
+    ```
+
+14. addFeaturedImage
+
+    - Command for adding a featured image to a post.
+
+    Syntax:
+
+    ```jsx
+    cy.addFeaturedImage()
+    ```
+
+    Usage:
+
+    ```jsx
+    cy.addFeaturedImage()
+    ```
+
 ---
 
 ### inspector.js
