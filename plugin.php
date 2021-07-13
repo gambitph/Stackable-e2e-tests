@@ -54,6 +54,8 @@ if ( isset( $_GET[ 'setup' ] ) ) {
 		} ) );
 
 		update_option( 'active_plugins', $plugins_activated );
+		update_option( 'blogname', 'e2etest' );
+		update_option( 'blogdescription', 'Just another WordPress site' );
 
 		$user = get_user_by( 'login', 'admin' );
 		if( $user ) {
