@@ -1,6 +1,10 @@
+import compareVersions from 'compare-versions'
+
 Cypress.on( 'window:before:load', win => {
-	// Allow the use of cypress experimental `fetch` polyfills.
-	delete win.fetch
+	if ( compareVersions.compare( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' ) ) {
+		// Allow the use of cypress experimental `fetch` polyfills.
+		delete win.fetch
+	}
 } )
 
 Cypress.on( 'uncaught:exception', () => {

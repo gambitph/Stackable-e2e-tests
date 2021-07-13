@@ -28,6 +28,7 @@
 	"dependencies": {
 		"@cypress/webpack-preprocessor": "^5.5.0",
 		"args-parser": "^1.2.0",
+		"compare-versions": "^3.6.0",
 		"glob": "^7.1.7",
 		"husky": "^4.3.8",
 		"lint-staged": "^10.5.3",
