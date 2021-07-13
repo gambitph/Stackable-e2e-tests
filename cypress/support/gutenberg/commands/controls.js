@@ -37,10 +37,18 @@ function colorControlClear( name, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
 	beforeAdjust( name, null, options )
-	cy.getBaseControl( name, { isInPopover } )
+	selector()
 		.find( 'button' )
 		.contains( containsRegExp( 'Clear' ) )
 		.click( { force: true } )
@@ -58,10 +66,18 @@ function rangeControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
 	beforeAdjust( name, null, options )
-	cy.getBaseControl( name, { isInPopover } )
+	selector()
 		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
 		.click( { force: true, multiple: true } )
 }
@@ -77,10 +93,18 @@ function dropdownControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
 	beforeAdjust( name, value, options )
-	cy.getBaseControl( name, { isInPopover } )
+	selector()
 		.find( 'select' )
 		.select( value, { force: true } )
 }
@@ -96,9 +120,15 @@ function colorControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
-	const selector = () => cy.getBaseControl( name, { isInPopover } )
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
 
 	if ( typeof value === 'string' ) {
 		beforeAdjust( name, value, options )
@@ -146,10 +176,18 @@ function rangeControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
 	beforeAdjust( name, value, options )
-	cy.getBaseControl( name, { isInPopover } )
+	selector()
 		.find( 'input.components-input-control__input' )
 		.type( `{selectall}${ value }`, { force: true } )
 }
@@ -165,7 +203,15 @@ function toolbarControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
 
 	// Compatibility for default values
 	const defaultValues = [
@@ -177,7 +223,7 @@ function toolbarControl( name, value, options = {} ) {
 	}
 
 	beforeAdjust( name, value, options )
-	cy.getBaseControl( name, { isInPopover } )
+	selector()
 		.find( `button[value="${ value }"]` )
 		.click( { force: true } )
 }
@@ -193,9 +239,15 @@ function toggleControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
-	const selector = () => cy.getBaseControl( name, { isInPopover, customParentSelector: '' } )
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
 
 	selector()
 		.find( 'span.components-form-toggle' )
@@ -222,10 +274,18 @@ function textControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
 	beforeAdjust( name, value, options )
-	cy.getBaseControl( name, { isInPopover } )
+	selector()
 		.find( 'input.components-text-control__input' )
 		.type( `{selectall}${ value }`, { force: true } )
 }
@@ -241,10 +301,18 @@ function textAreaControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
 	beforeAdjust( name, value, options )
-	cy.getBaseControl( name, { isInPopover } )
+	selector()
 		.find( 'textarea.components-textarea-control__input' )
 		.type( `{selectall}${ value }`, { force: true } )
 }
@@ -307,10 +375,18 @@ function urlInputControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
 	beforeAdjust( name, value, options )
-	cy.getBaseControl( name, { isInPopover } )
+	selector()
 		.contains( containsRegExp( name ) )
 		.closest( '.components-panel__body>.components-base-control' )
 		.find( 'input.block-editor-url-input__input' )
@@ -348,8 +424,9 @@ export function adjust( name, value, options ) {
 		// overwrite selector options.
 		customOptions = {},
 		// overwrite parent element selector used to locate option labels.
-		parentElement = '.components-panel__body',
+		parentSelector = '.components-panel__body',
 		// if the option has no label, pass custom regex to find the control
+		supportedDelimiter = [],
 	} = options
 
 	// Handle options with no label
@@ -368,7 +445,7 @@ export function adjust( name, value, options ) {
 	}
 
 	const baseControlSelector = () => cy
-		.getBaseControl( name, { customParentSelector: parentElement } )
+		.getBaseControl( name, { parentSelector, supportedDelimiter } )
 
 	/**
 	 * Specific selector to trigger one
@@ -397,7 +474,7 @@ export function adjust( name, value, options ) {
 
 			if ( ! commandClassKey ) {
 				throw new Error(
-					'The `cy.adjust` function could not handle this option or the label provided is not found inside `.components-base-control element`. You may overwrite `cy.adjust` by passing customOptions and parentElement to find the right control.'
+					'The `cy.adjust` function could not handle this option or the label provided is not found inside `.components-base-control element`. You may overwrite `cy.adjust` by passing customOptions and parentSelector to find the right control.'
 				)
 			}
 
@@ -419,13 +496,13 @@ export function resetStyle( name, options = {} ) {
 		// overwrite selector options.
 		customOptions = {},
 		// overwrite parent element selector used to locate option labels.
-		parentElement = '.components-panel__body > .components-base-control',
+		parentSelector = '.components-panel__body > .components-base-control',
 		// if the option has no label, pass custom regex to find the control
 	} = options
 	const baseControlSelector = () => cy
-		.get( parentElement )
+		.get( parentSelector )
 		.contains( containsRegExp( name ) )
-		.closest( parentElement )
+		.closest( parentSelector )
 
 	/**
 	 * Specific selector to trigger one
@@ -447,7 +524,7 @@ export function resetStyle( name, options = {} ) {
 
 			if ( ! commandClassKey ) {
 				throw new Error(
-					'The `cy.reset` function could not handle this option or the label provided is not found inside `.components-base-control element`. You may overwrite `cy.reset` by passing customOptions and parentElement to find the right control.'
+					'The `cy.reset` function could not handle this option or the label provided is not found inside `.components-base-control element`. You may overwrite `cy.reset` by passing customOptions and parentSelector to find the right control.'
 				)
 			}
 
