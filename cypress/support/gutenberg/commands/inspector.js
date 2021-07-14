@@ -56,11 +56,12 @@ export function closeSidebar( sidebarName = '' ) {
 export function getBaseControl( matches, options = {} ) {
 	const {
 		isInPopover = false,
-		customParentSelector = '.components-panel__body',
-		supportedDelimiter = [ '>', '>div>' ],
+		parentSelector = '.components-panel__body',
+		supportedDelimiter = [],
 	} = options
 
-	const selector = supportedDelimiter.map( d => `${ customParentSelector ? `${ customParentSelector }${ d }` : '' }.components-base-control` ).join( ',' )
+	const selector = Array( ...supportedDelimiter, '>', '>div>' ).map( d => `${ parentSelector ? `${ parentSelector }${ d }` : '' }.components-base-control` ).join( ',' )
+
 	return ( ! isInPopover
 		? cy.get( selector )
 		: cy.get( '.components-popover__content' ).find( '.components-base-control' ) )
