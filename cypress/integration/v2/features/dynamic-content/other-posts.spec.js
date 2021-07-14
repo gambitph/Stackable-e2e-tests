@@ -6,6 +6,7 @@ import { registerTests } from '~stackable-e2e/helpers'
 describe( 'Dynamic Content Other Posts', registerTests( [
 	matchPostDataValues,
 	adjustFieldOptions,
+	adjustFieldValues,
 ] ) )
 
 const fields = {
@@ -193,5 +194,31 @@ function adjustFieldOptions() {
 			selector().find( `a[href="${ postData.author_info.url }"]` ).should( 'exist' )
 			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
 		} )
+	} )
+}
+
+function adjustFieldValues() {
+	it( 'should assert the correct value in frontend after changing the other post data values', () => {
+		cy.setupWP()
+		// Add a post and set its post data
+		cy.newPost()
+		cy.addBlock( 'core/paragraph' )
+		cy.typePostTitle( 'First Post' )
+		cy.addFeaturedImage()
+		cy.addPostExcerpt( 'Hello World! Sample excerpt here. Lorem ipsum' )
+		cy.addPostSlug( 'my-first-post' )
+		cy.publish()
+
+		let postData
+		cy.getPostData().then( data => {
+			// Save this post's data for Other Posts assertion.
+			postData = data
+		} )
+
+		if ( postData.title ) {
+
+		}
+		cy.newPage()
+		cy.addBlock( 'ugb/cta' )
 	} )
 }
