@@ -322,7 +322,15 @@
         "social3PinterestUrl":"",
         "social3LinkedinUrl":"",
         "social3YoutubeUrl":"",
-        "social3EmailUrl":""
+        "social3EmailUrl":"",
+        "showPinterest":"",
+        "showLinkedin":"",
+        "showYoutube":"",
+        "showEmail":"",
+        "showFacebook":"",
+        "showImage":"",
+        "showInstagram":"",
+        "showTwitter":""
     },
     "attrContent": {
         "image1Alt":"",
@@ -369,6 +377,14 @@
         "container2Title":"",
         "container2Url":"",
         "container3Title":"",
-        "container3Url":""
+        "container3Url":"",
+        "showPinterest":"",
+        "showLinkedin":"",
+        "showYoutube":"",
+        "showEmail":"",
+        "showFacebook":"",
+        "showImage":"",
+        "showInstagram":"",
+        "showTwitter":""
     }
 }

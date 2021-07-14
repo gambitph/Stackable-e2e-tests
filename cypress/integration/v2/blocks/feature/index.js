@@ -146,7 +146,7 @@ function styleTab( viewport, desktopOnly ) {
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'General' )
 		if ( viewport !== 'Mobile' ) {
-			const assertionOptions = viewport === 'Tablet' ? { viewportFrontend: 783 } : {}
+			const assertionOptions = viewport === 'Tablet' ? { viewportFrontend: 783, assertBackend: false } : {}
 			cy.adjust( 'Image Column Width', 45, { viewport } ).assertComputedStyle( {
 				'.ugb-feature__item': {
 					'grid-template-columns': '1.10fr 0.90fr',
