@@ -423,3 +423,128 @@
     	// do something
     } )
     ```
+
+---
+### commands/toolbar.js
+
+1. copyStyle
+    - Stackable Command for copying the styles of a block.
+
+    Syntax:
+
+    ```jsx
+    cy.copyStyle( subject, blockToCopy )
+    ```
+
+    Arguments:
+
+    - subject - string
+    - blockToCopy - string | number | Object
+
+    Usage:
+
+    ```jsx
+    cy.copyStyle( 'ugb/accordion', 'Accordion 1' )
+    ```
+
+2. pasteStyle
+    - Stackable Command for pasting the styles of a block.
+
+    Syntax:
+
+    ```jsx
+    cy.pasteStyle( subject, blockToPaste )
+    ```
+
+    Arguments:
+
+    - subject - string
+    - blockToPaste - string | number | Object
+
+    Usage:
+
+    ```jsx
+    cy.pasteStyle( 'ugb/accordion', 'Accordion 2' )
+    ```
+
+3. adjustDynamicContent
+    - Stackable Command for adjusting the dynamic content options in the toolbar.
+
+    Syntax:
+
+    ```jsx
+    cy.adjustDynamicContent( blockName, blockSelector, selector, options )
+    ```
+
+    Arguments:
+
+    - blockName - string
+    - blockSelector - string | number | Object
+    - selector - string
+    - options - Object
+
+    Option | Data type | Default value | Description
+    ------ | --------- | ------------- | -----------
+    source | string | '' | Set the source of the dynamic content
+    post | string | '' | Select the post of the dynamic content
+    fieldName | string | '' | Select the field of the dynamic content
+    fieldOptions | Object | {} | Adjust the options of a field
+
+    Usage:
+    ```jsx
+    cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
+        source: 'Current Post',
+        fieldName: 'Post Title'
+    } )
+    ```
+
+---
+### commands/settings.js
+
+1. forceTypographyStyles
+    - Command for forcing typography styles in Stackable Settings page.
+
+    Syntax:
+
+    ```jsx
+    cy.forceTypographyStyles()
+    ```
+
+    Usage:
+
+    ```jsx
+    cy.forceTypographyStyles()
+    ```
+
+2. loadFrontendJsCssFiles
+    - Command for loading JS and CSS files across entire site in Stackable Settings page.
+
+    Syntax:
+
+    ```jsx
+    cy.loadFrontendJsCssFiles()
+    ```
+
+    Usage:
+
+    ```jsx
+    cy.loadFrontendJsCssFiles()
+    ```
+
+---
+### commands/setup.js
+
+1. activateLicense
+    - Command for activating the license key for Stackable.
+
+    Syntax:
+
+    ```jsx
+    cy.activateLicense()
+    ```
+
+    Usage:
+
+    ```jsx
+    cy.activateLicense()
+    ```
