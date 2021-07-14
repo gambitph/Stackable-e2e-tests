@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { blocks } from '~stackable-e2e/config'
+import compareVersions from 'compare-versions'
 
 const colors = [
 	{
@@ -325,18 +326,24 @@ export function globalColorNativeBlocks() {
 					.type( 'Block Title', { force: true } )
 			}
 			if ( blockName !== 'core/cover' ) {
+				const isWpVersionLessThan58 = compareVersions.compare( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' )
+
 				cy.selectBlock( `${ blockName === 'core/buttons' ? 'core/button' : blockName }` )
 				cy.openSidebar( 'Settings' )
-				cy.collapse( 'Color settings' )
+				cy.collapse( `${ isWpVersionLessThan58 ? 'Color settings' : 'Color' }` )
 				colors.forEach( val => {
 					cy
-						.adjust( `${ blockName === 'core/separator' ? 'Color' : 'Text Color' }`, val.name )
+						.adjust( `${ blockName === 'core/separator'
+							? 'Color'
+							: isWpVersionLessThan58
+								? 'Text Color'
+								: 'Text color' }`, val.name )
 						.assertComputedStyle( {
 							[ `${ blockName === 'core/buttons' ? '.wp-block-button__link' : '' }` ]: {
 								'color': val.color,
 							},
 						}, {
-							'activePanel': 'Color settings',
+							'activePanel': `${ isWpVersionLessThan58 ? 'Color settings' : 'Color' }`,
 						} )
 						// Active panel option is added so that when the test goes back
 						// to the backend, it will open this panel
