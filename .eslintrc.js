@@ -71,6 +71,7 @@ module.exports = {
 		cy: true,
 		context: true,
 		beforeEach: true,
+		afterEach: true,
 		it: true,
 		expect: true,
 		describe: true,
