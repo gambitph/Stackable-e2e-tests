@@ -26,15 +26,11 @@ const fields = {
 	'Comment Number': 'comments_num',
 	'Comment Status': 'comment_status',
 	'Featured Image URL': 'featured_image_urls',
+	'Author Profile Picture URL': '', // TODO: fields from here are not in getPostData
+	'Author Posts': '', // Retrieve the contents of these fields for assertion
+	'Author First Name': '',
+	'Author Last Name': '',
 }
-
-/*
- * Fields TODO:
- * Author Profile Picture URL
- * Author Posts
- * Author First Name
- * Author Last Name
- */
 
 const selector = () => cy.get( '.ugb-cta__title' )
 const adjustField = ( fieldName, fieldOptions = {} ) => {
@@ -94,25 +90,27 @@ function matchPostDataValues() {
 				fieldOptions,
 			} )
 
-			cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-				const value = Array( 'date', 'date_gmt', 'modified', 'modified_gmt' ).includes( fields[ fieldName ] )
-					? postData[ fields[ fieldName ] ].split( 'T' ).shift()
-					: Array( 'name', 'url' ).includes( fields[ fieldName ] )
-						? postData.author_info[ fields[ fieldName ] ]
-						: fields[ fieldName ] === 'featured_image_urls'
-							? postData[ fields[ fieldName ] ].full[ 0 ]
-							: postData[ fields[ fieldName ] ]
+			if ( fields[ fieldName ] ) {
+				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+					const value = Array( 'date', 'date_gmt', 'modified', 'modified_gmt' ).includes( fields[ fieldName ] )
+						? postData[ fields[ fieldName ] ].split( 'T' ).shift()
+						: Array( 'name', 'url' ).includes( fields[ fieldName ] )
+							? postData.author_info[ fields[ fieldName ] ]
+							: fields[ fieldName ] === 'featured_image_urls'
+								? postData[ fields[ fieldName ] ].full[ 0 ]
+								: postData[ fields[ fieldName ] ]
 
-				// Assert in backend.
-				cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
-				cy.visit( previewUrl )
-				// Assert in frontend.
-				cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
-				cy.visit( editorUrl )
-				cy.deleteBlock( 'ugb/cta' )
-			} )
+					// Assert in backend.
+					cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
+					cy.visit( previewUrl )
+					// Assert in frontend.
+					cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
+					cy.visit( editorUrl )
+					cy.deleteBlock( 'ugb/cta' )
+				} )
+			}
+			cy.savePost()
 		} )
-		cy.savePost()
 	} )
 }
 
