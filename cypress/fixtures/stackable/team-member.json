@@ -377,14 +377,6 @@
         "container2Title":"",
         "container2Url":"",
         "container3Title":"",
-        "container3Url":"",
-        "showPinterest":"",
-        "showLinkedin":"",
-        "showYoutube":"",
-        "showEmail":"",
-        "showFacebook":"",
-        "showImage":"",
-        "showInstagram":"",
-        "showTwitter":""
+        "container3Url":""
     }
 }
