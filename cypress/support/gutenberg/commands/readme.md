@@ -412,6 +412,38 @@
     cy.addInnerBlock( "ugb/container", "ugb/card" )
     ```
 
+7. asBlock
+
+    - Command for setting block alias.
+
+    Syntax:
+
+    ```jsx
+    .asBlock( alias )
+    .asBlock( alias, options )
+    ```
+
+    Arguments:
+
+    - alias - string
+    - options - Object
+
+    Options:
+
+    | Option    | Data type   | Default value | Description               |
+    | --------- | ----------- | ------------- | ------------------------- |
+    | isStatic  | boolean     | false         | If the block is static    |
+
+    Usage:
+
+    ```jsx
+    cy.addBlock( 'ugb/container' ).asBlock( 'containerBlock', { isStatic: true } )
+    cy.selectBlock( 'ugb/column' ).asBlock( 'columnBlock', { isStatic: true } )
+    ```
+
+    Rules/Requirements:
+    - `.asBlock()` requires being chained off to commands such as `cy.addBlock()` and `cy.selectBlock()`.
+
 ---
 
 ### controls.js
@@ -764,7 +796,7 @@
     | Option        | Data type | Default value               | Description                     |
     | ------------- | --------- | --------------------------- | ------------------------------- |
     | customOptions | object    | {}                          | Additional options for controls |
-    | parentElement | string    | '.components-panel\_\_body' | Parent element of base control  |
+    | parentSelector | string    | '.components-panel\_\_body' | Parent element of base control  |
 
     Usage:
 
@@ -793,7 +825,7 @@
     | Option        | Data type | Default value               | Description                     |
     | ------------- | --------- | --------------------------- | ------------------------------- |
     | customOptions | object    | {}                          | Additional options for controls |
-    | parentElement | string    | '.components-panel\_\_body' | Parent element of base control  |
+    | parentSelector | string    | '.components-panel\_\_body' | Parent element of base control  |
 
     Usage:
 
@@ -991,6 +1023,97 @@
     } )
     ```
 
+10. typePostTitle
+
+    - Command for typing into the post title in the editor.
+
+    Syntax:
+
+    ```jsx
+    cy.typePostTitle( title )
+    ```
+
+    Arguments:
+    - title - string
+
+    Usage:
+
+    ```jsx
+    cy.typePostTitle( 'My Title' )
+    ```
+
+11. getPostData
+
+    - Command that returns the current post's data.
+
+    Syntax:
+
+    ```jsx
+    cy.getPostData()
+    ```
+
+    Usage:
+
+    ```jsx
+    cy.getPostData().then( data => {
+        // access the current post's data here
+    } )
+    ```
+
+12. addPostExcerpt
+
+    - Command for adding an excerpt to the current post.
+
+    Syntax:
+
+    ```jsx
+    cy.addPostExcerpt( text )
+    ```
+
+    Arguments:
+    - text - string
+
+    Usage:
+
+    ```jsx
+    cy.addPostExcerpt( 'A sample post excerpt.' )
+    ```
+
+13. addPostSlug
+
+    - Command for adding a slug to the current post.
+
+    Syntax:
+
+    ```jsx
+    cy.addPostSlug( slug )
+    ```
+
+    Arguments:
+    - slug - string
+
+    Usage:
+
+    ```jsx
+    cy.addPostSlug( 'my-post-slug' )
+    ```
+
+14. addFeaturedImage
+
+    - Command for adding a featured image to a post.
+
+    Syntax:
+
+    ```jsx
+    cy.addFeaturedImage()
+    ```
+
+    Usage:
+
+    ```jsx
+    cy.addFeaturedImage()
+    ```
+
 ---
 
 ### inspector.js
@@ -1078,7 +1201,7 @@
     | Option               | Data type | Default value               | Description                                 |
     | -------------------- | --------- | --------------------------- | ------------------------------------------- |
     | isInPopover          | boolean   | true                        | If the control is in popover                |
-    | customParentSelector | string    | '.components-panel\_\_body' | Parent element of base control              |
+    | parentSelector | string    | '.components-panel\_\_body' | Parent element of base control              |
     | supportedDelimiter   | array     | [ '>', '>div>' ]            | Delimiters that can be used in the selector |
 
     Usage:
