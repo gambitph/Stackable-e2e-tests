@@ -145,7 +145,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/accordion', 'Style' )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@accordionBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

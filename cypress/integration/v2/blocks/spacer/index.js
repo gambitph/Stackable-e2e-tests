@@ -39,7 +39,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/spacer', 'Style' )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@spacerBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

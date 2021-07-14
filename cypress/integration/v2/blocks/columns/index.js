@@ -75,7 +75,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/columns', 'Style' )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@columnsBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

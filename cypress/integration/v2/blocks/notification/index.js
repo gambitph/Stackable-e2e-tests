@@ -78,7 +78,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/notification', 'Style' )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@notificationBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

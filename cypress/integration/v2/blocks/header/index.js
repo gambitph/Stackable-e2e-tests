@@ -104,7 +104,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/header', 'Style' )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@headerBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

@@ -46,7 +46,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/divider', 'Style' )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@dividerBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

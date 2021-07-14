@@ -92,7 +92,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.typeBlock( 'ugb/text', '.ugb-text__text-2', 'Text 2' )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@textBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

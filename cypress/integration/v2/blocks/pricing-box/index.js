@@ -107,7 +107,6 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@pricingBoxBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

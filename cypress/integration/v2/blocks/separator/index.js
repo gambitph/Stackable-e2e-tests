@@ -54,7 +54,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/separator', 'Style' )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@separatorBlock' ) )
 
 	it( `should assert Separator options in ${ lowerCase( viewport ) }`, () => {

@@ -141,7 +141,6 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@featureBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

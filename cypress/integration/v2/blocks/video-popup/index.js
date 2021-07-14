@@ -67,7 +67,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/video-popup', 'Style' )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@videoPopupBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

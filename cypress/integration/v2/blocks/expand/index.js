@@ -61,7 +61,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.typeBlock( 'ugb/expand', '.ugb-expand__less-toggle-text', 'Show less link' )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@expandBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

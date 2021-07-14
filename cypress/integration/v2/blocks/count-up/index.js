@@ -87,7 +87,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.adjust( 'Columns', 2 )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@countUpBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

@@ -53,7 +53,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Helloo World!! 12' )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@headingBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {

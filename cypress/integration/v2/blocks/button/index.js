@@ -71,7 +71,6 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/button', 'Style' )
 	} )
 
-	// eslint-disable-next-line no-undef
 	afterEach( () => cy.assertFrontendStyles( '@buttonBlock' ) )
 
 	it( `should assert General options in ${ lowerCase( viewport ) }`, () => {
