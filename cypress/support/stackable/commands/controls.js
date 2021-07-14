@@ -41,15 +41,10 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 	const label = first( args )
 
 	// Function to call before adjusting options
-	optionsToPass.beforeAdjust = ( name, value, options ) => {
-		const {
-			viewport = 'Desktop',
-			isInPopover = false,
-			unit = '',
-		} = options
-
-		changeControlViewport( viewport, name, isInPopover )
-		changeUnit( unit, name, isInPopover )
+	optionsToPass.beforeAdjust = ( name, value, _options ) => {
+		const options = Object.assign( _options, { name, value } )
+		changeControlViewport( options )
+		changeUnit( options )
 	}
 
 	// Handle options with no label
@@ -87,15 +82,10 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 	const optionsToPass = args.length === 2 ? args.pop() : {}
 
 	// Function to call before adjusting options
-	optionsToPass.beforeAdjust = ( name, value, options ) => {
-		const {
-			viewport = 'Desktop',
-			isInPopover = false,
-			unit = '',
-		} = options
-
-		changeControlViewport( viewport, name, isInPopover )
-		changeUnit( unit, name, isInPopover )
+	optionsToPass.beforeAdjust = ( name, value, _options ) => {
+		const options = Object.assign( _options, { name, value } )
+		changeControlViewport( options )
+		changeUnit( options )
 	}
 
 	const customOptions = {
@@ -177,10 +167,11 @@ function designControl( name, value, options = {} ) {
 function popoverControl( name, value = {}, options = {} ) {
 	const {
 		isInPopover = false,
+		parentSelector,
 	} = options
 
 	const clickPopoverButton = () => {
-		cy.getBaseControl( name, { isInPopover } )
+		cy.getBaseControl( name, { isInPopover, parentSelector } )
 			.find( 'button[aria-label="Edit"]' )
 			.click( { force: true } )
 	}
@@ -215,7 +206,7 @@ function popoverControl( name, value = {}, options = {} ) {
 		clickPopoverButton()
 	} else if ( typeof value === 'boolean' ) {
 		// In some cases, a popover control has an input checkbox.
-		cy.getBaseControl( name, { isInPopover } )
+		cy.getBaseControl( name, { isInPopover, parentSelector } )
 			.find( 'span.components-form-toggle' )
 			.invoke( 'attr', 'class' )
 			.then( $classNames => {
@@ -265,10 +256,18 @@ function suggestionControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
 	beforeAdjust( name, value, options )
-	cy.getBaseControl( name, { isInPopover } )
+	selector()
 		.contains( containsRegExp( name ) )
 		.closest( '.components-panel__body>.components-base-control' )
 		.find( 'input' )
@@ -285,10 +284,18 @@ function suggestionControlClear( name, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
 	beforeAdjust( name, null, options )
-	cy.getBaseControl( name, { isInPopover } )
+	selector()
 		.find( 'input' )
 		.type( '{selectall}{backspace}{enter}', { force: true } )
 }
@@ -304,9 +311,15 @@ function fourRangeControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
-	const selector = () => cy.getBaseControl( name, { isInPopover } )
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
 
 	const clickLockButton = () => selector()
 		.find( 'button.ugb-four-range-control__lock' )
@@ -352,9 +365,15 @@ function fourRangeControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
 
-	const selector = isInPopover => cy.getBaseControl( name, { isInPopover } )
+	const selector = isInPopover => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
 
 	const clickLockButton = () => selector( isInPopover )
 		.find( 'button.ugb-four-range-control__lock' )
@@ -387,11 +406,19 @@ function columnControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
 
 	beforeAdjust( name, value, options )
 	value.forEach( ( val, index ) => {
-		cy.getBaseControl( name, { isInPopover } )
+		selector()
 			.find( 'input.components-column-widths-control__number' )
 			.eq( index )
 			.type( `{selectall}${ val }{enter}`, { force: true } )

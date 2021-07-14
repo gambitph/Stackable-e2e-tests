@@ -13,7 +13,7 @@ import {
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
-const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { disableItAssertion: true } )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced' } )
 
 export {
 	desktopStyle,
@@ -403,24 +403,22 @@ function styleTab( viewport, desktopOnly ) {
 }
 
 function advancedTab( viewport ) {
-	it( `should assert advanced options in ${ lowerCase( viewport ) }`, () => {
-		cy.setupWP()
-		cy.registerPosts( { numOfPosts: 1 } )
-		cy.newPage()
-		cy.addBlock( 'ugb/blog-posts' )
+	cy.setupWP()
+	cy.registerPosts( { numOfPosts: 1 } )
+	cy.newPage()
+	cy.addBlock( 'ugb/blog-posts' )
 
-		cy.openInspector( 'ugb/blog-posts', 'Advanced' )
+	cy.openInspector( 'ugb/blog-posts', 'Advanced' )
 
-		assertAdvancedTab( '.ugb-blog-posts', {
-			viewport,
-			customCssSelectors: [
-				'.ugb-blog-posts__item',
-				'.ugb-blog-posts__category',
-				'.ugb-blog-posts__meta',
-				'.ugb-blog-posts__title a',
-				'.ugb-blog-posts__excerpt',
-			],
-		} )
-		cy.savePost()
+	assertAdvancedTab( '.ugb-blog-posts', {
+		viewport,
+		customCssSelectors: [
+			'.ugb-blog-posts__item',
+			'.ugb-blog-posts__category',
+			'.ugb-blog-posts__meta',
+			'.ugb-blog-posts__title a',
+			'.ugb-blog-posts__excerpt',
+		],
 	} )
+	cy.savePost()
 }

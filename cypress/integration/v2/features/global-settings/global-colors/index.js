@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { registerBlockSnapshots } from '~gutenberg-e2e/plugins'
 import { blocks } from '~stackable-e2e/config'
 
 const colors = [
@@ -86,9 +85,7 @@ export function adjustGlobalColorTest() {
 			.filter( blockName => blockName !== 'ugb/blog-posts' )
 			.forEach( blockName => {
 				const name = blockName.split( '/' ).pop()
-
-				cy.addBlock( blockName ).as( blockName )
-				const block = registerBlockSnapshots( blockName )
+				cy.addBlock( blockName ).asBlock( blockName, { isStatic: true } )
 				cy.openInspector( blockName, 'Style' )
 
 				// Check if the Global colors are added in blocks
@@ -154,7 +151,7 @@ export function adjustGlobalColorTest() {
 				}
 
 				cy.getPostUrls().then( ( { editorUrl } ) => {
-					block.assertFrontendStyles()
+					cy.assertFrontendStyles( `@${ blockName }` )
 					cy.visit( editorUrl )
 				} )
 			} )
