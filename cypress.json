@@ -16,7 +16,7 @@
     "configFile": "reporter-config.json"
   },
 	"env": {
-		"WORDPRESS_VERSION":"5.8.0",
+		"WORDPRESS_VERSION":"5.7.2",
 		"STACKABLE_VERSION": 2,
 		"DEBUG": "false",
 		"DUMMY_IMAGE_URL": "http://sandbox.gambit.ph/for-test/wp-content/uploads/sites/85/2020/12/avi-richards-ojBNujxI2_c-unsplash.jpg",
