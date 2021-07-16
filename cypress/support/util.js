@@ -58,7 +58,7 @@ export function getBlocksRecursive( blocks ) {
  * @param {string} operator
  */
 export function compareVersions( versionA, versionB, operator ) {
-	const arrA = versionA.includes( 'RC' )
+	const arrA = Array( 'RC', 'alpha', 'beta' ).some( build => versionA.includes( build ) )
 		? versionA.split( '-' )[ 0 ].split( '.' ).map( num => parseInt( num ) )
 		: versionA.split( '.' ).map( num => parseInt( num ) )
 	const arrB = versionB.split( '.' ).map( num => parseInt( num ) )
