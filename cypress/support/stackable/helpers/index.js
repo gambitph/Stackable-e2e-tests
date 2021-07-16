@@ -1,7 +1,6 @@
 /**
  * External dependencies
  */
-import { compareVersions } from '~common/util'
 import {
 	lowerCase, isEmpty,
 } from 'lodash'
@@ -68,10 +67,8 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
 	designs.forEach( ( design, index ) => {
 		cy.addBlock( blockName )
 		cy.openInspector( blockName, 'Layout', index )
-		if ( compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' ) ) {
-			if ( ! index ) {
-				cy.wait( '@designLibrary' )
-			}
+		if ( ! index ) {
+			cy.wait( '@designLibrary' )
 		}
 		cy.adjustDesign( design )
 	} )
