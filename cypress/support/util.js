@@ -68,37 +68,35 @@ export function compareVersions( versionA, versionB, operator ) {
 		arrA.push( 0 )
 	}
 
-	const compare = {
-		'<': () => {
-			if ( arrA[ 0 ] < arrB[ 0 ] ) {
+	if ( operator === '<' ) {
+		if ( arrA[ 0 ] < arrB[ 0 ] ) {
+			return true
+		}
+		if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] < arrB[ 1 ] ) {
+			return true
+		}
+		if ( arrA.length === 3 ) {
+			if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] === arrB[ 1 ] && arrA[ 2 ] < arrB[ 2 ] ) {
 				return true
 			}
-			if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] < arrB[ 1 ] ) {
-				return true
-			}
-			if ( arrA.length === 3 ) {
-				if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] === arrB[ 1 ] && arrA[ 2 ] < arrB[ 2 ] ) {
-					return true
-				}
-			}
-			return false
-		},
-		'>': () => {
-			if ( arrA[ 0 ] > arrB[ 0 ] ) {
-				return true
-			}
-			if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] > arrB[ 1 ] ) {
-				return true
-			}
-			if ( arrA.length === 3 ) {
-				if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] === arrB[ 1 ] && arrA[ 2 ] > arrB[ 2 ] ) {
-					return true
-				}
-			}
-			return false
-		},
-		'=': () => JSON.stringify( arrA ) === JSON.stringify( arrB ),
+		}
+		return false
 	}
-
-	compare[ operator ]()
+	if ( operator === '>' ) {
+		if ( arrA[ 0 ] > arrB[ 0 ] ) {
+			return true
+		}
+		if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] > arrB[ 1 ] ) {
+			return true
+		}
+		if ( arrA.length === 3 ) {
+			if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] === arrB[ 1 ] && arrA[ 2 ] > arrB[ 2 ] ) {
+				return true
+			}
+		}
+		return false
+	}
+	if ( operator === '=' ) {
+		return JSON.stringify( arrA ) === JSON.stringify( arrB )
+	}
 }

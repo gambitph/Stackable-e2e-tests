@@ -9,6 +9,8 @@ export function setWpVersionToEnv() {
 		const text = doc.querySelector( '#wp-version-message #wp-version' ).innerText
 		const wpVersion = text.split( ' ' ).slice( 0, 2 )[ 1 ]
 
-		Cypress.env( 'WORDPRESS_VERSION', wpVersion )
+		if ( ! Cypress.env( 'WORDPRESS_VERSION' ) ) {
+			Cypress.env( 'WORDPRESS_VERSION', wpVersion )
+		}
 	} )
 }

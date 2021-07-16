@@ -2,7 +2,6 @@
  * External dependencies
  */
 import { blocks } from '~stackable-e2e/config'
-import { compareVersions } from '~common/util'
 
 const colors = [
 	{
@@ -309,6 +308,14 @@ export function globalColorNativeBlocks() {
 
 		nativeBlocks.forEach( blockName => {
 			cy.addBlock( blockName )
+			if ( blockName !== 'core/separator' && blockName !== 'core/cover' ) {
+				cy
+					.get( `.wp-block[data-type='${ blockName }']` )
+					.type( 'Block Title', { force: true } )
+			}
+			if ( blockName === 'core/buttons' ) {
+				cy.typeBlock( 'core/button', '.wp-block-button__link', 'My button' )
+			}
 		} )
 
 		colors.forEach( val => {
@@ -320,22 +327,15 @@ export function globalColorNativeBlocks() {
 		cy.adjust( 'Use only Stackable colors', true )
 
 		nativeBlocks.forEach( blockName => {
-			if ( blockName !== 'core/separator' && blockName !== 'core/cover' ) {
-				cy
-					.get( `.wp-block[data-type='${ blockName }']` )
-					.type( 'Block Title', { force: true } )
-			}
 			if ( blockName !== 'core/cover' ) {
-				const isWpVersionLessThan58 = compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' )
-
 				cy.selectBlock( `${ blockName === 'core/buttons' ? 'core/button' : blockName }` )
 				cy.openSidebar( 'Settings' )
-				cy.collapse( `${ isWpVersionLessThan58 ? 'Color settings' : 'Color' }` )
+				cy.collapse( `${ Cypress.env( 'WP_VERSION_LESS_THAN_58' ) ? 'Color settings' : 'Color' }` )
 				colors.forEach( val => {
 					cy
 						.adjust( `${ blockName === 'core/separator'
 							? 'Color'
-							: isWpVersionLessThan58
+							: Cypress.env( 'WP_VERSION_LESS_THAN_58' )
 								? 'Text Color'
 								: 'Text color' }`, val.name )
 						.assertComputedStyle( {
@@ -343,7 +343,7 @@ export function globalColorNativeBlocks() {
 								'color': val.color,
 							},
 						}, {
-							'activePanel': `${ isWpVersionLessThan58 ? 'Color settings' : 'Color' }`,
+							'activePanel': `${ Cypress.env( 'WP_VERSION_LESS_THAN_58' ) ? 'Color settings' : 'Color' }`,
 						} )
 						// Active panel option is added so that when the test goes back
 						// to the backend, it will open this panel
