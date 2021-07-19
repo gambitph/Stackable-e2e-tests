@@ -11,12 +11,6 @@ Cypress.on( 'window:before:load', win => {
 			// Allow the use of cypress experimental `fetch` polyfills.
 			delete win.fetch
 		}
-
-		// Set this as a Cypress env if not yet added.
-		// This environment variable can be accessed in tests using: `Cypress.env( 'WP_VERSION_LESS_THAN_58' )`
-		if ( ! Cypress.env( 'WP_VERSION_LESS_THAN_58' ) ) {
-			Cypress.env( 'WP_VERSION_LESS_THAN_58', compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' ) )
-		}
 	}
 } )
 

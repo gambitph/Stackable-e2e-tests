@@ -56,8 +56,10 @@ export function getBlocksRecursive( blocks ) {
  * @param {string} versionA
  * @param {string} versionB
  * @param {string} operator
+ *
+ * @return {boolean} true if the expression is true and false if not
  */
-export function compareVersions( versionA, versionB, operator ) {
+export function compareVersions( versionA = '', versionB = '', operator = '=' ) {
 	const arrA = Array( 'RC', 'alpha', 'beta' ).some( build => versionA.includes( build ) )
 		? versionA.split( '-' )[ 0 ].split( '.' ).map( num => parseInt( num ) )
 		: versionA.split( '.' ).map( num => parseInt( num ) )
@@ -68,6 +70,10 @@ export function compareVersions( versionA, versionB, operator ) {
 		arrA.push( 0 )
 	}
 
+	if ( arrB.length === 2 ) {
+		arrB.push( 0 )
+	}
+
 	if ( operator === '<' ) {
 		if ( arrA[ 0 ] < arrB[ 0 ] ) {
 			return true
@@ -75,10 +81,8 @@ export function compareVersions( versionA, versionB, operator ) {
 		if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] < arrB[ 1 ] ) {
 			return true
 		}
-		if ( arrA.length === 3 ) {
-			if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] === arrB[ 1 ] && arrA[ 2 ] < arrB[ 2 ] ) {
-				return true
-			}
+		if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] === arrB[ 1 ] && arrA[ 2 ] < arrB[ 2 ] ) {
+			return true
 		}
 		return false
 	}
@@ -89,10 +93,8 @@ export function compareVersions( versionA, versionB, operator ) {
 		if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] > arrB[ 1 ] ) {
 			return true
 		}
-		if ( arrA.length === 3 ) {
-			if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] === arrB[ 1 ] && arrA[ 2 ] > arrB[ 2 ] ) {
-				return true
-			}
+		if ( arrA[ 0 ] === arrB[ 0 ] && arrA[ 1 ] === arrB[ 1 ] && arrA[ 2 ] > arrB[ 2 ] ) {
+			return true
 		}
 		return false
 	}

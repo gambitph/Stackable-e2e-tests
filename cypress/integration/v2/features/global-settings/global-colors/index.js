@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { blocks } from '~stackable-e2e/config'
+import { compareVersions } from '~common/util'
 
 const colors = [
 	{
@@ -293,6 +294,7 @@ export function changeGlobalColorTest() {
 export function globalColorNativeBlocks() {
 	it( 'should assert global colors in native blocks', () => {
 		cy.setupWP()
+
 		// Global settings should still load in the frontend.
 		cy.loadFrontendJsCssFiles()
 		cy.newPage()
@@ -326,16 +328,18 @@ export function globalColorNativeBlocks() {
 		} )
 		cy.adjust( 'Use only Stackable colors', true )
 
+		const isWpLessThan58 = () => compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' )
+
 		nativeBlocks.forEach( blockName => {
 			if ( blockName !== 'core/cover' ) {
 				cy.selectBlock( `${ blockName === 'core/buttons' ? 'core/button' : blockName }` )
 				cy.openSidebar( 'Settings' )
-				cy.collapse( `${ Cypress.env( 'WP_VERSION_LESS_THAN_58' ) ? 'Color settings' : 'Color' }` )
+				cy.collapse( `${ isWpLessThan58() ? 'Color settings' : 'Color' }` )
 				colors.forEach( val => {
 					cy
 						.adjust( `${ blockName === 'core/separator'
 							? 'Color'
-							: Cypress.env( 'WP_VERSION_LESS_THAN_58' )
+							: isWpLessThan58()
 								? 'Text Color'
 								: 'Text color' }`, val.name )
 						.assertComputedStyle( {
@@ -343,7 +347,7 @@ export function globalColorNativeBlocks() {
 								'color': val.color,
 							},
 						}, {
-							'activePanel': `${ Cypress.env( 'WP_VERSION_LESS_THAN_58' ) ? 'Color settings' : 'Color' }`,
+							'activePanel': `${ isWpLessThan58() ? 'Color settings' : 'Color' }`,
 						} )
 						// Active panel option is added so that when the test goes back
 						// to the backend, it will open this panel
