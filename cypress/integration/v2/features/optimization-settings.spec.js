@@ -127,7 +127,6 @@ function globalSettingTest() {
 
 		const globalCssSelectors = [
 			'#ugb-style-global-colors-inline-css',
-			'#stackable-global-typography-google-fonts-css',
 			'#ugb-style-global-typography-inline-css',
 		]
 
