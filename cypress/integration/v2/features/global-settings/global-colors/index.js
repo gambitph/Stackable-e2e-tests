@@ -347,7 +347,7 @@ export function globalColorNativeBlocks() {
 								'color': val.color,
 							},
 						}, {
-							'activePanel': `${ isWpLessThan58() ? 'Color settings' : 'Color' }`,
+							'activePanel': `${ isWpLessThan58 ? 'Color settings' : 'Color' }`,
 						} )
 						// Active panel option is added so that when the test goes back
 						// to the backend, it will open this panel
