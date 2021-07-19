@@ -328,7 +328,7 @@ export function globalColorNativeBlocks() {
 		} )
 		cy.adjust( 'Use only Stackable colors', true )
 
-		const isWpLessThan58 = () => compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' )
+		const isWpLessThan58 = compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' )
 
 		nativeBlocks.forEach( blockName => {
 			if ( blockName !== 'core/cover' ) {
