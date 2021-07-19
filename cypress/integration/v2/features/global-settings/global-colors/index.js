@@ -334,7 +334,7 @@ export function globalColorNativeBlocks() {
 			if ( blockName !== 'core/cover' ) {
 				cy.selectBlock( `${ blockName === 'core/buttons' ? 'core/button' : blockName }` )
 				cy.openSidebar( 'Settings' )
-				cy.collapse( `${ isWpLessThan58() ? 'Color settings' : 'Color' }` )
+				cy.collapse( `${ isWpLessThan58 ? 'Color settings' : 'Color' }` )
 				colors.forEach( val => {
 					cy
 						.adjust( `${ blockName === 'core/separator'
