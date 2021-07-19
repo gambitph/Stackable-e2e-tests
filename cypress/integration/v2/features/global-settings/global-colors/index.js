@@ -339,7 +339,7 @@ export function globalColorNativeBlocks() {
 					cy
 						.adjust( `${ blockName === 'core/separator'
 							? 'Color'
-							: isWpLessThan58()
+							: isWpLessThan58
 								? 'Text Color'
 								: 'Text color' }`, val.name )
 						.assertComputedStyle( {
