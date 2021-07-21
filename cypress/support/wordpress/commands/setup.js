@@ -1,4 +1,9 @@
 /**
+ * Internal dependencies
+ */
+import { setWpVersionToEnv } from './version'
+
+/**
  * Register functions to Cypress Commands
  */
 Cypress.Commands.add( 'loginAdmin', loginAdmin )
@@ -29,6 +34,9 @@ export function setupWP( args = {} ) {
 		setup: true,
 	} )
 	cy.visit( '/?' + params.toString() )
+	// This sets the WP version as a Cypress env. It can be accessed
+	// in tests using `Cypress.env( 'WORDPRESS_VERSION' )`
+	setWpVersionToEnv()
 }
 
 /**
