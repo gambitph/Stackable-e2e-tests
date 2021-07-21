@@ -4,6 +4,7 @@
  */
 import { registerTests } from '~stackable-e2e/helpers'
 import { containsRegExp } from '~common/util'
+import { range } from 'lodash'
 
 describe( 'Dynamic Content Current Post', registerTests( [
 	matchPostDataValues,
@@ -104,7 +105,7 @@ function matchPostDataValues() {
 								: data[ fields[ fieldName ] ]
 
 					cy.getPostUrls().then( ( { previewUrl } ) => {
-					// Assert in backend.
+						// Assert in backend.
 						cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
 						cy.visit( previewUrl )
 						// Assert in frontend.
@@ -292,23 +293,32 @@ function adjustFieldValues() {
 			assertValue( 'closed' )
 		} )
 
-		// TODO: Assert changing Comment number, Featured image URL
+		// Assert changing the Comment Number
+		createNewPostWithCTA()
+		adjustField( 'Comment Number' )
+		assertValue( '0' )
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			assertValue( '0' )
+			cy.visit( editorUrl )
+			cy.editPostDiscussion( { 'Allow comments': true } )
+			cy.publish()
+			cy.visit( previewUrl )
+			range( 1, 5 ).forEach( num => {
+				cy
+					.get( '.comment-form-comment' )
+					.find( 'textarea#comment' )
+					.click( { force: true } )
+					.type( `{selectall}{backspace}Test ${ num }` )
+			} )
+			assertValue( '4' )
+		} )
 	} )
 }
 
 function assertEmptyValues() {
 	it( 'should assert empty values in the frontend', () => {
 		cy.setupWP()
-
-		const willAssertEmptyValue = () => {
-			cy.getPostUrls().then( ( { previewUrl } ) => {
-				cy.visit( previewUrl )
-				selector()
-					.should( $element => {
-						expect( $element.text().trim() ).equal( '' )
-					} )
-			} )
-		}
 
 		const emptyFields = [
 			'Post Slug',
@@ -320,7 +330,13 @@ function assertEmptyValues() {
 		emptyFields.forEach( fieldName => {
 			createNewPostWithCTA()
 			adjustField( fieldName )
-			willAssertEmptyValue()
+			cy.getPostUrls().then( ( { previewUrl } ) => {
+				cy.visit( previewUrl )
+				selector()
+					.should( $element => {
+						expect( $element.text().trim() ).equal( '' )
+					} )
+			} )
 		} )
 	} )
 }
