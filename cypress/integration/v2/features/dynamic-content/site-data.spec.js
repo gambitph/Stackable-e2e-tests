@@ -4,16 +4,13 @@
  */
 import { registerTests } from '~stackable-e2e/helpers'
 import { containsRegExp } from '~common/util'
+import { range } from 'lodash'
 describe( 'Dynamic Content - Site', registerTests( [
 	  assertSiteData,
 ] ) )
 
 const selector = () => cy.get( '.ugb-cta__title' )
-const fields = {
-	 'Site Title': 'title',
-	 'Site Tagline': 'tagline',
-	 'Site URL': 'url',
-}
+const fields = [ 'Site Title, Site Tagline, Site URL' ]
 const assertValue = value => selector().contains( containsRegExp( value ) ).should( 'exist' )
 
 const testString = [ 'Test Site Title', 'Test Site Tagline' ]
@@ -31,21 +28,21 @@ function assertSiteData() {
 		 cy.editSiteTitle( testString[ 0 ] )
 		 cy.editSiteTagline( testString[ 1 ] )
 
-		 Object.keys( fields ).forEach( fieldName => {
+		 range( 1, 3 ).forEach( idx => {
 			 cy.newPost()
 			 cy.addBlock( 'ugb/cta' )
-			 cy.typePostTitle( `${ fieldName } test` )
+			 cy.typePostTitle( fields[ idx - 1 ] )
 
-			 if ( fieldName === 'Site Title' ) {
-				 adjustSiteField( fieldName )
+			 if ( fields[ idx - 1 ] === 'Site Title' ) {
+				 adjustSiteField( fields[ idx - 1 ] )
 				 assertValue( testString[ 0 ] )
 			 }
-			 if ( fieldName === 'Site Tagline' ) {
-				 adjustSiteField( fieldName )
+			 if ( fields[ idx - 1 ] === 'Site Tagline' ) {
+				 adjustSiteField( fields[ idx - 1 ] )
 				 assertValue( testString[ 1 ] )
 			 }
-			 if ( fieldName === 'Site URL' ) {
-				 adjustSiteField( fieldName, { 'Show as link': true } )
+			 if ( fields[ idx - 1 ] === 'Site URL' ) {
+				 adjustSiteField( fields[ idx - 1 ], { 'Show as link': true } )
 			 }
 		 } )
 	 } )
