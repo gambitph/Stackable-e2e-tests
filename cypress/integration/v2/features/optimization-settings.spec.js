@@ -26,6 +26,7 @@ function optimizationSettings() {
 		cy.addBlock( 'core/buttons' )
 		cy.savePost()
 		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.disableOptimization()
 			cy.visit( previewUrl )
 			// Check that the JS and CSS files are loaded in frontend
 			// Even if there are no Stackable blocks added
@@ -55,8 +56,8 @@ function optimizationSettings() {
 
 function indirectlyAddedBlocks() {
 	it( 'should assert css and js files for indirectly added stackable blocks', () => {
+		// Optimization is enabled by default upon calling setupWP
 		cy.setupWP()
-		cy.loadFrontendJsCssFiles()
 
 		// Publish a post with a ugb/card inside it
 		cy.newPost()
@@ -130,9 +131,8 @@ function globalSettingTest() {
 			'#ugb-style-global-typography-inline-css',
 		]
 
+		// Optimization is enabled by default upon calling setupWP
 		cy.setupWP()
-		// Turn optimization setting on
-		cy.loadFrontendJsCssFiles()
 		cy.newPage()
 
 		// Add Global colors

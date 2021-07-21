@@ -531,6 +531,21 @@
     cy.loadFrontendJsCssFiles()
     ```
 
+3. disableOptimization
+    - Command for disabling optimization setting in Stackable settings.
+
+    Syntax:
+
+    ```jsx
+    cy.disableOptimization()
+    ```
+
+    Usage:
+
+    ```jsx
+    cy.disableOptimization()
+    ```
+
 ---
 ### commands/setup.js
 
