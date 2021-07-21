@@ -229,15 +229,6 @@ if ( isset( $_GET[ 'change-role' ] ) ) {
 	} );
 }
 
-if ( isset( $_GET[ 'enable-optimization' ] ) ) {
-	add_action( 'init', function() {
-		update_option( 'stackable_optimization_settings', true );
-		update_option( 'stackable_optimize_script_load', true );
-
-		die();
-	} );
-}
-
 if ( isset( $_GET[ 'disable-optimization' ] ) ) {
 	add_action( 'init', function() {
 		update_option( 'stackable_optimization_settings', false );
