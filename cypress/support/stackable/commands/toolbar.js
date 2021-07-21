@@ -107,6 +107,4 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 	} )
 
 	cy.savePost()
-	// Sometimes the first save does not register and the test fails.
-	cy.savePost()
 }

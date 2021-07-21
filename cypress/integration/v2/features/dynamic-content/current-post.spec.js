@@ -13,26 +13,92 @@ describe( 'Dynamic Content Current Post', registerTests( [
 	assertEmptyValues,
 ] ) )
 
+// const fields = {
+// 	'Post Title': 'title',
+// 	'Post URL': 'link',
+// 	'Post ID': 'id',
+// 	'Post Slug': 'slug',
+// 	'Post Excerpt': 'excerpt',
+// 	'Post Date': 'date',
+// 	'Post Date GMT': 'date_gmt',
+// 	'Post Modified': 'modified',
+// 	'Post Modified GMT': 'modified_gmt',
+// 	'Post Type': 'type',
+// 	'Post Status': 'status',
+// 	'Author Name': 'name',
+// 	'Author ID': 'author',
+// 	'Author Posts URL': 'url',
+// 	'Comment Number': 'comments_num',
+// 	'Comment Status': 'comment_status',
+// 	'Featured Image URL': 'featured_image_urls',
+// 	'Author Profile Picture URL': '', // TODO: fields from here are not in getCurrentPostData
+// 	'Author Posts': '', // Retrieve the contents of these fields for assertion
+// 	'Author First Name': '',
+// 	'Author Last Name': '',
+// }
+
 const fields = {
-	'Post Title': 'title',
-	'Post URL': 'link',
-	'Post ID': 'id',
-	'Post Slug': 'slug',
-	'Post Excerpt': 'excerpt',
-	'Post Date': 'date',
-	'Post Date GMT': 'date_gmt',
-	'Post Modified': 'modified',
-	'Post Modified GMT': 'modified_gmt',
-	'Post Type': 'type',
-	'Post Status': 'status',
-	'Author Name': 'name',
-	'Author ID': 'author',
-	'Author Posts URL': 'url',
-	'Comment Number': 'comments_num',
-	'Comment Status': 'comment_status',
-	'Featured Image URL': 'featured_image_urls',
-	'Author Profile Picture URL': '', // TODO: fields from here are not in getCurrentPostData
-	'Author Posts': '', // Retrieve the contents of these fields for assertion
+	'Post Title': 'Dynamic Content test',
+	'Post URL': {
+		id: 'link',
+		value: '',
+	},
+	'Post ID': {
+		id: 'id',
+		value: '',
+	},
+	'Post Slug': 'my-slug',
+	'Post Excerpt': 'This is a sample excerpt.',
+	'Post Date': {
+		id: 'date',
+		value: '',
+	},
+	'Post Date GMT': {
+		id: 'date_gmt',
+		value: '',
+	},
+	'Post Modified': {
+		id: 'modified',
+		value: '',
+	},
+	'Post Modified GMT': {
+		id: 'modified_gmt',
+		value: '',
+	},
+	'Post Type': {
+		id: 'type',
+		value: '',
+	},
+	'Post Status': {
+		id: 'status',
+		value: '',
+	},
+	'Author Name': {
+		id: 'name',
+		value: '',
+	},
+	'Author ID': {
+		id: 'author',
+		value: '',
+	},
+	'Author Posts URL': {
+		id: 'url',
+		value: '',
+	},
+	'Comment Number': {
+		id: 'comments_num',
+		value: '',
+	},
+	'Comment Status': {
+		id: 'comment_status',
+		value: '',
+	},
+	'Featured Image URL': {
+		id: 'featured_image_urls',
+		value: '',
+	},
+	'Author Profile Picture URL': '',
+	'Author Posts': '',
 	'Author First Name': '',
 	'Author Last Name': '',
 }
@@ -63,27 +129,55 @@ function matchPostDataValues() {
 
 		Object.keys( fields ).forEach( fieldName => {
 			cy.newPost()
-			cy.typePostTitle( `${ fieldName } test` )
 			cy.addBlock( 'ugb/cta' )
 
-			if ( fields[ fieldName ] === 'slug' ) {
-				// Publishing automatically creates a slug for the post.
-				cy.publish()
+			// Populate empty values
+			if ( fieldName === 'Post Title' ) {
+				cy.typePostTitle( fields[ fieldName ] )
 			}
 
-			if ( fields[ fieldName ] === 'featured_image_urls' ) {
+			if ( fieldName === 'Post Slug' ) {
+				cy.addPostSlug( fields[ fieldName ] )
+			}
+
+			if ( fieldName === 'Featured Image URL' ) {
 				cy.addFeaturedImage()
-				cy.savePost()
 			}
 
-			if ( fields[ fieldName ] === 'excerpt' ) {
-				cy.addPostExcerpt( 'This is a sample excerpt.' )
-				cy.savePost()
+			if ( fieldName === 'Post Excerpt' ) {
+				cy.addPostExcerpt( fields[ fieldName ] )
+			}
+			// Add author first & last name
+			cy.getPostUrls().then( ( { editorUrl } ) => {
+				cy.visit( '/wp-admin/profile.php' )
+				cy
+					.get( 'tr.user-first-name-wrap' )
+					.find( 'input#first_name' )
+					.click( { force: true } )
+					.type( '{selectall}{backspace}Hello' )
+
+				cy.visit( editorUrl )
+			} )
+
+			// Fetch post data values and store it to fields Object
+			if ( typeof fields[ fieldName ] === 'object' && fields[ fieldName ].id ) {
+				cy.getPostData().then( data => {
+					const value = Array( 'date', 'date_gmt', 'modified', 'modified_gmt' ).includes( fields[ fieldName ].id )
+						? data[ fields[ fieldName ].id ].split( 'T' ).shift()
+						: Array( 'name', 'url' ).includes( fields[ fieldName ].id )
+							? data.author_info[ fields[ fieldName ].id ]
+							: fields[ fieldName ].id === 'featured_image_urls'
+								? data[ fields[ fieldName ].id ].full[ 0 ]
+								: data[ fields[ fieldName ].id ]
+
+					fields[ fieldName ].value = fields[ fieldName ].id === 'comments_num' ? value.replace( ' comments', '' ) : value
+				} )
 			}
 
 			const fieldOptions = {}
 
-			if ( Array( 'date', 'date_gmt', 'modified', 'modified_gmt' ).includes( fields[ fieldName ] ) ) {
+			// Set date formats for assertion
+			if ( Array( 'Post Date', 'Post Date GMT', 'Post Modified', 'Post Modified GMT' ).includes( fieldName ) ) {
 				fieldOptions[ 'Date Format' ] = 'custom'
 				fieldOptions[ 'Custom Format' ] = 'Y-m-d'
 			}
@@ -94,25 +188,17 @@ function matchPostDataValues() {
 				fieldOptions,
 			} )
 
-			if ( fields[ fieldName ] ) {
-				cy.getPostData().then( data => {
-					const value = Array( 'date', 'date_gmt', 'modified', 'modified_gmt' ).includes( fields[ fieldName ] )
-						? data[ fields[ fieldName ] ].split( 'T' ).shift()
-						: Array( 'name', 'url' ).includes( fields[ fieldName ] )
-							? data.author_info[ fields[ fieldName ] ]
-							: fields[ fieldName ] === 'featured_image_urls'
-								? data[ fields[ fieldName ] ].full[ 0 ]
-								: data[ fields[ fieldName ] ]
+			const valueToAssert = typeof fields[ fieldName ] === 'object' && fields[ fieldName ].id
+				? fields[ fieldName ].value
+				: typeof fields[ fieldName ] === 'string' && fields[ fieldName ]
+					? fields[ fieldName ]
+					: ''
 
-					cy.getPostUrls().then( ( { previewUrl } ) => {
-						// Assert in backend.
-						cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
-						cy.visit( previewUrl )
-						// Assert in frontend.
-						cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
-					} )
-				} )
-			}
+			// Assert the content value
+			cy.openInspector( 'ugb/cta', 'Style' )
+			cy
+				.selectBlock( 'ugb/cta' )
+				.assertBlockContent( '.ugb-cta__title', valueToAssert )
 		} )
 	} )
 }
@@ -221,27 +307,25 @@ function adjustFieldValues() {
 		createNewPostWithCTA()
 		cy.typePostTitle( 'Dynamic Content Test' )
 		adjustField( 'Post Title' )
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			assertValue( 'Dynamic Content Test' )
-			cy.visit( previewUrl )
-			assertValue( 'Dynamic Content Test' )
-			cy.visit( editorUrl )
-			// Change the value of the Post Title
-			cy.typePostTitle( 'My Post' )
-			cy.visit( previewUrl )
-			// Assert the new value in the frontend.
-			assertValue( 'My Post' )
-		} )
+		cy.openInspector( 'ugb/cta', 'Style' )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', 'Dynamic Content Test' )
+		cy.typePostTitle( 'My Post' )
+		cy.openInspector( 'ugb/cta', 'Style' )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', 'My Post', { assertBackend: false } )
 
 		// Assert changing the Post URL
 		createNewPostWithCTA()
 		adjustField( 'Post URL' )
-		cy.getPostUrls().then( ( { previewUrl } ) => {
-			cy.typePostTitle( 'My Post' )
-			cy.publish() // Publishing creates a new URL slug
-			cy.visit( previewUrl )
-			assertValue( `${ Cypress.config( 'baseUrl' ) }my-post/` )
-		} )
+		cy.openInspector( 'ugb/cta', 'Style' )
+		cy.typePostTitle( 'My Post' )
+		cy.publish() // Publishing creates a new URL slug
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', `${ Cypress.config( 'baseUrl' ) }my-post/` )
 
 		// Assert changing the Post Slug
 		createNewPostWithCTA()
