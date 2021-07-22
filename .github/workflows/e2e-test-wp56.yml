@@ -80,7 +80,7 @@ jobs:
 
   publish-test-results:
     name: Publish E2E Test Results
-    needs: build-and-test
+    needs: test
     runs-on: ubuntu-latest
     if: success() || failure()
 
