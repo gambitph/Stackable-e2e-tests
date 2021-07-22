@@ -38,6 +38,7 @@ describe( 'Dynamic Content Current Post', registerTests( [
 // }
 
 const fields = {
+	'Author Posts': '',
 	'Post Title': 'Dynamic Content test',
 	'Post URL': {
 		id: 'link',
@@ -98,9 +99,8 @@ const fields = {
 		value: '',
 	},
 	'Author Profile Picture URL': '',
-	'Author Posts': '',
-	'Author First Name': '',
-	'Author Last Name': '',
+	'Author First Name': 'Juan',
+	'Author Last Name': 'Dela Cruz',
 }
 
 const selector = () => cy.get( '.ugb-cta__title' )
@@ -126,7 +126,6 @@ const assertInBackendAndFrontend = ( callback = () => {} ) => {
 function matchPostDataValues() {
 	it( 'should test dynamic content to match the current post data values', () => {
 		cy.setupWP()
-
 		Object.keys( fields ).forEach( fieldName => {
 			cy.newPost()
 			cy.addBlock( 'ugb/cta' )
@@ -147,17 +146,39 @@ function matchPostDataValues() {
 			if ( fieldName === 'Post Excerpt' ) {
 				cy.addPostExcerpt( fields[ fieldName ] )
 			}
-			// Add author first & last name
-			cy.getPostUrls().then( ( { editorUrl } ) => {
-				cy.visit( '/wp-admin/profile.php' )
-				cy
-					.get( 'tr.user-first-name-wrap' )
-					.find( 'input#first_name' )
-					.click( { force: true } )
-					.type( '{selectall}{backspace}Hello' )
 
-				cy.visit( editorUrl )
-			} )
+			// Populate author first & last name in profile settings
+			if ( Array( 'Author First Name', 'Author Last Name' ).includes( fieldName ) ) {
+				cy.getPostUrls().then( ( { editorUrl } ) => {
+					cy.visit( '/wp-admin/profile.php' )
+					cy
+						.get( `tr.user-${ fieldName.includes( 'First' ) ? 'first' : 'last' }-name-wrap` )
+						.find( `input#${ fieldName.includes( 'First' ) ? 'first' : 'last' }_name` )
+						.click( { force: true } )
+						.type( `{selectall}{backspace}${ fields[ fieldName ] }` )
+					cy
+						.get( 'input[value="Update Profile"]' )
+						.click( { force: true } )
+					cy.visit( editorUrl )
+				} )
+			}
+
+			if ( fieldName === 'Author Posts' ) {
+				cy.getPostUrls().then( ( { editorUrl } ) => {
+					cy.savePost()
+					cy.registerPosts( { numOfPosts: 4 } )
+					cy.visit( editorUrl )
+				} )
+				fields[ fieldName ] = '4'
+			}
+
+			// Fetch Author Profile Picture URL
+			if ( fieldName === 'Author Profile Picture URL' ) {
+				cy.wp().then( wp => {
+					const author = wp.data.select( 'core' ).getAuthors( { id: 1 } )
+					fields[ fieldName ] = author[ 0 ].avatar_urls[ 96 ]
+				} )
+			}
 
 			// Fetch post data values and store it to fields Object
 			if ( typeof fields[ fieldName ] === 'object' && fields[ fieldName ].id ) {
@@ -190,9 +211,7 @@ function matchPostDataValues() {
 
 			const valueToAssert = typeof fields[ fieldName ] === 'object' && fields[ fieldName ].id
 				? fields[ fieldName ].value
-				: typeof fields[ fieldName ] === 'string' && fields[ fieldName ]
-					? fields[ fieldName ]
-					: ''
+				: fields[ fieldName ]
 
 			// Assert the content value
 			cy.openInspector( 'ugb/cta', 'Style' )
