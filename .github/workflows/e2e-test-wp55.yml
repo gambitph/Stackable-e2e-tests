@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip wp-55]')"
+    if: "contains(toJSON(github.event.commits), '[skip wp-55]') == false"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
