@@ -6,24 +6,9 @@ on:
     branches: [ master ]
 
 jobs:
-  skip-workflow:
-    runs-on: ubuntu-latest
-    outputs:
-      skip: ${{ steps.skip-workflow.outputs.skip }}
-
-    steps:
-      - uses: actions/checkout@v2
-
-      - name: Skip Workflow
-        id: skip-workflow
-        uses: saulmaldonado/skip-workflow@v1
-        with:
-          phrase: '[skip wp-57]'
-          github-token: ${{ github.token }}
-
   test:
     needs: skip-workflow
-    if: ${{ !needs.skip-workflow.outputs.skip }}
+    if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -35,7 +20,7 @@ jobs:
     - uses: actions/checkout@v2
 
     - name: Cache node modules
-      if: ${{ !steps.skip-workflow.outputs.skip }}
+      if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
       uses: actions/cache@v2
       env:
         cache-name: cache-node-modules
@@ -48,7 +33,7 @@ jobs:
           ${{ runner.os }}-
 
     - name: Setup the Stackable Free and Premium Repository
-      if: ${{ !steps.skip-workflow.outputs.skip }}
+      if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
       run: |
         git clone https://github.com/gambitph/Stackable.git
         cd Stackable
@@ -56,17 +41,17 @@ jobs:
         cd ..
 
     - name: Setup Node
-      if: ${{ !steps.skip-workflow.outputs.skip }}
+      if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
       uses: actions/setup-node@v1
       with:
         node-version: 14.x
 
     - name: Install @wordpress/env
-      if: ${{ !steps.skip-workflow.outputs.skip }}
+      if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
       run: npm install -g @wordpress/env
 
     - name: Build Stackable Premium
-      if: ${{ !steps.skip-workflow.outputs.skip }}
+      if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
       run: |
         cd Stackable
         npm ci
@@ -76,22 +61,22 @@ jobs:
 
     # Install all dependencies from composer.json
     - name: Install WordPress Version
-      if: ${{ !steps.skip-workflow.outputs.skip }}
+      if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
       run: |
         composer require roots/wordpress:5.7.2 --dev
 
     - name: Run WordPress Environment
-      if: ${{ !steps.skip-workflow.outputs.skip }}
+      if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
       run: wp-env start
 
     - name: Run Test Suite
-      if: ${{ !steps.skip-workflow.outputs.skip }}
+      if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
       uses: cypress-io/github-action@v2
       with:
         command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec=cypress/integration/**/*.spec.js --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=1 --config=baseUrl=http://localhost:8889
 
     - name: Upload E2E Test Results
-      if: ${{ !steps.skip-workflow.outputs.skip }}
+      if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
       uses: actions/upload-artifact@v2
       with:
         name: e2e-test-results-${{ matrix.containers }}
@@ -101,17 +86,17 @@ jobs:
     name: Publish E2E Test Results
     needs: test
     runs-on: ubuntu-latest
-    if: ${{ !needs.skip-workflow.outputs.skip }}
+    if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
 
     steps:
     - name: Download Artifacts
-      if: ${{ !steps.skip-workflow.outputs.skip }}
+      if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
       uses: actions/download-artifact@v2
       with:
         path: artifacts
 
     - name: Publish E2E Test Results
-      if: ${{ !steps.skip-workflow.outputs.skip }}
+      if: "!contains(github.event.head_commit.message, '[skip wp-57]')"
       uses: EnricoMi/publish-unit-test-result-action@v1
       with:
         files: artifacts/**/*.xml
