@@ -1,4 +1,4 @@
-name: e2e-test-latest
+name: e2e-test-wp57
 on:
   push:
     branches: [ master ]
@@ -7,7 +7,7 @@ on:
 
 jobs:
   test:
-    if: "! contains(toJSON(github.event.commits.*.message), '[skip wp-latest]')"
+    if: "! contains(toJSON(github.event.commits.*.message), '[skip wp-57]')"
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -58,8 +58,10 @@ jobs:
         npm ci
         npm run build --if-present
 
-    - name: Remove .wp-env.overrides.json
-      run: rm .wp-env.overrides.json
+    # Install all dependencies from composer.json
+    - name: Install WordPress Version
+      run: |
+        composer require roots/wordpress:5.7.2 --dev
 
     - name: Run WordPress Environment
       run: wp-env start
