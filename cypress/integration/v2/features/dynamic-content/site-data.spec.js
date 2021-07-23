@@ -26,44 +26,41 @@ const adjustSiteField = ( fieldName, fieldOptions = {} ) => {
 	 } )
 }
 
-const assertInBackendAndFrontend = ( callback = () => {} ) => {
-	cy.getPostUrls().then( ( { previewUrl } ) => {
-		callback()
-		cy.visit( previewUrl )
-		callback()
-	} )
-}
-
+//tests are passing
 function matchSiteData() {
 	 it( 'should match dynamic content in site fields', () => {
 		 cy.setupWP()
-		 cy.wait( 5000 )
 
 		 Object.keys( fields ).forEach( fieldName => {
 			 cy.newPost()
 			 cy.addBlock( 'ugb/cta' )
-			 cy.typePostTitle( `${ fields[ fieldName ] } Test` )
+			 cy.type( `${ fields[ fieldName ] } Test` )
 
 			const fieldOptions = {}
-			adjustSiteField( fieldName, fieldOptions )
+			adjustSiteField( fields[ fieldName ], fieldOptions )
 
-			cy.savePost() //adjust savepost, try manual clicking
+			//manual savePost
+
 			cy.getPostUrls().then( ( { previewUrl } ) => {
+				//assert dynamic content exists
+				cy.get( '.stk-dynamic-content' ).should( 'exist' )
 				cy.visit( previewUrl )
-				assertValue( `${ fieldName }` ) //wrong assertion code
+				//assert dynamic content in frontend
+				if ( `${ fields[ fieldName ] }` === 'Site Title' ) {
+					selector().contains( 'e2etest' ).should( 'exist' )
+				} else if ( `${ fields[ fieldName ] }` === 'Site Tagline' ) {
+					selector().contains( 'Just another WordPress site' ).should( 'exist' )
+				} else if ( `${ fields[ fieldName ] }` === 'Site URL' ) {
+					selector().contains( 'http://e2etest.local' ).should( 'exist' )
+				}
 			} )
 		 } )
 	 } )
 }
 
-/*
-	to-do:
-	- have additional functions (matchPostDataValues, adjustFieldOptions, adjustFieldValues, assertEmptyValues)
-	- work on comments
-*/
-
+//tests are passing
 function adjustFieldOptions() {
-	it( 'should adjust all field options for each Site field', () => {
+	it( 'should adjust all fields with options', () => {
 		cy.setupWP()
 
 		//adjusting Site Title
@@ -73,24 +70,21 @@ function adjustFieldOptions() {
 			'Show as link': true,
 			'Open in new tab': true,
 		} )
-		cy.savePost()
-		//asserting in frontend; asserting the field options, change this
-		assertInBackendAndFrontend( () => {
-			cy.document().then( doc => {
-				const url = doc.URL
-				// Check if the url matches the editor, and new page URL
-				if ( url.match( /(post|post-new)\.php/g ) && url.match( /wp-admin/g ) ) {
-					cy.getPostData().then( data => {
-						//selector().contains( containsRegExp( 'Dynamic Content test' ) ).should( 'exist' )
-						selector().find( `a[href="${ data.link }"]` ).should( 'exist' )
-						selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
-					} )
-				} else {
-					//selector().contains( containsRegExp( 'Dynamic Content test' ) ).should( 'exist' )
-					selector().find( `a[href="${ url.replace( '&preview=true', '' ) }"]` ).should( 'exist' )
-					selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
-				}
-			} )
+		cy.wait( 5000 )
+		cy
+			.get( '.edit-post-header__settings' )
+			.contains( 'Save draft' )
+			.click( { force: true } )
+
+		//asserting in backend
+		selector().find( 'a[href="http://e2etest.local"]' ).should( 'exist' )
+		selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+
+		//asserting in frontend
+		cy.getPostUrls().then( ( { previewUrl } ) => {
+			cy.visit( previewUrl )
+			selector().find( 'a[href="http://e2etest.local"]' ).should( 'exist' )
+			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
 		} )
 
 		//adjusting Site URL
@@ -101,82 +95,71 @@ function adjustFieldOptions() {
 			'Custom Text': testString[ 2 ],
 			'Open in new tab': true,
 		} )
-		cy.savePost()
+		//cy.savePost()
+		cy.wait( 5000 )
+		cy
+			.get( '.edit-post-header__settings' )
+			.contains( 'Save draft' )
+			.click( { force: true } )
+		//asserting in backend
+		selector().contains( containsRegExp( testString[ 2 ] ) ).should( 'exist' )
+		selector().find( 'a[href="http://e2etest.local"]' ).should( 'exist' )
+		selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+
 		//asserting in frontend
-		cy.document().then( doc => {
-			const url = doc.URL
-			// Check if the url matches the editor, and new page URL
-			if ( url.match( /(post|post-new)\.php/g ) && url.match( /wp-admin/g ) ) {
-				cy.getPostData().then( data => {
-					selector().contains( containsRegExp( testString[ 2 ] ) ).should( 'exist' )
-					selector().find( `a[href="${ data.link }"]` ).should( 'exist' )
-					selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
-				} )
-			} else {
-				selector().contains( containsRegExp( testString[ 2 ] ) ).should( 'exist' )
-				selector().find( `a[href="${ url.replace( '&preview=true', '' ) }"]` ).should( 'exist' )
-				selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
-			}
+		cy.getPostUrls().then( ( { previewUrl } ) => {
+			cy.visit( previewUrl )
+			selector().contains( containsRegExp( testString[ 2 ] ) ).should( 'exist' )
+			selector().find( 'a[href="http://e2etest.local"]' ).should( 'exist' )
+			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
 		} )
-
-		 /*
-
-			 if ( fields[ fieldName ] === 'Site Title' ) {
-				 adjustSiteField( fields[ fieldName ] )
-				 cy.savePost()
-
-				 cy.getPostUrls().then( ( { previewUrl } ) => {
-					cy.visit( previewUrl )
-					assertValue( testString[ 0 ] )
-				} )
-			 }
-			 if ( fields[ fieldName ] === 'Site Tagline' ) {
-				 adjustSiteField( fields[ idx - 1 ] )
-				 cy.savePost()
-
-				 cy.getPostUrls().then( ( { previewUrl } ) => {
-					cy.visit( previewUrl )
-					assertValue( testString[ 1 ] )
-				} )
-			 }
-			 if ( fields[ idx - 1 ] === 'Site URL' ) {
-				 adjustSiteField( fields[ idx - 1 ], { 'Show as link': true } )
-				 cy.savePost()
-
-				 cy.getPostUrls().then( ( { previewUrl } ) => {
-					cy.visit( previewUrl )
-				} )
-			 }
-		 */
 	} )
 }
 
 function adjustFieldValues() {
-	it( 'should do x', () => {
+	it( 'should assert changes to the field values', () => {
 		cy.setupWP()
 
-		//Assert changing site title
+		//changing site title and site tagline
+		cy.editSiteTitle( testString[ 0 ] )
+		cy.editSiteTagline( testString[ 1 ] )
+
+		//adjusting site title
 		cy.newPost()
 		cy.addBlock( 'ugb/cta' )
 		adjustSiteField( 'Site Title' )
-		cy.editSiteTitle( testString[ 0 ] )
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			assertValue( 'Dynamic Content Test' ) //
+		//cy.wait( 5000 )
+		cy
+			.get( '.edit-post-header__settings' )
+			.contains( 'Save draft' )
+			.click( { force: true } ) //change
+		//asserting	in backend
+		assertValue( `${ testString[ 0 ] }` )
+		//asserting in frontend
+		cy.getPostUrls().then( ( { previewUrl } ) => {
 			cy.visit( previewUrl )
-			assertValue( 'Dynamic Content Test' )
-			cy.visit( editorUrl )
-			// Change the value of the Post Title
-			cy.typePostTitle( 'My Post' )
-			cy.visit( previewUrl )
-			// Assert the new value in the frontend.
-			assertValue( 'My Post' )
+			assertValue( `${ testString[ 0 ] }` )
 		} )
 
-		//Assert changing site Tagline
+		//adjusting site Tagline
+
 		cy.newPost()
 		cy.addBlock( 'ugb/cta' )
 		adjustSiteField( 'Site Tagline' )
-		cy.editSiteTagline( testString[ 1 ] )
+		//cy.wait( 5000 )
+		cy
+			.get( '.edit-post-header__settings' )
+			.contains( 'Save draft' )
+			.click( { force: true } ) //change
+
+		//asserting	in backend
+		selector().contains( `${ testString[ 1 ] }` ).should( 'exist' )
+
+		//asserting in frontend
+		cy.getPostUrls().then( ( { previewUrl } ) => {
+			cy.visit( previewUrl )
+			selector().contains( `${ testString[ 1 ] }` ).should( 'exist' )
+		} )
 	} )
 }
 
