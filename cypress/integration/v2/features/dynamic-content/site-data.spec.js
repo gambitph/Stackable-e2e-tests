@@ -9,7 +9,6 @@ describe( 'Dynamic Content - Site', registerTests( [
 	matchSiteData,
 	adjustFieldOptions,
 	adjustFieldValues,
-	assertEmptyValues,
 ] ) )
 
 const fields = [ 'Site Title', 'Site Tagline', 'Site URL' ]
@@ -163,19 +162,3 @@ function adjustFieldValues() {
 	} )
 }
 
-function assertEmptyValues() {
-	it( 'should do x', () => {
-
-	} )
-}
-
-/*
-site field options:
-site title:
-	- show as link
-	- open in new tab
-
-site url:
-	- show as link, custom text
-	- open in new tab
-*/
