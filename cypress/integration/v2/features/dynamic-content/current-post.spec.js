@@ -237,8 +237,7 @@ function adjustFieldValues() {
 		createNewPostWithCTA()
 		adjustField( 'Post URL' )
 		cy.openInspector( 'ugb/cta', 'Style' )
-		cy.typePostTitle( 'My Post' )
-		cy.publish() // Publishing creates a new URL slug
+		cy.addPostSlug( 'my-post' )
 		cy.openInspector( 'ugb/cta', 'Style' )
 		cy
 			.selectBlock( 'ugb/cta' )
@@ -256,13 +255,14 @@ function adjustFieldValues() {
 
 		// Assert changing the Post Excerpt
 		createNewPostWithCTA()
-		cy.addPostExcerpt( 'Sample excerpt for this post.' )
 		adjustField( 'Post Excerpt' )
+		cy.addPostExcerpt( 'Sample excerpt for this post.' )
 		cy.openInspector( 'ugb/cta', 'Style' )
 		cy
 			.selectBlock( 'ugb/cta' )
-			.assertBlockContent( '.ugb-cta__title', 'Sample excerpt for this post.' )
+			.assertBlockContent( '.ugb-cta__title', 'Sample excerpt for this post.', { assertBackend: false } )
 		cy.addPostExcerpt( 'Lorem ipsum dolor sit amet.' )
+		cy.savePost()
 		cy.openInspector( 'ugb/cta', 'Style' )
 		cy
 			.selectBlock( 'ugb/cta' )
