@@ -4,7 +4,6 @@
  */
 import { registerTests } from '~stackable-e2e/helpers'
 import { containsRegExp } from '~common/util'
-//import { range } from 'lodash'
 describe( 'Dynamic Content - Site', registerTests( [
 	matchSiteData,
 	adjustFieldOptions,
@@ -25,7 +24,6 @@ const adjustSiteField = ( fieldName, fieldOptions = {} ) => {
 	 } )
 }
 
-//tests are passing
 function matchSiteData() {
 	 it( 'should match dynamic content in site fields', () => {
 		 cy.setupWP()
@@ -54,7 +52,6 @@ function matchSiteData() {
 	 } )
 }
 
-//tests are passing
 function adjustFieldOptions() {
 	it( 'should adjust all fields with options', () => {
 		cy.setupWP()
@@ -100,7 +97,7 @@ function adjustFieldOptions() {
 		} )
 	} )
 }
-//tests are passing
+
 function adjustFieldValues() {
 	it( 'should assert changes to the field values', () => {
 		cy.setupWP()
