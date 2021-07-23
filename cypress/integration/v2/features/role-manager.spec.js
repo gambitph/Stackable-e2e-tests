@@ -118,8 +118,8 @@ function roleManagerTest() {
 					.click( { force: true } )
 					.then( () => {
 						cy.document().then( doc => {
-							const allowedTextBlocks = doc.querySelectorAll( '.block-editor-block-types-list[aria-label="Text"] > .block-editor-block-types-list__list-item' )
-							const allowedStackableBlocks = doc.querySelectorAll( '.block-editor-block-types-list[aria-label="Stackable"] > .block-editor-block-types-list__list-item' )
+							const allowedTextBlocks = doc.querySelectorAll( '.block-editor-block-types-list[aria-label="Text"] .block-editor-block-types-list__list-item' )
+							const allowedStackableBlocks = doc.querySelectorAll( '.block-editor-block-types-list[aria-label="Stackable"] .block-editor-block-types-list__list-item' )
 
 							expect( Array.from( allowedTextBlocks ).length ).toBe( 4 )
 							expect( Array.from( allowedStackableBlocks ).length ).toBe( 2 )

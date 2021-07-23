@@ -2,6 +2,7 @@
  * External dependencies
  */
 import { blocks } from '~stackable-e2e/config'
+import { compareVersions } from '~common/util'
 
 const colors = [
 	{
@@ -55,9 +56,6 @@ const blocksWithSeparator = [
 export function adjustGlobalColorTest() {
 	it( 'should adjust global colors and assert the color picker in blocks', () => {
 		cy.setupWP()
-		// Global settings should still load in the frontend.
-		cy.loadFrontendJsCssFiles()
-		// Publish one post to test global colors in blog-posts
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
 
@@ -166,8 +164,6 @@ export function adjustGlobalColorTest() {
 export function changeGlobalColorTest() {
 	it( 'should assert the changing of global color', () => {
 		cy.setupWP()
-		// Global settings should still load in the frontend.
-		cy.loadFrontendJsCssFiles()
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
 
@@ -293,8 +289,6 @@ export function changeGlobalColorTest() {
 export function globalColorNativeBlocks() {
 	it( 'should assert global colors in native blocks', () => {
 		cy.setupWP()
-		// Global settings should still load in the frontend.
-		cy.loadFrontendJsCssFiles()
 		cy.newPage()
 
 		const nativeBlocks = [
@@ -308,6 +302,12 @@ export function globalColorNativeBlocks() {
 
 		nativeBlocks.forEach( blockName => {
 			cy.addBlock( blockName )
+			if ( ! Array( 'core/separator', 'core/cover', 'core/buttons' ).includes( blockName ) ) {
+				cy.typeBlock( blockName, '', 'Block text' )
+			}
+			if ( blockName === 'core/buttons' ) {
+				cy.typeBlock( 'core/button', '.wp-block-button__link', 'My button' )
+			}
 		} )
 
 		colors.forEach( val => {
@@ -318,25 +318,26 @@ export function globalColorNativeBlocks() {
 		} )
 		cy.adjust( 'Use only Stackable colors', true )
 
+		const isWpLessThan58 = compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' )
+
 		nativeBlocks.forEach( blockName => {
-			if ( blockName !== 'core/separator' && blockName !== 'core/cover' ) {
-				cy
-					.get( `.wp-block[data-type='${ blockName }']` )
-					.type( 'Block Title', { force: true } )
-			}
 			if ( blockName !== 'core/cover' ) {
 				cy.selectBlock( `${ blockName === 'core/buttons' ? 'core/button' : blockName }` )
 				cy.openSidebar( 'Settings' )
-				cy.collapse( 'Color settings' )
+				cy.collapse( `${ isWpLessThan58 ? 'Color settings' : 'Color' }` )
 				colors.forEach( val => {
 					cy
-						.adjust( `${ blockName === 'core/separator' ? 'Color' : 'Text Color' }`, val.name )
+						.adjust( `${ blockName === 'core/separator'
+							? 'Color'
+							: isWpLessThan58
+								? 'Text Color'
+								: 'Text color' }`, val.name )
 						.assertComputedStyle( {
 							[ `${ blockName === 'core/buttons' ? '.wp-block-button__link' : '' }` ]: {
 								'color': val.color,
 							},
 						}, {
-							'activePanel': 'Color settings',
+							'activePanel': `${ isWpLessThan58 ? 'Color settings' : 'Color' }`,
 						} )
 						// Active panel option is added so that when the test goes back
 						// to the backend, it will open this panel
@@ -352,8 +353,6 @@ export function globalColorNativeBlocks() {
 export function deleteGlobalColorTest() {
 	it( 'should assert deleted global color values', () => {
 		cy.setupWP()
-		// Global settings should still load in the frontend.
-		cy.loadFrontendJsCssFiles()
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
 

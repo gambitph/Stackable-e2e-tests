@@ -4,3 +4,4 @@
 
 import './plugins'
 import './setup'
+import './version'
