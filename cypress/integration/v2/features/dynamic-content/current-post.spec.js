@@ -242,7 +242,7 @@ function adjustFieldValues() {
 		cy.openInspector( 'ugb/cta', 'Style' )
 		cy
 			.selectBlock( 'ugb/cta' )
-			.assertBlockContent( '.ugb-cta__title', `${ Cypress.config( 'baseUrl' ) }my-post/`, { assertBackend: false } )
+			.assertBlockContent( '.ugb-cta__title', `${ Cypress.config( 'baseUrl' ) }/my-post/`, { assertBackend: false } )
 
 		// Assert changing the Post Slug
 		createNewPostWithCTA()
