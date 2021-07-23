@@ -29,16 +29,13 @@ const adjustSiteField = ( fieldName, fieldOptions = {} ) => {
 function matchSiteData() {
 	 it( 'should match dynamic content in site fields', () => {
 		 cy.setupWP()
-
 		 Object.keys( fields ).forEach( fieldName => {
 			 cy.newPost()
 			 cy.addBlock( 'ugb/cta' )
-			 cy.type( `${ fields[ fieldName ] } Test` )
+			 cy.typePostTitle( `${ fields[ fieldName ] } Test` )
 
 			const fieldOptions = {}
 			adjustSiteField( fields[ fieldName ], fieldOptions )
-
-			//manual savePost
 
 			cy.getPostUrls().then( ( { previewUrl } ) => {
 				//assert dynamic content exists
@@ -69,11 +66,6 @@ function adjustFieldOptions() {
 			'Show as link': true,
 			'Open in new tab': true,
 		} )
-		cy.wait( 5000 )
-		cy
-			.get( '.edit-post-header__settings' )
-			.contains( 'Save draft' )
-			.click( { force: true } )
 
 		//asserting in backend
 		selector().find( 'a[href="http://e2etest.local"]' ).should( 'exist' )
@@ -94,12 +86,6 @@ function adjustFieldOptions() {
 			'Custom Text': testString[ 2 ],
 			'Open in new tab': true,
 		} )
-		//cy.savePost()
-		cy.wait( 5000 )
-		cy
-			.get( '.edit-post-header__settings' )
-			.contains( 'Save draft' )
-			.click( { force: true } )
 		//asserting in backend
 		selector().contains( containsRegExp( testString[ 2 ] ) ).should( 'exist' )
 		selector().find( 'a[href="http://e2etest.local"]' ).should( 'exist' )
@@ -114,7 +100,7 @@ function adjustFieldOptions() {
 		} )
 	} )
 }
-
+//tests are passing
 function adjustFieldValues() {
 	it( 'should assert changes to the field values', () => {
 		cy.setupWP()
@@ -127,11 +113,7 @@ function adjustFieldValues() {
 		cy.newPost()
 		cy.addBlock( 'ugb/cta' )
 		adjustSiteField( 'Site Title' )
-		//cy.wait( 5000 )
-		cy
-			.get( '.edit-post-header__settings' )
-			.contains( 'Save draft' )
-			.click( { force: true } ) //change
+
 		//asserting	in backend
 		assertValue( `${ testString[ 0 ] }` )
 		//asserting in frontend
@@ -141,15 +123,9 @@ function adjustFieldValues() {
 		} )
 
 		//adjusting site Tagline
-
 		cy.newPost()
 		cy.addBlock( 'ugb/cta' )
 		adjustSiteField( 'Site Tagline' )
-		//cy.wait( 5000 )
-		cy
-			.get( '.edit-post-header__settings' )
-			.contains( 'Save draft' )
-			.click( { force: true } ) //change
 
 		//asserting	in backend
 		selector().contains( `${ testString[ 1 ] }` ).should( 'exist' )
