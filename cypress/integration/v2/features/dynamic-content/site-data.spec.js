@@ -36,10 +36,13 @@ const assertInBackendAndFrontend = ( callback = () => {} ) => {
 
 function matchSiteData() {
 	 it( 'should match dynamic content in site fields', () => {
+		 cy.setupWP()
+		 cy.wait( 5000 )
+
 		 Object.keys( fields ).forEach( fieldName => {
 			 cy.newPost()
 			 cy.addBlock( 'ugb/cta' )
-			 cy.typePostTitle( `${ fieldName } test` )
+			 cy.typePostTitle( `${ fields[ fieldName ] } Test` )
 
 			const fieldOptions = {}
 			adjustSiteField( fieldName, fieldOptions )
@@ -47,7 +50,7 @@ function matchSiteData() {
 			cy.savePost() //adjust savepost, try manual clicking
 			cy.getPostUrls().then( ( { previewUrl } ) => {
 				cy.visit( previewUrl )
-				assertValue( `${ fieldName }` )
+				assertValue( `${ fieldName }` ) //wrong assertion code
 			} )
 		 } )
 	 } )
@@ -62,9 +65,6 @@ function matchSiteData() {
 function adjustFieldOptions() {
 	it( 'should adjust all field options for each Site field', () => {
 		cy.setupWP()
-		cy.editSiteTitle( testString[ 0 ] )
-		cy.editSiteTagline( testString[ 1 ] )
-		//need to edit site url?
 
 		//adjusting Site Title
 		cy.newPost()
@@ -75,22 +75,18 @@ function adjustFieldOptions() {
 		} )
 		cy.savePost()
 		//asserting in frontend; asserting the field options, change this
-		cy.getPostUrls().then( ( { previewUrl } ) => {
-			cy.visit( previewUrl )
-			assertValue( testString[ 0 ] )
-		} )
 		assertInBackendAndFrontend( () => {
 			cy.document().then( doc => {
 				const url = doc.URL
 				// Check if the url matches the editor, and new page URL
 				if ( url.match( /(post|post-new)\.php/g ) && url.match( /wp-admin/g ) ) {
 					cy.getPostData().then( data => {
-						selector().contains( containsRegExp( 'Dynamic Content test' ) ).should( 'exist' )
+						//selector().contains( containsRegExp( 'Dynamic Content test' ) ).should( 'exist' )
 						selector().find( `a[href="${ data.link }"]` ).should( 'exist' )
 						selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
 					} )
 				} else {
-					selector().contains( containsRegExp( 'Dynamic Content test' ) ).should( 'exist' )
+					//selector().contains( containsRegExp( 'Dynamic Content test' ) ).should( 'exist' )
 					selector().find( `a[href="${ url.replace( '&preview=true', '' ) }"]` ).should( 'exist' )
 					selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
 				}
@@ -107,9 +103,20 @@ function adjustFieldOptions() {
 		} )
 		cy.savePost()
 		//asserting in frontend
-		cy.getPostUrls().then( ( { previewUrl } ) => {
-			cy.visit( previewUrl )
-			assertValue( testString[ 2 ] )
+		cy.document().then( doc => {
+			const url = doc.URL
+			// Check if the url matches the editor, and new page URL
+			if ( url.match( /(post|post-new)\.php/g ) && url.match( /wp-admin/g ) ) {
+				cy.getPostData().then( data => {
+					selector().contains( containsRegExp( testString[ 2 ] ) ).should( 'exist' )
+					selector().find( `a[href="${ data.link }"]` ).should( 'exist' )
+					selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+				} )
+			} else {
+				selector().contains( containsRegExp( testString[ 2 ] ) ).should( 'exist' )
+				selector().find( `a[href="${ url.replace( '&preview=true', '' ) }"]` ).should( 'exist' )
+				selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+			}
 		} )
 
 		 /*
@@ -147,7 +154,28 @@ function adjustFieldOptions() {
 function adjustFieldValues() {
 	it( 'should do x', () => {
 		cy.setupWP()
+
+		//Assert changing site title
+		cy.newPost()
+		cy.addBlock( 'ugb/cta' )
+		adjustSiteField( 'Site Title' )
 		cy.editSiteTitle( testString[ 0 ] )
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			assertValue( 'Dynamic Content Test' ) //
+			cy.visit( previewUrl )
+			assertValue( 'Dynamic Content Test' )
+			cy.visit( editorUrl )
+			// Change the value of the Post Title
+			cy.typePostTitle( 'My Post' )
+			cy.visit( previewUrl )
+			// Assert the new value in the frontend.
+			assertValue( 'My Post' )
+		} )
+
+		//Assert changing site Tagline
+		cy.newPost()
+		cy.addBlock( 'ugb/cta' )
+		adjustSiteField( 'Site Tagline' )
 		cy.editSiteTagline( testString[ 1 ] )
 	} )
 }
