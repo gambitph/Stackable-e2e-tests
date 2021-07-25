@@ -80,14 +80,20 @@ export function toggleStyle( name = 'Block Title', enabled = true ) {
  * in inspector.
  */
 export function getActiveTab() {
-	return cy
-		.get( '.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active', { log: false } )
-		.invoke( 'attr', 'aria-label' )
-		.then( ariaLabel => {
-			return new Cypress.Promise( resolve => {
+	return cy.document().then( doc => {
+		if ( ! doc.querySelector(	'.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active' ) ) {
+			return new Cypress.Promise( resolve => resolve( '' ) )
+		}
+
+		return cy
+			.get( '.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active', { log: false } )
+			.invoke( 'attr', 'aria-label' )
+			.then( ariaLabel => {
+				return new Cypress.Promise( resolve => {
 				// Get the active tab.ß
-				const tab = lowerCase( first( ariaLabel.split( ' ' ) ) )
-				resolve( tab )
+					const tab = lowerCase( first( ariaLabel.split( ' ' ) ) )
+					resolve( tab )
+				} )
 			} )
-		} )
+	} )
 }

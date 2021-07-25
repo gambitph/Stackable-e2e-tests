@@ -98,7 +98,6 @@ if ( isset( $_GET[ 'setup' ] ) ) {
 		// Get all pages in the site.
 		$all_pages = get_posts( array(
 			'post_type' => 'page',
-			'post_status' => 'any'
 		) );
 
 		// Remove all pages.
@@ -109,7 +108,6 @@ if ( isset( $_GET[ 'setup' ] ) ) {
 		// Get all posts in the site.
 		$all_posts = get_posts( array(
 			'post_type' => 'post',
-			'post_status' => 'any'
 		) );
 
 		// Remove all posts.
@@ -120,7 +118,6 @@ if ( isset( $_GET[ 'setup' ] ) ) {
 		// Get all images in the site.
 		$all_images = get_posts( array(
 			'post_type' => 'attachment',
-			'post_status' => 'any'
 		) );
 
 		// Remove all images.
