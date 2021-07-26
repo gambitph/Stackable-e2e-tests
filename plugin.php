@@ -210,6 +210,8 @@ if ( isset( $_GET[ 'register-posts' ] ) ) {
 			// Assign featured image to post
 			set_post_thumbnail( $post_id, $attach_id );
 		}
+
+		die();
 	} );
 }
 
@@ -223,5 +225,16 @@ if ( isset( $_GET[ 'change-role' ] ) ) {
 		$user->remove_role( $role_from );
 		// Add role
 		$user->add_role( $role_to );
+
+		die();
+	} );
+}
+
+if ( isset( $_GET[ 'disable-optimization' ] ) ) {
+	add_action( 'init', function() {
+		update_option( 'stackable_optimization_settings', false );
+		update_option( 'stackable_optimize_script_load', false );
+
+		die();
 	} );
 }
