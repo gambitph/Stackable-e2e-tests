@@ -10,7 +10,12 @@ describe( 'Dynamic Content - Latest Post', registerTests( [
 	adjustFieldValues,
 ] ) )
 
-//const fields = [ 'Post Title' ]
+/*
+const fields = {
+    'Post Title',
+    'Po'
+ }
+ */
 //const nthLatest = [ '' ]
 /*
 const adjustField = ( fieldName, fieldOptions = {} ) => {
