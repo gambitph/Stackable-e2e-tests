@@ -3,7 +3,7 @@
  * External dependencies
  */
 import { registerTests } from '~stackable-e2e/helpers'
-import { containsRegExp } from '~common/util'
+
 describe( 'Dynamic Content - Site', registerTests( [
 	matchSiteData,
 	adjustFieldOptions,
@@ -12,9 +12,6 @@ describe( 'Dynamic Content - Site', registerTests( [
 
 const fields = [ 'Site Title', 'Site Tagline', 'Site URL' ]
 const testString = [ 'Test Site Title', 'Test Site Tagline', 'Test Site URL' ]
-
-const selector = () => cy.get( '.ugb-cta__title' )
-const assertValue = value => selector().contains( containsRegExp( value ) ).should( 'exist' )
 
 const adjustSiteField = ( fieldName, fieldOptions = {} ) => {
 	 cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
@@ -35,19 +32,23 @@ function matchSiteData() {
 			const fieldOptions = {}
 			adjustSiteField( fields[ fieldName ], fieldOptions )
 
-			cy.getPostUrls().then( ( { previewUrl } ) => {
-				//assert dynamic content exists
-				cy.get( '.stk-dynamic-content' ).should( 'exist' )
-				cy.visit( previewUrl )
-				//assert dynamic content in frontend
-				if ( `${ fields[ fieldName ] }` === 'Site Title' ) {
-					selector().contains( 'e2etest' ).should( 'exist' )
-				} else if ( `${ fields[ fieldName ] }` === 'Site Tagline' ) {
-					selector().contains( 'Just another WordPress site' ).should( 'exist' )
-				} else if ( `${ fields[ fieldName ] }` === 'Site URL' ) {
-					selector().contains( 'http://e2etest.local' ).should( 'exist' )
-				}
-			} )
+			//Asserting content value with assertBlockContent
+			cy.openInspector( 'ugb/cta', 'Style' )
+			if ( `${ fields[ fieldName ] }` === 'Site Title' ) {
+				cy
+					.selectBlock( 'ugb/cta' )
+					.assertBlockContent( '.ugb-cta__title', 'e2etest' )
+			} else if ( `${ fields[ fieldName ] }` === 'Site Tagline' ) {
+				cy
+					.selectBlock( 'ugb/cta' )
+					.assertBlockContent( '.ugb-cta__title', 'Just another WordPress site' )
+			} else if ( `${ fields[ fieldName ] }` === 'Site URL' ) {
+				cy
+					.selectBlock( 'ugb/cta' )
+					.assertBlockContent( '.ugb-cta__title', 'http://e2etest.local' )
+			}
+
+			cy.deleteBlock( 'ugb/cta' )
 		 } )
 	 } )
 }
@@ -64,16 +65,17 @@ function adjustFieldOptions() {
 			'Open in new tab': true,
 		} )
 
-		//asserting in backend
-		selector().find( 'a[href="http://e2etest.local"]' ).should( 'exist' )
-		selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
-
-		//asserting in frontend
-		cy.getPostUrls().then( ( { previewUrl } ) => {
-			cy.visit( previewUrl )
-			selector().find( 'a[href="http://e2etest.local"]' ).should( 'exist' )
-			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
-		} )
+		cy.openInspector( 'ugb/cta', 'Style' )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', 'e2etest' )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener' )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertHtmlAttribute( '.ugb-cta__title a', 'href', 'http://e2etest.local' )
+		cy.deleteBlock( 'ugb/cta' )
 
 		//adjusting Site URL
 		cy.newPost()
@@ -83,21 +85,20 @@ function adjustFieldOptions() {
 			'Custom Text': testString[ 2 ],
 			'Open in new tab': true,
 		} )
-		//asserting in backend
-		selector().contains( containsRegExp( testString[ 2 ] ) ).should( 'exist' )
-		selector().find( 'a[href="http://e2etest.local"]' ).should( 'exist' )
-		selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
-
-		//asserting in frontend
-		cy.getPostUrls().then( ( { previewUrl } ) => {
-			cy.visit( previewUrl )
-			selector().contains( containsRegExp( testString[ 2 ] ) ).should( 'exist' )
-			selector().find( 'a[href="http://e2etest.local"]' ).should( 'exist' )
-			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
-		} )
+		cy.openInspector( 'ugb/cta', 'Style' )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', testString[ 2 ] )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener' )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertHtmlAttribute( '.ugb-cta__title a', 'href', 'http://e2etest.local' )
+		cy.deleteBlock( 'ugb/cta' )
 	} )
 }
-
+//site URL was excluded for this test, since it cannot be changed
 function adjustFieldValues() {
 	it( 'should assert changes to the field values', () => {
 		cy.setupWP()
@@ -110,28 +111,22 @@ function adjustFieldValues() {
 		cy.newPost()
 		cy.addBlock( 'ugb/cta' )
 		adjustSiteField( 'Site Title' )
-
-		//asserting	in backend
-		assertValue( `${ testString[ 0 ] }` )
-		//asserting in frontend
-		cy.getPostUrls().then( ( { previewUrl } ) => {
-			cy.visit( previewUrl )
-			assertValue( `${ testString[ 0 ] }` )
-		} )
+		//asserting
+		cy.openInspector( 'ugb/cta', 'Style' )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', testString[ 0 ] )
+		cy.deleteBlock( 'ugb/cta' )
 
 		//adjusting site Tagline
 		cy.newPost()
 		cy.addBlock( 'ugb/cta' )
 		adjustSiteField( 'Site Tagline' )
-
-		//asserting	in backend
-		selector().contains( `${ testString[ 1 ] }` ).should( 'exist' )
-
-		//asserting in frontend
-		cy.getPostUrls().then( ( { previewUrl } ) => {
-			cy.visit( previewUrl )
-			selector().contains( `${ testString[ 1 ] }` ).should( 'exist' )
-		} )
+		//asserting
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', testString[ 1 ] )
+		cy.deleteBlock( 'ugb/cta' )
 	} )
 }
 
