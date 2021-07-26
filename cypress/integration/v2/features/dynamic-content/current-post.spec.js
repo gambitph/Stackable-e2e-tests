@@ -12,6 +12,7 @@ describe( 'Dynamic Content Current Post', registerTests( [
 	adjustFieldOptions,
 	adjustFieldValues,
 	assertEmptyValues,
+	otherTests,
 ] ) )
 
 const createNewPostWithCTA = () => {
@@ -366,6 +367,41 @@ function assertEmptyValues() {
 			cy
 				.selectBlock( 'ugb/cta' )
 				.assertBlockContent( '.ugb-cta__title', '', { assertBackend: false } )
+		} )
+	} )
+}
+
+function otherTests() {
+	it( 'should assert handling field values with tags', () => {
+		const textWithTag = [
+			'my <span> title </span> here',
+			'my <p> title </p> here',
+			'my <h1> title </h1> here',
+			'my <h2> title </h2> here',
+			'my <h3> title </h3> here',
+			'my <h4> title </h4> here',
+			'my <h5> title </h5> here',
+			'my <h6> title </h6> here',
+		]
+
+		cy.setupWP()
+		cy.newPost()
+
+		// Test Post Title field.
+		textWithTag.forEach( text => {
+			cy.typePostTitle( text )
+			cy.addPostExcerpt( text )
+
+			cy.addBlock( 'ugb/cta' )
+			adjustField( 'Post Title' )
+			cy
+				.selectBlock( 'ugb/cta' )
+				.assertBlockContent( '.ugb-cta__title', 'my  title  here', { assertBackend: false } )
+
+			// Should not show block error.
+			cy.savePost()
+			cy.reload()
+			cy.deleteBlock( 'ugb/cta' )
 		} )
 	} )
 }
