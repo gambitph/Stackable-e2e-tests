@@ -384,8 +384,6 @@ function otherTests() {
 		// Test Post Title field.
 		textWithTag.forEach( text => {
 			cy.typePostTitle( text )
-			cy.addPostExcerpt( text )
-
 			cy.addBlock( 'ugb/cta' )
 			adjustField( 'Post Title' )
 			cy
