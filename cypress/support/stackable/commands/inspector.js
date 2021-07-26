@@ -81,7 +81,7 @@ export function toggleStyle( name = 'Block Title', enabled = true ) {
  */
 export function getActiveTab() {
 	return cy.document().then( doc => {
-		if ( ! doc.querySelector(	'.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active' ) ) {
+		if ( ! doc.querySelector( '.ugb-panel-tabs__wrapper>button.edit-post-sidebar__panel-tab.is-active' ) ) {
 			return new Cypress.Promise( resolve => resolve( '' ) )
 		}
 

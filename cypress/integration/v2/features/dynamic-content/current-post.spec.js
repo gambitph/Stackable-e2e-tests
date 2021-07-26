@@ -176,7 +176,7 @@ function matchPostFieldValues() {
 			} ) => {
 				cy.addBlock( 'ugb/cta' )
 
-				// Adjust the dynamic content popove
+				// Adjust the dynamic content popover.
 				cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
 					source: 'Current Post',
 					fieldName,
