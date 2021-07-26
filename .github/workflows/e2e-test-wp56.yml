@@ -55,7 +55,7 @@ jobs:
     # Install all dependencies from composer.json
     - name: Install WordPress Version
       run: |
-        composer require roots/wordpress:5.6.3 --dev
+        composer require roots/wordpress:5.6.4 --dev
 
     - name: Run WordPress Environment
       uses: cypress-io/github-action@v2
