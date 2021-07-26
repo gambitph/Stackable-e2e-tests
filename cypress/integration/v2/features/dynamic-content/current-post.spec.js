@@ -247,12 +247,27 @@ function adjustFieldOptions() {
 		const dateFields = [ 'Post Date', 'Post Date GMT', 'Post Modified', 'Post Modified GMT' ]
 		const dateFormats = [ 'Y-m-d H:i:s', 'F j, Y', 'F j, Y g:i a', 'd/m/y' ]
 		dateFields.forEach( dateField => {
+			cy.wrap( [] ).as( 'dateFormatValues' )
+
 			dateFormats.forEach( dateFormat => {
 				createNewPostWithCTA()
 				adjustField( dateField, {
 					'Date Format': dateFormat,
 				} )
-				// TODO: Add assertion of date formats.
+				cy.document().then( doc => {
+					cy.get( '@dateFormatValues' ).then( dateFormatValues => {
+						// Store the values to be compared in this alias.
+						cy.wrap( [ ...dateFormatValues, doc.querySelector( '.ugb-cta__title' ).innerText ] ).as( 'dateFormatValues' )
+					} )
+				} )
+			} )
+
+			cy.get( '@dateFormatValues' ).then( dateFormatValues => {
+				// Assert that the values are not equal. This means that the formats changed.
+				assert.isTrue(
+					! dateFormatValues.some( ( value, idx ) => dateFormatValues.indexOf( value ) !== idx ), // Returns true if values are unique
+					`Expected all date format values to be unique. Values: "${ dateFormatValues.join( ', ' ) }"`
+				)
 			} )
 		} )
 
