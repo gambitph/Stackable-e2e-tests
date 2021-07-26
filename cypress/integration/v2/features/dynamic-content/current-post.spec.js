@@ -374,8 +374,8 @@ function assertEmptyValues() {
 function otherTests() {
 	it( 'should assert handling field values with tags', () => {
 		const textWithTag = [
-			'my <span> title </span> here',
-			'my <p> title </p> here',
+			'my <span>title</span> here',
+			'my <p>title</p> here',
 		]
 
 		cy.setupWP()
@@ -390,7 +390,7 @@ function otherTests() {
 			adjustField( 'Post Title' )
 			cy
 				.selectBlock( 'ugb/cta' )
-				.assertBlockContent( '.ugb-cta__title', 'my  title  here', { assertBackend: false } )
+				.assertBlockContent( '.ugb-cta__title', 'my title here', { assertBackend: false } )
 
 			// Should not show block error.
 			cy.savePost()
