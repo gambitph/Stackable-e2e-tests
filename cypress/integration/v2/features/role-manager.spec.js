@@ -83,7 +83,7 @@ function roleManagerTest() {
 
 				// Set the toolbar to top
 				cy
-					.get( 'button[aria-label="Options"], button[aria-label="More tools & options"]' )
+					.get( 'button[aria-label="Options"], button[aria-label="More tools & options"]' ) // To support WP 5.5
 					.click( { force: true } )
 				toolbar()
 					.invoke( 'attr', 'aria-checked' )
