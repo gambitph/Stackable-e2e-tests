@@ -229,7 +229,7 @@ export function typePostTitle( title ) {
 		.get( '.edit-post-visual-editor__post-title-wrapper' )
 		.find( 'textarea.editor-post-title__input' )
 		.type( `{selectall}${ title }`, { force: true } )
-	cy.savePost()
+	cy.publish()
 }
 
 /**
@@ -276,9 +276,7 @@ export function addPostSlug( slug ) {
 		.click( { force: true } )
 	cy.collapse( 'Permalink' )
 	cy
-		.get( '.components-base-control' )
-		.contains( containsRegExp( 'URL Slug' ) )
-		.parent( '.components-base-control__field' )
+		.get( '.components-base-control:contains(URL Slug)' )
 		.find( 'input[class="components-text-control__input"]' )
 		.type( `{selectall}${ slug }`, { force: true } )
 	cy.publish()
