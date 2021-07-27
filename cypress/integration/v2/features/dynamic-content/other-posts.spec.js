@@ -1,39 +1,16 @@
 /**
  * External dependencies
  */
+import { first, uniqueId } from 'lodash'
 import { registerTests } from '~stackable-e2e/helpers'
 
 describe( 'Dynamic Content Other Posts', registerTests( [
-	matchPostDataValues,
+	matchPostFieldValues,
 	adjustFieldOptions,
-	adjustFieldValues,
+	assertEmptyValues,
 ] ) )
 
-const fields = {
-	'Post Title': 'title',
-	'Post URL': 'link',
-	'Post ID': 'id',
-	'Post Slug': 'slug',
-	'Post Excerpt': 'excerpt',
-	'Post Date': 'date',
-	'Post Date GMT': 'date_gmt',
-	'Post Modified': 'modified',
-	'Post Modified GMT': 'modified_gmt',
-	'Post Type': 'type',
-	'Post Status': 'status',
-	'Author Name': 'name',
-	'Author ID': 'author',
-	'Author Posts URL': 'url',
-	'Comment Number': 'comments_num',
-	'Comment Status': 'comment_status',
-	'Featured Image URL': 'featured_image_urls',
-	'Author Profile Picture URL': '', // TODO: fields from here are not in getPostData
-	'Author Posts': '', // Retrieve the contents of these fields for assertion
-	'Author First Name': '',
-	'Author Last Name': '',
-}
-
-const selector = () => cy.get( '.ugb-cta__title' )
+// Always use this adjustField in this spec.
 const adjustField = ( fieldName, fieldOptions = {} ) => {
 	cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
 		source: 'Other Posts',
@@ -42,83 +19,173 @@ const adjustField = ( fieldName, fieldOptions = {} ) => {
 		fieldOptions,
 	} )
 }
-const assertInBackendAndFrontend = ( callback = () => {} ) => {
-	cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-		callback()
-		cy.visit( previewUrl )
-		callback()
-		cy.visit( editorUrl )
-		cy.deleteBlock( 'ugb/cta' )
-		cy.addBlock( 'ugb/cta' )
+
+/**
+ * Setup function.
+ *
+ * This is where we populate `@fieldsToAssert` for
+ * assertions.
+ *
+ * Prefetch field values and store it as alias.
+ *
+ * @example `@fieldsToAssert` structure
+ * ```
+ * [
+ * 		{
+ * 			name: <fieldName>
+ * 			value: <will assert value>,
+ * 			options: { ...<`adjustDynamicContent` command options> }
+ * 		}
+ * ]
+ * ```
+ */
+function setupMatchPostFieldValues() {
+	cy.setupWP()
+	cy.newPost()
+
+	// Define the alias.
+	cy.wrap( [] ).as( 'fieldsToAssert' )
+
+	// Populate Post Title.
+	cy.typePostTitle( 'First Post' )
+	addToTest( { name: 'Post Title', value: 'First Post' } )
+
+	// Populate Post Slug.
+	const slug = `post-slug-${ ( new Date().getTime() * uniqueId() ) % 1000 }`
+	cy.addPostSlug( slug )
+	addToTest( { name: 'Post Slug', value: slug } )
+
+	// Populate Post Excerpt.
+	cy.addPostExcerpt( 'Excerpt content.' )
+	addToTest( { name: 'Post Excerpt', value: 'Excerpt content.' } )
+
+	/**
+	 * Populate the following fields:
+	 * - Post URL
+	 * - Post ID
+	 * - Featured Image URL
+	 * - Post Date
+	 * - Post Date GMT
+	 * - Post Modified
+	 * - Post Modified GMT
+	 * - Post Type
+	 * - Post Status
+	 * - Author Name
+	 * - Author ID
+	 * - Author Posts URL
+	 * - Comment Number
+	 * - Comment Status
+	 */
+
+	// Add a featured image.
+	cy.addFeaturedImage()
+	cy.getPostData().then( data => {
+		// Post Fields
+		addToTest( { name: 'Post URL', value: data.link } )
+		addToTest( { name: 'Post ID', value: data.id } )
+		addToTest( { name: 'Featured Image URL', value: data.featured_image_urls.full[ 0 ] } )
+		addToTest( { name: 'Post Type', value: data.type } )
+		addToTest( { name: 'Post Status', value: data.status } )
+
+		/**
+		 * Add a custom format for date values.
+		 */
+		const dateOptions = {
+			'Date Format': 'custom',
+			'Custom Format': 'Y-m-d',
+		}
+
+		addToTest( {
+			name: 'Post Date', value: first( data.date.split( 'T' ) ), options: dateOptions,
+		} )
+		addToTest( {
+			name: 'Post Date GMT', value: first( data.date_gmt.split( 'T' ) ), options: dateOptions,
+		} )
+		addToTest( {
+			name: 'Post Modified', value: first( data.modified.split( 'T' ) ), options: dateOptions,
+		} )
+		addToTest( {
+			name: 'Post Modified GMT', value: first( data.modified_gmt.split( 'T' ) ), options: dateOptions,
+		} )
+
+		// Author Fields
+		addToTest( { name: 'Author Name', value: data.author_info.name } )
+		addToTest( { name: 'Author ID', value: data.author } )
+		addToTest( { name: 'Author Posts URL', value: data.author_info.url } )
+
+		// Misc. Fields
+		addToTest( { name: 'Comment Number', value: parseInt( data.comments_num ).toString() } )
+		addToTest( { name: 'Comment Status', value: data.comment_status } )
+	} )
+
+	// Get the author's profile picture URL
+	cy.wp().then( wp => {
+		addToTest( { name: 'Author Profile Picture URL', value: wp.data.select( 'core' ).getAuthors()[ 0 ].avatar_urls[ 96 ] } )
+	} )
+
+	/**
+	 * Populate the following fields:
+	 *
+	 * - Author First Name
+	 * - Author Last Name
+	 * - Author Posts
+	 */
+
+	// Set Author first & last name in profile settings
+	cy.visit( '/wp-admin/profile.php' )
+
+	cy.get( 'tr.user-first-name-wrap input#first_name' ).click( { force: true } ).type( '{selectall}{backspace}Juan' )
+	addToTest( { name: 'Author First Name', value: 'Juan' } )
+
+	cy.get( 'tr.user-last-name-wrap input#last_name' ).click( { force: true } ).type( '{selectall}{backspace}Dela Cruz' )
+	addToTest( { name: 'Author Last Name', value: 'Dela Cruz' } )
+
+	cy.get( 'input[value="Update Profile"]' ).click( { force: true } )
+
+	cy.visit( '/wp-admin/users.php' )
+	cy.get( '[data-colname="Posts"] span[aria-hidden="true"]' ).invoke( 'text' ).then( numberOfPosts => {
+		addToTest( { name: 'Author Posts', value: numberOfPosts } )
 	} )
 }
 
-function matchPostDataValues() {
-	it( 'should test dynamic content to match the selected post data values', () => {
-		cy.setupWP()
+/**
+ * Helper function for adding a new entry
+ * in `fieldsToAssert`
+ *
+ * @param {Object} item
+ */
+function addToTest( item ) {
+	cy.get( '@fieldsToAssert' ).then( $fta => cy.wrap( [ ...$fta, item ] ).as( 'fieldsToAssert' ) )
+}
 
-		// Add a post and set its post data
-		cy.newPost()
-		cy.addBlock( 'core/paragraph' )
-		cy.typePostTitle( 'First Post' )
-		cy.addFeaturedImage()
-		cy.addPostExcerpt( 'Hello World! Sample excerpt.' )
-		cy.addPostSlug( 'my-first-post' )
-		cy.publish()
-
-		let postData
-		cy.getPostData().then( data => {
-			// Save this post's data for Other Posts assertion.
-			postData = data
-		} )
-
-		// Add a new page to assert the created post in dynamic content
+function matchPostFieldValues() {
+	it( 'should test dynamic content to match all field values', () => {
+		// Setup function
+		setupMatchPostFieldValues()
+		// Create a new page to assert the Other Posts / created post's field values.
 		cy.newPage()
+		cy.get( '@fieldsToAssert' ).then( fieldsToAssert => {
+			fieldsToAssert.forEach( ( {
+				name: fieldName, value, options: fieldOptions = {},
+			} ) => {
+				cy.addBlock( 'ugb/cta' )
 
-		Object.keys( fields ).forEach( fieldName => {
-			const fieldOptions = {}
+				// Adjust the dynamic content popover.
+				adjustField( fieldName, fieldOptions )
 
-			if ( Array( 'date', 'date_gmt', 'modified', 'modified_gmt' ).includes( fields[ fieldName ] ) ) {
-				fieldOptions[ 'Date Format' ] = 'custom'
-				fieldOptions[ 'Custom Format' ] = 'Y-m-d'
-			}
-
-			cy.addBlock( 'ugb/cta' )
-			cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
-				source: 'Other Posts',
-				post: 'First Post',
-				fieldName,
-				fieldOptions,
+				// Assert the value.
+				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
+				cy.deleteBlock( 'ugb/cta' )
 			} )
-
-			if ( fields[ fieldName ] ) {
-				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-					const value = Array( 'date', 'date_gmt', 'modified', 'modified_gmt' ).includes( fields[ fieldName ] )
-						? postData[ fields[ fieldName ] ].split( 'T' ).shift()
-						: Array( 'name', 'url' ).includes( fields[ fieldName ] )
-							? postData.author_info[ fields[ fieldName ] ]
-							: fields[ fieldName ] === 'featured_image_urls'
-								? postData[ fields[ fieldName ] ].full[ 0 ]
-								: postData[ fields[ fieldName ] ]
-
-					// Assert in backend.
-					cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
-					cy.visit( previewUrl )
-					// Assert in frontend.
-					cy.get( '.ugb-cta__title' ).contains( `${ fields[ fieldName ] === 'comments_num' ? value.replace( ' comments', '' ) : value }` ).should( 'exist' )
-					cy.visit( editorUrl )
-					cy.deleteBlock( 'ugb/cta' )
-				} )
-			}
-			cy.savePost()
 		} )
+		cy.savePost()
 	} )
 }
 
 function adjustFieldOptions() {
 	it( 'should adjust all field options of each field in other post', () => {
 		cy.setupWP()
-		// Add a post and set its post data
+		// Add a post and populate the fields.
 		cy.newPost()
 		cy.addBlock( 'core/paragraph' )
 		cy.typePostTitle( 'First Post' )
@@ -127,98 +194,124 @@ function adjustFieldOptions() {
 		cy.addPostSlug( 'my-first-post' )
 		cy.publish()
 
-		let postData
-		cy.getPostData().then( data => {
-			// Save this post's data for Other Posts assertion.
-			postData = data
-		} )
+		// Retrieve the data of the created post for assertion.
+		cy.getPostData().then( postData => {
+			// Create a new page to assert the Other Posts source.
+			cy.newPage()
 
-		cy.newPage()
-		cy.addBlock( 'ugb/cta' )
+			/**
+			 * Fields to test for this assertion:
+			 * - Post Title
+			 * - Post URL
+			 * - Post Excerpt
+			 * - Post Date
+			 * - Date GMT
+			 * - Modified Date
+			 * - Modified GMT
+			 * - Author Posts URL
+			 */
 
-		// Post Title options
-		adjustField( 'Post Title', {
-			'Show as link': true,
-			'Open in new tab': true,
-		} )
-		assertInBackendAndFrontend( () => {
-			selector().contains( postData.title ).should( 'exist' )
-			selector().find( `a[href="${ postData.link }"]` ).should( 'exist' )
-			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
-		} )
+			// Post Title options
+			cy.addBlock( 'ugb/cta' )
+			adjustField( 'Post Title', {
+				'Show as link': true,
+				'Open in new tab': true,
+			} )
+			cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'First Post' )
+			cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'href', postData.link, { assertBackend: false } )
+			cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
+			cy.deleteBlock( 'ugb/cta' )
 
-		// Post URL options
-		adjustField( 'Post URL', {
-			'Show as link': true,
-			'Custom Text': 'This post',
-			'Open in new tab': true,
-		} )
-		assertInBackendAndFrontend( () => {
-			selector().contains( 'This post' ).should( 'exist' )
-			selector().find( `a[href="${ postData.link }"]` ).should( 'exist' )
-			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
-		} )
+			// Post URL options
+			cy.addBlock( 'ugb/cta' )
+			adjustField( 'Post URL', {
+				'Show as link': true,
+				'Custom Text': 'This post',
+				'Open in new tab': true,
+			} )
+			cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'This post' )
+			cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'href', postData.link, { assertBackend: false } )
+			cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
+			cy.deleteBlock( 'ugb/cta' )
 
-		// Post Excerpt options
-		adjustField( 'Post Excerpt', {
-			'Excerpt Length': 5,
-		} )
-		assertInBackendAndFrontend( () => {
+			// Post Excerpt options
+			cy.addBlock( 'ugb/cta' )
+			adjustField( 'Post Excerpt', {
+				'Excerpt Length': 5,
+			} )
 			cy.document().then( doc => {
 				const text = doc.querySelector( '.ugb-cta__title' ).innerText
-				expect( text.split( ' ' ).length ).to.equal( 5 )
+				assert.isTrue(
+					text.split( ' ' ).length === 5,
+					`Expected Excerpt length to equal '5'. Found: '${ text.split( ' ' ).length }'`
+				)
 			} )
-		} )
 
-		// For Post Date, Date GMT, Modified & Modified GMT options
-		const dateFields = [ 'Post Date', 'Post Date GMT', 'Post Modified', 'Post Modified GMT' ]
-		const dateFormats = [ 'Y-m-d H:i:s', 'F j, Y', 'F j, Y g:i a', 'd/m/y' ]
-		dateFields.forEach( dateField => {
-			dateFormats.forEach( dateFormat => {
-				adjustField( dateField, {
-					'Date Format': dateFormat,
+			cy.deleteBlock( 'ugb/cta' )
+
+			// For Post Date, Date GMT, Modified & Modified GMT options
+			const dateFields = [ 'Post Date', 'Post Date GMT', 'Post Modified', 'Post Modified GMT' ]
+			const dateFormats = [ 'Y-m-d H:i:s', 'F j, Y', 'F j, Y g:i a', 'd/m/y' ]
+			dateFields.forEach( dateField => {
+				cy.wrap( [] ).as( 'dateFormatValues' )
+
+				dateFormats.forEach( dateFormat => {
+					cy.addBlock( 'ugb/cta' )
+					adjustField( dateField, {
+						'Date Format': dateFormat,
+					} )
+					cy.document().then( doc => {
+						cy.get( '@dateFormatValues' ).then( dateFormatValues => {
+							// Store the values to be compared in this alias.
+							cy.wrap( [ ...dateFormatValues, doc.querySelector( '.ugb-cta__title' ).innerText ] ).as( 'dateFormatValues' )
+						} )
+					} )
+					cy.deleteBlock( 'ugb/cta' )
 				} )
-				// TODO: Add assertion of date formats.
-				assertInBackendAndFrontend()
-			} )
-		} )
 
-		// Author Posts URL options.
-		adjustField( 'Author Posts URL', {
-			'Show as link': true,
-			'Custom Text': 'This author',
-			'Open in new tab': true,
-		} )
-		assertInBackendAndFrontend( () => {
-			selector().contains( 'This author' ).should( 'exist' )
-			selector().find( `a[href="${ postData.author_info.url }"]` ).should( 'exist' )
-			selector().find( 'a[rel="noreferrer noopener"]' ).should( 'exist' )
+				cy.get( '@dateFormatValues' ).then( dateFormatValues => {
+					// Assert that the values are not equal. This means that the formats changed.
+					assert.isTrue(
+						! dateFormatValues.some( ( value, idx ) => dateFormatValues.indexOf( value ) !== idx ), // Returns true if values are unique
+						`Expected all date format values to be unique. Values: "${ dateFormatValues.join( ', ' ) }"`
+					)
+				} )
+			} )
+
+			// Author Posts URL options.
+			cy.addBlock( 'ugb/cta' )
+			adjustField( 'Author Posts URL', {
+				'Show as link': true,
+				'Custom Text': 'This author',
+				'Open in new tab': true,
+			} )
+			cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'This author' )
+			cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'href', postData.author_info.url, { assertBackend: false } )
+			cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
+			cy.deleteBlock( 'ugb/cta' )
 		} )
 	} )
 }
 
-function adjustFieldValues() {
-	it( 'should assert the correct value in frontend after changing the other post data values', () => {
+function assertEmptyValues() {
+	it( 'should assert empty values in the frontend', () => {
 		cy.setupWP()
-		// Add a post and set its post data
 		cy.newPost()
-		cy.addBlock( 'core/paragraph' )
 		cy.typePostTitle( 'First Post' )
-		cy.addFeaturedImage()
-		cy.addPostExcerpt( 'Hello World! Sample excerpt here. Lorem ipsum' )
-		cy.addPostSlug( 'my-first-post' )
-		cy.publish()
 
-		let postData
-		cy.getPostData().then( data => {
-			// Save this post's data for Other Posts assertion.
-			postData = data
-		} )
+		const emptyFields = [
+			'Author First Name',
+			'Author Last Name',
+			'Featured Image URL',
+		]
 
-		if ( postData.title ) {
-
-		}
 		cy.newPage()
-		cy.addBlock( 'ugb/cta' )
+		emptyFields.forEach( fieldName => {
+			cy.addBlock( 'ugb/cta' )
+			adjustField( fieldName )
+			cy
+				.selectBlock( 'ugb/cta' )
+				.assertBlockContent( '.ugb-cta__title', '', { assertBackend: false } )
+		} )
 	} )
 }

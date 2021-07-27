@@ -471,9 +471,10 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 							cy.document().then( doc => {
 								const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
 								if ( blockElement ) {
-									assert.isTrue(
-										blockElement.textContent === expectedValue,
-										`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+									assert.equal(
+										blockElement.textContent.replace( '\n', '' ),
+										expectedValue,
+										`${ customSelector } must have content '${ expectedValue }' in Frontend. Found '${ blockElement.textContent.replace( '\n', '' ) }'`
 									)
 								}
 

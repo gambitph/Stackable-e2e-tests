@@ -73,7 +73,7 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 
 		const selectOption = option => cy
 			.get( '.react-autosuggest__suggestions-container--open' )
-			.contains( option )
+			.contains( containsRegExp( option ) )
 			.click( { force: true } )
 
 		if ( source.length ) {
@@ -84,7 +84,10 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 		if ( Array( 'Other Posts', 'Latest Post' ).includes( source ) && post.length ) {
 			// Select a post if source is Other Posts / Latest Post
 			selectFromSuggestions( `${ source === 'Other Posts' ? 'Posts/Pages' : 'Nth Latest Post' }` )
-			selectOption( post )
+			cy
+				.get( '.react-autosuggest__suggestions-container--open' )
+				.contains( post )
+				.click( { force: true } )
 		}
 
 		selectFromSuggestions( 'Field' )

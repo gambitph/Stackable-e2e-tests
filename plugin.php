@@ -72,6 +72,10 @@ if ( isset( $_GET[ 'setup' ] ) ) {
 			$u->add_role( 'administrator' );
 			// Set stackable_welcome_video_closed to 1.
 			update_user_meta( $user_id, 'stackable_welcome_video_closed', 1 );
+
+			// Reset user data
+			update_user_meta( $user_id, 'first_name', '' );
+			update_user_meta( $user_id, 'last_name', '' );
 		}
 
 		// Reset all stackable settings.
