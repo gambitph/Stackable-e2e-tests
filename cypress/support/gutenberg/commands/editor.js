@@ -276,7 +276,9 @@ export function addPostSlug( slug ) {
 		.click( { force: true } )
 	cy.collapse( 'Permalink' )
 	cy
-		.get( '.components-base-control:contains(URL Slug)' )
+		.get( '.components-base-control' )
+		.contains( containsRegExp( 'URL Slug' ) )
+		.parent( '.components-base-control__field' )
 		.find( 'input[class="components-text-control__input"]' )
 		.type( `{selectall}${ slug }`, { force: true } )
 	cy.publish()
