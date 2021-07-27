@@ -9,7 +9,11 @@ import { containsRegExp } from '~common/util'
 /**
  * Internal dependencies
  */
-import { changeControlViewport, changeUnit } from '../util'
+import {
+	changeControlViewport,
+	changeUnit,
+	changeControlState,
+} from '../util'
 
 /**
  * register functions to cypress commands.
@@ -45,6 +49,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		const options = Object.assign( _options, { name, value } )
 		changeControlViewport( options )
 		changeUnit( options )
+		changeControlState( options )
 	}
 
 	// Handle options with no label
@@ -86,6 +91,7 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 		const options = Object.assign( _options, { name, value } )
 		changeControlViewport( options )
 		changeUnit( options )
+		changeControlState( options )
 	}
 
 	const customOptions = {
