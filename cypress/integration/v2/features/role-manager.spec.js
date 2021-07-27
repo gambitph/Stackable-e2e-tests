@@ -121,14 +121,12 @@ function roleManagerTest() {
 							const allowedTextBlocks = doc.querySelectorAll( '.block-editor-block-types-list[aria-label="Text"] .block-editor-block-types-list__list-item' )
 							const allowedStackableBlocks = doc.querySelectorAll( '.block-editor-block-types-list[aria-label="Stackable"] .block-editor-block-types-list__list-item' )
 
-							assert.equal(
-								Array.from( allowedTextBlocks ).length,
-								4,
+							assert.isTrue(
+								Array.from( allowedTextBlocks ).length === 4,
 								`Allowed text blocks for editor mode expected to be '4' in Editor. Found '${ Array.from( allowedTextBlocks ).length }'`
 							)
-							assert.equal(
-								Array.from( allowedStackableBlocks ).length,
-								2,
+							assert.isTrue(
+								Array.from( allowedStackableBlocks ).length === 2,
 								`Allowed stackable blocks for editor mode expected to be '2' in Editor. Found '${ Array.from( allowedStackableBlocks ).length }'`
 							)
 						} )
