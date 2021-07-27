@@ -1,4 +1,7 @@
-[![Stackable E2E Tests](https://github.com/gambitph/Stackable-e2e-tests/workflows/stackable-e2e-tests/badge.svg)](https://github.com/gambitph/Stackable-e2e-tests/actions)
+[![Stackable E2E Tests](https://github.com/gambitph/Stackable-e2e-tests/workflows/e2e-test-latest/badge.svg)](https://github.com/gambitph/Stackable-e2e-tests/actions)
+[![Stackable E2E Tests (WP 5.7)](https://github.com/gambitph/Stackable-e2e-tests/workflows/e2e-test-wp57/badge.svg)](https://github.com/gambitph/Stackable-e2e-tests/actions)
+[![Stackable E2E Tests (WP 5.6)](https://github.com/gambitph/Stackable-e2e-tests/workflows/e2e-test-wp56/badge.svg)](https://github.com/gambitph/Stackable-e2e-tests/actions)
+[![Stackable E2E Tests (WP 5.5)](https://github.com/gambitph/Stackable-e2e-tests/workflows/e2e-test-wp55/badge.svg)](https://github.com/gambitph/Stackable-e2e-tests/actions)
 # End-to-end Integration and Acceptance Testing for Stackable
 
 ## Getting Started
