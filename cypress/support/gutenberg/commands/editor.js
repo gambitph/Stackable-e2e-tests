@@ -275,14 +275,6 @@ export function addPostSlug( slug ) {
 		.find( 'li:first-child button.edit-post-sidebar__panel-tab' )
 		.click( { force: true } )
 	cy.collapse( 'Permalink' )
-	cy.document().then( doc => {
-		const text = doc.querySelector( '.editor-post-link' ).innerText
-
-		assert.isTrue(
-			text.includes( 'Slug' ),
-			'Found slug.'
-		)
-	} )
 	cy
 		.get( '.components-base-control:contains(URL Slug)' )
 		.find( 'input[class="components-text-control__input"]' )
