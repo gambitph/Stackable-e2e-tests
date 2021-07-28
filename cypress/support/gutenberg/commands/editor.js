@@ -274,7 +274,7 @@ export function addPostSlug( slug ) {
 		.get( '.edit-post-sidebar__panel-tabs' )
 		.find( 'li:first-child button.edit-post-sidebar__panel-tab' )
 		.click( { force: true } )
-	cy.collapse( 'Permalink' )
+	// cy.collapse( 'Permalink' ) // Temporarily remove this for debugging
 	cy
 		.get( '.components-base-control:contains(URL Slug)' )
 		.find( 'input[class="components-text-control__input"]' )
