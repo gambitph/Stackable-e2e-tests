@@ -3,8 +3,10 @@
  * External dependencies
  */
 import { registerTests } from '~stackable-e2e/helpers'
+import { range, uniqueId } from 'lodash'
 
 describe( 'Dynamic Content - Latest Post', registerTests( [
+	setFieldValues,
 	matchSiteData,
 	adjustFieldOptions,
 	adjustFieldValues,
@@ -30,7 +32,7 @@ const fields = {
 	'Featured Image URL': 'featured_image_urls',
 }
 
-//const nthLatest = [ '' ]
+//utilize addtoTest
 
 const adjustField = ( fieldName, fieldOptions = {} ) => {
 	cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
@@ -40,6 +42,30 @@ const adjustField = ( fieldName, fieldOptions = {} ) => {
 	} )
 }
 
+function setFieldValues() {
+	it( 'should populate WP with 10 test posts', () => {
+		cy.setupWP()
+
+		range( 10, 0 ).forEach( idx => {
+			cy.newPost()
+			cy.typePostTitle( `Latest Post # ${ idx }` )
+
+			cy.addPostExcerpt( `This is excerpt # ${ idx }` )
+
+			const slug = `post-slug-${ ( new Date().getTime() * uniqueId() ) % 1000 }`
+			cy.addPostSlug( slug )
+
+			cy.addFeaturedImage()
+			//Post Fields
+			//Post Dates
+			//Author Fields
+			//Comment Fields
+
+			cy.savePost()
+			//may also assert
+		} )
+	} )
+}
 function matchSiteData() {
 	it( 'should match dynamic content in site fields', () => {
 		cy.setupWP()
@@ -67,19 +93,24 @@ function adjustFieldValues() {
 
 /*
     testing flow:
-    1. add placeholder posts for latest posts (1st to 3rd)
-        must have:
-        - post title
-        - post URL,
-        - post id,
-        - post slug
-        - post excerpt,
-        - post date,
-        - post date GMT,
-        - post modified
-        - post modified GMT,
-        - post type,
-        - post status
+    1. add populated posts for latest posts (1st to 3rd)
+       /**
+	 * Populate the following fields:
+	 * - Post Title
+	 * - Post URL
+	 * - Post ID
+	 * - Featured Image URL
+	 * - Post Date
+	 * - Post Date GMT
+	 * - Post Modified
+	 * - Post Modified GMT
+	 * - Post Type
+	 * - Post Status
+	 * - Author Name
+	 * - Author ID
+	 * - Author Posts URL
+	 * - Comment Number
+	 * - Comment Status
     2. display and assert dynamic content function
     3. publish pages
     4. test latest post DC function per nth post
