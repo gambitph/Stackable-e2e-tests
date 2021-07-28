@@ -1,13 +1,16 @@
 /**
  * External dependencies
  */
-import { first, uniqueId } from 'lodash'
+import {
+	first, range, uniqueId,
+} from 'lodash'
 import { registerTests } from '~stackable-e2e/helpers'
 
 describe( 'Dynamic Content Other Posts', registerTests( [
 	matchPostFieldValues,
 	adjustFieldOptions,
 	assertEmptyValues,
+	assertPostsExist,
 ] ) )
 
 // Always use this adjustField in this spec.
@@ -312,6 +315,46 @@ function assertEmptyValues() {
 			cy
 				.selectBlock( 'ugb/cta' )
 				.assertBlockContent( '.ugb-cta__title', '', { assertBackend: false } )
+		} )
+	} )
+}
+
+function assertPostsExist() {
+	it( 'should assert the list of posts and pages created in Other Posts source', () => {
+		cy.wrap( [] ).as( 'postsList' )
+
+		cy.setupWP()
+
+		cy.newPage()
+		cy.typePostTitle( 'My Homepage' )
+		cy.get( '@postsList' ).then( postsList => cy.wrap( [ ...postsList, 'My Homepage' ] ).as( 'postsList' ) )
+		cy.publish()
+
+		cy.newPage()
+		cy.typePostTitle( 'Test page' )
+		cy.get( '@postsList' ).then( postsList => cy.wrap( [ ...postsList, 'Test page' ] ).as( 'postsList' ) )
+		cy.publish()
+
+		cy.registerPosts( { numberOfPosts: 2 } ) // Creates 2 posts.
+		cy.fixture( 'posts' ).then( posts => {
+			// Save the post title of the registered posts to postsList
+			range( 1, 3 ).forEach( idx => {
+				cy.get( '@postsList' ).then( postsList => cy.wrap( [ ...postsList, `${ posts.post_title }${ idx - 1 }` ] ).as( 'postsList' ) )
+			} )
+		} )
+
+		cy.newPage()
+		cy.get( '@postsList' ).then( postsList => {
+			postsList.forEach( post => {
+				cy.addBlock( 'ugb/cta' )
+				// Should not throw an error. All posts should be visible in the suggestions.
+				cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__description', {
+					source: 'Other Posts',
+					post,
+					fieldName: 'Post Title',
+				} )
+				cy.deleteBlock( 'ugb/cta' )
+			} )
 		} )
 	} )
 }
