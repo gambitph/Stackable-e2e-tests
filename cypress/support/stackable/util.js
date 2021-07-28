@@ -177,7 +177,7 @@ export function changeControlState( options = {} ) {
 		const selector = () => cy.getBaseControl( name, options )
 		selector()
 			.then( $baseControl => {
-				if ( $baseControl.find( '.stk-control-label__toggles .stk-label-unit-toggle' ).length ) {
+				if ( $baseControl.find( `.stk-control-label__toggles .stk-label-unit-toggle button[aria-label="${ state }"]` ).length ) {
 					selector().find( '.stk-control-label__toggles .stk-label-unit-toggle button.is-active' ).click( { force: true } )
 					selector()
 						.find( '.stk-control-label__toggles .stk-label-unit-toggle' )
