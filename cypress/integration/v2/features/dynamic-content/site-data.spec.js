@@ -10,8 +10,23 @@ describe( 'Dynamic Content - Site', registerTests( [
 	adjustFieldValues,
 ] ) )
 
-const fields = [ 'Site Title', 'Site Tagline', 'Site URL' ]
-const testString = [ 'Test Site Title', 'Test Site Tagline', 'Test Site URL' ]
+const fields = [
+	{
+		name: 'Site Title',
+		defaultValue: 'e2etest',
+		testValue: 'Test Site Title',
+	},
+	{
+		name: 'Site Tagline',
+		defaultValue: 'Just another WordPress site',
+		testValue: 'Test Site Tagline',
+	},
+	{
+		name: 'Site URL',
+		defaultValue: 'http://e2etest.local',
+		testValue: 'Test Site Url',
+	},
+]
 
 const adjustSiteField = ( fieldName, fieldOptions = {} ) => {
 	 cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
@@ -24,29 +39,16 @@ const adjustSiteField = ( fieldName, fieldOptions = {} ) => {
 function matchSiteData() {
 	 it( 'should match dynamic content in site fields', () => {
 		 cy.setupWP()
-		 Object.keys( fields ).forEach( fieldName => {
+		 fields.forEach( fields => {
 			 cy.newPost()
 			 cy.addBlock( 'ugb/cta' )
-			 cy.typePostTitle( `${ fields[ fieldName ] } Test` )
 
 			const fieldOptions = {}
-			adjustSiteField( fields[ fieldName ], fieldOptions )
+			adjustSiteField( fields.name, fieldOptions )
 
-			//Asserting content value with assertBlockContent
+			// Asserting content value with assertBlockContent
 			cy.openInspector( 'ugb/cta', 'Style' )
-			if ( `${ fields[ fieldName ] }` === 'Site Title' ) {
-				cy
-					.selectBlock( 'ugb/cta' )
-					.assertBlockContent( '.ugb-cta__title', 'e2etest' )
-			} else if ( `${ fields[ fieldName ] }` === 'Site Tagline' ) {
-				cy
-					.selectBlock( 'ugb/cta' )
-					.assertBlockContent( '.ugb-cta__title', 'Just another WordPress site' )
-			} else if ( `${ fields[ fieldName ] }` === 'Site URL' ) {
-				cy
-					.selectBlock( 'ugb/cta' )
-					.assertBlockContent( '.ugb-cta__title', 'http://e2etest.local' )
-			}
+			cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', fields.defaultValue )
 
 			cy.deleteBlock( 'ugb/cta' )
 		 } )
@@ -82,13 +84,13 @@ function adjustFieldOptions() {
 		cy.addBlock( 'ugb/cta' )
 		adjustSiteField( 'Site URL', {
 			'Show as link': true,
-			'Custom Text': testString[ 2 ],
+			'Custom Text': fields[ 2 ].testValue,
 			'Open in new tab': true,
 		} )
 		cy.openInspector( 'ugb/cta', 'Style' )
 		cy
 			.selectBlock( 'ugb/cta' )
-			.assertBlockContent( '.ugb-cta__title', testString[ 2 ] )
+			.assertBlockContent( '.ugb-cta__title', fields[ 2 ].testValue )
 		cy
 			.selectBlock( 'ugb/cta' )
 			.assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener' )
@@ -104,8 +106,8 @@ function adjustFieldValues() {
 		cy.setupWP()
 
 		//changing site title and site tagline
-		cy.editSiteTitle( testString[ 0 ] )
-		cy.editSiteTagline( testString[ 1 ] )
+		cy.editSiteTitle( fields[ 0 ].testValue )
+		cy.editSiteTagline( fields[ 1 ].testValue )
 
 		//adjusting site title
 		cy.newPost()
@@ -115,7 +117,7 @@ function adjustFieldValues() {
 		cy.openInspector( 'ugb/cta', 'Style' )
 		cy
 			.selectBlock( 'ugb/cta' )
-			.assertBlockContent( '.ugb-cta__title', testString[ 0 ] )
+			.assertBlockContent( '.ugb-cta__title', fields[ 0 ].testValue )
 		cy.deleteBlock( 'ugb/cta' )
 
 		//adjusting site Tagline
@@ -125,7 +127,7 @@ function adjustFieldValues() {
 		//asserting
 		cy
 			.selectBlock( 'ugb/cta' )
-			.assertBlockContent( '.ugb-cta__title', testString[ 1 ] )
+			.assertBlockContent( '.ugb-cta__title', fields[ 1 ].testValue )
 		cy.deleteBlock( 'ugb/cta' )
 	} )
 }
