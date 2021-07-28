@@ -110,13 +110,20 @@ function stackableBlocks() {
 									} )
 								} )
 							}
-							expect( isEqual( attributes1WithOmittedValues, attributes2WithOmittedValues ) ).toBeTruthy()
+							assert.isTrue(
+								isEqual( attributes1WithOmittedValues, attributes2WithOmittedValues ),
+								`Expected the first ${ blockName } attributes to equal the second ${ blockName } attributes.`
+							)
 
 							if ( block.attrContent ) {
 								const attrContent = Object.keys( block.attrContent )
 								attrContent
 									.forEach( attr => {
-										assert.notEqual( attributes1[ attr ], attributes2[ attr ], 'Value not equal ☑️' )
+										assert.notEqual(
+											attributes1[ attr ],
+											attributes2[ attr ],
+											`'${ attr }' of ${ blockName } expected to not equal '${ attr }' of second ${ blockName }.`
+										)
 									} )
 							}
 						} )
@@ -165,14 +172,21 @@ function coreBlocks() {
 								const attrToExclude = Object.keys( block.attrToExclude )
 								const attributes1WithOmittedValues = omit( attributes1, attrToExclude )
 								const attributes2WithOmittedValues = omit( attributes2, attrToExclude )
-								expect( isEqual( attributes1WithOmittedValues, attributes2WithOmittedValues ) ).toBeTruthy()
+								assert.isTrue(
+									isEqual( attributes1WithOmittedValues, attributes2WithOmittedValues ),
+									`Expected the first ${ blockName } attributes to equal the second ${ blockName } attributes.`
+								)
 							}
 
 							if ( block.attrContent ) {
 								const attrContent = Object.keys( block.attrContent )
 								attrContent
 									.forEach( attr => {
-										assert.notEqual( attributes1[ attr ], attributes2[ attr ], 'Value not equal ☑️' )
+										assert.notEqual(
+											attributes1[ attr ],
+											attributes2[ attr ],
+											`'${ attr }' of ${ blockName } expected to not equal '${ attr }' of second ${ blockName }.`
+										)
 									} )
 							}
 						} )
