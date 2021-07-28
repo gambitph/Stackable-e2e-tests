@@ -269,6 +269,7 @@ export function addPostExcerpt( text ) {
  */
 export function addPostSlug( slug ) {
 	cy.publish()
+	cy.reload()
 	cy.openSidebar( 'Settings' )
 	cy
 		.get( '.edit-post-sidebar__panel-tabs' )
