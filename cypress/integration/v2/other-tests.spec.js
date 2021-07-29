@@ -24,24 +24,34 @@ function testCssFilesPrecedence() {
 		cy.savePost()
 		cy.document().then( doc => {
 			// Gets the id of the element next to the free editor css file.
-			const premiumCssTagId = doc.getElementById( 'ugb-block-editor-css-css' ).nextElementSibling.id
+			let nextElementId = doc.getElementById( 'ugb-block-editor-css-css' ).nextElementSibling.id
+
+			// Handle the next element as well.
+			if ( nextElementId !== 'ugb-block-editor-css-premium-css' ) {
+				nextElementId = doc.getElementById( 'ugb-block-editor-css-css' ).nextElementSibling.nextElementSibling.id
+			}
 
 			// Check the next element if it is the premium file using the premium selector
 			assert.isTrue(
-				premiumCssTagId === 'ugb-block-editor-css-premium-css',
-				`Expected the free css file is loaded first in the Editor. Found: ${ premiumCssTagId }`
+				nextElementId === 'ugb-block-editor-css-premium-css',
+				`Expected the free css file is loaded first in the Editor. Found: ${ nextElementId }`
 			)
 		} )
 		cy.getPostUrls().then( ( { previewUrl } ) => {
 			cy.visit( previewUrl )
 			cy.document().then( doc => {
 				// Gets the id of the element next to the free frontend css file.
-				const premiumCssTagId = doc.getElementById( 'ugb-style-css-css' ).nextElementSibling.id
+				let nextElementId = doc.getElementById( 'ugb-style-css-css' ).nextElementSibling.id
+
+				// Handle the next element as well.
+				if ( nextElementId !== 'ugb-style-css-premium-css' ) {
+					nextElementId = doc.getElementById( 'ugb-style-css-css' ).nextElementSibling.nextElementSibling.id
+				}
 
 				// Check the next element if it is the premium file using the premium selector
 				assert.isTrue(
-					premiumCssTagId === 'ugb-style-css-premium-css',
-					`Expected the free css file is loaded first in the Frontend. Found: ${ premiumCssTagId }`
+					nextElementId === 'ugb-style-css-premium-css',
+					`Expected the free css file is loaded first in the Frontend. Found: ${ nextElementId }`
 				)
 			} )
 		} )
