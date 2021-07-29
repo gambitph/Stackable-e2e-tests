@@ -50,7 +50,7 @@ function testCssFilesPrecedence() {
 
 function checkEditorFilesInFrontend() {
 	it( 'should check if the editor CSS files are loaded in frontend', () => {
-		// Shoudld not be loaded in frontend.
+		// Shoudld not be loaded in frontend
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'ugb/cta' )
