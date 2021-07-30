@@ -23,7 +23,7 @@ const fields = [
 	},
 	{
 		name: 'Site URL',
-		defaultValue: 'http://e2etest.local',
+		defaultValue: Cypress.config( 'baseURL' ),
 		testValue: 'Test Site Url',
 	},
 ]
@@ -39,6 +39,7 @@ const adjustSiteField = ( fieldName, fieldOptions = {} ) => {
 function matchSiteData() {
 	 it( 'should match dynamic content in site fields', () => {
 		 cy.setupWP()
+
 		 fields.forEach( fields => {
 			 cy.newPost()
 			 cy.addBlock( 'ugb/cta' )
@@ -76,7 +77,7 @@ function adjustFieldOptions() {
 			.assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener' )
 		cy
 			.selectBlock( 'ugb/cta' )
-			.assertHtmlAttribute( '.ugb-cta__title a', 'href', 'http://e2etest.local' )
+			.assertHtmlAttribute( '.ugb-cta__title a', 'href', fields[ 2 ].defaultValue )
 		cy.deleteBlock( 'ugb/cta' )
 
 		//adjusting Site URL
@@ -96,7 +97,7 @@ function adjustFieldOptions() {
 			.assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener' )
 		cy
 			.selectBlock( 'ugb/cta' )
-			.assertHtmlAttribute( '.ugb-cta__title a', 'href', 'http://e2etest.local' )
+			.assertHtmlAttribute( '.ugb-cta__title a', 'href', fields[ 2 ].defaultValue )
 		cy.deleteBlock( 'ugb/cta' )
 	} )
 }
