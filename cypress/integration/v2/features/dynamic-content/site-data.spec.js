@@ -60,7 +60,7 @@ function adjustFieldOptions() {
 	it( 'should adjust all fields with options', () => {
 		cy.setupWP()
 
-		// adjusting Site Title
+		//adjusting Site Title
 		cy.newPost()
 		cy.addBlock( 'ugb/cta' )
 		adjustSiteField( 'Site Title', {
@@ -80,7 +80,7 @@ function adjustFieldOptions() {
 			.assertHtmlAttribute( '.ugb-cta__title a', 'href', fields[ 2 ].defaultValue )
 		cy.deleteBlock( 'ugb/cta' )
 
-		// adjusting Site URL
+		//adjusting Site URL
 		cy.newPost()
 		cy.addBlock( 'ugb/cta' )
 		adjustSiteField( 'Site URL', {
@@ -101,31 +101,31 @@ function adjustFieldOptions() {
 		cy.deleteBlock( 'ugb/cta' )
 	} )
 }
-// site URL was excluded for this test, since it cannot be changed
+//site URL was excluded for this test, since it cannot be changed
 function adjustFieldValues() {
 	it( 'should assert changes to the field values', () => {
 		cy.setupWP()
 
-		// changing site title and site tagline
+		//changing site title and site tagline
 		cy.editSiteTitle( fields[ 0 ].testValue )
 		cy.editSiteTagline( fields[ 1 ].testValue )
 
-		// adjusting site title
+		//adjusting site title
 		cy.newPost()
 		cy.addBlock( 'ugb/cta' )
 		adjustSiteField( 'Site Title' )
-		// asserting
+		//asserting
 		cy.openInspector( 'ugb/cta', 'Style' )
 		cy
 			.selectBlock( 'ugb/cta' )
 			.assertBlockContent( '.ugb-cta__title', fields[ 0 ].testValue )
 		cy.deleteBlock( 'ugb/cta' )
 
-		// adjusting site Tagline
+		//adjusting site Tagline
 		cy.newPost()
 		cy.addBlock( 'ugb/cta' )
 		adjustSiteField( 'Site Tagline' )
-		// asserting
+		//asserting
 		cy
 			.selectBlock( 'ugb/cta' )
 			.assertBlockContent( '.ugb-cta__title', fields[ 1 ].testValue )
