@@ -292,15 +292,14 @@ function adjustFieldValues() {
 		// Assert changing the Post Title
 		createNewPostWithCTA()
 		adjustField( 'Post Title' )
-		cy.typePostTitle( 'My Post' )
+		cy.typePostTitle( 'My New Post' )
 		cy
 			.selectBlock( 'ugb/cta' )
-			.assertBlockContent( '.ugb-cta__title', 'My Post', { assertBackend: false } )
+			.assertBlockContent( '.ugb-cta__title', 'My New Post', { assertBackend: false } )
+		cy.deleteBlock( 'ugb/cta' )
 
 		// Assert changing the Post URL
-		createNewPostWithCTA()
-		cy.typePostTitle( 'My New Post' )
-		cy.publish()
+		cy.addBlock( 'ugb/cta' )
 		adjustField( 'Post URL' )
 		cy
 			.selectBlock( 'ugb/cta' )
