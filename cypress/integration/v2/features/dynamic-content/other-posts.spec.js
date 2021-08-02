@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	first, range, uniqueId,
+	first, range,
 } from 'lodash'
 import { registerTests } from '~stackable-e2e/helpers'
 
@@ -54,9 +54,7 @@ function setupMatchPostFieldValues() {
 	addToTest( { name: 'Post Title', value: 'First Post' } )
 
 	// Populate Post Slug.
-	const slug = `post-slug-${ ( new Date().getTime() * uniqueId() ) % 1000 }`
-	cy.addPostSlug( slug )
-	addToTest( { name: 'Post Slug', value: slug } )
+	addToTest( { name: 'Post Slug', value: 'first-post' } )
 
 	// Populate Post Excerpt.
 	cy.addPostExcerpt( 'Excerpt content.' )
@@ -194,7 +192,6 @@ function adjustFieldOptions() {
 		cy.typePostTitle( 'First Post' )
 		cy.addFeaturedImage()
 		cy.addPostExcerpt( 'Hello World! Sample excerpt here. Lorem ipsum' )
-		cy.addPostSlug( 'my-first-post' )
 		cy.publish()
 
 		// Retrieve the data of the created post for assertion.
