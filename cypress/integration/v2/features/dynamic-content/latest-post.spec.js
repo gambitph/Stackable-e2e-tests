@@ -163,7 +163,6 @@ function setFieldValues() {
 function addToTest( item ) {
 	cy.get( '@fieldsToAssert' ).then( $fta => cy.wrap( [ ...$fta, item ] ).as( 'fieldsToAssert' ) )
 }
-
 function matchPostData() {
 	it( 'should match dynamic content in latest post fields', () => {
 		setFieldValues()
