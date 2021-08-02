@@ -4,7 +4,7 @@
  */
 import { registerTests } from '~stackable-e2e/helpers'
 import {
-	first, range, uniqueId,
+	first, range,
 } from 'lodash'
 
 describe( 'Dynamic Content Current Post', registerTests( [
@@ -57,9 +57,7 @@ function setupMatchPostFieldValues() {
 	addToTest( { name: 'Post Title', value: 'Dynamic Content test' } )
 
 	// Populate Post Slug.
-	const slug = `post-slug-${ ( new Date().getTime() * uniqueId() ) % 1000 }`
-	cy.addPostSlug( slug )
-	addToTest( { name: 'Post Slug', value: slug } )
+	addToTest( { name: 'Post Slug', value: 'dynamic-content-test' } )
 
 	// Populate Post Excerpt.
 	cy.addPostExcerpt( 'Excerpt content.' )
@@ -301,20 +299,21 @@ function adjustFieldValues() {
 
 		// Assert changing the Post URL
 		createNewPostWithCTA()
+		cy.typePostTitle( 'My New Post' )
+		cy.publish()
 		adjustField( 'Post URL' )
-		cy.addPostSlug( 'my-post' )
 		cy
 			.selectBlock( 'ugb/cta' )
-			.assertBlockContent( '.ugb-cta__title', `${ Cypress.config( 'baseUrl' ) }/my-post/`, { assertBackend: false } )
+			.assertBlockContent( '.ugb-cta__title', `${ Cypress.config( 'baseUrl' ) }/my-new-post/`, { assertBackend: false } )
 
 		// Assert changing the Post Slug
 		createNewPostWithCTA()
+		cy.typePostTitle( 'Hello World' )
 		cy.publish() // Publishing creates a post slug
 		adjustField( 'Post Slug' )
-		cy.addPostSlug( 'my-post-slug' )
 		cy
 			.selectBlock( 'ugb/cta' )
-			.assertBlockContent( '.ugb-cta__title', 'my-post-slug', { assertBackend: false } )
+			.assertBlockContent( '.ugb-cta__title', 'hello-world', { assertBackend: false } )
 
 		// Assert changing the Post Excerpt
 		createNewPostWithCTA()
