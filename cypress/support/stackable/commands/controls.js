@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys, first,
+	kebabCase, keys, first, isEmpty,
 } from 'lodash'
 import { containsRegExp } from '~common/util'
 
@@ -26,6 +26,7 @@ Cypress.Commands.add( 'fourRangeControl', fourRangeControl )
 Cypress.Commands.add( 'iconControl', iconControl )
 Cypress.Commands.add( 'popoverControl', popoverControl )
 Cypress.Commands.add( 'suggestionControl', suggestionControl )
+Cypress.Commands.add( 'dynamicContentControl', dynamicContentControl )
 
 // Reset
 Cypress.Commands.add( 'iconControlReset', iconControlReset )
@@ -69,6 +70,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		'.ugb-columns-width-control': 'columnControl',
 		'.ugb-design-control': 'designControl',
 		'.ugb-icon-control': 'iconControl',
+		'.stk-dynamic-content-control': 'dynamicContentControl',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -545,4 +547,82 @@ export function adjustDesign( option = '' ) {
 		.find( 'button' )
 		.click( { force: true } )
 	cy.waitLoader( '.ugb-design-library-item span.components-spinner' )
+}
+
+/**
+ * Function for adjusting the dynamic content options in the inspector.
+ *
+ * @param {string} name
+ * @param {Object} value
+ * @param {Object} options
+ */
+function dynamicContentControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+	} = options
+
+	const {
+		source = '',
+		post = '',
+		fieldName = '',
+		fieldOptions = {},
+	} = value
+
+	if ( typeof value === 'object' ) {
+		beforeAdjust( name, value, options )
+		cy
+			.getBaseControl( name, {
+				isInPopover, parentSelector, supportedDelimiter,
+			} )
+			.find( 'button[aria-label="Dynamic Fields"]' )
+			.click( { force: true } )
+
+		const selectFromSuggestions = option => cy
+			.get( '.stackable-dynamic-content__popover-content' )
+			.contains( containsRegExp( option ) )
+			.parentsUntil( '.components-base-control' )
+			.find( '.stackable-dynamic-content__input-container>input' )
+			.click( { force: true } )
+
+		const selectOption = option => cy
+			.get( '.react-autosuggest__suggestions-container--open' )
+			.contains( option )
+			.click( { force: true } )
+
+		if ( source.length ) {
+			selectFromSuggestions( 'Dynamic Source' )
+			selectOption( source )
+		}
+
+		if ( Array( 'Other Posts', 'Latest Post' ).includes( source ) && post.length ) {
+		// Select a post if source is Other Posts / Latest Post
+			selectFromSuggestions( `${ source === 'Other Posts' ? 'Posts/Pages' : 'Nth Latest Post' }` )
+			selectOption( post )
+		}
+
+		selectFromSuggestions( 'Field' )
+		selectOption( fieldName )
+
+		if ( ! isEmpty( fieldOptions ) ) {
+			keys( fieldOptions ).forEach( fieldOption => {
+				cy.adjust( fieldOption, fieldOptions[ fieldOption ], {
+					parentSelector: '.stackable-dynamic-content__popover-content',
+					supportedDelimiter: [ ' ' ],
+				} )
+			} )
+		}
+
+		// Apply the changes
+		cy
+			.get( '.stackable-dynamic-content__popover-content' )
+			.find( 'button.apply-changes-button' )
+			.click( { force: true } )
+
+		cy.waitLoader( '.components-spinner' )
+
+		cy.savePost()
+	}
 }
