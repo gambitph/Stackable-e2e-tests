@@ -2,8 +2,6 @@ name: e2e-test-latest
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   test:
@@ -33,11 +31,8 @@ jobs:
       run: |
         git clone https://github.com/gambitph/Stackable.git
         cd Stackable
-        git checkout v3
         git clone https://${{ secrets.ACCESS_KEY }}@github.com/bfintal/Stackable-Premium pro__premium_only
-        cd pro__premium_only
-        git checkout v3
-        cd ../..
+        cd ..
 
     - name: Setup Node
       uses: actions/setup-node@v1
@@ -47,15 +42,19 @@ jobs:
     - name: Install @wordpress/env
       run: npm install -g @wordpress/env
 
-    - name: Build Stackable Premium
+    - name: Install Stackable dependencies
       run: |
         cd Stackable
+        npm ci
         git checkout v3
         npm ci
         cd pro__premium_only
+        npm ci
         git checkout v3
         npm ci
-        npm run build --if-present
+
+    - name: Build Stackable Premium
+      run: npm run build --if-present
 
     - name: Remove .wp-env.override.json
       run: rm .wp-env.override.json
