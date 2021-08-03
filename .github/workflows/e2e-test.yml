@@ -31,10 +31,13 @@ jobs:
 
     - name: Setup the Stackable Free and Premium Repository
       run: |
-        git clone --single-branch --branch v3 https://github.com/gambitph/Stackable.git
+        git clone https://github.com/gambitph/Stackable.git
         cd Stackable
-        git clone --single-branch --branch v3 https://${{ secrets.ACCESS_KEY }}@github.com/bfintal/Stackable-Premium pro__premium_only
-        cd ..
+        npm ci
+        git clone https://${{ secrets.ACCESS_KEY }}@github.com/bfintal/Stackable-Premium pro__premium_only
+        cd pro__premium_only
+        npm ci
+        cd ../..
 
     - name: Setup Node
       uses: actions/setup-node@v1
@@ -47,8 +50,10 @@ jobs:
     - name: Build Stackable Premium
       run: |
         cd Stackable
+        git checkout v3
         npm ci
         cd pro__premium_only
+        git checkout v3
         npm ci
         npm run build --if-present
 
