@@ -1,6 +1,6 @@
 {
 	"projectId": "wufpha",
-	"baseUrl": "http://localhost:10003/",
+	"baseUrl": "http://e2etest.local/",
 	"viewportTabletWidth": 780,
 	"viewportMobileWidth": 360,
 	"viewportWidth": 1200,
