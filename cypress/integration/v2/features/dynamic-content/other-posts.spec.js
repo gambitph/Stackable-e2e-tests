@@ -312,6 +312,7 @@ function assertEmptyValues() {
 			cy
 				.selectBlock( 'ugb/cta' )
 				.assertBlockContent( '.ugb-cta__title', '', { assertBackend: false } )
+			cy.deleteBlock( 'ugb/cta' )
 		} )
 	} )
 }
