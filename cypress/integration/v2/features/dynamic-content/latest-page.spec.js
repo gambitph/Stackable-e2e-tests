@@ -6,6 +6,7 @@ import { registerTests } from '~stackable-e2e/helpers'
 
 describe( 'Dynamic Content - Latest Page', registerTests( [
 	matchPostData,
+	assertEmptyValues,
 ] ) )
 
 /**
@@ -222,5 +223,45 @@ function matchPostData() {
 			} )
 			cy.savePost()
 		} )
+	} )
+}
+
+function assertEmptyValues() {
+	it( 'should assert empty values in backend and frontend', () => {
+		cy.setupWP()
+
+		const emptyFields = [
+			'Author First Name',
+			'Author Last Name',
+			'Featured Image URL',
+		]
+
+		range( 10, 0 ).forEach( id => {
+			cy.newPage()
+			cy.typePostTitle( `Page ${ id }` )
+			cy.publish()
+		} )
+
+		cy.newPost()
+		emptyFields.forEach( fieldName => {
+			cy.addBlock( 'ugb/cta' )
+
+			// Adjust the dynamic content popover.
+			cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
+				source: 'Latest Post',
+				post: '5th Latest Page',
+				fieldName,
+			} )
+			cy
+				.selectBlock( 'ugb/cta' )
+				.assertBlockContent( '.ugb-cta__title', `${ fieldName } Placeholder`, { assertFrontend: false } )
+
+			cy
+				.selectBlock( 'ugb/cta' )
+				.assertBlockContent( '.ugb-cta__title', '', { assertBackend: false } )
+
+			cy.deleteBlock( 'ugb/cta' )
+		} )
+		cy.savePost()
 	} )
 }
