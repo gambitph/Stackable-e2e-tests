@@ -7,8 +7,6 @@ import { registerTests } from '~stackable-e2e/helpers'
 
 describe( 'Dynamic Content - Latest Page', registerTests( [
 	matchPostData,
-	// adjustFieldOptions,
-	// adjustFieldValues,
 ] ) )
 
 /**
@@ -140,6 +138,7 @@ function setupMatchPostFieldValues( idx ) {
 		// Go back to the editor.
 		cy.visit( editorUrl )
 	} )
+	cy.publish()
 }
 
 /**
@@ -158,7 +157,7 @@ function addToTest( item, idx ) {
  *
  * @param {number} n
  *
- * @return {string} the nth of a number. 1 returns 1st.
+ * @return {string} the nth of a number. 1 returns st.
  */
 function nth( n ) {
 	// eslint-disable-next-line no-mixed-operators
@@ -169,7 +168,7 @@ function matchPostData() {
 	it( 'should test dynamic content to match all field values in latest posts', () => {
 		cy.setupWP()
 
-		range( 1, 11 ).forEach( idx => {
+		range( 10, 0 ).forEach( idx => {
 			// Setup 10 latest pages for assertion.
 			setupMatchPostFieldValues( idx )
 		} )
@@ -187,7 +186,7 @@ function matchPostData() {
 					// Adjust the dynamic content popover.
 					cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
 						source: 'Latest Post',
-						post: `${ nth( idx ) } Latest Page`,
+						post: `${ idx }${ nth( idx ) } Latest Page`,
 						fieldName,
 						fieldOptions,
 					} )
