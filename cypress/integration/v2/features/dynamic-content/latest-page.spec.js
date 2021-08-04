@@ -1,4 +1,3 @@
-
 /**
  * External dependencies
  */
@@ -68,6 +67,27 @@ function setupMatchPostFieldValues( idx ) {
 
 	// Add a featured image.
 	cy.addFeaturedImage()
+
+	// Get the author's profile picture URL
+	cy.wp().then( wp => {
+		addToTest( { name: 'Author Profile Picture URL', value: wp.data.select( 'core' ).getAuthors()[ 0 ].avatar_urls[ 96 ] }, idx )
+	} )
+
+	// Add comments for this page.
+	cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+		cy.editPostDiscussion( { 'Allow comments': true } )
+		cy.visit( previewUrl )
+		range( 1, 3 ).forEach( num => {
+			cy
+				.get( '.comment-form-comment' )
+				.find( 'textarea#comment' )
+				.click( { force: true } )
+				.type( `{selectall}{backspace}Test ${ num }` )
+			cy.get( 'input[value="Post Comment"]' ).click( { force: true } )
+		} )
+		cy.visit( editorUrl )
+	} )
+
 	cy.getPostData().then( data => {
 		// Post Fields
 		addToTest( { name: 'Post URL', value: data.link }, idx )
@@ -105,11 +125,6 @@ function setupMatchPostFieldValues( idx ) {
 		// Misc. Fields
 		addToTest( { name: 'Comment Number', value: parseInt( data.comments_num ).toString() }, idx )
 		addToTest( { name: 'Comment Status', value: data.comment_status }, idx )
-	} )
-
-	// Get the author's profile picture URL
-	cy.wp().then( wp => {
-		addToTest( { name: 'Author Profile Picture URL', value: wp.data.select( 'core' ).getAuthors()[ 0 ].avatar_urls[ 96 ] }, idx )
 	} )
 
 	/**
@@ -165,7 +180,7 @@ function nth( n ) {
 }
 
 function matchPostData() {
-	it( 'should test dynamic content to match all field values in latest posts', () => {
+	beforeEach( () => {
 		cy.setupWP()
 
 		range( 10, 0 ).forEach( idx => {
@@ -175,8 +190,10 @@ function matchPostData() {
 
 		// Create a new post since we're asserting the latest pages.
 		cy.newPost()
+	} )
 
-		range( 10, 0 ).forEach( idx => {
+	range( 10, 0 ).forEach( idx => {
+		it( `should test dynamic content to match all field values in latest post #${ idx }`, () => {
 			cy.get( `@fieldsToAssert${ idx }` ).then( fieldsToAssert => {
 				fieldsToAssert.forEach( ( {
 					name: fieldName, value, options: fieldOptions = {},

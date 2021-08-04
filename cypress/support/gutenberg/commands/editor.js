@@ -303,22 +303,22 @@ export function editPostDiscussion( options ) {
 	Object.keys( options ).forEach( optionName => {
 		const optionValue = options[ optionName ]
 
-		selector( optionName ).find( 'svg.components-checkbox-control__checked' ).its( 'length' ).then( length => {
-			// Check if the checkbox is already true
-			if ( length > 0 ) {
-				// If the optionValue is set to false, click the checkbox.
-				if ( ! optionValue ) {
+		selector( optionName )
+			.then( $control => {
+				if ( $control.find( 'svg.components-checkbox-control__checked' ).length ) {
+					// If the optionValue is set to false, click the checkbox.
+					if ( ! optionValue ) {
+						selector( optionName )
+							.find( 'input.components-checkbox-control__input' )
+							.click( { force: true } )
+					}
+				} else if ( optionValue ) {
+					// If not yet checked and optionValue is set to true, click the checkbox.
 					selector( optionName )
 						.find( 'input.components-checkbox-control__input' )
 						.click( { force: true } )
 				}
-			} else if ( optionValue ) {
-				// If not yet checked and optionValue is set to true, click the checkbox.
-				selector( optionName )
-					.find( 'input.components-checkbox-control__input' )
-					.click( { force: true } )
-			}
-		} )
+			} )
 	} )
 	cy.savePost()
 }
