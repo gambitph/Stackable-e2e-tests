@@ -169,6 +169,7 @@ function addToTest( item, idx ) {
 
 /**
  * Function that returns the nth of a given number.
+ * This is used to select the nth Latest Page in dynamic content popover.
  *
  * @param {number} n
  *
@@ -182,18 +183,24 @@ function nth( n ) {
 function matchPostData() {
 	beforeEach( () => {
 		cy.setupWP()
-
-		range( 10, 0 ).forEach( idx => {
-			// Setup 10 latest pages for assertion.
-			setupMatchPostFieldValues( idx )
-		} )
-
-		// Create a new post since we're asserting the latest pages.
-		cy.newPost()
 	} )
 
 	range( 10, 0 ).forEach( idx => {
 		it( `should test dynamic content to match all field values in latest post #${ idx }`, () => {
+			range( 10, 0 ).forEach( id => {
+				if ( idx === id ) {
+					// Setup field values of the page we're testing.
+					setupMatchPostFieldValues( idx )
+				} else {
+					cy.newPage()
+					cy.typePostTitle( `Page ${ id }` )
+					cy.publish()
+				}
+			} )
+
+			// Create a new post since we're asserting the latest pages.
+			cy.newPost()
+
 			cy.get( `@fieldsToAssert${ idx }` ).then( fieldsToAssert => {
 				fieldsToAssert.forEach( ( {
 					name: fieldName, value, options: fieldOptions = {},
@@ -212,8 +219,8 @@ function matchPostData() {
 					cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
 					cy.deleteBlock( 'ugb/cta' )
 				} )
-				cy.savePost()
 			} )
+			cy.savePost()
 		} )
 	} )
 }
