@@ -60,7 +60,7 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 
 	const block = () => cy.selectBlock( blockName, blockSelector )
 
-	if ( typeof selector === 'string' && selector.charAt( 0 ) === '.' ) {
+	if ( typeof selector === 'string' ) {
 		block()
 			.find( selector )
 			.type( '{selectall}', { force: true } )
