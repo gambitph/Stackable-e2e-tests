@@ -48,7 +48,7 @@ function styleTab( viewport, desktopOnly ) {
 				'height': '142px',
 			},
 		} )
-		cy.resetStyle( 'Height' )
+		cy.resetStyle( 'Height', { viewport } )
 		cy.adjust( 'Height', 30, { viewport, unit: 'vh' } ).assertComputedStyle( {
 			'.ugb-spacer': {
 				'height': '30vh',
