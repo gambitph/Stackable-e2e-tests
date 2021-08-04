@@ -19,11 +19,11 @@ Cypress.Commands.add( 'addToReusableBlocks', addToReusableBlocks )
 export function selectTopToolbar() {
 	const options = () => cy
 		.get( '.edit-post-more-menu' )
-		.find( 'button[aria-label="Options"]' )
+		.find( 'button[aria-label="Options"], button[aria-label="More tools & options"]' )
 		.click( { force: true } )
 
 	const toolbar = () => cy
-		.contains( containsRegExp( 'Top toolbar' ) )
+		.contains( 'Top toolbar' )
 		.closest( 'button.components-menu-item__button' )
 
 	options()
@@ -57,6 +57,7 @@ export function adjustToolbar( name, callback = () => {}, options = {} ) {
 		.click( { force: true } )
 
 	callback()
+	cy.savePost()
 }
 
 /**
@@ -125,7 +126,7 @@ export function addToReusableBlocks( blockName, blockSelector ) {
 
 	cy.selectTopToolbar()
 	cy.get( '.block-editor-block-toolbar' )
-		.find( 'button[aria-label="Options"]' )
+		.find( 'button[aria-label="Options"], button[aria-label="More tools & options"]' )
 		.click( { force: true } )
 
 	cy.get( '.components-dropdown-menu__menu' )

@@ -107,6 +107,8 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 			.get( '.stackable-dynamic-content__popover-content' )
 			.find( 'button.apply-changes-button' )
 			.click( { force: true } )
+
+		cy.waitLoader( '.components-spinner' )
 	} )
 
 	cy.savePost()
