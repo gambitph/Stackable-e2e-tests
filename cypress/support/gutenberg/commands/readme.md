@@ -1114,6 +1114,25 @@
     cy.addFeaturedImage()
     ```
 
+15. editPostDiscussion
+
+    - Command for editing the discussion settings of the current post.
+
+    Syntax:
+
+    ```jsx
+    cy.editPostDiscussion( options )
+    ```
+
+    Arguments:
+    - options - Object
+
+    Usage:
+
+    ```jsx
+    cy.editPostDiscussion( { 'Allow comments': false } )
+    ```
+
 ---
 
 ### inspector.js
