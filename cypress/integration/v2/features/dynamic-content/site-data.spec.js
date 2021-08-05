@@ -39,16 +39,13 @@ const adjustSiteField = ( fieldName, fieldOptions = {} ) => {
 function matchSiteData() {
 	 it( 'should match dynamic content in site fields', () => {
 		 cy.setupWP()
+		 cy.newPost()
 
-		 fields.forEach( fields => {
-			 cy.newPost()
-			 cy.addBlock( 'ugb/cta' )
-
-			const fieldOptions = {}
-			adjustSiteField( fields.name, fieldOptions )
+		 fields.forEach( field => {
+			cy.addBlock( 'ugb/cta' )
+			adjustSiteField( field.name )
 
 			// Asserting content value with assertBlockContent
-			cy.openInspector( 'ugb/cta', 'Style' )
 			cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', fields.defaultValue )
 
 			cy.deleteBlock( 'ugb/cta' )
