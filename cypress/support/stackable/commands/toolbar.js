@@ -73,7 +73,7 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 
 		const selectOption = option => cy
 			.get( '.react-autosuggest__suggestions-container--open' )
-			.contains( option )
+			.contains( containsRegExp( option ) )
 			.click( { force: true } )
 
 		if ( source.length ) {

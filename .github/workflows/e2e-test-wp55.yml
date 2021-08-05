@@ -1,4 +1,4 @@
-name: e2e-test-latest
+name: e2e-test-wp55
 on:
   push:
     branches: [ master ]
@@ -52,8 +52,10 @@ jobs:
         npm ci
         npm run build --if-present
 
-    - name: Remove .wp-env.override.json
-      run: rm .wp-env.override.json
+    # Install all dependencies from composer.json
+    - name: Install WordPress Version
+      run: |
+        composer require roots/wordpress:5.5.5 --dev
 
     - name: Run WordPress Environment
       run: wp-env start
