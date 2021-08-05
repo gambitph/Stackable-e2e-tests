@@ -47,7 +47,6 @@ function matchSiteData() {
 
 			// Asserting content value with assertBlockContent
 			cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', field.defaultValue )
-
 			cy.deleteBlock( 'ugb/cta' )
 		 } )
 	 } )
