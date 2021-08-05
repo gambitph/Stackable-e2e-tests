@@ -20,7 +20,7 @@ function multipleDynamicContent() {
 		// Add a dynamic content: Post Title
 		cy.adjustDynamicContent( 'core/paragraph', 0, () => {
 			cy
-				.get( '.wp-block-paragraph' )
+				.get( 'p[aria-label="Paragraph block"]' )
 				.setSelection( 'Lorem' )
 		}, {
 			source: 'Current Post',
@@ -30,7 +30,7 @@ function multipleDynamicContent() {
 		// Add a dynamic content: Post URL
 		cy.adjustDynamicContent( 'core/paragraph', 0, () => {
 			cy
-				.get( '.wp-block-paragraph' )
+				.get( 'p[aria-label="Paragraph block"]' )
 				.setSelection( 'paragraph' )
 		}, {
 			source: 'Current Post',
@@ -38,7 +38,7 @@ function multipleDynamicContent() {
 		} )
 
 		cy.document().then( doc => {
-			const text = doc.querySelector( '.wp-block-paragraph' ).innerHTML
+			const text = doc.querySelector( 'p[aria-label="Paragraph block"]' ).innerHTML
 
 			assert.isTrue(
 				text.includes( 'current-page/post-title' ) && text.includes( 'current-page/post-url' ),
@@ -51,7 +51,7 @@ function multipleDynamicContent() {
 		// Add a dynamic content: Post Title
 		cy.adjustDynamicContent( 'core/paragraph', 0, () => {
 			cy
-				.get( '.wp-block-paragraph' )
+				.get( 'p[aria-label="Paragraph block"]' )
 				.setSelection( 'paragraph' )
 		}, {
 			source: 'Current Post',
@@ -61,7 +61,7 @@ function multipleDynamicContent() {
 		// Add a dynamic content: Post URL
 		cy.adjustDynamicContent( 'core/paragraph', 0, () => {
 			cy
-				.get( '.wp-block-paragraph' )
+				.get( 'p[aria-label="Paragraph block"]' )
 				.setSelection( 'Sample' )
 		}, {
 			source: 'Current Post',
@@ -69,7 +69,7 @@ function multipleDynamicContent() {
 		} )
 
 		cy.document().then( doc => {
-			const text = doc.querySelector( '.wp-block-paragraph' ).innerHTML
+			const text = doc.querySelector( 'p[aria-label="Paragraph block"]' ).innerHTML
 
 			assert.isTrue(
 				text.includes( 'current-page/post-title' ) && text.includes( 'current-page/post-url' ),
