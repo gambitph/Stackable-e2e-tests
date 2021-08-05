@@ -65,7 +65,6 @@ function adjustFieldOptions() {
 			'Open in new tab': true,
 		} )
 
-		cy.openInspector( 'ugb/cta', 'Style' )
 		cy
 			.selectBlock( 'ugb/cta' )
 			.assertBlockContent( '.ugb-cta__title', 'e2etest' )
@@ -85,7 +84,6 @@ function adjustFieldOptions() {
 			'Custom Text': fields[ 2 ].testValue,
 			'Open in new tab': true,
 		} )
-		cy.openInspector( 'ugb/cta', 'Style' )
 		cy
 			.selectBlock( 'ugb/cta' )
 			.assertBlockContent( '.ugb-cta__title', fields[ 2 ].testValue )
@@ -112,7 +110,6 @@ function adjustFieldValues() {
 		cy.addBlock( 'ugb/cta' )
 		adjustSiteField( 'Site Title' )
 		// asserting
-		cy.openInspector( 'ugb/cta', 'Style' )
 		cy
 			.selectBlock( 'ugb/cta' )
 			.assertBlockContent( '.ugb-cta__title', fields[ 0 ].testValue )
@@ -129,4 +126,3 @@ function adjustFieldValues() {
 		cy.deleteBlock( 'ugb/cta' )
 	} )
 }
-
