@@ -126,7 +126,7 @@ export function addToReusableBlocks( blockName, blockSelector ) {
 
 	cy.selectTopToolbar()
 	cy.get( '.block-editor-block-toolbar' )
-		.find( 'button[aria-label="Options"], button[aria-label="More tools & options"]' )
+		.find( 'button[aria-label="Options"], button[aria-label="More options"]' )
 		.click( { force: true } )
 
 	cy.get( '.components-dropdown-menu__menu' )
