@@ -4,7 +4,7 @@
  */
 import { registerTests } from '~stackable-e2e/helpers'
 import {
-	first, uniqueId,
+	first, uniqueId, range,
 } from 'lodash'
 
 describe( 'Dynamic Content - Latest Post', registerTests( [
@@ -40,15 +40,20 @@ const adjustPostField = ( fieldName, fieldOptions = {} ) => {
  * ]
  * ```
  */
-function setFieldValues() {
+/**
+ * numPost as an indicator for Nth Post
+ *
+ * @param {number} numPost
+ */
+function setFieldValues( numPost ) {
 	cy.setupWP()
 	cy.newPost()
 	// Define the alias.
 	cy.wrap( [] ).as( 'fieldsToAssert' )
 
 	// Populate Post Title.
-	cy.typePostTitle( 'Latest Post test' )
-	addToTest( { name: 'Post Title', value: 'Latest Post test' } )
+	cy.typePostTitle( 'Latest Post # ', numPost )
+	addToTest( { name: 'Post Title', value: 'Latest Post # ' } )
 
 	// Populate Post Slug.
 	const slug = `post-slug-${ ( new Date().getTime() * uniqueId() ) % 1000 }`
@@ -163,21 +168,23 @@ function addToTest( item ) {
 }
 function matchPostData() {
 	it( 'should match dynamic content in latest post fields', () => {
-		setFieldValues()
-		cy.get( '@fieldsToAssert' ).then( fieldsToAssert => {
-			fieldsToAssert.forEach( ( {
-				name: fieldName, value, options: fieldOptions = {},
-			} ) => {
-				cy.addBlock( 'ugb/cta' )
+		range( 10, 1 ).forEach( idx => {
+			setFieldValues( idx )
+			cy.get( '@fieldsToAssert' ).then( fieldsToAssert => {
+				fieldsToAssert.forEach( ( {
+					name: fieldName, value, options: fieldOptions = {},
+				} ) => {
+					cy.addBlock( 'ugb/cta' )
 
-				// Adjusting dynamic content
-				adjustPostField( fieldName, fieldOptions )
+					// Adjusting dynamic content
+					adjustPostField( fieldName, fieldOptions )
 
-				// Assert the value.
-				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
-				cy.deleteBlock( 'ugb/cta' )
+					// Assert the value.
+					cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
+					cy.deleteBlock( 'ugb/cta' )
+				} )
+				cy.savePost()
 			} )
-			cy.savePost()
 		} )
 	} )
 }
