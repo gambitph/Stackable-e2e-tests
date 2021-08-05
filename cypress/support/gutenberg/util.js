@@ -25,6 +25,10 @@ export function withInspectorTabMemory( options = {} ) {
 			}
 
 			cy.getActiveTab().then( tab => {
+				if ( ! tab ) {
+					return originalFn( ...args )
+				}
+
 				cy.document().then( doc => {
 					const optionsToPass = args.length === argumentLength ? args.pop() : {}
 					const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText

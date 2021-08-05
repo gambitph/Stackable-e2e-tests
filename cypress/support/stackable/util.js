@@ -159,3 +159,37 @@ export function elementContainsText( $parentElement = Cypress.$( 'body' ), textT
 		return _compareTextsRecursive( Cypress.$( this ) )
 	} ).length
 }
+
+/**
+ * Function for changing the hover state in control
+ *
+ * @param {Object} options
+ */
+export function changeControlState( options = {} ) {
+	const {
+		state = 'Normal',
+		name = '',
+	} = options
+	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
+		return
+	}
+	if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
+		const selector = () => cy.getBaseControl( name, options )
+		selector()
+			.then( $baseControl => {
+				if ( $baseControl.find( `.stk-control-label__toggles .stk-label-unit-toggle button[aria-label="${ state }"]` ).length ) {
+					selector().find( '.stk-control-label__toggles .stk-label-unit-toggle button.is-active' ).click( { force: true } )
+					selector()
+						.find( '.stk-control-label__toggles .stk-label-unit-toggle' )
+						.invoke( 'attr', 'aria-expanded' )
+						.then( ariaExpanded => {
+							if ( ariaExpanded === 'true' ) {
+								selector()
+									.find( `.stk-control-label__toggles .stk-label-unit-toggle button[aria-label="${ state }"]` )
+									.click( { force: true, log: false } )
+							}
+						} )
+				}
+			} )
+	}
+}

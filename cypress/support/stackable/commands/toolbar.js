@@ -73,7 +73,7 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 
 		const selectOption = option => cy
 			.get( '.react-autosuggest__suggestions-container--open' )
-			.contains( option )
+			.contains( containsRegExp( option ) )
 			.click( { force: true } )
 
 		if ( source.length ) {
@@ -104,6 +104,8 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 			.get( '.stackable-dynamic-content__popover-content' )
 			.find( 'button.apply-changes-button' )
 			.click( { force: true } )
+
+		cy.waitLoader( '.components-spinner' )
 	} )
 	cy.savePost()
 }
