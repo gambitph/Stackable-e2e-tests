@@ -65,8 +65,15 @@ export function changeUnit( options = {} ) {
 			.then( $baseControl => {
 				if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
 					if ( $baseControl.find( '.stk-control-label__units' ).length ) {
-						selector().find( '.stk-control-label__units button.is-active' ).click( { force: true } )
-						selector().find( `.stk-control-label__units button[data-value="${ unit }"]` ).click( { force: true } )
+						// We need to check this for control units that do not have the `.is-active` class.
+						if ( $baseControl.find( '.stk-control-label__units button.is-active' ).length ) {
+							selector().find( '.stk-control-label__units button.is-active' ).click( { force: true } )
+							selector().find( `.stk-control-label__units button[data-value="${ unit }"]` ).click( { force: true } )
+						} else {
+							// Click the first `.ugb-button-component` instead
+							selector().find( '.stk-control-label__units .ugb-button-component' ).first().click( { force: true } )
+							selector().find( `.stk-control-label__units button[data-value="${ unit }"]` ).click( { force: true } )
+						}
 					}
 					return
 				}
