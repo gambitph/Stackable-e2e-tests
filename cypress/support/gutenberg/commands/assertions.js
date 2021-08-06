@@ -389,12 +389,12 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 						if ( typeof expectedValue === 'string' ) {
 							assert.isTrue(
 								$attribute === expectedValue,
-								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor`
+								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor. Found: "${ $attribute }"`
 							)
 						} else if ( expectedValue instanceof RegExp ) {
 							assert.isTrue(
 								( $attribute || '' ).match( expectedValue ),
-								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor` )
+								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor. Found: "${ $attribute }"` )
 						}
 						afterBackendAssert()
 					}
@@ -410,7 +410,7 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 										attribute instanceof RegExp
 											? !! blockElement.getAttribute( attribute ).match( expectedValue )
 											: blockElement.getAttribute( attribute ) === expectedValue,
-										`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+										`${ customSelector } must have ${ attribute } = "${ expectedValue }" in Frontend. Found: "${ blockElement.getAttribute( attribute ) }"`
 									)
 								}
 							} )
