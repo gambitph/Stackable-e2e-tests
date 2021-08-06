@@ -232,6 +232,17 @@ function adjustFieldOptions() {
 				'Open in new tab': true,
 			}, idx )
 			// asserting changes
+			cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'This post' )
+			cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
+			cy.deleteBlock( 'ugb/cta' )
+
+			// adjusting Post excerpt options
+			cy.addBlock( 'ugb/cta' )
+			cy.addPostExcerpt( 'This is a sample excerpt... Lorem ipsum dolor sit amet.' )
+			adjustPostField( 'Post Excerpt', {
+				'Excerpt Length': 5,
+			}, idx )
+			// asserting changes
 		} )
 	} )
 }
