@@ -474,7 +474,7 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 									assert.equal(
 										blockElement.textContent.replace( '\n', '' ),
 										expectedValue,
-										`${ customSelector } must have content '${ expectedValue }' in Frontend'. Found: '${ blockElement.textContent }'`
+										`${ customSelector } must have content '${ expectedValue }' in Frontend. Found '${ blockElement.textContent.replace( '\n', '' ) }'`
 									)
 								}
 
