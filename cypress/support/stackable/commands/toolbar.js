@@ -110,6 +110,5 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 
 		cy.waitLoader( '.components-spinner' )
 	} )
-
 	cy.savePost()
 }
