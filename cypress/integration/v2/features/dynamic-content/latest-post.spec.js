@@ -9,6 +9,7 @@ import {
 
 describe( 'Dynamic Content - Latest Post', registerTests( [
 	matchPostData,
+	adjustFieldOptions,
 ] ) )
 
 const adjustPostField = ( fieldName, fieldOptions = {}, idx ) => {
@@ -155,7 +156,6 @@ function setFieldValues( idx ) {
 		// Go back to the editor.
 		cy.visit( editorUrl )
 	} )
-	cy.savePost()
 	cy.publish()
 }
 
@@ -204,3 +204,34 @@ function matchPostData() {
 /**
  * fix sample post issue, look into commands used in setFieldValues
  */
+
+function adjustFieldOptions() {
+	it( 'should adjust all options for each field in all latest posts', () => {
+		cy.setupWP()
+		cy.newPost() //check if it gets added to list of posts
+		// adjusting all fields for each latest post
+		range( 3, 0 ).forEach( idx => {
+			// adjusting Post Title
+			cy.typePostTitle( `Adjusting Post ${ idx }` )
+			cy.addBlock( 'ugb/cta' )
+			adjustPostField( 'Post Title', {
+				'Show as link': true,
+				'Open in new tab': true,
+			}, idx )
+
+			// assert changes
+			cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', `Adjusting Post ${ idx }` )
+			cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
+			cy.deleteBlock( 'ugb/cta' )
+
+			// adjusting Post URL options
+			cy.addBlock( 'ugb/cta' )
+			adjustPostField( 'Post URL', {
+				'Show as link': true,
+				'Custom Text': 'This post',
+				'Open in new tab': true,
+			}, idx )
+			// asserting changes
+		} )
+	} )
+}
