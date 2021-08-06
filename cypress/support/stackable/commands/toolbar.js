@@ -47,7 +47,7 @@ export function pasteStyle( subject, blockToPaste ) {
  *
  * @param {string} blockName
  * @param {string | number | Object} blockSelector
- * @param {string} selector
+ * @param {string | Function} selector
  * @param {Object} options
  */
 export function adjustDynamicContent( blockName, blockSelector, selector, options = {} ) {
@@ -58,10 +58,15 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 		fieldOptions = {},
 	} = options
 
-	cy
-		.selectBlock( blockName, blockSelector )
-		.find( selector )
-		.type( '{selectall}', { force: true } )
+	const block = () => cy.selectBlock( blockName, blockSelector )
+
+	if ( typeof selector === 'string' ) {
+		block()
+			.find( selector )
+			.type( '{selectall}', { force: true } )
+	} else if ( typeof selector === 'function' ) {
+		selector()
+	}
 
 	cy.adjustToolbar( 'Dynamic Fields', () => {
 		const selectFromSuggestions = option => cy
