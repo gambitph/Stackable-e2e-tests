@@ -142,7 +142,7 @@ export function addToReusableBlocks( blockName, blockSelector ) {
 
 	cy.selectTopToolbar()
 	cy.get( '.block-editor-block-toolbar' )
-		.find( 'button[aria-label="Options"], button[aria-label="More options"]' )
+		.find( 'button[aria-label="Options"], button[aria-label="More options"]' ) // For backwards compatibility: WP 5.5
 		.click( { force: true } )
 
 	cy.get( '.components-dropdown-menu__menu' )
