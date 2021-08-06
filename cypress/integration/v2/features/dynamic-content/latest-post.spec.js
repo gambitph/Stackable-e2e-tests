@@ -84,7 +84,7 @@ function setFieldValues( idx ) {
 	addToTest( { name: 'Post Excerpt', value: `Test excerpt #${ idx }` }, idx )
 
 	// Add a featured image.
-	cy.addFeaturedImage()
+	//cy.addFeaturedImage()
 
 	// Get the author's profile picture URL
 	cy.wp().then( wp => {
@@ -190,14 +190,13 @@ function matchPostData() {
 
 					// Adjusting dynamic content
 					adjustPostField( fieldName, fieldOptions, idx )
-
 					// Assert the value.
 					cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
 					cy.deleteBlock( 'ugb/cta' )
 				} )
-				//cy.savePost()
 			} )
 		} )
+		//cy.savePost()
 	} )
 }
 
@@ -208,7 +207,7 @@ function matchPostData() {
 function adjustFieldOptions() {
 	it( 'should adjust all options for each field in all latest posts', () => {
 		cy.setupWP()
-		cy.newPost() //check if it gets added to list of posts
+		cy.newPost() // check if it gets added to list of posts
 		// adjusting all fields for each latest post
 		range( 3, 0 ).forEach( idx => {
 			// adjusting Post Title
@@ -242,7 +241,47 @@ function adjustFieldOptions() {
 			adjustPostField( 'Post Excerpt', {
 				'Excerpt Length': 5,
 			}, idx )
+
+			cy.publish()
 			// asserting changes
+			cy.getPostUrls().then( ( { previewUrl } ) => {
+				cy.visit( previewUrl )
+				// Excerpt length should be 5.
+				cy.document().then( doc => {
+					assert.isTrue(
+						[ ...doc.querySelector( '.ugb-cta__title' ).innerText.split( ' ' ) ].length === 5,
+						'Expected excerpt text length to equal \'5\''
+					)
+				} )
+			} )
+			cy.deleteBlock( 'ugb/cta' )
+			// For Post Date, Date GMT, Modified & Modified GMT options
+			const dateFields = [ 'Post Date', 'Post Date GMT', 'Post Modified', 'Post Modified GMT' ]
+			const dateFormats = [ 'Y-m-d H:i:s', 'F j, Y', 'F j, Y g:i a', 'd/m/y' ]
+			dateFields.forEach( dateField => {
+				cy.wrap( [] ).as( 'dateFormatValues' )
+
+				dateFormats.forEach( dateFormat => {
+					cy.addBlock( 'ugb/cta' )
+					adjustPostField( dateField, {
+						'Date Format': dateFormat,
+					}, idx )
+					cy.document().then( doc => {
+						cy.get( '@dateFormatValues' ).then( dateFormatValues => {
+						// Store the values to be compared in this alias.
+							cy.wrap( [ ...dateFormatValues, doc.querySelector( '.ugb-cta__title' ).innerText ] ).as( 'dateFormatValues' )
+						} )
+					} )
+				} )
+
+				cy.get( '@dateFormatValues' ).then( dateFormatValues => {
+				// Assert that the values are not equal. This means that the formats changed.
+					assert.isTrue(
+						! dateFormatValues.some( ( value, idx ) => dateFormatValues.indexOf( value ) !== idx ), // Returns true if values are unique
+						`Expected all date format values to be unique. Values: "${ dateFormatValues.join( ', ' ) }"`
+					)
+				} )
+			} )
 		} )
 	} )
 }
