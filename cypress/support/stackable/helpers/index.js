@@ -439,6 +439,8 @@ export const assertContainerLink = ( selector, options = {}, assertOptions = {} 
 			}
 			cy.adjust( 'Open link in new tab', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', 'noopener noreferrer', assertOptions )
 			cy.adjust( 'Nofollow link', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', 'noopener noreferrer nofollow', assertOptions )
+			cy.adjust( 'Sponsored', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', 'noopener noreferrer nofollow sponsored', assertOptions )
+			cy.adjust( 'UGC', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', 'noopener noreferrer nofollow sponsored ugc', assertOptions )
 		} )
 	} )
 }

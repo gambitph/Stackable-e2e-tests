@@ -265,6 +265,11 @@ function styleTab( viewport, desktopOnly ) {
 		cy.collapse( 'Button' )
 		cy.waitFA()
 		desktopOnly( () => {
+			cy.adjust( 'Link / URL', 'https://www.google.com/' ).assertHtmlAttribute( '.ugb-button', 'href', 'https://www.google.com/', { assertBackend: false } )
+			cy.adjust( 'Open link in new tab', true ).assertHtmlAttribute( '.ugb-button', 'rel', 'noopener noreferrer', { assertBackend: false } )
+			cy.adjust( 'Nofollow link', true ).assertHtmlAttribute( '.ugb-button', 'rel', 'noopener noreferrer nofollow', { assertBackend: false } )
+			cy.adjust( 'Sponsored', true ).assertHtmlAttribute( '.ugb-button', 'rel', 'noopener noreferrer nofollow sponsored', { assertBackend: false } )
+			cy.adjust( 'UGC', true ).assertHtmlAttribute( '.ugb-button', 'rel', 'noopener noreferrer nofollow sponsored ugc', { assertBackend: false } )
 			cy.adjust( 'Design', {
 				label: 'Basic',
 				value: 'basic',

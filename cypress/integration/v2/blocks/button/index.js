@@ -120,6 +120,11 @@ function styleTab( viewport, desktopOnly ) {
 			cy.typeBlock( 'ugb/button', `.ugb-button${ index } .ugb-button--inner`, `Button ${ index }` )
 			cy.waitFA()
 			desktopOnly( () => {
+				cy.adjust( 'Link / URL', 'https://www.google.com/' ).assertHtmlAttribute( `.ugb-button${ index }`, 'href', 'https://www.google.com/', { assertBackend: false } )
+				cy.adjust( 'Open link in new tab', true ).assertHtmlAttribute( `.ugb-button${ index }`, 'rel', 'noopener noreferrer', { assertBackend: false } )
+				cy.adjust( 'Nofollow link', true ).assertHtmlAttribute( `.ugb-button${ index }`, 'rel', 'noopener noreferrer nofollow', { assertBackend: false } )
+				cy.adjust( 'Sponsored', true ).assertHtmlAttribute( `.ugb-button${ index }`, 'rel', 'noopener noreferrer nofollow sponsored', { assertBackend: false } )
+				cy.adjust( 'UGC', true ).assertHtmlAttribute( `.ugb-button${ index }`, 'rel', 'noopener noreferrer nofollow sponsored ugc', { assertBackend: false } )
 				cy.adjust( 'Color Type', 'gradient' )
 				cy.adjust( 'Button Color #1', '#a13939' )
 				cy.adjust( 'Button Color #2', '#4e59d4' )

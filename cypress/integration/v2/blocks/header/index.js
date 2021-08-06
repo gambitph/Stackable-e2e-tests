@@ -199,6 +199,11 @@ function styleTab( viewport, desktopOnly ) {
 		cy.collapse( 'Button #1' )
 		cy.toggleStyle( 'Button #1' )
 		desktopOnly( () => {
+			cy.adjust( 'Link / URL', 'https://www.google.com/' ).assertHtmlAttribute( '.ugb-button1', 'href', 'https://www.google.com/', { assertBackend: false } )
+			cy.adjust( 'Open link in new tab', true ).assertHtmlAttribute( '.ugb-button1', 'rel', 'noopener noreferrer', { assertBackend: false } )
+			cy.adjust( 'Nofollow link', true ).assertHtmlAttribute( '.ugb-button1', 'rel', 'noopener noreferrer nofollow', { assertBackend: false } )
+			cy.adjust( 'Sponsored', true ).assertHtmlAttribute( '.ugb-button1', 'rel', 'noopener noreferrer nofollow sponsored', { assertBackend: false } )
+			cy.adjust( 'UGC', true ).assertHtmlAttribute( '.ugb-button1', 'rel', 'noopener noreferrer nofollow sponsored ugc', { assertBackend: false } )
 			cy.adjust( 'Color Type', 'gradient' )
 			cy.adjust( 'Button Color #1', '#a13939' )
 			cy.adjust( 'Button Color #2', '#4e59d4' )
@@ -263,6 +268,11 @@ function styleTab( viewport, desktopOnly ) {
 		cy.toggleStyle( 'Button #2' )
 		cy.typeBlock( 'ugb/header', '.ugb-button2 .ugb-button--inner', 'Button 2' )
 		desktopOnly( () => {
+			cy.adjust( 'Link / URL', 'https://www.google.com/' ).assertHtmlAttribute( '.ugb-button2', 'href', 'https://www.google.com/', { assertBackend: false } )
+			cy.adjust( 'Open link in new tab', true ).assertHtmlAttribute( '.ugb-button2', 'rel', 'noopener noreferrer', { assertBackend: false } )
+			cy.adjust( 'Nofollow link', true ).assertHtmlAttribute( '.ugb-button2', 'rel', 'noopener noreferrer nofollow', { assertBackend: false } )
+			cy.adjust( 'Sponsored', true ).assertHtmlAttribute( '.ugb-button2', 'rel', 'noopener noreferrer nofollow sponsored', { assertBackend: false } )
+			cy.adjust( 'UGC', true ).assertHtmlAttribute( '.ugb-button2', 'rel', 'noopener noreferrer nofollow sponsored ugc', { assertBackend: false } )
 			cy.adjust( 'Color Type', 'gradient' )
 			cy.adjust( 'Button Color #1', '#a13939' )
 			cy.adjust( 'Button Color #2', '#4e59d4' )
