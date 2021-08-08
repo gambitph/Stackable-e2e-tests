@@ -3,7 +3,7 @@
  */
 import { lowerCase } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, responsiveAssertHelper, assertAligns, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
+	assertUrlPopover, assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, responsiveAssertHelper, assertAligns, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
@@ -289,6 +289,13 @@ function styleTab( viewport, desktopOnly ) {
 
 	it( `should assert Container Link options in ${ lowerCase( viewport ) }`, () => {
 		assertContainerLink( '.ugb-cta__item', { viewport } )
+	} )
+
+	it( `should assert button URL popover in ${ lowerCase( viewport ) }`, () => {
+		assertUrlPopover( 'ugb/cta', 0, {
+			editorSelector: '.ugb-cta__item .ugb-button',
+			frontendSelector: '.ugb-cta__item .ugb-button',
+		}, { viewport } )
 	} )
 }
 

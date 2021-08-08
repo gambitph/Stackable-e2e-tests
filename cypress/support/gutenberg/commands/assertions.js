@@ -407,7 +407,7 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 								const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
 								if ( blockElement ) {
 									assert.isTrue(
-										attribute instanceof RegExp
+										expectedValue instanceof RegExp
 											? !! blockElement.getAttribute( attribute ).match( expectedValue )
 											: blockElement.getAttribute( attribute ) === expectedValue,
 										`${ customSelector } must have ${ attribute } = "${ expectedValue }" in Frontend. Found: "${ blockElement.getAttribute( attribute ) }"`
