@@ -322,7 +322,7 @@ export const assertContainer = ( selector, options = {}, attrNameTemplate = 'col
 			},
 		} ).assertComputedStyle( {
 			[ `${ selector }:before` ]: {
-				'background-image': 'linear-gradient(180deg, #a92323 11%, #404633)',
+				'background-image': 'linear-gradient(180deg, #a92323 11%, #404633, 80%)',
 				'mix-blend-mode': 'hard-light',
 			},
 		} )
