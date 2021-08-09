@@ -412,7 +412,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 4 )
 		assertUrlPopover( 'ugb/image-box', 0, {
-			editorSelector: '.ugb-image-box__item%s > .ugb-image-box__box',
+			editorSelector: '.ugb-image-box__item%s > .ugb-image-box__overlay-hover',
 			frontendSelector: '.ugb-image-box__item%s .ugb-image-box__overlay-link',
 		}, { viewport } )
 	} )
