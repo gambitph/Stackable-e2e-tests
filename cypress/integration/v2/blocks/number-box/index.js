@@ -169,6 +169,12 @@ function styleTab( viewport, desktopOnly ) {
 			cy.adjust( 'Number 1 Label', '10' )
 			cy.adjust( 'Number 2 Label', '20' )
 			cy.adjust( 'Number 3 Label', '30' )
+
+			/**
+			 * Flaky test. Add a delay after
+			 * typing the number label.
+			 */
+			cy.wait( '300' )
 			cy.get( '.ugb-number-box__item1' )
 				.find( 'div.ugb-number-box__number' )
 				.contains( '10' )
