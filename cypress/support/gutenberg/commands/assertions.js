@@ -379,13 +379,13 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 
 		cy.getBlockAttributes().then( attributes => {
 			const selector = `.${ attributes.className }`
-			cy
-				.get( subject )
-				.find( customSelector )
-				.invoke( 'attr', attribute )
-				.then( $attribute => {
-					// Assert editor classes.
-					if ( assertBackend ) {
+			// Assert editor classes.
+			if ( assertBackend ) {
+				cy
+					.get( subject )
+					.find( customSelector )
+					.invoke( 'attr', attribute )
+					.then( $attribute => {
 						if ( typeof expectedValue === 'string' ) {
 							assert.isTrue(
 								$attribute === expectedValue,
@@ -397,32 +397,32 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor. Found: "${ $attribute }"` )
 						}
 						afterBackendAssert()
-					}
+					} )
+			}
 
-					// Assert frontend classes
-					if ( assertFrontend ) {
-						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-							cy.visit( previewUrl )
-							cy.document().then( doc => {
-								const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
-								if ( blockElement ) {
-									assert.isTrue(
-										expectedValue instanceof RegExp
-											? !! blockElement.getAttribute( attribute ).match( expectedValue )
-											: blockElement.getAttribute( attribute ) === expectedValue,
-										`${ customSelector } must have ${ attribute } = "${ expectedValue }" in Frontend. Found: "${ blockElement.getAttribute( attribute ) }"`
-									)
-								}
-							} )
-							cy.visit( editorUrl )
-							cy.wp().then( _wp => {
-								const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
-								cy.selectBlock( name, { clientId } )
-								afterFrontendAssert()
-							} )
-						} )
-					}
+			// Assert frontend classes
+			if ( assertFrontend ) {
+				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+					cy.visit( previewUrl )
+					cy.document().then( doc => {
+						const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
+						if ( blockElement ) {
+							assert.isTrue(
+								expectedValue instanceof RegExp
+									? !! blockElement.getAttribute( attribute ).match( expectedValue )
+									: blockElement.getAttribute( attribute ) === expectedValue,
+								`${ customSelector } must have ${ attribute } = "${ expectedValue }" in Frontend. Found: "${ blockElement.getAttribute( attribute ) }"`
+							)
+						}
+					} )
+					cy.visit( editorUrl )
+					cy.wp().then( _wp => {
+						const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
+						cy.selectBlock( name, { clientId } )
+						afterFrontendAssert()
+					} )
 				} )
+			}
 		} )
 	} )
 }
