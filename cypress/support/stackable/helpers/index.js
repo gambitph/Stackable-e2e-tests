@@ -479,7 +479,7 @@ export const assertUrlPopover = ( blockName, blockSelector, selectors = {}, opti
 				cy.get( '.is-selected' ).find( editorSelector.replace( '%s', number ) ).click( { force: true } )
 
 				/**
-				 * This will not work on dynamic blocks since we need to do some extra steps
+				 * TODO: This will not work on dynamic blocks since we need to do some extra steps
 				 * before adjusting the options again.
 				 */
 
