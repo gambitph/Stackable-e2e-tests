@@ -409,6 +409,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert button URL popover in ${ lowerCase( viewport ) }`, () => {
+		// Test image box URL popover for each column.
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 4 )
 		assertUrlPopover( 'ugb/image-box', 0, {
