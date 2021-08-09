@@ -341,7 +341,7 @@ export const assertContainer = ( selector, options = {}, attrNameTemplate = 'col
 			},
 		} ).assertComputedStyle( {
 			[ `${ selector }:before` ]: {
-				'background-blend-mode': 'hue',
+				'mix-blend-mode': 'hue',
 				'background-image': `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
 				'background-attachment': 'fixed',
 			},
