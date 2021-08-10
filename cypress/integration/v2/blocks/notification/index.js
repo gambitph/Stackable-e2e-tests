@@ -3,7 +3,7 @@
  */
 import { lowerCase } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground, assertContainer, assertAdvancedTab,
+	assertUgbButtons, assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, responsiveAssertHelper, assertAligns, assertTypography, assertBlockBackground, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
@@ -265,6 +265,11 @@ function styleTab( viewport, desktopOnly ) {
 		cy.collapse( 'Button' )
 		cy.waitFA()
 		desktopOnly( () => {
+			cy.adjust( 'Link / URL', 'https://www.google.com/' ).assertHtmlAttribute( '.ugb-button', 'href', 'https://www.google.com/', { assertBackend: false } )
+			cy.adjust( 'Open link in new tab', true ).assertHtmlAttribute( '.ugb-button', 'rel', /noopener noreferrer/, { assertBackend: false } )
+			cy.adjust( 'Nofollow link', true ).assertHtmlAttribute( '.ugb-button', 'rel', /nofollow/, { assertBackend: false } )
+			cy.adjust( 'Sponsored', true ).assertHtmlAttribute( '.ugb-button', 'rel', /sponsored/, { assertBackend: false } )
+			cy.adjust( 'UGC', true ).assertHtmlAttribute( '.ugb-button', 'rel', /ugc/, { assertBackend: false } )
 			cy.adjust( 'Design', {
 				label: 'Basic',
 				value: 'basic',
@@ -336,6 +341,14 @@ function styleTab( viewport, desktopOnly ) {
 
 	it( `should assert Container Link options in ${ lowerCase( viewport ) }`, () => {
 		assertContainerLink( '.ugb-notification__item', { viewport } )
+	} )
+
+	it( `should assert button URL popover in ${ lowerCase( viewport ) }`, () => {
+		assertUgbButtons( 'ugb/notification', 0, {
+			editorSelector: '.ugb-notification__item .ugb-button',
+			frontendSelector: '.ugb-notification__item .ugb-button',
+			viewport,
+		} )
 	} )
 }
 
