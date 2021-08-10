@@ -66,6 +66,7 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 			.type( '{selectall}', { force: true } )
 	} else if ( typeof selector === 'function' ) {
 		selector()
+		cy.wait( 300 )
 	}
 
 	cy.adjustToolbar( 'Dynamic Fields', () => {
