@@ -47,7 +47,7 @@ export function pasteStyle( subject, blockToPaste ) {
  *
  * @param {string} blockName
  * @param {string | number | Object} blockSelector
- * @param {string} selector
+ * @param {string | Function} selector
  * @param {Object} options
  */
 export function adjustDynamicContent( blockName, blockSelector, selector, options = {} ) {
@@ -58,10 +58,15 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 		fieldOptions = {},
 	} = options
 
-	cy
-		.selectBlock( blockName, blockSelector )
-		.find( selector )
-		.type( '{selectall}', { force: true } )
+	const block = () => cy.selectBlock( blockName, blockSelector )
+
+	if ( typeof selector === 'string' ) {
+		block()
+			.find( selector )
+			.type( '{selectall}', { force: true } )
+	} else if ( typeof selector === 'function' ) {
+		selector()
+	}
 
 	cy.adjustToolbar( 'Dynamic Fields', () => {
 		const selectFromSuggestions = option => cy
@@ -73,7 +78,7 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 
 		const selectOption = option => cy
 			.get( '.react-autosuggest__suggestions-container--open' )
-			.contains( option )
+			.contains( containsRegExp( option ) )
 			.click( { force: true } )
 
 		if ( source.length ) {
@@ -84,7 +89,10 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 		if ( Array( 'Other Posts', 'Latest Post' ).includes( source ) && post.length ) {
 			// Select a post if source is Other Posts / Latest Post
 			selectFromSuggestions( `${ source === 'Other Posts' ? 'Posts/Pages' : 'Nth Latest Post' }` )
-			selectOption( post )
+			cy
+				.get( '.react-autosuggest__suggestions-container--open' )
+				.contains( post )
+				.click( { force: true } )
 		}
 
 		selectFromSuggestions( 'Field' )
@@ -104,5 +112,8 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 			.get( '.stackable-dynamic-content__popover-content' )
 			.find( 'button.apply-changes-button' )
 			.click( { force: true } )
+
+		cy.waitLoader( '.components-spinner' )
 	} )
+	cy.savePost()
 }

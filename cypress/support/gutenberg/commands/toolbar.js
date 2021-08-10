@@ -1,7 +1,7 @@
 /**
  * Internal dependencies
  */
-import { containsRegExp } from '~common/util'
+import { containsRegExp, compareVersions } from '~common/util'
 
 /**
  * Register functions to cypress commands.
@@ -57,6 +57,7 @@ export function adjustToolbar( name, callback = () => {}, options = {} ) {
 		.click( { force: true } )
 
 	callback()
+	cy.savePost()
 }
 
 /**
@@ -85,14 +86,22 @@ export function changeHeadingLevel( blockName, blockSelector, level ) {
  */
 export function changeAlignment( blockName, blockSelector, alignment ) {
 	cy.selectBlock( blockName, blockSelector )
-	cy.adjustToolbar( 'Align', () => {
+	// For versions > 5.6.4
+	if ( compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.6.4', '>' ) ) {
+		cy.adjustToolbar( 'Align', () => {
+			cy
+				.get( '.components-popover__content' )
+				.contains( containsRegExp( alignment ) )
+				.click( { force: true } )
+		}, {
+			parentSelector: '.components-dropdown-menu:contains(Change alignment)',
+		} )
+	} else {
+		cy.selectTopToolbar()
 		cy
-			.get( '.components-popover__content' )
-			.contains( containsRegExp( alignment ) )
+			.get( '.block-editor-block-toolbar button[aria-label="Change alignment"]' )
 			.click( { force: true } )
-	}, {
-		parentSelector: '.components-dropdown-menu:contains(Change alignment)',
-	} )
+	}
 }
 
 /**
@@ -104,14 +113,22 @@ export function changeAlignment( blockName, blockSelector, alignment ) {
  */
 export function changeTextAlignment( blockName, blockSelector, alignment ) {
 	cy.selectBlock( blockName, blockSelector )
-	cy.adjustToolbar( 'Align', () => {
+	// For versions > 5.6.4
+	if ( compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.6.4', '>' ) ) {
+		cy.adjustToolbar( 'Align', () => {
+			cy
+				.get( '.components-popover__content' )
+				.contains( containsRegExp( alignment ) )
+				.click( { force: true } )
+		}, {
+			parentSelector: '.components-dropdown-menu:contains(Change text alignment)',
+		} )
+	} else {
+		cy.selectTopToolbar()
 		cy
-			.get( '.components-popover__content' )
-			.contains( containsRegExp( alignment ) )
+			.get( '.block-editor-block-toolbar button[aria-label="Change text alignment"]' )
 			.click( { force: true } )
-	}, {
-		parentSelector: '.components-dropdown-menu:contains(Change text alignment)',
-	} )
+	}
 }
 
 /**
@@ -125,7 +142,7 @@ export function addToReusableBlocks( blockName, blockSelector ) {
 
 	cy.selectTopToolbar()
 	cy.get( '.block-editor-block-toolbar' )
-		.find( 'button[aria-label="Options"], button[aria-label="More tools & options"]' )
+		.find( 'button[aria-label="Options"], button[aria-label="More options"]' ) // For backwards compatibility: WP 5.5
 		.click( { force: true } )
 
 	cy.get( '.components-dropdown-menu__menu' )

@@ -3,7 +3,7 @@
  */
 import { lowerCase } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, assertBlockBackground, assertSeparators, assertAdvancedTab, assertTypography,
+	assertUgbButtons, assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, assertBlockBackground, assertSeparators, assertAdvancedTab, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
@@ -120,6 +120,11 @@ function styleTab( viewport, desktopOnly ) {
 			cy.typeBlock( 'ugb/button', `.ugb-button${ index } .ugb-button--inner`, `Button ${ index }` )
 			cy.waitFA()
 			desktopOnly( () => {
+				cy.adjust( 'Link / URL', 'https://www.google.com/' ).assertHtmlAttribute( `.ugb-button${ index }`, 'href', 'https://www.google.com/', { assertBackend: false } )
+				cy.adjust( 'Open link in new tab', true ).assertHtmlAttribute( `.ugb-button${ index }`, 'rel', /noopener noreferrer/, { assertBackend: false } )
+				cy.adjust( 'Nofollow link', true ).assertHtmlAttribute( `.ugb-button${ index }`, 'rel', /nofollow/, { assertBackend: false } )
+				cy.adjust( 'Sponsored', true ).assertHtmlAttribute( `.ugb-button${ index }`, 'rel', /sponsored/, { assertBackend: false } )
+				cy.adjust( 'UGC', true ).assertHtmlAttribute( `.ugb-button${ index }`, 'rel', /ugc/, { assertBackend: false } )
 				cy.adjust( 'Color Type', 'gradient' )
 				cy.adjust( 'Button Color #1', '#a13939' )
 				cy.adjust( 'Button Color #2', '#4e59d4' )
@@ -187,6 +192,17 @@ function styleTab( viewport, desktopOnly ) {
 
 	it( `should assert Top & Bottom Separator options in ${ lowerCase( viewport ) }`, () => {
 		assertSeparators( { viewport } )
+	} )
+
+	it( `should assert button URL popover in ${ lowerCase( viewport ) }`, () => {
+		cy.openInspector( 'ugb/button', 'Style' )
+		cy.toggleStyle( 'Button #2' )
+		cy.toggleStyle( 'Button #3' )
+		assertUgbButtons( 'ugb/button', 0, {
+			editorSelector: '.ugb-button%s',
+			frontendSelector: '.ugb-button%s',
+			viewport,
+		} )
 	} )
 }
 
