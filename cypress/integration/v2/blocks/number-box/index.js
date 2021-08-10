@@ -174,7 +174,7 @@ function styleTab( viewport, desktopOnly ) {
 			 * Flaky test. Add a delay after
 			 * typing the number label.
 			 */
-			cy.wait( 300 )
+			cy.wait( 1000 )
 			cy.get( '.ugb-number-box__item1' )
 				.find( 'div.ugb-number-box__number' )
 				.contains( '10' )
