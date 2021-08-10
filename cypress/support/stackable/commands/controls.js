@@ -398,7 +398,7 @@ function fourRangeControlReset( name, options = {} ) {
 			}
 
 			selector( isInPopover )
-				.find( `button${ Cypress.env( 'STACKABLE_VERSION' ) === 3 ? '[aria-label="Reset"]' : ':contains(Reset)' }` )
+				.find( 'button[aria-label="Reset"], button:contains(Reset)' )
 				.click( { force: true, multiple: true } )
 		} )
 }
@@ -510,7 +510,7 @@ function iconControlReset( name, options = {} ) {
 	cy.getBaseControl( name, { isInPopover } )
 		.contains( containsRegExp( name ) )
 		.closest( '.components-panel__body>.components-base-control' )
-		.find( `button${ Cypress.env( 'STACKABLE_VERSION' ) === 3 ? '[aria-label="Reset"]' : ':contains(Reset)' }` )
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
 		.click( { force: true } )
 }
 

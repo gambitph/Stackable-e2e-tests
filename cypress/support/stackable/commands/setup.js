@@ -16,10 +16,8 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 	if ( Cypress.env( 'STACKABLE_PREMIUM_CODE' ) && ! isStackableActivated ) {
 		cy.activateLicense()
 	}
-	if ( Cypress.env( 'STACKABLE_VERSION' ) === 2 ) {
-		// Enable optimization setting by default.
-		cy.loadFrontendJsCssFiles()
-	}
+	// Enable optimization setting by default.
+	cy.loadFrontendJsCssFiles()
 } )
 
 function _activateLicense() {

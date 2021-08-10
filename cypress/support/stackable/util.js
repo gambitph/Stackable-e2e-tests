@@ -63,12 +63,9 @@ export function changeUnit( options = {} ) {
 	if ( unit ) {
 		selector()
 			.then( $baseControl => {
-				if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
-					if ( $baseControl.find( '.stk-control-label__units' ).length ) {
-						selector().find( '.stk-control-label__units button.is-active' ).click( { force: true } )
-						selector().find( `.stk-control-label__units button[data-value="${ unit }"]` ).click( { force: true } )
-					}
-					return
+				if ( $baseControl.find( '.stk-control-label__units' ).length ) {
+					selector().find( '.stk-control-label__units button.is-active' ).click( { force: true } )
+					selector().find( `.stk-control-label__units button[data-value="${ unit }"]` ).click( { force: true } )
 				}
 
 				if ( $baseControl.find( '.ugb-base-control-multi-label__units', { log: false } ).length ) {
@@ -98,21 +95,18 @@ export function changeControlViewport( options = {} ) {
 	const selector = () => cy.getBaseControl( name, options )
 	selector()
 		.then( $baseControl => {
-			if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
-				if ( $baseControl.find( '.stk-control-responsive-toggle button.is-active' ).length ) {
-					selector().find( '.stk-control-responsive-toggle button.is-active' ).click( { force: true } )
-					selector()
-						.find( '.stk-control-responsive-toggle' )
-						.invoke( 'attr', 'aria-expanded' )
-						.then( ariaExpanded => {
-							if ( ariaExpanded === 'true' ) {
-								selector()
-									.find( `button[aria-label="${ viewport }"]` )
-									.click( { force: true, log: false } )
-							}
-						} )
-				}
-				return
+			if ( $baseControl.find( '.stk-control-responsive-toggle button.is-active' ).length ) {
+				selector().find( '.stk-control-responsive-toggle button.is-active' ).click( { force: true } )
+				selector()
+					.find( '.stk-control-responsive-toggle' )
+					.invoke( 'attr', 'aria-expanded' )
+					.then( ariaExpanded => {
+						if ( ariaExpanded === 'true' ) {
+							selector()
+								.find( `button[aria-label="${ viewport }"]` )
+								.click( { force: true, log: false } )
+						}
+					} )
 			}
 
 			if ( $baseControl.find( 'button[aria-label="Desktop"]' ).length ) {
@@ -173,23 +167,22 @@ export function changeControlState( options = {} ) {
 	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
-	if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
-		const selector = () => cy.getBaseControl( name, options )
-		selector()
-			.then( $baseControl => {
-				if ( $baseControl.find( `.stk-control-label__toggles .stk-label-unit-toggle button[aria-label="${ state }"]` ).length ) {
-					selector().find( '.stk-control-label__toggles .stk-label-unit-toggle button.is-active' ).click( { force: true } )
-					selector()
-						.find( '.stk-control-label__toggles .stk-label-unit-toggle' )
-						.invoke( 'attr', 'aria-expanded' )
-						.then( ariaExpanded => {
-							if ( ariaExpanded === 'true' ) {
-								selector()
-									.find( `.stk-control-label__toggles .stk-label-unit-toggle button[aria-label="${ state }"]` )
-									.click( { force: true, log: false } )
-							}
-						} )
-				}
-			} )
-	}
+
+	const selector = () => cy.getBaseControl( name, options )
+	selector()
+		.then( $baseControl => {
+			if ( $baseControl.find( `.stk-control-label__toggles .stk-label-unit-toggle button[aria-label="${ state }"]` ).length ) {
+				selector().find( '.stk-control-label__toggles .stk-label-unit-toggle button.is-active' ).click( { force: true } )
+				selector()
+					.find( '.stk-control-label__toggles .stk-label-unit-toggle' )
+					.invoke( 'attr', 'aria-expanded' )
+					.then( ariaExpanded => {
+						if ( ariaExpanded === 'true' ) {
+							selector()
+								.find( `.stk-control-label__toggles .stk-label-unit-toggle button[aria-label="${ state }"]` )
+								.click( { force: true, log: false } )
+						}
+					} )
+			}
+		} )
 }
