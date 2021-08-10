@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertUrlPopover, assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, assertBlockTitleDescriptionContent, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
+	assertUgbButtons, assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, assertContainerLink, assertBlockTitleDescriptionContent, assertAligns, responsiveAssertHelper, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertTypography, assertContainer, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 import {
 	lowerCase, range, startCase,
@@ -349,10 +349,11 @@ function styleTab( viewport, desktopOnly ) {
 	it( `should assert button URL popover in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 4 )
-		assertUrlPopover( 'ugb/feature-grid', 0, {
+		assertUgbButtons( 'ugb/feature-grid', 0, {
 			editorSelector: '.ugb-feature-grid__item%s .ugb-button',
 			frontendSelector: '.ugb-feature-grid__item%s .ugb-button',
-		}, { viewport } )
+			viewport,
+		} )
 	} )
 }
 

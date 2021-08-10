@@ -3,7 +3,7 @@
  */
 import { lowerCase } from 'lodash'
 import {
-	assertUrlPopover, assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, assertBlockBackground, assertSeparators, assertAdvancedTab, assertTypography,
+	assertUgbButtons, assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, assertBlockBackground, assertSeparators, assertAdvancedTab, assertTypography,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
@@ -198,10 +198,11 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/button', 'Style' )
 		cy.toggleStyle( 'Button #2' )
 		cy.toggleStyle( 'Button #3' )
-		assertUrlPopover( 'ugb/button', 0, {
+		assertUgbButtons( 'ugb/button', 0, {
 			editorSelector: '.ugb-button%s',
 			frontendSelector: '.ugb-button%s',
-		}, { viewport } )
+			viewport,
+		} )
 	} )
 }
 

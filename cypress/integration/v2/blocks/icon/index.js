@@ -4,7 +4,7 @@
  */
 import { lowerCase } from 'lodash'
 import {
-	assertUrlPopover, assertBlockExist, blockErrorTest, switchDesigns, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertTypography, assertAdvancedTab,
+	assertUgbButtons, assertBlockExist, blockErrorTest, switchDesigns, assertAligns, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertBlockTitleDescriptionContent, responsiveAssertHelper, assertTypography, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
@@ -250,10 +250,11 @@ function styleTab( viewport, desktopOnly ) {
 	it( `should assert button URL popover in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'General' )
 		cy.adjust( 'Number of Icons / Columns', 8 )
-		assertUrlPopover( 'ugb/icon', 0, {
+		assertUgbButtons( 'ugb/icon', 0, {
 			editorSelector: '.ugb-icon__item%s .ugb-button-component',
 			frontendSelector: '.ugb-icon__item%s > a.ugb-icon__icon',
-		}, { viewport } )
+			viewport,
+		} )
 	} )
 }
 

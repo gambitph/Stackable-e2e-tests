@@ -450,18 +450,15 @@ export const assertContainerLink = ( selector, options = {}, assertOptions = {} 
  *
  * @param {string} blockName
  * @param {string | number | Object} blockSelector
- * @param {Object} selectors
  * @param {Object} options
  * @param {Object} assertOptions
  */
-export const assertUrlPopover = ( blockName, blockSelector, selectors = {}, options = {}, assertOptions = {} ) => {
-	const {
-		viewport = 'Desktop',
-	} = options
+export const assertUgbButtons = ( blockName, blockSelector, options = {}, assertOptions = {} ) => {
 	const {
 		editorSelector = '',
 		frontendSelector = '',
-	} = selectors
+		viewport = 'Desktop',
+	} = options
 	const desktopOnly = callback => viewport === 'Desktop' && callback()
 
 	desktopOnly( () => {
