@@ -389,12 +389,12 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 						if ( typeof expectedValue === 'string' ) {
 							assert.isTrue(
 								$attribute === expectedValue,
-								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor`
+								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor. Found: "${ $attribute }"`
 							)
 						} else if ( expectedValue instanceof RegExp ) {
 							assert.isTrue(
 								( $attribute || '' ).match( expectedValue ),
-								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor` )
+								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor. Found: "${ $attribute }"` )
 						}
 						afterBackendAssert()
 					} )
@@ -408,10 +408,10 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 						const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
 						if ( blockElement ) {
 							assert.isTrue(
-								attribute instanceof RegExp
+								expectedValue instanceof RegExp
 									? !! blockElement.getAttribute( attribute ).match( expectedValue )
 									: blockElement.getAttribute( attribute ) === expectedValue,
-								`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+								`${ customSelector } must have ${ attribute } = "${ expectedValue }" in Frontend. Found: "${ blockElement.getAttribute( attribute ) }"`
 							)
 						}
 					} )
@@ -474,7 +474,7 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 									assert.equal(
 										blockElement.textContent.replace( '\n', '' ),
 										expectedValue,
-										`${ customSelector } must have content '${ expectedValue }' in Frontend'. Found: '${ blockElement.textContent }'`
+										`${ customSelector } must have content '${ expectedValue }' in Frontend. Found '${ blockElement.textContent.replace( '\n', '' ) }'`
 									)
 								}
 
