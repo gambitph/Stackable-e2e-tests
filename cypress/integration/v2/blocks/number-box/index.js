@@ -166,27 +166,9 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 		desktopOnly( () => {
-			cy.adjust( 'Number 1 Label', '10' )
-			cy.adjust( 'Number 2 Label', '20' )
-			cy.adjust( 'Number 3 Label', '30' )
-
-			/**
-			 * Flaky test. Add a delay after
-			 * typing the number label.
-			 */
-			cy.wait( 1000 )
-			cy.get( '.ugb-number-box__item1' )
-				.find( 'div.ugb-number-box__number' )
-				.contains( '10' )
-				.should( 'exist' )
-			cy.get( '.ugb-number-box__item2' )
-				.find( 'div.ugb-number-box__number' )
-				.contains( '20' )
-				.should( 'exist' )
-			cy.get( '.ugb-number-box__item3' )
-				.find( 'div.ugb-number-box__number' )
-				.contains( '30' )
-				.should( 'exist' )
+			cy.adjust( 'Number 1 Label', '10' ).assertBlockContent( '.ugb-number-box__item1 .ugb-number-box__number', '10' )
+			cy.adjust( 'Number 2 Label', '20' ).assertBlockContent( '.ugb-number-box__item2 .ugb-number-box__number', '20' )
+			cy.adjust( 'Number 3 Label', '30' ).assertBlockContent( '.ugb-number-box__item3 .ugb-number-box__number', '30' )
 
 			cy.adjust( 'Number Shape', 'none' ).assertClassName( '.ugb-number-box', 'ugb-number-box--number-style-none' )
 			cy.adjust( 'Number Shape', 'square' ).assertClassName( '.ugb-number-box', 'ugb-number-box--number-style-square' )
