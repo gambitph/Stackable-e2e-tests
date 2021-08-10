@@ -3,7 +3,7 @@
  */
 import { lowerCase, range } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, assertBlockTitleDescriptionContent, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
+	assertUgbButtons, assertBlockExist, blockErrorTest, switchDesigns, switchLayouts, responsiveAssertHelper, assertBlockTitleDescriptionContent, assertAligns, assertTypography, assertBlockTitleDescription, assertBlockBackground, assertSeparators, assertAdvancedTab,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
@@ -406,6 +406,17 @@ function styleTab( viewport, desktopOnly ) {
 	it( `should assert Top & Bottom Separator options in ${ lowerCase( viewport ) }`, () => {
 		// Test Separators
 		assertSeparators( { viewport } )
+	} )
+
+	it( `should assert button URL popover in ${ lowerCase( viewport ) }`, () => {
+		// Test image box URL popover for each column.
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 4 )
+		assertUgbButtons( 'ugb/image-box', 0, {
+			editorSelector: '.ugb-image-box__item%s > .ugb-image-box__overlay-hover',
+			frontendSelector: '.ugb-image-box__item%s .ugb-image-box__overlay-link',
+			viewport,
+		} )
 	} )
 }
 

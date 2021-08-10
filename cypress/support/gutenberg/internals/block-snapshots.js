@@ -230,18 +230,18 @@ export function blockSnapshotsAssertHtmlAttribute( originalFn, ...args ) {
 					// Check if we're asserting the parent element.
 					if ( parsedClassList.match( customSelector ) ) {
 						assert.isTrue(
-							attribute instanceof RegExp
+							expectedValue instanceof RegExp
 								? !! saveElement.getAttribute( attribute ).match( expectedValue )
 								: saveElement.getAttribute( attribute ) === expectedValue,
-							`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+							`${ customSelector } must have ${ attribute } = "${ expectedValue }" in Frontend. Found: "${ saveElement.getAttribute( attribute ) }"`
 						)
 					} else {
-					// Otherwise, search the element
+						// Otherwise, search the element
 						assert.isTrue(
-							attribute instanceof RegExp
+							expectedValue instanceof RegExp
 								? !! saveElement.querySelector( customSelector ).getAttribute( attribute ).match( expectedValue )
 								: saveElement.querySelector( customSelector ).getAttribute( attribute ) === expectedValue,
-							`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
+							`${ customSelector } must have ${ attribute } = "${ expectedValue }" in Frontend. Found: "${ saveElement.querySelector( customSelector ).getAttribute( attribute ) }"`
 						)
 					}
 				} )
