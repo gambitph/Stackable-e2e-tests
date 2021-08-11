@@ -167,9 +167,8 @@ export function getPreviewMode() {
  */
 export function savePost() {
 	cy.wp().then( wp => {
-		return new Cypress.Promise( resolve => {
-			wp.data.dispatch( 'core/editor' ).savePost().then( dispatchResolver( resolve ) )
-		} )
+		wp.data.dispatch( 'core/editor' ).savePost()
+		cy.waitUntil( done => done( Cypress.$( '.components-snackbar__content:contains(Page Updated)' ) ) )
 	} )
 }
 
