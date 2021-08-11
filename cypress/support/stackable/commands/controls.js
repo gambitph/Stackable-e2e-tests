@@ -35,6 +35,9 @@ Cypress.Commands.add( 'iconControlReset', iconControlReset )
 Cypress.Commands.add( 'fourRangeControlReset', fourRangeControlReset )
 Cypress.Commands.add( 'suggestionControlClear', suggestionControlClear )
 Cypress.Commands.add( 'popoverControlReset', popoverControlReset )
+Cypress.Commands.add( 'dynamicContentControlReset', dynamicContentControlReset )
+Cypress.Commands.add( 'focalPointControlReset', focalPointControlReset )
+Cypress.Commands.add( 'dateTimeControlReset', dateTimeControlReset )
 
 // Adjust styles
 Cypress.Commands.add( 'adjustLayout', adjustLayout )
@@ -107,6 +110,9 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 		 'ugb-four-range-control': 'fourRangeControlReset',
 		 '.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
 		 'ugb-icon-control': 'iconControlReset',
+		 '.stk-control-content': 'dynamicContentControlReset',
+		 '.stk-advanced-focal-point-control': 'focalPointControlReset',
+		 '.stk-date-time-control__field': 'dateTimeControlReset',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -515,6 +521,90 @@ function iconControlReset( name, options = {} ) {
 		.contains( containsRegExp( name ) )
 		.closest( '.components-panel__body>.components-base-control' )
 		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+		.click( { force: true } )
+}
+
+/**
+ * Command for resetting the dynamic content control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function dynamicContentControlReset( name, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
+	beforeAdjust( name, null, options )
+	selector()
+		.contains( containsRegExp( name ) )
+		.closest( '.components-panel__body>.components-base-control' )
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+		.click( { force: true } )
+}
+
+/**
+ * Command for resetting the image focal point control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function focalPointControlReset( name, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
+	beforeAdjust( name, null, options )
+	selector()
+		.contains( containsRegExp( name ) )
+		.closest( '.components-panel__body>.components-base-control' )
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+		.click( { force: true } )
+}
+
+/**
+ * Command for resetting the date time control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function dateTimeControlReset( name, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
+	beforeAdjust( name, null, options )
+	selector()
+		.contains( containsRegExp( name ) )
+		.closest( '.components-panel__body>.components-base-control' )
+		.find( 'button[title="Reset"]' )
 		.click( { force: true } )
 }
 
