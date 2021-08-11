@@ -43,6 +43,12 @@ Cypress.Commands.add( 'dateTimeControlReset', dateTimeControlReset )
 Cypress.Commands.add( 'adjustLayout', adjustLayout )
 Cypress.Commands.add( 'adjustDesign', adjustDesign )
 
+// Adjust linking
+Cypress.Commands.add( 'activateOrDeactivateLinking', activateOrDeactivateLinking )
+
+// Adjust resizable column
+Cypress.Commands.add( 'adjustResizableColumnWidth', adjustResizableColumnWidth )
+
 /**
  * Overwrite Gutenberg Commands
  */
@@ -818,4 +824,67 @@ function dateTimeControl( name, value, options = {} ) {
 
 	// Click outside to close the popover
 	cy.get( '.components-panel' ).click( { force: true } )
+}
+
+/**
+ * Command for activating or deactivating the linking module in a column.
+ *
+ * @param {string} blockName
+ * @param {string | number | Object} selector
+ * @param {Object} options
+ */
+function activateOrDeactivateLinking( blockName = 'stackable/columns', selector, options = {} ) {
+	const {
+		index = 1,
+		columnDataType = 'stackable/column',
+	} = options
+
+	const selectColumn = () => cy
+		.get( '.is-selected' )
+		.find( `div[data-type="${ columnDataType }"]` )
+		.eq( index )
+
+	cy.selectBlock( blockName, selector )
+	selectColumn()
+		.click( { force: true } )
+
+	selectColumn()
+		.find( '.stk-linking-wrapper > .stk-linking-wrapper__tooltip' )
+		.click( { force: true } )
+}
+
+/**
+ * Command for activating or deactivating the linking module in a column.
+ *
+ * @param {string} blockName - the parent block
+ * @param {string | number | Object} selector - selector of parent block
+ * @param {Object} options
+ */
+function adjustResizableColumnWidth( blockName = 'stackable/columns', selector, options = {} ) {
+	const {
+		index,
+		value,
+		columnDataType = 'stackable/column',
+	} = options
+
+	const selectColumn = () => cy
+		.get( '.is-selected' )
+		.find( `div[data-type="${ columnDataType }"]` )
+		.eq( index )
+
+	cy.selectBlock( blockName, selector )
+	selectColumn()
+		.click( { force: true } )
+
+	selectColumn()
+		.find( '.stk-resizable-column__size-tooltip' )
+		.click( { force: true } )
+
+	cy.get( '.components-popover__content:contains(Column)' )
+		.find( 'input.components-text-control__input' )
+		.type( `{selectall}${ value }` )
+
+	// Click anywhere to close the popover
+	cy.get( '.interface-interface-skeleton__sidebar' )
+		.click( { force: true } )
 }
