@@ -443,7 +443,8 @@ function formTokenControl( name, value, options = {} ) {
 		// The suggestions list does not display on WP versions less than 5.8. Type and enter the values.
 			selector()
 				.find( '.components-form-token-field__input' )
-				.type( `{selectall}${ val }{enter}`, { force: true } )
+				.click( { force: true } )
+				.type( `${ val }{enter}`, { force: true } )
 		} else {
 			selector()
 				.find( '.components-form-token-field__input' )
