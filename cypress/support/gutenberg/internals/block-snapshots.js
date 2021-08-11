@@ -281,7 +281,7 @@ export function blockSnapshotsAssertBlockContent( originalFn, ...args ) {
 
 				assert.isTrue(
 					( parsedClassList.match( customSelector ) ? saveElement : saveElement.querySelector( customSelector ) ).textContent === expectedValue,
-					`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+					`${ customSelector } must have content '${ expectedValue }' in Frontend. Found: '${ ( parsedClassList.match( customSelector ) ? saveElement : saveElement.querySelector( customSelector ) ).textContent }'`
 				)
 			} )
 
