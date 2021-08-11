@@ -28,6 +28,7 @@ Cypress.Commands.add( 'popoverControl', popoverControl )
 Cypress.Commands.add( 'suggestionControl', suggestionControl )
 Cypress.Commands.add( 'dynamicContentControl', dynamicContentControl )
 Cypress.Commands.add( 'focalPointControl', focalPointControl )
+Cypress.Commands.add( 'dateTimeControl', dateTimeControl )
 
 // Reset
 Cypress.Commands.add( 'iconControlReset', iconControlReset )
@@ -73,6 +74,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		'.ugb-icon-control': 'iconControl',
 		'.stk-dynamic-content-control': 'dynamicContentControl',
 		'.stk-advanced-focal-point-control': 'focalPointControl',
+		'.stk-date-time-control__field': 'dateTimeControl',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -657,4 +659,73 @@ function focalPointControl( name, value, options = {} ) {
 			.eq( index )
 			.type( `{selectall}${ val }{enter}`, { force: true } )
 	} )
+}
+
+/**
+ * Command for adjusting the date time control.
+ *
+ * @param {string} name
+ * @param {Object} value
+ * @param {Object} options
+ */
+function dateTimeControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+	} = options
+
+	const {
+		day,
+		month,
+		year,
+		hours = '12',
+		minutes = '00',
+		period = 'AM',
+	} = value
+
+	beforeAdjust( name, value, options )
+	cy.getBaseControl( name, {
+		isInPopover, parentSelector, supportedDelimiter,
+	} )
+		.find( `.stk-date-time-control__field button[title="${ name }"]` )
+		.click( { force: true } )
+
+	const selectPopover = () => cy
+		.get( `.stk-components-popover__content:contains(${ name })` )
+
+	// Adjust the day
+	selectPopover()
+		.find( '.components-datetime__time input[aria-label="Day"]' )
+		.type( `{selectall}${ day }`, { force: true } )
+
+	// Adjust the month
+	selectPopover()
+		.find( '.components-datetime__time select[aria-label="Month"]' )
+		.select( month, { force: true } )
+
+	// Adjust the year
+	selectPopover()
+		.find( '.components-datetime__time input[aria-label="Year"]' )
+		.type( `{selectall}${ year }`, { force: true } )
+
+	// Adjust the hours
+	selectPopover()
+		.find( '.components-datetime__time input[aria-label="Hours"]' )
+		.type( `{selectall}${ hours }`, { force: true } )
+
+	// Adjust the minutes
+	selectPopover()
+		.find( '.components-datetime__time input[aria-label="Minutes"]' )
+		.type( `{selectall}${ minutes }`, { force: true } )
+
+	// Adjust the period
+	selectPopover()
+		.find( '.components-datetime__time-field-am-pm button' )
+		.contains( containsRegExp( period ) )
+		.click( { force: true } )
+
+	// Click outside to close the popover
+	cy.get( '.components-panel' ).click( { force: true } )
 }
