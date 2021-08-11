@@ -23,6 +23,7 @@ Cypress.Commands.add( 'fontSizeControl', fontSizeControl )
 Cypress.Commands.add( 'urlInputControl', urlInputControl )
 Cypress.Commands.add( 'radioControl', radioControl )
 Cypress.Commands.add( 'formTokenControl', formTokenControl )
+Cypress.Commands.add( 'checkboxControl', checkboxControl )
 
 // Adjust Styles
 Cypress.Commands.add( 'adjust', adjust )
@@ -468,6 +469,47 @@ export function adjustBlockStyle( value = '' ) {
 }
 
 /**
+ * Command for adjusting the checkbox control
+ *
+ * @param {string} name
+ * @param {boolean} value
+ * @param {Object} options
+ */
+function checkboxControl( name, value = true, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+	} = options
+
+	const selector = name => cy
+		.getBaseControl( name, {
+			isInPopover, parentSelector, supportedDelimiter,
+		} )
+		.find( `.components-base-control__field:contains(${ name })` )
+
+	beforeAdjust( name, value, options )
+
+	selector( name ).find( 'svg.components-checkbox-control__checked' ).its( 'length' ).then( length => {
+		// Check if the checkbox is already true
+		if ( length > 0 ) {
+			// If the value is set to false, click the checkbox.
+			if ( ! value ) {
+				selector( name )
+					.find( 'input.components-checkbox-control__input' )
+					.click( { force: true } )
+			}
+		} else if ( value ) {
+			// If not yet checked and value is set to true, click the checkbox.
+			selector( name )
+				.find( 'input.components-checkbox-control__input' )
+				.click( { force: true } )
+		}
+	} )
+}
+
+/**
  * Command for adjusting settings.
  *
  * @param {string} name
@@ -518,6 +560,7 @@ export function adjust( name, value, options ) {
 		'.block-editor-url-input': 'urlInputControl',
 		'.components-radio-control__input': 'radioControl',
 		'.components-form-token-field__input': 'formTokenControl',
+		'.components-checkbox-control__input': 'checkboxControl',
 	}
 
 	baseControlSelector()
