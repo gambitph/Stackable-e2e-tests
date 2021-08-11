@@ -444,15 +444,15 @@ function formTokenControl( name, value, options = {} ) {
 			selector()
 				.find( '.components-form-token-field__input' )
 				.click( { force: true } )
-				.type( `${ val }{enter}`, { force: true } )
+				.type( val, { force: true } )
 		} else {
 			selector()
 				.find( '.components-form-token-field__input' )
 				.click( { force: true } )
-			selector()
-				.find( `ul.components-form-token-field__suggestions-list li:contains(${ val })` )
-				.click( { force: true } )
 		}
+		selector()
+			.find( `ul.components-form-token-field__suggestions-list li:contains(${ val })` )
+			.click( { force: true } )
 	} )
 }
 
