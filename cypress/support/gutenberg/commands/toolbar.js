@@ -148,4 +148,6 @@ export function addToReusableBlocks( blockName, blockSelector ) {
 	cy.get( '.components-dropdown-menu__menu' )
 		.find( 'button.components-menu-item__button:contains(Add to Reusable blocks)' )
 		.click( { force: true } )
+
+	cy.wait( 1000 )
 }

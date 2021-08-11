@@ -297,12 +297,11 @@ export function globalColorNativeBlocks() {
 			'core/heading',
 			'core/list',
 			'core/buttons',
-			'core/cover',
 		]
 
 		nativeBlocks.forEach( blockName => {
 			cy.addBlock( blockName )
-			if ( ! Array( 'core/separator', 'core/cover', 'core/buttons' ).includes( blockName ) ) {
+			if ( ! Array( 'core/separator', 'core/buttons' ).includes( blockName ) ) {
 				cy.typeBlock( blockName, '', 'Block text' )
 			}
 			if ( blockName === 'core/buttons' ) {
@@ -320,8 +319,13 @@ export function globalColorNativeBlocks() {
 
 		const isWpLessThan58 = compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' )
 
-		nativeBlocks.forEach( blockName => {
-			if ( blockName !== 'core/cover' ) {
+		const isWpEqual55 = compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.6.0', '<' )
+		// For WP 5.5, the separator selector is different.
+		const separatorSelector = isWpEqual55 ? '.wp-block-separator' : ''
+
+		nativeBlocks
+			.filter( blockName => isWpEqual55 ? blockName !== 'core/list' : blockName )
+			.forEach( blockName => {
 				cy.selectBlock( `${ blockName === 'core/buttons' ? 'core/button' : blockName }` )
 				cy.openSidebar( 'Settings' )
 				cy.collapse( `${ isWpLessThan58 ? 'Color settings' : 'Color' }` )
@@ -333,7 +337,12 @@ export function globalColorNativeBlocks() {
 								? 'Text Color'
 								: 'Text color' }`, val.name )
 						.assertComputedStyle( {
-							[ `${ blockName === 'core/buttons' ? '.wp-block-button__link' : '' }` ]: {
+							[ `${ blockName === 'core/buttons'
+								? '.wp-block-button__link'
+								: blockName === 'core/separator'
+									? separatorSelector
+									: ''
+							}` ]: {
 								'color': val.color,
 							},
 						}, {
@@ -343,8 +352,7 @@ export function globalColorNativeBlocks() {
 						// to the backend, it will open this panel
 						// Gutenberg native blocks can have multiple opened panels
 				} )
-			}
-		} )
+			} )
 
 		cy.savePost()
 	} )

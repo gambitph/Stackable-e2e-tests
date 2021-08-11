@@ -322,7 +322,7 @@ export const assertContainer = ( selector, options = {}, attrNameTemplate = 'col
 			},
 		} ).assertComputedStyle( {
 			[ `${ selector }:before` ]: {
-				'background-image': 'linear-gradient(180deg, #a92323 11%, #404633)',
+				'background-image': 'linear-gradient(180deg, #a92323 11%, #404633, 80%)',
 				'mix-blend-mode': 'hard-light',
 			},
 		} )
@@ -340,7 +340,7 @@ export const assertContainer = ( selector, options = {}, attrNameTemplate = 'col
 				'Image Blend Mode': 'hue',
 			},
 		} ).assertComputedStyle( {
-			[ `${ selector }:before` ]: {
+			[ selector ]: {
 				'background-blend-mode': 'hue',
 				'background-image': `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
 				'background-attachment': 'fixed',
