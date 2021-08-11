@@ -10,6 +10,7 @@ import {
 describe( 'Dynamic Content - Latest Post', registerTests( [
 	matchPostData,
 	adjustFieldOptions,
+	adjustFieldValues,
 ] ) )
 
 const adjustPostField = ( fieldName, fieldOptions = {}, idx ) => {
@@ -282,6 +283,88 @@ function adjustFieldOptions() {
 					)
 				} )
 			} )
+			cy.addBlock( 'ugb/cta' )
+			// asserting Author-field-related options
+			adjustPostField( 'Author Posts URL', {
+				'Show as link': true,
+				'Custom text': `Author #${ idx }`,
+				'Open in new tab': true,
+			}, idx )
+
+			cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', `Author #${ idx }` )
+			cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
+			cy.deleteBlock( 'ugb/cta' )
 		} )
 	} )
 }
+
+function adjustFieldValues() {
+	it( 'should assert in the front-end the adjusted field values', () => {
+		cy.setupWP()
+
+		// !! Don't forget to add loop and idx !!
+
+		// Post Title
+		cy.newPost()
+		cy.addBlock( 'ugb/cta' )
+		cy.typePostTitle( 'This is a new title' )
+		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'This is a new title' )
+		cy.deleteBlock( 'ugb/cta' )
+		// Post Slug
+		cy.newPost()
+		cy.addBlock( 'ugb/cta' )
+		cy.typePostTitle( 'A new slug' )
+		cy.publish()
+		adjustPostField( 'Post Slug' )
+		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'a-new-slug' )
+		cy.deleteBlock( 'ugb/cta' )
+		// Post Excerpt
+		cy.newPost()
+		cy.addBlock( 'ugb/cta' )
+		cy.addPostExcerpt( 'A new post excerpt' )
+		cy.publish()
+		adjustPostField( 'Post Excerpt' )
+		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'A new post excerpt' )
+		cy.deleteBlock( 'ugb/cta' )
+		// Post status
+		cy.newPost()
+		cy.addBlock( 'ugb/cta' )
+		cy.publish()
+		adjustPostField( 'Post Status' )
+		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'publish' )
+		cy.deleteBlock( 'ugb/cta' )
+		// Comment status
+		cy.newPost()
+		cy.addBlock( 'ugb/cta' )
+		cy.editPostDiscussion( { 'Allow comments': false } )
+		cy.adjustPostField( 'Comment Status' )
+		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title' )
+		cy.deleteBlock( 'ugb/cta' )
+		// Comment number
+		cy.newPost()
+		cy.addBlock( 'ugb/cta' )
+		adjustPostField( 'Comment Number' )
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.editPostDiscussion( { 'Allow comments': true } )
+			cy.publish()
+			cy.visit( previewUrl )
+			range( 1, 5 ).forEach( num => {
+				cy
+					.get( '.comment-form-comment' )
+					.find( 'textarea#comment' )
+					.click( { force: true } )
+					.type( `{selectall}{backspace}Test ${ num }` )
+				cy.get( 'input[value="Post Comment"]' ).click( { force: true } )
+			} )
+
+			cy.visit( editorUrl )
+		} )
+		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', '4', { assertBackend: false } )
+		cy.deleteBlock( 'ugb/cta' )
+	} )
+}
+
+/**
+ * Notes:
+ * 	- removed addFeaturedImage() in setFieldValues until it is refactored.
+ */
