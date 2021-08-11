@@ -630,7 +630,7 @@ function dynamicContentControl( name, value, options = {} ) {
 }
 
 /**
- * Function for adjusting the dynamic content options in the inspector.
+ * Command for adjusting the focal point control.
  *
  * @param {string} name
  * @param {Object} value
