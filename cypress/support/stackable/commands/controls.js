@@ -829,13 +829,13 @@ function dateTimeControl( name, value, options = {} ) {
 /**
  * Command for activating or deactivating the linking module in a column.
  *
- * @param {string} blockName
- * @param {string | number | Object} selector
+ * @param {string} blockName - the parent block
+ * @param {string | number | Object} selector - selector of parent block
  * @param {Object} options
  */
 function activateOrDeactivateLinking( blockName = 'stackable/columns', selector, options = {} ) {
 	const {
-		index = 1,
+		index = 1, // index of the column to adjust
 		columnDataType = 'stackable/column',
 	} = options
 
@@ -862,7 +862,7 @@ function activateOrDeactivateLinking( blockName = 'stackable/columns', selector,
  */
 function adjustResizableColumnWidth( blockName = 'stackable/columns', selector, options = {} ) {
 	const {
-		index,
+		index = 1, // index of the column to adjust
 		value,
 		columnDataType = 'stackable/column',
 	} = options
