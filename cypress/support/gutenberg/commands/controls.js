@@ -4,7 +4,7 @@
 import {
 	keys, first, omit, omitBy,
 } from 'lodash'
-import { containsRegExp } from '~common/util'
+import { containsRegExp, compareVersions } from '~common/util'
 
 /**
  * register functions to cypress commands.
@@ -22,10 +22,12 @@ Cypress.Commands.add( 'stylesControl', stylesControl )
 Cypress.Commands.add( 'fontSizeControl', fontSizeControl )
 Cypress.Commands.add( 'urlInputControl', urlInputControl )
 Cypress.Commands.add( 'radioControl', radioControl )
+Cypress.Commands.add( 'formTokenControl', formTokenControl )
 
 // Adjust Styles
 Cypress.Commands.add( 'adjust', adjust )
 Cypress.Commands.add( 'resetStyle', resetStyle )
+Cypress.Commands.add( 'adjustBlockStyle', adjustBlockStyle )
 
 /**
  * Command for resetting the color picker.
@@ -413,6 +415,58 @@ function radioControl( name, value, options = {} ) {
 }
 
 /**
+ * Command for adjusting the form token input.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ */
+function formTokenControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
+	const isWpLessThan58 = compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' )
+
+	beforeAdjust( name, value, options )
+	value.forEach( val => {
+		if ( isWpLessThan58 ) {
+		// The suggestions list does not display on WP versions less than 5.8. Type and enter the values.
+			selector()
+				.find( '.components-form-token-field__input' )
+				.type( `{selectall}${ val }{enter}`, { force: true } )
+		} else {
+			selector()
+				.find( '.components-form-token-field__input' )
+				.click( { force: true } )
+			selector()
+				.find( `ul.components-form-token-field__suggestions-list li:contains(${ val })` )
+				.click( { force: true } )
+		}
+	} )
+}
+
+/**
+ * Command for changing the style of the block.
+ *
+ * @param {string} value
+ */
+export function adjustBlockStyle( value = '' ) {
+	cy.get( '.block-editor-block-styles' )
+		.find( `div[aria-label="${ value }"]` )
+		.click( { force: true } )
+}
+
+/**
  * Command for adjusting settings.
  *
  * @param {string} name
@@ -462,6 +516,7 @@ export function adjust( name, value, options ) {
 		'.components-textarea-control__input': 'textAreaControl',
 		'.block-editor-url-input': 'urlInputControl',
 		'.components-radio-control__input': 'radioControl',
+		'.components-form-token-field__input': 'formTokenControl',
 	}
 
 	baseControlSelector()

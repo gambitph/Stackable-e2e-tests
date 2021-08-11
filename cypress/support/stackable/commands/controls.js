@@ -27,6 +27,7 @@ Cypress.Commands.add( 'iconControl', iconControl )
 Cypress.Commands.add( 'popoverControl', popoverControl )
 Cypress.Commands.add( 'suggestionControl', suggestionControl )
 Cypress.Commands.add( 'dynamicContentControl', dynamicContentControl )
+Cypress.Commands.add( 'focalPointControl', focalPointControl )
 
 // Reset
 Cypress.Commands.add( 'iconControlReset', iconControlReset )
@@ -71,6 +72,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		'.ugb-design-control': 'designControl',
 		'.ugb-icon-control': 'iconControl',
 		'.stk-dynamic-content-control': 'dynamicContentControl',
+		'.stk-advanced-focal-point-control': 'focalPointControl',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -625,4 +627,34 @@ function dynamicContentControl( name, value, options = {} ) {
 
 		cy.savePost()
 	}
+}
+
+/**
+ * Function for adjusting the dynamic content options in the inspector.
+ *
+ * @param {string} name
+ * @param {Object} value
+ * @param {Object} options
+ */
+function focalPointControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+	} )
+
+	beforeAdjust( name, value, options )
+	value.forEach( ( val, index ) => {
+		selector()
+			.find( 'input.components-input-control__input' )
+			.eq( index )
+			.type( `{selectall}${ val }{enter}`, { force: true } )
+	} )
 }
