@@ -117,17 +117,16 @@ export const assertBlockTab = ( selector, options = {} ) => {
 			if ( viewport === 'Desktop' ) {
 				// Adjust single container color options.
 				cy.adjust( 'Color Type', 'single' )
-				cy.adjust( 'Background Color', '#ffff00', { state: 'Hover' } ).assertComputedStyle( {
-					[ `${ selector }:hover` ]: {
-						'background-color': '#ffff00',
-					},
-				} )
+				cy.adjust( 'Background Color', '#ffff00', { state: 'Hover' } )
 				cy.adjust( 'Background Color', '#632d2d', { state: 'Normal' } ).assertComputedStyle( {
 					[ selector ]: {
 						'background-color': 'rgb(99, 45, 45)',
 					},
 					[ `${ selector }:before` ]: {
 						'background-color': '#632d2d',
+					},
+					[ `${ selector }:hover` ]: {
+						'background-color': '#ffff00',
 					},
 				} )
 
@@ -147,11 +146,7 @@ export const assertBlockTab = ( selector, options = {} ) => {
 					},
 				} )
 
-				cy.adjust( 'Background Media Tint Strength', 8, { state: 'Hover' } ).assertComputedStyle( {
-					[ `${ selector }:hover` ]: {
-						'opacity': '0.8',
-					},
-				} )
+				cy.adjust( 'Background Media Tint Strength', 8, { state: 'Hover' } )
 				cy.adjust( 'Background Media Tint Strength', 5, { state: 'Normal' } )
 				cy.adjust( 'Fixed Background', true )
 				cy.adjust( 'Adv. Background Image Settings', {
@@ -164,6 +159,9 @@ export const assertBlockTab = ( selector, options = {} ) => {
 					},
 					[ `${ selector }:before` ]: {
 						'opacity': '0.5',
+					},
+					[ `${ selector }:hover` ]: {
+						'opacity': '0.8',
 					},
 				} )
 			}
