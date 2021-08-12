@@ -21,64 +21,48 @@ const adjustPostField = ( fieldName, fieldOptions = {}, idx ) => {
 		fieldOptions,
 	} )
 }
+
+/**
+ * Helper function for adding a new entry
+ * in `fieldsToAssert`
+ *
+ * @param {Object} item
+ * @param {number} idx
+ */
+
+function addToTest( item, idx ) {
+	cy.get( `@fieldsToAssert${ idx }` ).then( $fta => cy.wrap( [ ...$fta, item ] ).as( `fieldsToAssert${ idx }` ) )
+}
+
+/**
+ * Function that returns the nth of a given number.
+ * This is used to select the nth Latest Page in dynamic content popover.
+ *
+ * @param {number} n
+ *
+ * @return {string} the nth of a number. 1 returns st.
+ */
 function nth( n ) {
 	// eslint-disable-next-line no-mixed-operators
 	return [ 'st', 'nd', 'rd' ][ ( ( n + 90 ) % 100 - 10 ) % 10 - 1 ] || 'th'
 }
 
 /**
- * Setup function.
- *
- * This is where we populate `@fieldsToAssert` for
- * assertions.
- *
- * Prefetch field values and store it as alias.
- *
- * @example `@fieldsToAssert` structure
- * ```
- * [
- * 		{
- * 			name: <fieldName>
- * 			value: <will assert value>,
- * 			options: { ...<`adjustDynamicContent` command options> }
- * 		}
- * ]
- * ```
- */
-/**
- * idx as an indicator for Nth Post
  *
  * @param {number} idx
+ * Indicates which post to setup
  */
 function setFieldValues( idx ) {
 	cy.newPost()
 	// Define the alias.
 	cy.wrap( [] ).as( `fieldsToAssert${ idx }` )
 
-	/**
-	 * Populate the following fields:
-	 * - Post URL
-	 * - Post ID
-	 * - Featured Image URL
-	 * - Post Date
-	 * - Post Date GMT
-	 * - Post Modified
-	 * - Post Modified GMT
-	 * - Post Type
-	 * - Post Status
-	 * - Author Name
-	 * - Author ID
-	 * - Author Posts URL
-	 * - Comment Number
-	 * - Comment Status
-	 */
-
 	// Populate Post Title.
 	cy.typePostTitle( `Latest Post #${ idx }` )
 	addToTest( { name: 'Post Title', value: `Latest Post #${ idx }` }, idx )
 
 	// Populate Post Slug.
-	addToTest( { name: 'Post Slug', value: `latest-post-test-${ idx }` }, idx )
+	addToTest( { name: 'Post Slug', value: `latest-post-${ idx }` }, idx )
 
 	// Populate Post Excerpt.
 	cy.addPostExcerpt( `Test excerpt #${ idx }` )
@@ -131,13 +115,6 @@ function setFieldValues( idx ) {
 		addToTest( { name: 'Comment Status', value: data.comment_status }, idx )
 	} )
 
-	/**
-	 * Populate the following fields:
-	 *
-	 * - Author First Name
-	 * - Author Last Name
-	 * - Author Posts
-	 */
 	cy.getPostUrls().then( ( { editorUrl } ) => {
 		// Set Author first & last name in profile settings
 		cy.visit( '/wp-admin/profile.php' )
@@ -152,29 +129,22 @@ function setFieldValues( idx ) {
 
 		cy.visit( '/wp-admin/users.php' )
 		cy.get( '[data-colname="Posts"] span[aria-hidden="true"]' ).invoke( 'text' ).then( numberOfPosts => {
-			addToTest( { name: 'Author Posts', value: numberOfPosts }, idx )
+			addToTest( { name: 'Author Posts', value: numberOfPosts }, numberOfPosts )
 		} )
 		// Go back to the editor.
 		cy.visit( editorUrl )
 	} )
+
+	cy.savePost()
 	cy.publish()
 }
 
-/**
- * Helper function for adding a new entry
- * in `fieldsToAssert`
- *
- * @param {Object} item
- */
-
-function addToTest( item, idx ) {
-	cy.get( `@fieldsToAssert${ idx }` ).then( $fta => cy.wrap( [ ...$fta, item ] ).as( `fieldsToAssert${ idx }` ) )
-}
 function populatePosts() {
 	range( 3, 0 ).forEach( idx => {
 		setFieldValues( idx )
 	} )
 }
+
 function matchPostData() {
 	it( 'should match dynamic content in latest posts', () => {
 		cy.setupWP()
@@ -188,16 +158,14 @@ function matchPostData() {
 					name: fieldName, value, options: fieldOptions = {},
 				} ) => {
 					cy.addBlock( 'ugb/cta' )
-
-					// Adjusting dynamic content
 					adjustPostField( fieldName, fieldOptions, idx )
-					// Assert the value.
 					cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
 					cy.deleteBlock( 'ugb/cta' )
 				} )
 			} )
+
+			cy.savePost()
 		} )
-		//cy.savePost()
 	} )
 }
 
@@ -363,6 +331,9 @@ function adjustFieldValues() {
 }
 
 /**
- * Notes:
- * 	- removed addFeaturedImage() in setFieldValues until it is refactored.
+ * Bugs:
+ * 	MatchPostData:
+ * 		- addFeaturedImage() creates an additional post.
+ *  	- post ID and comment number placeholder string instead of value
+ *  	- Author Posts does not match number of posts`
  */

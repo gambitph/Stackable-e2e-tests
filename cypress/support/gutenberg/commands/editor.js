@@ -329,10 +329,10 @@ export function editPostDiscussion( options ) {
 export function addFeaturedImage() {
 	cy.getPostUrls().then( ( { editorUrl } ) => {
 		// Save the current post as we're going to register a post.
-		//cy.savePost()
+		cy.savePost()
 		// Register one post to be able to add one image to media library.
 		// TODO: Find a better way to add an image to the media library.
-		//cy.registerPosts( { numOfPosts: 1 } )
+		cy.registerPosts( { numOfPosts: 1 } )
 		cy.visit( editorUrl )
 		cy.openSidebar( 'Settings' )
 		cy
