@@ -4,7 +4,7 @@
 import {
 	keys, first, omit, omitBy,
 } from 'lodash'
-import { containsRegExp, compareVersions } from '~common/util'
+import { containsRegExp } from '~common/util'
 
 /**
  * register functions to cypress commands.
@@ -436,21 +436,14 @@ function formTokenControl( name, value, options = {} ) {
 		supportedDelimiter,
 	} )
 
-	const isWpLessThan58 = compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' )
-
 	beforeAdjust( name, value, options )
 	value.forEach( val => {
-		if ( isWpLessThan58 ) {
-		// The suggestions list does not display on WP versions less than 5.8. Type and enter the values.
-			selector()
-				.find( '.components-form-token-field__input' )
-				.click( { force: true } )
-				.type( val, { force: true } )
-		} else {
-			selector()
-				.find( '.components-form-token-field__input' )
-				.click( { force: true } )
-		}
+		// Type the string and then choose this from the suggestions.
+		selector()
+			.find( '.components-form-token-field__input' )
+			.click( { force: true } )
+			.type( val, { force: true } )
+
 		selector()
 			.find( `ul.components-form-token-field__suggestions-list li:contains(${ val })` )
 			.click( { force: true } )
@@ -487,21 +480,12 @@ function checkboxControl( name, value = true, options = {} ) {
 		.getBaseControl( name, {
 			isInPopover, parentSelector, supportedDelimiter,
 		} )
-		.find( `.components-base-control__field:contains(${ name })` )
+		.find( `.components-base-control__field:contains(${ containsRegExp( name ) })` )
 
 	beforeAdjust( name, value, options )
 
 	selector( name ).find( 'svg.components-checkbox-control__checked' ).its( 'length' ).then( length => {
-		// Check if the checkbox is already true
-		if ( length > 0 ) {
-			// If the value is set to false, click the checkbox.
-			if ( ! value ) {
-				selector( name )
-					.find( 'input.components-checkbox-control__input' )
-					.click( { force: true } )
-			}
-		} else if ( value ) {
-			// If not yet checked and value is set to true, click the checkbox.
+		if ( ( length > 0 ) !== value ) {
 			selector( name )
 				.find( 'input.components-checkbox-control__input' )
 				.click( { force: true } )
