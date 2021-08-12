@@ -27,6 +27,7 @@ Cypress.Commands.add( 'addPostSlug', addPostSlug )
 Cypress.Commands.add( 'editPostDiscussion', editPostDiscussion )
 Cypress.Commands.add( 'addFeaturedImage', addFeaturedImage )
 Cypress.Commands.add( 'setSelection', { prevSubject: true }, setSelection )
+Cypress.Commands.add( 'selection', { prevSubject: true }, selection )
 
 /**
  * Overwrite Cypress Commands
