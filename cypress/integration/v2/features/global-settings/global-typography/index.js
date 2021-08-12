@@ -121,6 +121,7 @@ const willAssertTypographyStyles = [
 		lineHeight: 1.4,
 		letterSpacing: 3.5,
 	},
+	{}, // TODO: For subtitle
 	{
 		tag: 'p',
 		font: 'Alice',
@@ -141,6 +142,9 @@ function assertGlobalTypography( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'core/paragraph' )
 		willAssertTypographyStyles.forEach( val => {
+			if ( ! Object.keys( val ).length ) {
+				return
+			}
 			desktopOnly( () => {
 				cy.adjustGlobalTypography( val.tag, {
 					'Font Family': val.font,
@@ -249,11 +253,14 @@ function globalTypographyUnits( viewport ) {
 		cy.newPage()
 
 		// Test fontSize em and lineHeight px values for all viewports
-		const emFontSize = [ 4.2, 4.1, 3.9, 3.8, 3.7, 3.6, 3.5 ]
-		const pxLineHeight = [ 64, 58, 54, 48, 44, 38, 34 ]
+		const emFontSize = [ 4.2, 4.1, 3.9, 3.8, 3.7, 3.6, 3.5, 3.4 ]
+		const pxLineHeight = [ 64, 58, 54, 48, 44, 38, 34, 30 ]
 
 		cy.addBlock( 'core/paragraph' )
 		emFontSize.forEach( ( fontSize, idx ) => {
+			if ( ! Object.keys( willAssertTypographyStyles[ idx ] ).length ) {
+				return
+			}
 			cy.adjustGlobalTypography( willAssertTypographyStyles[ idx ].tag, {
 				'Size': {
 					value: fontSize,
@@ -339,7 +346,11 @@ function globalTypographyNativeBlocks() {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'ugb/divider' ) // placeholder
-		range( 1, 8 ).forEach( idx => {
+
+		range( 1, 9 ).forEach( idx => {
+			if ( ! Object.keys( willAssertTypographyStyles[ idx - 1 ] ).length ) {
+				return
+			}
 			cy.adjustGlobalTypography( willAssertTypographyStyles[ idx - 1 ].tag, {
 				'Font Family': willAssertTypographyStyles[ idx - 1 ].font,
 				'Size': {

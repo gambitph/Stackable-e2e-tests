@@ -167,6 +167,7 @@ function adjustGlobalTypography( selector = 'h1', options = {} ) {
 		'h4',
 		'h5',
 		'h6',
+		'subtitle',
 		'p',
 	]
 
