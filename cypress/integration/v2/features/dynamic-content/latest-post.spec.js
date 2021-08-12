@@ -180,8 +180,8 @@ function matchPostData() {
 		cy.setupWP()
 		populatePosts()
 
-		cy.newPost()
 		range( 3, 0 ).forEach( idx => {
+			cy.newPost()
 			// assertions
 			cy.get( `@fieldsToAssert${ idx }` ).then( fieldsToAssert => {
 				fieldsToAssert.forEach( ( {
@@ -301,66 +301,64 @@ function adjustFieldOptions() {
 function adjustFieldValues() {
 	it( 'should assert in the front-end the adjusted field values', () => {
 		cy.setupWP()
+		// initial loop for adjusting
+		range( 3, 0 ).forEach( idx => {
+			cy.newPost()
+			cy.wrap( [] ).as( `fieldsToAssert${ idx }` )
 
-		// !! Don't forget to add loop and idx !!
+			// Post Title
+			cy.typePostTitle( `${ idx }${ nth( idx ) } New Title` )
+			addToTest( { name: 'Post Title', value: `${ idx }${ nth( idx ) } New Title` }, idx )
 
-		// Post Title
-		cy.newPost()
-		cy.addBlock( 'ugb/cta' )
-		cy.typePostTitle( 'This is a new title' )
-		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'This is a new title' )
-		cy.deleteBlock( 'ugb/cta' )
-		// Post Slug
-		cy.newPost()
-		cy.addBlock( 'ugb/cta' )
-		cy.typePostTitle( 'A new slug' )
-		cy.publish()
-		adjustPostField( 'Post Slug' )
-		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'a-new-slug' )
-		cy.deleteBlock( 'ugb/cta' )
-		// Post Excerpt
-		cy.newPost()
-		cy.addBlock( 'ugb/cta' )
-		cy.addPostExcerpt( 'A new post excerpt' )
-		cy.publish()
-		adjustPostField( 'Post Excerpt' )
-		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'A new post excerpt' )
-		cy.deleteBlock( 'ugb/cta' )
-		// Post status
-		cy.newPost()
-		cy.addBlock( 'ugb/cta' )
-		cy.publish()
-		adjustPostField( 'Post Status' )
-		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'publish' )
-		cy.deleteBlock( 'ugb/cta' )
-		// Comment status
-		cy.newPost()
-		cy.addBlock( 'ugb/cta' )
-		cy.editPostDiscussion( { 'Allow comments': false } )
-		cy.adjustPostField( 'Comment Status' )
-		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title' )
-		cy.deleteBlock( 'ugb/cta' )
-		// Comment number
-		cy.newPost()
-		cy.addBlock( 'ugb/cta' )
-		adjustPostField( 'Comment Number' )
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.editPostDiscussion( { 'Allow comments': true } )
+			// Post Slug
+			addToTest( { name: 'Post Slug', value: `new-slug-${ idx }` }, idx )
+
+			// Post Excerpt
+			cy.addPostExcerpt( `New excerpt #${ idx }` )
+			addToTest( { name: 'Post Excerpt', value: `New excerpt#${ idx }` }, idx )
+
+			// Post status
 			cy.publish()
-			cy.visit( previewUrl )
-			range( 1, 5 ).forEach( num => {
-				cy
-					.get( '.comment-form-comment' )
-					.find( 'textarea#comment' )
-					.click( { force: true } )
-					.type( `{selectall}{backspace}Test ${ num }` )
-				cy.get( 'input[value="Post Comment"]' ).click( { force: true } )
-			} )
+			// Comment Number
+			cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+				cy.editPostDiscussion( { 'Allow comments': true } )
+				cy.publish()
+				cy.visit( previewUrl )
+				range( 1, 5 ).forEach( num => {
+					cy
+						.get( '.comment-form-comment' )
+						.find( 'textarea#comment' )
+						.click( { force: true } )
+						.type( `{selectall}{backspace}Test ${ num }` )
+					cy.get( 'input[value="Post Comment"]' ).click( { force: true } )
+				} )
 
-			cy.visit( editorUrl )
+				cy.visit( editorUrl )
+			} )
+			//Comment Status
+			cy.editPostDiscussion( { 'Allow comments': false } )
+
+			//Adding to Test
+			cy.getPostData().then( data => {
+				addToTest( { name: 'Post Status', value: data.status }, idx )
+				addToTest( { name: 'Comment Number', value: parseInt( data.comments_num ).toString() }, idx )
+				addToTest( { name: 'Comment Status', value: data.comment_status }, idx )
+			} )
 		} )
-		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', '4', { assertBackend: false } )
-		cy.deleteBlock( 'ugb/cta' )
+		// second loop for asserting
+		range( 3, 0 ).forEach( idx => {
+			cy.newPost()
+			cy.get( `@fieldsToAssert${ idx }` ).then( fieldsToAssert => {
+				fieldsToAssert.forEach( ( {
+					name: fieldName, value, options: fieldOptions = {},
+				} ) => {
+					cy.addBlock( 'ugb/cta' )
+					adjustPostField( fieldName, fieldOptions, idx )
+					cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
+					cy.deleteBlock( 'ugb/cta' )
+				} )
+			} )
+		} )
 	} )
 }
 
