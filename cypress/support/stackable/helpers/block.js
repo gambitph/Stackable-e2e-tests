@@ -149,7 +149,7 @@ export const assertBlockTab = ( selector, options = {} ) => {
 
 				cy.adjust( 'Background Media Tint Strength', 8, { state: 'Hover' } ).assertComputedStyle( {
 					[ `${ selector }:hover` ]: {
-						'background-color': '#ffff00',
+						'opacity': '0.8',
 					},
 				} )
 				cy.adjust( 'Background Media Tint Strength', 5, { state: 'Normal' } )
