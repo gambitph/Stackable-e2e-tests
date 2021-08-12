@@ -11,6 +11,7 @@ import { containsRegExp } from '~common/util'
  */
 Cypress.Commands.add( 'colorControlClear', colorControlClear )
 Cypress.Commands.add( 'rangeControlReset', rangeControlReset )
+Cypress.Commands.add( 'dateTimeControlReset', dateTimeControlReset )
 Cypress.Commands.add( 'dropdownControl', dropdownControl )
 Cypress.Commands.add( 'colorControl', colorControl )
 Cypress.Commands.add( 'rangeControl', rangeControl )
@@ -24,6 +25,7 @@ Cypress.Commands.add( 'urlInputControl', urlInputControl )
 Cypress.Commands.add( 'radioControl', radioControl )
 Cypress.Commands.add( 'formTokenControl', formTokenControl )
 Cypress.Commands.add( 'checkboxControl', checkboxControl )
+Cypress.Commands.add( 'dateTimeControl', dateTimeControl )
 
 // Adjust Styles
 Cypress.Commands.add( 'adjust', adjust )
@@ -83,6 +85,23 @@ function rangeControlReset( name, options = {} ) {
 	selector()
 		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
 		.click( { force: true, multiple: true } )
+}
+
+/**
+ * Command for resetting the date time control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function dateTimeControlReset( name, options = {} ) {
+	const {
+		beforeAdjust = () => {},
+	} = options
+
+	beforeAdjust( name, null, options )
+	cy.get( '.components-datetime > .components-datetime__buttons' )
+		.find( 'button.components-datetime__date-reset-button' )
+		.click( { force: true } )
 }
 
 /**
@@ -494,6 +513,63 @@ function checkboxControl( name, value = true, options = {} ) {
 }
 
 /**
+ * Command for adjusting the date time control.
+ *
+ * @param {string} name
+ * @param {Object} value
+ * @param {Object} options
+ */
+function dateTimeControl( name, value, options = {} ) {
+	const {
+		beforeAdjust = () => {},
+	} = options
+
+	const {
+		day,
+		month,
+		year,
+		hours = '12',
+		minutes = '00',
+		period = 'AM',
+	} = value
+
+	beforeAdjust( name, value, options )
+	const selector = () => cy
+		.get( '.components-datetime > .components-datetime__time' )
+
+	// Adjust the day
+	selector()
+		.find( 'input[aria-label="Day"]' )
+		.type( `{selectall}${ day }`, { force: true } )
+
+	// Adjust the month
+	selector()
+		.find( 'select[aria-label="Month"]' )
+		.select( month, { force: true } )
+
+	// Adjust the year
+	selector()
+		.find( 'input[aria-label="Year"]' )
+		.type( `{selectall}${ year }`, { force: true } )
+
+	// Adjust the hours
+	selector()
+		.find( 'input[aria-label="Hours"]' )
+		.type( `{selectall}${ hours }`, { force: true } )
+
+	// Adjust the minutes
+	selector()
+		.find( 'input[aria-label="Minutes"]' )
+		.type( `{selectall}${ minutes }`, { force: true } )
+
+	// Adjust the period
+	selector()
+		.find( '.components-datetime__time-field-am-pm button' )
+		.contains( containsRegExp( period ) )
+		.click( { force: true } )
+}
+
+/**
  * Command for adjusting settings.
  *
  * @param {string} name
@@ -545,6 +621,7 @@ export function adjust( name, value, options ) {
 		'.components-radio-control__input': 'radioControl',
 		'.components-form-token-field__input': 'formTokenControl',
 		'.components-checkbox-control__input': 'checkboxControl',
+		'.components-datetime': 'dateTimeControl',
 	}
 
 	baseControlSelector()
@@ -595,6 +672,7 @@ export function resetStyle( name, options = {} ) {
 		// Populate default selectors.
 		'.components-input-control__input': 'rangeControlReset',
 		'.components-circular-option-picker__dropdown-link-action': 'colorControlClear',
+		'.components-datetime': 'dateTimeControlReset',
 	}
 
 	baseControlSelector()
