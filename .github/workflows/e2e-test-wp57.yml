@@ -75,6 +75,7 @@ jobs:
     name: Publish E2E Test Results
     needs: test
     runs-on: ubuntu-latest
+    if: success() || failure()
 
     steps:
     - name: Download Artifacts
@@ -84,6 +85,7 @@ jobs:
 
     - name: Publish E2E Test Results
       uses: EnricoMi/publish-unit-test-result-action@v1
+      if: always()
       with:
         files: artifacts/**/*.xml
         check_name: E2E Test Results

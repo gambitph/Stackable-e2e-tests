@@ -1,7 +1,10 @@
 /**
  * External dependencies
  */
-import { containsRegExp, dispatchResolver } from '~common/util'
+import {
+	containsRegExp, dispatchResolver,
+} from '~common/util'
+import { removeGlobalCssTransitions, setBaseAndExtent } from '../util'
 
 /**
  * Register functions to Cypress Commands.
@@ -23,6 +26,22 @@ Cypress.Commands.add( 'addPostExcerpt', addPostExcerpt )
 Cypress.Commands.add( 'addPostSlug', addPostSlug )
 Cypress.Commands.add( 'editPostDiscussion', editPostDiscussion )
 Cypress.Commands.add( 'addFeaturedImage', addFeaturedImage )
+Cypress.Commands.add( 'setSelection', { prevSubject: true }, setSelection )
+Cypress.Commands.add( 'selection', { prevSubject: true }, selection )
+
+/**
+ * Overwrite Cypress Commands
+ */
+Cypress.Commands.overwrite( 'visit', ( originalFn, url, options ) => {
+	return originalFn( url, Object.assign( options || {}, {
+		onLoad: () => {
+		// Check if the url matches the editor, and new page URL
+			if ( url.match( /(post|post-new)\.php/g ) && url.match( /wp-admin/g ) ) {
+				removeGlobalCssTransitions()
+			}
+		},
+	} ) )
+} )
 
 /**
  * Command for opening a new page in gutenberg editor.
@@ -167,9 +186,8 @@ export function getPreviewMode() {
  */
 export function savePost() {
 	cy.wp().then( wp => {
-		return new Cypress.Promise( resolve => {
-			wp.data.dispatch( 'core/editor' ).savePost().then( dispatchResolver( resolve ) )
-		} )
+		wp.data.dispatch( 'core/editor' ).savePost()
+		cy.waitUntil( done => done( Cypress.$( '.components-snackbar__content:contains(Page Updated)' ) ) )
 	} )
 }
 
@@ -363,4 +381,54 @@ export function addFeaturedImage() {
 			.click( { force: true } )
 		cy.savePost()
 	} )
+}
+
+/**
+ * Selects a specific part of a text
+ *
+ * Usage
+ * ```
+ * // Types "My new text" and selects "new"
+ * cy.get( '.wp-block-paragraph' )
+ * .type( 'My new text' )
+ * .setSelection('new')
+ *
+ * ```
+ *
+ * @param {*} subject
+ * @param {string} query
+ * @param {string} endQuery
+ */
+export function setSelection( subject, query, endQuery = '' ) {
+	return cy.wrap( subject )
+		.selection( $el => {
+			cy.document().then( doc => {
+				const walk = doc.createTreeWalker( $el[ 0 ], NodeFilter.SHOW_TEXT, null, false )
+				if ( query ) {
+					const anchorNode = walk.nextNode()
+					const focusNode = endQuery ? walk.nextNode : anchorNode
+					const anchorOffset = anchorNode.wholeText.indexOf( query )
+					const focusOffset = endQuery
+						? focusNode.wholeText.indexOf( endQuery ) + endQuery.length
+						: anchorOffset + query.length
+					setBaseAndExtent( anchorNode, anchorOffset, focusNode, focusOffset )
+				}
+			} )
+		} )
+}
+
+/**
+ * Command used by `setSelection` to trigger the selecting of text.
+ *
+ * @param {*} subject
+ * @param {Function} fn
+ */
+export function selection( subject, fn = () => {} ) {
+	cy.wrap( subject )
+		.trigger( 'mousedown' )
+		.then( fn )
+		.trigger( 'mouseup' )
+
+	cy.document().trigger( 'selectionchange' )
+	return cy.wrap( subject )
 }

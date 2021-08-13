@@ -69,13 +69,17 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 	}
 
 	cy.adjustToolbar( 'Dynamic Fields', () => {
-		const selectFromSuggestions = ( option, value ) => cy
-			.get( '.stackable-dynamic-content__popover-content' )
-			.contains( containsRegExp( option ) )
-			.parentsUntil( '.components-base-control' )
-			.find( '.stackable-dynamic-content__input-container>input' )
-			.click( { force: true } )
-			.type( `{selectall}${ value }`, { force: true } )
+		const selectFromSuggestions = ( option, value = '' ) => {
+			cy
+				.get( '.stackable-dynamic-content__popover-content' )
+				.contains( containsRegExp( option ) )
+				.parentsUntil( '.components-base-control' )
+				.find( '.stackable-dynamic-content__input-container>input' )
+				.click( { force: true } )
+				.type( `{selectall}${ value }` )
+
+			cy.waitLoader( '.components-spinner' )
+		}
 
 		const selectOption = option => cy
 			.get( '.react-autosuggest__suggestions-container--open' )
