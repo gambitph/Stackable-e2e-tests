@@ -499,7 +499,8 @@ function checkboxControl( name, value = true, options = {} ) {
 		.getBaseControl( name, {
 			isInPopover, parentSelector, supportedDelimiter,
 		} )
-		.find( `.components-base-control__field:contains(${ containsRegExp( name ) })` )
+		.find( '.components-base-control__field' )
+		.contains( containsRegExp( name ) )
 
 	beforeAdjust( name, value, options )
 
