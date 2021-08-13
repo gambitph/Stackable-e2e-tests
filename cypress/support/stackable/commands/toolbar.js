@@ -66,7 +66,6 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 			.type( '{selectall}', { force: true } )
 	} else if ( typeof selector === 'function' ) {
 		selector()
-		cy.wait( 1000 )
 	}
 
 	cy.adjustToolbar( 'Dynamic Fields', () => {
@@ -81,6 +80,9 @@ export function adjustDynamicContent( blockName, blockSelector, selector, option
 			.get( '.react-autosuggest__suggestions-container--open' )
 			.contains( containsRegExp( option ) )
 			.click( { force: true } )
+
+		// Wait for popover to appear.
+		cy.waitUntil( done => cy.document().then( doc => done( doc.querySelector( '.stackable-dynamic-content__popover-content' ) ) ) )
 
 		if ( source.length ) {
 			selectFromSuggestions( 'Dynamic Source' )

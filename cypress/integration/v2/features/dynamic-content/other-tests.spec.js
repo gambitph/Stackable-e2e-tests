@@ -27,9 +27,6 @@ function multipleDynamicContent() {
 			fieldName: 'Post Title',
 		} )
 
-		// Flaky test. Click anywhere to remove focus in the paragraph.
-		cy.get( '.editor-post-title__input' ).click( { force: true } )
-
 		// Add a dynamic content: Post URL
 		cy.adjustDynamicContent( 'core/paragraph', 0, () => {
 			cy
@@ -60,9 +57,6 @@ function multipleDynamicContent() {
 			source: 'Current Post',
 			fieldName: 'Post Title',
 		} )
-
-		// Flaky test. Click anywhere to remove focus in the paragraph.
-		cy.get( '.editor-post-title__input' ).click( { force: true } )
 
 		// Add a dynamic content: Post URL
 		cy.adjustDynamicContent( 'core/paragraph', 0, () => {
