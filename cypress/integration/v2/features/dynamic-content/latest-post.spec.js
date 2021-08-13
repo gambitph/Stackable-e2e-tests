@@ -23,34 +23,25 @@ const adjustPostField = ( fieldName, fieldOptions = {}, idx ) => {
 }
 
 /**
- * Helper function for adding a new entry
- * in `fieldsToAssert`
+ * Setup function.
  *
- * @param {Object} item
- * @param {number} idx
- */
-
-function addToTest( item, idx ) {
-	cy.get( `@fieldsToAssert${ idx }` ).then( $fta => cy.wrap( [ ...$fta, item ] ).as( `fieldsToAssert${ idx }` ) )
-}
-
-/**
- * Function that returns the nth of a given number.
- * This is used to select the nth Latest Page in dynamic content popover.
+ * This is where we populate `@fieldsToAssert` for
+ * assertions.
  *
- * @param {number} n
+ * Prefetch field values and store it as alias.
  *
- * @return {string} the nth of a number. 1 returns st.
- */
-function nth( n ) {
-	// eslint-disable-next-line no-mixed-operators
-	return [ 'st', 'nd', 'rd' ][ ( ( n + 90 ) % 100 - 10 ) % 10 - 1 ] || 'th'
-}
-
-/**
+ * @example `@fieldsToAssert` structure
+ * ```
+ * [
+ * 		{
+ * 			name: <fieldName>
+ * 			value: <will assert value>,
+ * 			options: { ...<`adjustDynamicContent` command options> }
+ * 		}
+ * ]
+ * ```
  *
  * @param {number} idx
- * Indicates which post to setup
  */
 function setFieldValues( idx ) {
 	cy.newPost()
@@ -69,7 +60,7 @@ function setFieldValues( idx ) {
 	addToTest( { name: 'Post Excerpt', value: `Test excerpt #${ idx }` }, idx )
 
 	// Add a featured image.
-	//cy.addFeaturedImage()
+	cy.addFeaturedImage()
 
 	// Get the author's profile picture URL
 	cy.wp().then( wp => {
@@ -111,6 +102,21 @@ function setFieldValues( idx ) {
 		addToTest( { name: 'Author Posts URL', value: data.author_info.url }, idx )
 
 		// Misc. Fields
+		// Populating Comment Number
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.editPostDiscussion( { 'Allow comments': true } )
+			cy.visit( previewUrl )
+			range( 1, 5 ).forEach( num => {
+				cy
+					.get( '.comment-form-comment' )
+					.find( 'textarea#comment' )
+					.click( { force: true } )
+					.type( `{selectall}{backspace}Test ${ num }` )
+				cy.get( 'input[value="Post Comment"]' ).click( { force: true } )
+			} )
+
+			cy.visit( editorUrl )
+		} )
 		addToTest( { name: 'Comment Number', value: parseInt( data.comments_num ).toString() }, idx )
 		addToTest( { name: 'Comment Status', value: data.comment_status }, idx )
 	} )
@@ -127,31 +133,47 @@ function setFieldValues( idx ) {
 
 		cy.get( 'input[value="Update Profile"]' ).click( { force: true } )
 
-		cy.visit( '/wp-admin/users.php' )
-		cy.get( '[data-colname="Posts"] span[aria-hidden="true"]' ).invoke( 'text' ).then( numberOfPosts => {
-			addToTest( { name: 'Author Posts', value: numberOfPosts }, numberOfPosts )
-		} )
+		// Author Posts default value to 10 since there are 10 posts to assert
+		addToTest( { name: 'Author Posts', value: '10' }, idx )
+
 		// Go back to the editor.
 		cy.visit( editorUrl )
 	} )
-
-	cy.savePost()
 	cy.publish()
 }
 
-function populatePosts() {
-	range( 3, 0 ).forEach( idx => {
-		setFieldValues( idx )
-	} )
+/**
+ * Helper function for adding a new entry
+ * in `fieldsToAssert`
+ *
+ * @param {Object} item
+ * @param {number} idx
+ */
+function addToTest( item, idx ) {
+	cy.get( `@fieldsToAssert${ idx }` ).then( $fta => cy.wrap( [ ...$fta, item ] ).as( `fieldsToAssert${ idx }` ) )
 }
 
+/**
+ * Function that returns the nth of a given number.
+ * This is used to select the nth Latest Page in dynamic content popover.
+ *
+ * @param {number} n
+ *
+ * @return {string} the nth of a number. 1 returns st.
+ */
+function nth( n ) {
+	// eslint-disable-next-line no-mixed-operators
+	return [ 'st', 'nd', 'rd' ][ ( ( n + 90 ) % 100 - 10 ) % 10 - 1 ] || 'th'
+}
 function matchPostData() {
 	it( 'should match dynamic content in latest posts', () => {
 		cy.setupWP()
-		populatePosts()
-
-		range( 3, 0 ).forEach( idx => {
-			cy.newPost()
+		//Populating 10 posts
+		range( 10, 0 ).forEach( id => {
+			setFieldValues( id )
+		} )
+		range( 10, 0 ).forEach( idx => {
+			cy.newPage()
 			// assertions
 			cy.get( `@fieldsToAssert${ idx }` ).then( fieldsToAssert => {
 				fieldsToAssert.forEach( ( {
@@ -163,106 +185,96 @@ function matchPostData() {
 					cy.deleteBlock( 'ugb/cta' )
 				} )
 			} )
-
 			cy.savePost()
 		} )
 	} )
 }
 
-/**
- * fix sample post issue, look into commands used in setFieldValues
- */
-
 function adjustFieldOptions() {
-	it( 'should adjust all options for each field in all latest posts', () => {
+	it( 'should adjust all options for each field in a post', () => {
 		cy.setupWP()
-		cy.newPost() // check if it gets added to list of posts
+		cy.newPage()
 		// adjusting all fields for each latest post
-		range( 3, 0 ).forEach( idx => {
-			// adjusting Post Title
-			cy.typePostTitle( `Adjusting Post ${ idx }` )
-			cy.addBlock( 'ugb/cta' )
-			adjustPostField( 'Post Title', {
-				'Show as link': true,
-				'Open in new tab': true,
-			}, idx )
+		// adjusting Post Title
+		cy.typePostTitle( 'Adjusting Latest Post 1' )
+		cy.addBlock( 'ugb/cta' )
+		adjustPostField( 'Post Title', {
+			'Show as link': true,
+			'Open in new tab': true,
+		}, 1 )
 
-			// assert changes
-			cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', `Adjusting Post ${ idx }` )
-			cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
-			cy.deleteBlock( 'ugb/cta' )
+		// assert changes
+		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
+		cy.deleteBlock( 'ugb/cta' )
 
-			// adjusting Post URL options
-			cy.addBlock( 'ugb/cta' )
-			adjustPostField( 'Post URL', {
-				'Show as link': true,
-				'Custom Text': 'This post',
-				'Open in new tab': true,
-			}, idx )
-			// asserting changes
-			cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'This post' )
-			cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
-			cy.deleteBlock( 'ugb/cta' )
+		// adjusting Post URL options
+		cy.addBlock( 'ugb/cta' )
+		adjustPostField( 'Post URL', {
+			'Show as link': true,
+			'Custom Text': 'This post',
+			'Open in new tab': true,
+		}, 1 )
+		// asserting changes
+		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
+		cy.deleteBlock( 'ugb/cta' )
 
-			// adjusting Post excerpt options
-			cy.addBlock( 'ugb/cta' )
-			cy.addPostExcerpt( 'This is a sample excerpt... Lorem ipsum dolor sit amet.' )
-			adjustPostField( 'Post Excerpt', {
-				'Excerpt Length': 5,
-			}, idx )
+		// adjusting Post excerpt options
+		cy.addBlock( 'ugb/cta' )
+		adjustPostField( 'Post Excerpt', {
+			'Excerpt Length': 5,
+		}, 1 )
 
-			cy.publish()
-			// asserting changes
-			cy.getPostUrls().then( ( { previewUrl } ) => {
-				cy.visit( previewUrl )
-				// Excerpt length should be 5.
-				cy.document().then( doc => {
-					assert.isTrue(
-						[ ...doc.querySelector( '.ugb-cta__title' ).innerText.split( ' ' ) ].length === 5,
-						'Expected excerpt text length to equal \'5\''
-					)
-				} )
+		cy.publish()
+		// asserting changes
+		cy.getPostUrls().then( ( { previewUrl } ) => {
+			cy.visit( previewUrl )
+			// Excerpt length should be 5.
+			cy.document().then( doc => {
+				assert.isTrue(
+					[ ...doc.querySelector( '.ugb-cta__title' ).innerText.split( ' ' ) ].length === 5,
+					'Expected excerpt text length to equal \'5\''
+				)
 			} )
-			cy.deleteBlock( 'ugb/cta' )
-			// For Post Date, Date GMT, Modified & Modified GMT options
-			const dateFields = [ 'Post Date', 'Post Date GMT', 'Post Modified', 'Post Modified GMT' ]
-			const dateFormats = [ 'Y-m-d H:i:s', 'F j, Y', 'F j, Y g:i a', 'd/m/y' ]
-			dateFields.forEach( dateField => {
-				cy.wrap( [] ).as( 'dateFormatValues' )
+		} )
+		cy.deleteBlock( 'ugb/cta' )
+		// For Post Date, Date GMT, Modified & Modified GMT options
+		const dateFields = [ 'Post Date', 'Post Date GMT', 'Post Modified', 'Post Modified GMT' ]
+		const dateFormats = [ 'Y-m-d H:i:s', 'F j, Y', 'F j, Y g:i a', 'd/m/y' ]
+		dateFields.forEach( dateField => {
+			cy.wrap( [] ).as( 'dateFormatValues' )
 
-				dateFormats.forEach( dateFormat => {
-					cy.addBlock( 'ugb/cta' )
-					adjustPostField( dateField, {
-						'Date Format': dateFormat,
-					}, idx )
-					cy.document().then( doc => {
-						cy.get( '@dateFormatValues' ).then( dateFormatValues => {
+			dateFormats.forEach( dateFormat => {
+				cy.addBlock( 'ugb/cta' )
+				adjustPostField( dateField, {
+					'Date Format': dateFormat,
+				}, 1 )
+				cy.document().then( doc => {
+					cy.get( '@dateFormatValues' ).then( dateFormatValues => {
 						// Store the values to be compared in this alias.
-							cy.wrap( [ ...dateFormatValues, doc.querySelector( '.ugb-cta__title' ).innerText ] ).as( 'dateFormatValues' )
-						} )
+						cy.wrap( [ ...dateFormatValues, doc.querySelector( '.ugb-cta__title' ).innerText ] ).as( 'dateFormatValues' )
 					} )
 				} )
-
-				cy.get( '@dateFormatValues' ).then( dateFormatValues => {
-				// Assert that the values are not equal. This means that the formats changed.
-					assert.isTrue(
-						! dateFormatValues.some( ( value, idx ) => dateFormatValues.indexOf( value ) !== idx ), // Returns true if values are unique
-						`Expected all date format values to be unique. Values: "${ dateFormatValues.join( ', ' ) }"`
-					)
-				} )
 			} )
-			cy.addBlock( 'ugb/cta' )
-			// asserting Author-field-related options
-			adjustPostField( 'Author Posts URL', {
-				'Show as link': true,
-				'Custom text': `Author #${ idx }`,
-				'Open in new tab': true,
-			}, idx )
 
-			cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', `Author #${ idx }` )
-			cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
-			cy.deleteBlock( 'ugb/cta' )
+			cy.get( '@dateFormatValues' ).then( dateFormatValues => {
+				// Assert that the values are not equal. This means that the formats changed.
+				assert.isTrue(
+					! dateFormatValues.some( ( value, idx ) => dateFormatValues.indexOf( value ) !== idx ), // Returns true if values are unique
+					`Expected all date format values to be unique. Values: "${ dateFormatValues.join( ', ' ) }"`
+				)
+			} )
 		} )
+		cy.addBlock( 'ugb/cta' )
+		// asserting Author-field-related options
+		adjustPostField( 'Author Posts URL', {
+			'Show as link': true,
+			'Custom text': 'Author #1',
+			'Open in new tab': true,
+		}, 1 )
+
+		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'Author #1' )
+		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
+		cy.deleteBlock( 'ugb/cta' )
 	} )
 }
 
@@ -270,63 +282,60 @@ function adjustFieldValues() {
 	it( 'should assert in the front-end the adjusted field values', () => {
 		cy.setupWP()
 		// initial loop for adjusting
-		range( 3, 0 ).forEach( idx => {
-			cy.newPost()
-			cy.wrap( [] ).as( `fieldsToAssert${ idx }` )
 
-			// Post Title
-			cy.typePostTitle( `${ idx }${ nth( idx ) } New Title` )
-			addToTest( { name: 'Post Title', value: `${ idx }${ nth( idx ) } New Title` }, idx )
+		cy.newPost()
+		cy.wrap( [] ).as( 'fieldsToAssert1' )
 
-			// Post Slug
-			addToTest( { name: 'Post Slug', value: `new-slug-${ idx }` }, idx )
+		// Post Title
+		cy.typePostTitle( 'New Post Title' )
+		addToTest( { name: 'Post Title', value: 'New Post Title' }, 1 )
 
-			// Post Excerpt
-			cy.addPostExcerpt( `New excerpt #${ idx }` )
-			addToTest( { name: 'Post Excerpt', value: `New excerpt#${ idx }` }, idx )
+		// Post Slug
+		addToTest( { name: 'Post Slug', value: 'new-post-slug' }, 1 )
 
-			// Post status
+		// Post Excerpt
+		cy.addPostExcerpt( 'New post excerpt' )
+		addToTest( { name: 'Post Excerpt', value: 'New post excerpt' }, 1 )
+
+		// Post status
+		cy.publish()
+		// Comment Number
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.editPostDiscussion( { 'Allow comments': true } )
 			cy.publish()
-			// Comment Number
-			cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-				cy.editPostDiscussion( { 'Allow comments': true } )
-				cy.publish()
-				cy.visit( previewUrl )
-				range( 1, 5 ).forEach( num => {
-					cy
-						.get( '.comment-form-comment' )
-						.find( 'textarea#comment' )
-						.click( { force: true } )
-						.type( `{selectall}{backspace}Test ${ num }` )
-					cy.get( 'input[value="Post Comment"]' ).click( { force: true } )
-				} )
-
-				cy.visit( editorUrl )
+			cy.visit( previewUrl )
+			range( 1, 5 ).forEach( num => {
+				cy
+					.get( '.comment-form-comment' )
+					.find( 'textarea#comment' )
+					.click( { force: true } )
+					.type( `{selectall}{backspace}Test ${ num }` )
+				cy.get( 'input[value="Post Comment"]' ).click( { force: true } )
 			} )
-			//Comment Status
-			cy.editPostDiscussion( { 'Allow comments': false } )
 
-			//Adding to Test
-			cy.getPostData().then( data => {
-				addToTest( { name: 'Post Status', value: data.status }, idx )
-				addToTest( { name: 'Comment Number', value: parseInt( data.comments_num ).toString() }, idx )
-				addToTest( { name: 'Comment Status', value: data.comment_status }, idx )
-			} )
+			cy.visit( editorUrl )
+		} )
+		//Comment Status
+		cy.editPostDiscussion( { 'Allow comments': false } )
+
+		//Adding to Test
+		cy.getPostData().then( data => {
+			addToTest( { name: 'Post Status', value: data.status }, 1 )
+			addToTest( { name: 'Comment Number', value: parseInt( data.comments_num ).toString() }, 1 )
+			addToTest( { name: 'Comment Status', value: data.comment_status }, 1 )
 		} )
 		// second loop for asserting
-		range( 3, 0 ).forEach( idx => {
-			cy.newPost()
-			cy.get( `@fieldsToAssert${ idx }` ).then( fieldsToAssert => {
-				fieldsToAssert.forEach( ( {
-					name: fieldName, value, options: fieldOptions = {},
-				} ) => {
-					cy.addBlock( 'ugb/cta' )
-					adjustPostField( fieldName, fieldOptions, idx )
-					cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
-					cy.deleteBlock( 'ugb/cta' )
-				} )
+		cy.get( '@fieldsToAssert1' ).then( fieldsToAssert => {
+			fieldsToAssert.forEach( ( {
+				name: fieldName, value, options: fieldOptions = {},
+			} ) => {
+				cy.addBlock( 'ugb/cta' )
+				adjustPostField( fieldName, fieldOptions, 1 )
+				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
+				cy.deleteBlock( 'ugb/cta' )
 			} )
 		} )
+		cy.savePost()
 	} )
 }
 
@@ -336,4 +345,5 @@ function adjustFieldValues() {
  * 		- addFeaturedImage() creates an additional post.
  *  	- post ID and comment number placeholder string instead of value
  *  	- Author Posts does not match number of posts`
+ * 		- line 149 error on fieldstoAssert
  */
