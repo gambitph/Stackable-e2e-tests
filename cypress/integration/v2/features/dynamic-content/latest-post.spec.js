@@ -193,7 +193,6 @@ function matchPostData() {
 function adjustFieldOptions() {
 	it( 'should adjust all options for each field in a post', () => {
 		cy.setupWP()
-		cy.newPage()
 		// adjusting all fields for each latest post
 		// adjusting Post Title
 		cy.typePostTitle( 'Adjusting Latest Post 1' )
@@ -204,6 +203,8 @@ function adjustFieldOptions() {
 		}, 1 )
 
 		// assert changes
+		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'Adjusting Latest Post 1' )
+		cy.selectBlock( 'ugb/cta' ).assertHtmlTag( '.ugb-cta__title a', 'a', { assertBackend: false } )
 		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
 		cy.deleteBlock( 'ugb/cta' )
 
@@ -215,6 +216,8 @@ function adjustFieldOptions() {
 			'Open in new tab': true,
 		}, 1 )
 		// asserting changes
+		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'This post' )
+		cy.selectBlock( 'ugb/cta' ).assertHtmlTag( '.ugb-cta__title a', 'a', { assertBackend: false } )
 		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
 		cy.deleteBlock( 'ugb/cta' )
 
@@ -273,6 +276,7 @@ function adjustFieldOptions() {
 		}, 1 )
 
 		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'Author #1' )
+		cy.selectBlock( 'ugb/cta' ).assertHtmlTag( '.ugb-cta__title a', 'a', { assertBackend: false } )
 		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
 		cy.deleteBlock( 'ugb/cta' )
 	} )
