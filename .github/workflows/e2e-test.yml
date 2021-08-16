@@ -33,7 +33,7 @@ jobs:
       run: |
         git clone https://github.com/gambitph/Stackable.git
         cd Stackable
-        git clone https://${{ secrets.ACCESS_KEY }}@github.com/bfintal/Stackable-Premium pro__premium_only
+        git clone -b v3 https://${{ secrets.ACCESS_KEY }}@github.com/bfintal/Stackable-Premium pro__premium_only
         cd ..
 
     - name: Setup Node
