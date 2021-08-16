@@ -29,14 +29,15 @@ function testV3Commands() {
 		// formTokenControl
 		cy.addBlock( 'stackable/heading' )
 		cy.openInspector( 'stackable/heading', 'Advanced' )
-		// cy.collapse( 'Conditional Display' )
-		// cy.get( '.ugb-panel--conditional-display button:contains(Add New Condition)' ).click( { force: true } )
-		// cy.adjust( 'Condition Type', 'conditional-tag', {
-		// 	parentSelector: '.stk-condition-component',
-		// } )
-		// cy.adjust( 'Enter Conditional Tag', [ 'Home - is_home', 'Front Page - is_front_page' ], {
-		// 	parentSelector: '.stk-condition-component',
-		// } )
+		cy.collapse( 'Conditional Display' )
+		cy.get( '.ugb-panel--conditional-display button:contains(Add New Condition)' ).click( { force: true } )
+		cy.adjust( 'Condition Type', 'conditional-tag', {
+			parentSelector: '.stk-condition-component',
+		} )
+		cy.adjust( 'Enter Conditional Tag', [ 'Home', 'Front Page' ], {
+			parentSelector: '.stk-condition-component',
+			mainComponentSelector: '.components-form-token-field',
+		} )
 
 		cy.openInspector( 'stackable/heading', 'Style' )
 		cy.collapse( 'Typography' )
@@ -55,29 +56,25 @@ function testV3Commands() {
 		cy.openInspector( 'stackable/text', 'Advanced' )
 		cy.collapse( 'Conditional Display' )
 		cy.get( '.ugb-panel--conditional-display button:contains(Add New Condition)' ).click( { force: true } )
-		const parentSelector = '.stk-condition-component'
+
 		cy.adjust( 'Condition Type', 'date-time', {
-			parentSelector,
+			parentSelector: '.stk-condition-component',
 		} )
+		const parentSelector = '.stk-days-checkbox > div'
 		cy.adjust( 'Sunday', true, {
 			parentSelector,
-		}, {
-			parentSelector: '.stk-days-checkbox > .components-base-control__field',
 		} )
 		cy.adjust( 'Tuesday', true, {
 			parentSelector,
-		}, {
-			parentSelector: '.stk-days-checkbox > .components-base-control__field',
 		} )
 		cy.adjust( 'Thursday', true, {
 			parentSelector,
-		}, {
-			parentSelector: '.stk-days-checkbox > .components-base-control__field',
 		} )
 		cy.adjust( 'Saturday', true, {
 			parentSelector,
-		}, {
-			parentSelector: '.stk-days-checkbox > .components-base-control__field',
+		} )
+		cy.adjust( 'Thursday', false, {
+			parentSelector,
 		} )
 
 		// dateTimeControl
@@ -86,17 +83,17 @@ function testV3Commands() {
 			month: 'January',
 			year: '2022',
 		}, {
-			parentSelector,
+			parentSelector: '.stk-condition-component',
 		} )
 		cy.adjust( 'End Date', {
 			day: '22',
 			month: 'February',
 			year: '2022',
 		}, {
-			parentSelector,
+			parentSelector: '.stk-condition-component',
 		} )
 		cy.resetStyle( 'End Date', {
-			parentSelector,
+			parentSelector: '.stk-condition-component',
 		} )
 
 		// focalPointControl

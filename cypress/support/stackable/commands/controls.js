@@ -27,6 +27,7 @@ Cypress.Commands.add( 'iconControl', iconControl )
 Cypress.Commands.add( 'popoverControl', popoverControl )
 Cypress.Commands.add( 'suggestionControl', suggestionControl )
 Cypress.Commands.add( 'focalPointControl', focalPointControl )
+Cypress.Commands.add( 'stkDateTimeControl', stkDateTimeControl )
 
 // Reset
 Cypress.Commands.add( 'iconControlReset', iconControlReset )
@@ -34,6 +35,7 @@ Cypress.Commands.add( 'fourRangeControlReset', fourRangeControlReset )
 Cypress.Commands.add( 'suggestionControlClear', suggestionControlClear )
 Cypress.Commands.add( 'popoverControlReset', popoverControlReset )
 Cypress.Commands.add( 'focalPointControlReset', focalPointControlReset )
+Cypress.Commands.add( 'stkDateTimeControlReset', stkDateTimeControlReset )
 
 // Adjust styles
 Cypress.Commands.add( 'adjustLayout', adjustLayout )
@@ -68,43 +70,6 @@ function adjustDynamicContentControl( originalFn, ...args ) {
 	}
 }
 
-Cypress.Commands.overwrite( 'dateTimeControl', ( originalFn, ...args ) => {
-	const optionsToPass = args.length === 3 ? args.pop() : {}
-
-	optionsToPass.beforeAdjust( args[ 0 ], args[ 1 ], optionsToPass )
-
-	cy.getBaseControl( args[ 0 ], {
-		isInPopover: optionsToPass.isInPopover,
-		parentSelector: optionsToPass.parentSelector,
-		supportedDelimiter: optionsToPass.supportedDelimiter,
-	} )
-		.find( `.stk-date-time-control__field button[title="${ args[ 0 ] }"]` )
-		.click( { force: true } )
-
-	return originalFn( ...args, optionsToPass )
-} )
-
-Cypress.Commands.overwrite( 'dateTimeControlReset', ( originalFn, ...args ) => {
-	const optionsToPass = args.length === 2 ? args.pop() : {}
-
-	optionsToPass.beforeAdjust( args[ 0 ], null, optionsToPass )
-	cy.get( '.components-datetime' ).its( 'length' ).then( length => {
-		if ( length === 0 ) {
-			cy.getBaseControl( args[ 0 ], {
-				isInPopover: optionsToPass.isInPopover,
-				parentSelector: optionsToPass.parentSelector,
-				supportedDelimiter: optionsToPass.supportedDelimiter,
-			} )
-				.contains( containsRegExp( args[ 0 ] ) )
-				.closest( '.components-panel__body>.components-base-control' )
-				.find( 'button[title="Reset"]' )
-				.click( { force: true } )
-		} else {
-			return originalFn( ...args, optionsToPass )
-		}
-	} )
-} )
-
 Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 	const optionsToPass = args.length === 3 ? args.pop() : {}
 	const label = first( args )
@@ -135,6 +100,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		'.ugb-design-control': 'designControl',
 		'.ugb-icon-control': 'iconControl',
 		'.stk-advanced-focal-point-control': 'focalPointControl',
+		'.stk-date-time-control__field': 'stkDateTimeControl',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -168,6 +134,7 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 		 '.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
 		 'ugb-icon-control': 'iconControlReset',
 		 '.stk-advanced-focal-point-control': 'focalPointControlReset',
+		 '.stk-date-time-control__field': 'stkDateTimeControlReset',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -241,10 +208,13 @@ function popoverControl( name, value = {}, options = {} ) {
 	const {
 		isInPopover = false,
 		parentSelector,
+		mainComponentSelector,
 	} = options
 
 	const clickPopoverButton = () => {
-		cy.getBaseControl( name, { isInPopover, parentSelector } )
+		cy.getBaseControl( name, {
+			isInPopover, parentSelector, mainComponentSelector,
+		} )
 			.find( 'button[aria-label="Edit"]' )
 			.click( { force: true } )
 	}
@@ -331,12 +301,14 @@ function suggestionControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, value, options )
@@ -359,12 +331,14 @@ function suggestionControlClear( name, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, null, options )
@@ -386,12 +360,14 @@ function fourRangeControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	const clickLockButton = () => selector()
@@ -440,12 +416,14 @@ function fourRangeControlReset( name, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = isInPopover => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	const clickLockButton = () => selector( isInPopover )
@@ -481,12 +459,14 @@ function columnControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, value, options )
@@ -591,12 +571,14 @@ function focalPointControlReset( name, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, null, options )
@@ -655,12 +637,14 @@ function focalPointControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, value, options )
@@ -672,6 +656,66 @@ function focalPointControl( name, value, options = {} ) {
 				.type( `{selectall}${ val }{enter}`, { force: true } )
 		}
 	} )
+}
+
+/**
+ * Command for adjusting the date time control of stackable.
+ *
+ * @param {string} name
+ * @param {Object} value
+ * @param {Object} options
+ */
+function stkDateTimeControl( name, value, options = {} ) {
+	const {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} = options
+
+	const selector = () => cy
+		.getBaseControl( name, {
+			isInPopover,
+			parentSelector,
+			supportedDelimiter,
+			mainComponentSelector,
+		} )
+
+	selector()
+		.find( `.stk-date-time-control__field button[title="${ name }"]` )
+		.click( { force: true } )
+
+	// After clicking the field, use the dateTimePopover in gutenberg commands
+	cy.dateTimeControl( name, value, options )
+
+	// Click again to close popover
+	selector()
+		.find( `.stk-date-time-control__field button[title="${ name }"]` )
+		.click( { force: true } )
+}
+
+/**
+ * Command for adjusting the date time control of stackable.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function stkDateTimeControlReset( name, options = {} ) {
+	const {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} = options
+
+	cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} )
+		.find( 'button[title="Reset"]' )
+		.click( { force: true } )
 }
 
 /**

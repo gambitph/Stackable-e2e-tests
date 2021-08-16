@@ -172,7 +172,7 @@ export function changeControlState( options = {} ) {
 	selector()
 		.then( $baseControl => {
 			if ( $baseControl.find( `.stk-control-label__toggles .stk-label-unit-toggle button[aria-label="${ state }"]` ).length ) {
-				selector().find( '.stk-control-label__toggles .stk-label-unit-toggle button.is-active' ).click( { force: true } )
+				selector().find( '.stk-control-label__toggles .stk-label-unit-toggle button.is-active' ).click( { force: true, multiple: true } )
 				selector()
 					.find( '.stk-control-label__toggles .stk-label-unit-toggle' )
 					.invoke( 'attr', 'aria-expanded' )
