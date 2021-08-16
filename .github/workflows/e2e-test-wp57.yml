@@ -31,7 +31,7 @@ jobs:
 
     - name: Setup the Stackable Free and Premium Repository
       run: |
-        git clone https://github.com/gambitph/Stackable.git
+        git clone -b v3 https://github.com/gambitph/Stackable.git
         cd Stackable
         git clone -b v3 https://${{ secrets.ACCESS_KEY }}@github.com/bfintal/Stackable-Premium pro__premium_only
         cd ..
