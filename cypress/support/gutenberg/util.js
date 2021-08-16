@@ -155,3 +155,15 @@ export function removeGlobalCssTransitions() {
 
 	Cypress.$( 'body' ).prepend( `<style id="e2e-test-inline-styles">${ styleText }</style>` )
 }
+
+/**
+ * Function used by `setSelection` to remove all ranges from the selection
+ * and then sets the selection to be a range.
+ *
+ * @param {Array<any>} args
+ */
+export function setBaseAndExtent( ...args ) {
+	const document = args[ 0 ].ownerDocument
+	document.getSelection().removeAllRanges()
+	document.getSelection().setBaseAndExtent( ...args )
+}
