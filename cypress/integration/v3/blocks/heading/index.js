@@ -3,10 +3,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, responsiveAssertHelper, assertBlockTab,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
 
-const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block' } )
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -36,18 +36,24 @@ function typeContent() {
 	} )
 }
 
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+	] )
+	.run
+
 function blockTab( viewport ) {
-	cy.setupWP()
-	cy.newPage()
-	cy.addBlock( 'stackable/heading' ).asBlock( 'headingBlock', { isStatic: true } )
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/heading' ).asBlock( 'headingBlock', { isStatic: true } )
 
-	cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Title here' )
-	cy.openInspector( 'stackable/heading', 'Block' )
-
-	assertBlockTab( '.stk-block-heading', {
-		viewport,
-		alignmentSelector: '.stk-block-heading__text',
+		cy.openInspector( 'stackable/heading', 'Block' )
 	} )
-	// stk-card__content
-	cy.assertFrontendStyles( '@headingBlock' )
+
+	assertBlockTab( { viewport } )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@headingBlock' )
+	} )
 }
