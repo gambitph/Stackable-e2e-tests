@@ -124,17 +124,19 @@ export function changeControlViewport( options = {} ) {
 				const hover = () => selector().find( 'button[aria-label="Desktop"]' ).trigger( 'mouseover', { force: true } )
 				const selectViewport = () => selector().find( `button[aria-label="${ viewport }"]` ).click( { force: true } )
 				const isActive = () => $baseControl.find( `button.is-active[aria-label="${ viewport }"]` ).length
-				if ( viewport !== 'Desktop' ) {
-					if ( ! hovered ) {
-						hover()
-						selectViewport()
-					} else if ( ! isActive() ) {
+				if ( ! isActive() ) {
+					if ( viewport !== 'Desktop' ) {
+						if ( ! hovered ) {
+							hover()
+							selectViewport()
+						} else {
+							selectViewport()
+						}
+					} else if ( hovered ) {
 						selectViewport()
 					}
-				} else if ( hovered ) {
-					selectViewport()
+					cy.wait( 1 )
 				}
-				cy.wait( 1 )
 			}
 		} )
 }
