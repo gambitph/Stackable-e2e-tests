@@ -524,6 +524,7 @@ export function adjust( name, value, options ) {
 		parentSelector = '.components-panel__body',
 		// if the option has no label, pass custom regex to find the control
 		supportedDelimiter = [],
+		isOptional = false,
 	} = options
 
 	// Handle options with no label
@@ -570,6 +571,12 @@ export function adjust( name, value, options ) {
 				combinedControlHandlers,
 				( value, key ) => ! ( $baseControl.find( key ).length || Array.from( first( $baseControl ).classList ).includes( key.replace( '.', '' ) ) )
 			) ) )
+
+			if ( isOptional && ! commandClassKey ) {
+				// If we cannot find this option and `cy.adjust` is set to isOptional = true, return immediately
+				// Always return the selected block which will be used in functions that require chained wp-block elements.
+				return cy.get( '.block-editor-block-list__block.is-selected' )
+			}
 
 			if ( ! commandClassKey ) {
 				throw new Error(

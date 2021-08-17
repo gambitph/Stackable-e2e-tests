@@ -47,11 +47,15 @@ function blockTab( viewport ) {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'stackable/heading' ).asBlock( 'headingBlock', { isStatic: true } )
-
 		cy.openInspector( 'stackable/heading', 'Block' )
 	} )
 
-	assertBlockTab( { viewport } )
+	assertBlockTab( {
+		viewport,
+		blockName: 'stackable/heading',
+		blockSelector: 0,
+		alignmentSelector: '.stk-block-heading__text',
+	} )
 
 	afterEach( () => {
 		cy.assertFrontendStyles( '@headingBlock' )
