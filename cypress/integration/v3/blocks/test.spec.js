@@ -6,26 +6,46 @@ import { registerTests } from '~stackable-e2e/helpers'
 describe( 'Other Tests', registerTests( [ testV3Commands ] ) )
 
 function testV3Commands() {
-	it( 'should test all v3 commands', () => {
+	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
+	} )
+	afterEach( () => {
+		cy.savePost()
+	} )
+	it( 'should test addNewColumn', () => {
 		cy.addBlock( 'stackable/button-group' )
 		// addNewColumn
 		cy.selectBlock( 'stackable/button-group' ).addNewColumn()
 		cy.selectBlock( 'stackable/button-group' ).addNewColumn()
-		cy.selectBlock( 'stackable/button' )
+		cy.addBlock( 'stackable/columns' )
+		cy.selectBlock( 'stackable/columns' ).addNewColumn()
+	} )
+
+	it( 'should test adjustBlockStyle', () => {
+		cy.addBlock( 'stackable/button-group' )
 		cy.openInspector( 'stackable/button', 'Style' )
 		cy.collapse( 'Styles' )
 		// adjustBlockStyle
 		cy.adjustBlockStyle( 'Ghost' )
+	} )
+
+	it( 'should test toggleBlockLinking', () => {
 		cy.addBlock( 'stackable/columns' )
 		cy.selectBlock( 'stackable/columns' ).addNewColumn()
 		// toggleBlockLinking
 		cy.selectBlock( 'stackable/column', 1 ).toggleBlockLinking( false )
 		cy.selectBlock( 'stackable/column', 2 ).toggleBlockLinking( false )
+	} )
+
+	it( 'should test resizeWidth', () => {
+		cy.addBlock( 'stackable/columns' )
+		cy.selectBlock( 'stackable/columns' ).addNewColumn()
 		// resizeWidth
 		cy.selectBlock( 'stackable/column', 2 ).resizeWidth( 25 )
+	} )
 
+	it( 'should test formTokenControl', () => {
 		// formTokenControl
 		cy.addBlock( 'stackable/heading' )
 		cy.openInspector( 'stackable/heading', 'Advanced' )
@@ -38,7 +58,10 @@ function testV3Commands() {
 			parentSelector: '.stk-condition-component',
 			mainComponentSelector: '.components-form-token-field',
 		} )
+	} )
 
+	it( 'should test textControl & adjustDynamicContent', () => {
+		cy.addBlock( 'stackable/heading' )
 		cy.openInspector( 'stackable/heading', 'Style' )
 		cy.collapse( 'Typography' )
 		// Enter text
@@ -50,7 +73,9 @@ function testV3Commands() {
 		}, {
 			isDynamicContent: true,
 		} )
+	} )
 
+	it( 'should test checkboxControl', () => {
 		// checkboxControl
 		cy.addBlock( 'stackable/text' )
 		cy.openInspector( 'stackable/text', 'Advanced' )
@@ -60,24 +85,34 @@ function testV3Commands() {
 		cy.adjust( 'Condition Type', 'date-time', {
 			parentSelector: '.stk-condition-component',
 		} )
-		const parentSelector = '.stk-days-checkbox > div'
+
 		cy.adjust( 'Sunday', true, {
-			parentSelector,
+			parentSelector: '.stk-days-checkbox > div',
 		} )
 		cy.adjust( 'Tuesday', true, {
-			parentSelector,
+			parentSelector: '.stk-days-checkbox > div',
 		} )
 		cy.adjust( 'Thursday', true, {
-			parentSelector,
+			parentSelector: '.stk-days-checkbox > div',
 		} )
 		cy.adjust( 'Saturday', true, {
-			parentSelector,
+			parentSelector: '.stk-days-checkbox > div',
 		} )
 		cy.adjust( 'Thursday', false, {
-			parentSelector,
+			parentSelector: '.stk-days-checkbox > div',
 		} )
+	} )
 
+	it( 'should test dateTimeControl and stkDateTimeControl + Reset', () => {
 		// dateTimeControl
+		cy.addBlock( 'stackable/text' )
+		cy.openInspector( 'stackable/text', 'Advanced' )
+		cy.collapse( 'Conditional Display' )
+		cy.get( '.ugb-panel--conditional-display button:contains(Add New Condition)' ).click( { force: true } )
+
+		cy.adjust( 'Condition Type', 'date-time', {
+			parentSelector: '.stk-condition-component',
+		} )
 		cy.adjust( 'Start Date', {
 			day: '18',
 			month: 'January',
@@ -95,7 +130,9 @@ function testV3Commands() {
 		cy.resetStyle( 'End Date', {
 			parentSelector: '.stk-condition-component',
 		} )
+	} )
 
+	it( 'should test focalPointControl', () => {
 		// focalPointControl
 		cy.addBlock( 'stackable/image' )
 		cy.openInspector( 'stackable/image', 'Style' )
