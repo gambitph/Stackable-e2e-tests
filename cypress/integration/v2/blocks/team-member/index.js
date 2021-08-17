@@ -71,11 +71,11 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/team-member' ).asBlock( 'teamMemberBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__name', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__name', 'Hello World! 1', 0 )
 			.assertBlockContent( '.ugb-team-member__name', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__position', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__position', 'Helloo World!! 12', 0 )
 			.assertBlockContent( '.ugb-team-member__position', 'Helloo World!! 12' )
-		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__description', 'Hellooo World!!! 123' )
+		cy.typeBlock( 'ugb/team-member', '.ugb-team-member__description', 'Hellooo World!!! 123', 0 )
 			.assertBlockContent( '.ugb-team-member__description', 'Hellooo World!!! 123' )
 
 		cy.openInspector( 'ugb/team-member', 'Style' )

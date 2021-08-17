@@ -75,13 +75,13 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/card' ).asBlock( 'cardBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/card', '.ugb-card__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/card', '.ugb-card__title', 'Hello World! 1', 0 )
 			.assertBlockContent( '.ugb-card__title', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/card', '.ugb-card__subtitle', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/card', '.ugb-card__subtitle', 'Helloo World!! 12', 0 )
 			.assertBlockContent( '.ugb-card__subtitle', 'Helloo World!! 12' )
-		cy.typeBlock( 'ugb/card', '.ugb-card__description', 'Hellooo World!!! 123' )
+		cy.typeBlock( 'ugb/card', '.ugb-card__description', 'Hellooo World!!! 123', 0 )
 			.assertBlockContent( '.ugb-card__description', 'Hellooo World!!! 123' )
-		cy.typeBlock( 'ugb/card', '.ugb-button--inner', 'Helloooo World!!!! 1234' )
+		cy.typeBlock( 'ugb/card', '.ugb-button--inner', 'Helloooo World!!!! 1234', 0 )
 			.assertBlockContent( '.ugb-button--inner', 'Helloooo World!!!! 1234' )
 
 		cy.openInspector( 'ugb/card', 'Style' )

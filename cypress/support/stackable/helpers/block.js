@@ -12,6 +12,8 @@ class BlockModule extends Module {
 
 	assertAlignment( { viewport } ) {
 		cy.adjust( 'Content Alignment', 'left', { viewport } )
+		cy.adjust( 'Content Alignment', 'center', { viewport } )
+		cy.adjust( 'Content Alignment', 'right', { viewport } )
 	}
 }
 

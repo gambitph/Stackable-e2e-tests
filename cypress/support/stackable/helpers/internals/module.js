@@ -51,7 +51,7 @@ class Module {
 			}
 		} )
 		return {
-			run: () => self.run( ...namespaces ),
+			run: ( ...args ) => self.run( namespaces, args ),
 		}
 	}
 
@@ -61,7 +61,7 @@ class Module {
 	all() {
 		const self = this
 		return {
-			run: () => self.run( ...Object.keys( self.registeredTests ) ),
+			run: ( ...args ) => self.run( Object.keys( self.registeredTests ), args ),
 		}
 	}
 
@@ -70,8 +70,9 @@ class Module {
 	 * run the tests.
 	 *
 	 * @param {Array<string>} namespaces
+	 * @param {Array<any>}args
 	 */
-	run( ...namespaces ) {
+	run( namespaces, args ) {
 		if ( ! namespaces.length ) {
 			return
 		}
@@ -82,7 +83,7 @@ class Module {
 				throw new Error( `${ namespace } is not a valid test function.` )
 			}
 
-			it( `should assert ${ namespace } inside the ${ self.moduleName }`, self.registeredTests[ namespace ] )
+			it( `should assert ${ namespace } inside the ${ self.moduleName }`, () => self.registeredTests[ namespace ]( ...args ) )
 		} )
 	}
 }
