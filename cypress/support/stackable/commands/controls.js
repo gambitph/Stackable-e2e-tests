@@ -746,15 +746,22 @@ function toggleBlockLinking( subject, value ) {
  * @param {number} value
  */
 function resizeWidth( subject, value ) {
-	cy.wrap( subject )
+	const selectTooltip = () => cy
+		.wrap( subject )
 		.find( '.stk-resizable-column__size-tooltip' )
 		.click( { force: true } )
 
+	selectTooltip()
 	cy.get( '.components-popover__content:contains(Column)' )
-		.find( 'input.components-text-control__input' )
-		.type( `{selectall}${ value }` )
+		.then( $popover => {
+			if ( $popover.length ) {
+				cy.adjust( 'Column', value, {
+					parentSelector: '.components-popover__content',
+					supportedDelimiter: [ ' ' ],
+				} )
+			}
+		} )
 
-	// Click anywhere to close the popover
-	cy.get( '.interface-interface-skeleton__sidebar' )
-		.click( { force: true } )
+	// Click the tooltip to close the popover
+	selectTooltip()
 }
