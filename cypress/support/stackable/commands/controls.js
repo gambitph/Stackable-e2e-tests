@@ -64,6 +64,14 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		changeControlState( options )
 	}
 
+	// Function to call after adjusting the options
+	optionsToPass.afterAdjust = ( name, value, {} ) => {
+		// Always go back to the normal state after adjusting the options to support direct assertion.
+		changeControlState( {
+			name, value, state: 'normal',
+		} )
+	}
+
 	// Handle options with no label
 	if ( label === 'Color Type' ) {
 		args.shift()

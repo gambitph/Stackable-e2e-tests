@@ -39,6 +39,8 @@ function typeContent() {
 const assertBlockTab = Block
 	.includes( [
 		'Alignment',
+		'Background',
+		'Size & Spacing',
 	] )
 	.run
 
@@ -47,14 +49,17 @@ function blockTab( viewport ) {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'stackable/heading' ).asBlock( 'headingBlock', { isStatic: true } )
+		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'V3 Heading', 0 )
 		cy.openInspector( 'stackable/heading', 'Block' )
 	} )
 
 	assertBlockTab( {
 		viewport,
-		blockName: 'stackable/heading',
-		blockSelector: 0,
+		mainSelector: '.stk-block-heading',
 		alignmentSelector: '.stk-block-heading__text',
+		enableColumnAlignment: false,
+		enableInnerBlockAlignment: false,
+		enableInnerBlockVerticalAlignment: false,
 	} )
 
 	afterEach( () => {
