@@ -430,10 +430,10 @@ class BlockModule extends Module {
 		viewport,
 	} ) {
 		if ( viewport === 'Desktop' ) {
-			cy.typePostTitle( 'Post 49212' )
 			cy.getPostData().then( data => {
 				cy.toggleStyle( 'Link' )
 				cy.adjust( 'Link / URL', 'https://wpstackable.com/' ).assertHtmlAttribute( '.stk-block-link', 'href', 'https://wpstackable.com/', { assertBackend: false } )
+				cy.resetStyle( 'Link / URL' )
 				cy.adjust( 'Link / URL', {
 					source: 'Current Post',
 					fieldName: 'Post URL',
