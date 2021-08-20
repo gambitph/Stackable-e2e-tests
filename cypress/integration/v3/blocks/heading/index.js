@@ -41,6 +41,7 @@ const assertBlockTab = Block
 		'Alignment',
 		'Background',
 		'Size & Spacing',
+		'Borders & Shadows',
 	] )
 	.run
 
