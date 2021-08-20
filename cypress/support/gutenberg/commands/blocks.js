@@ -21,6 +21,7 @@ Cypress.Commands.add( 'typeBlock', typeBlock )
 Cypress.Commands.add( 'deleteBlock', deleteBlock )
 Cypress.Commands.add( 'addInnerBlock', addInnerBlock )
 Cypress.Commands.add( 'asBlock', { prevSubject: true }, asBlock )
+Cypress.Commands.add( 'addNewColumn', { prevSubject: true }, addNewColumn )
 
 /**
  * Command for asserting block error.
@@ -226,3 +227,14 @@ export function asBlock( subject, alias, options = {} ) {
 	} )
 }
 
+/**
+ * Command for adding a new column.
+ *
+ * @param {*} subject
+ */
+export function addNewColumn( subject ) {
+	cy.wrap( subject )
+		.find( '.block-list-appender' )
+		.find( 'button[aria-label="Add Button"], button[aria-label="Add Column"]' )
+		.click( { force: true } )
+}

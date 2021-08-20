@@ -1,10 +1,4 @@
 /**
- * External dependencies
- */
-import { isEmpty, keys } from 'lodash'
-import { containsRegExp } from '~common/util'
-
-/**
  * Register functions to cypress commands.
  */
 // Toolbar Controls
@@ -51,70 +45,16 @@ export function pasteStyle( subject, blockToPaste ) {
  * @param {Object} options
  */
 export function adjustDynamicContent( blockName, blockSelector, selector, options = {} ) {
-	const {
-		source = '',
-		post = '',
-		fieldName = '',
-		fieldOptions = {},
-	} = options
-
-	const block = () => cy.selectBlock( blockName, blockSelector )
-
 	if ( typeof selector === 'string' ) {
-		block()
+		cy.selectBlock( blockName, blockSelector )
 			.find( selector )
 			.type( '{selectall}', { force: true } )
 	} else if ( typeof selector === 'function' ) {
 		selector()
-		cy.wait( 1000 )
 	}
 
 	cy.adjustToolbar( 'Dynamic Fields', () => {
-		const selectFromSuggestions = option => cy
-			.get( '.stackable-dynamic-content__popover-content' )
-			.contains( containsRegExp( option ) )
-			.parentsUntil( '.components-base-control' )
-			.find( '.stackable-dynamic-content__input-container>input' )
-			.click( { force: true } )
-
-		const selectOption = option => cy
-			.get( '.react-autosuggest__suggestions-container--open' )
-			.contains( containsRegExp( option ) )
-			.click( { force: true } )
-
-		if ( source.length ) {
-			selectFromSuggestions( 'Dynamic Source' )
-			selectOption( source )
-		}
-
-		if ( Array( 'Other Posts', 'Latest Post' ).includes( source ) && post.length ) {
-			// Select a post if source is Other Posts / Latest Post
-			selectFromSuggestions( `${ source === 'Other Posts' ? 'Posts/Pages' : 'Nth Latest Post' }` )
-			cy
-				.get( '.react-autosuggest__suggestions-container--open' )
-				.contains( post )
-				.click( { force: true } )
-		}
-
-		selectFromSuggestions( 'Field' )
-		selectOption( fieldName )
-
-		if ( ! isEmpty( fieldOptions ) ) {
-			keys( fieldOptions ).forEach( fieldOption => {
-				cy.adjust( fieldOption, fieldOptions[ fieldOption ], {
-					parentSelector: '.stackable-dynamic-content__popover-content',
-					supportedDelimiter: [ ' ' ],
-				} )
-			} )
-		}
-
-		// Apply the changes
-		cy
-			.get( '.stackable-dynamic-content__popover-content' )
-			.find( 'button.apply-changes-button' )
-			.click( { force: true } )
-
-		cy.waitLoader( '.components-spinner' )
+		cy.adjustDynamicContentPopover( options )
 	} )
 	cy.savePost()
 }

@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	kebabCase, keys, first, isEmpty,
+	kebabCase, keys, first,
 } from 'lodash'
 import { containsRegExp } from '~common/util'
 
@@ -26,32 +26,50 @@ Cypress.Commands.add( 'fourRangeControl', fourRangeControl )
 Cypress.Commands.add( 'iconControl', iconControl )
 Cypress.Commands.add( 'popoverControl', popoverControl )
 Cypress.Commands.add( 'suggestionControl', suggestionControl )
-Cypress.Commands.add( 'dynamicContentControl', dynamicContentControl )
 Cypress.Commands.add( 'focalPointControl', focalPointControl )
-Cypress.Commands.add( 'dateTimeControl', dateTimeControl )
+Cypress.Commands.add( 'stkDateTimeControl', stkDateTimeControl )
 
 // Reset
 Cypress.Commands.add( 'iconControlReset', iconControlReset )
 Cypress.Commands.add( 'fourRangeControlReset', fourRangeControlReset )
 Cypress.Commands.add( 'suggestionControlClear', suggestionControlClear )
 Cypress.Commands.add( 'popoverControlReset', popoverControlReset )
-Cypress.Commands.add( 'dynamicContentControlReset', dynamicContentControlReset )
 Cypress.Commands.add( 'focalPointControlReset', focalPointControlReset )
-Cypress.Commands.add( 'dateTimeControlReset', dateTimeControlReset )
+Cypress.Commands.add( 'stkDateTimeControlReset', stkDateTimeControlReset )
 
 // Adjust styles
 Cypress.Commands.add( 'adjustLayout', adjustLayout )
 Cypress.Commands.add( 'adjustDesign', adjustDesign )
 
-// Adjust linking
-Cypress.Commands.add( 'activateOrDeactivateLinking', activateOrDeactivateLinking )
+// Toggle linking
+Cypress.Commands.add( 'toggleBlockLinking', { prevSubject: true }, toggleBlockLinking )
 
-// Adjust resizable column
-Cypress.Commands.add( 'adjustResizableColumnWidth', adjustResizableColumnWidth )
+// Adjust resizable column width
+Cypress.Commands.add( 'resizeWidth', { prevSubject: true }, resizeWidth )
 
 /**
  * Overwrite Gutenberg Commands
  */
+Cypress.Commands.overwrite( 'textControl', adjustDynamicContentControl )
+Cypress.Commands.overwrite( 'urlInputControl', adjustDynamicContentControl )
+// TODO: Add overwrite for `imageControl`
+
+function adjustDynamicContentControl( originalFn, ...args ) {
+	const optionsToPass = args.length === 3 ? args.pop() : {}
+
+	if ( optionsToPass.isDynamicContent && typeof args[ 1 ] === 'object' ) {
+		cy
+			.getBaseControl( ...args, optionsToPass )
+			.find( 'button[aria-label="Dynamic Fields"]' )
+			.click( { force: true } )
+
+		// Adjust popover with the `value`
+		cy.adjustDynamicContentPopover( args[ 1 ] )
+	} else {
+		return originalFn( ...args, optionsToPass )
+	}
+}
+
 Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 	const optionsToPass = args.length === 3 ? args.pop() : {}
 	const label = first( args )
@@ -89,9 +107,8 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		'.ugb-columns-width-control': 'columnControl',
 		'.ugb-design-control': 'designControl',
 		'.ugb-icon-control': 'iconControl',
-		'.stk-dynamic-content-control': 'dynamicContentControl',
 		'.stk-advanced-focal-point-control': 'focalPointControl',
-		'.stk-date-time-control__field': 'dateTimeControl',
+		'.stk-date-time-control__field': 'stkDateTimeControl',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -124,9 +141,8 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 		 'ugb-four-range-control': 'fourRangeControlReset',
 		 '.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
 		 'ugb-icon-control': 'iconControlReset',
-		 '.stk-control-content': 'dynamicContentControlReset',
 		 '.stk-advanced-focal-point-control': 'focalPointControlReset',
-		 '.stk-date-time-control__field': 'dateTimeControlReset',
+		 '.stk-date-time-control__field': 'stkDateTimeControlReset',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -200,10 +216,13 @@ function popoverControl( name, value = {}, options = {} ) {
 	const {
 		isInPopover = false,
 		parentSelector,
+		mainComponentSelector,
 	} = options
 
 	const clickPopoverButton = () => {
-		cy.getBaseControl( name, { isInPopover, parentSelector } )
+		cy.getBaseControl( name, {
+			isInPopover, parentSelector, mainComponentSelector,
+		} )
 			.find( 'button[aria-label="Edit"]' )
 			.click( { force: true } )
 	}
@@ -290,12 +309,14 @@ function suggestionControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, value, options )
@@ -318,12 +339,14 @@ function suggestionControlClear( name, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, null, options )
@@ -345,12 +368,14 @@ function fourRangeControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	const clickLockButton = () => selector()
@@ -399,12 +424,14 @@ function fourRangeControlReset( name, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = isInPopover => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	const clickLockButton = () => selector( isInPopover )
@@ -440,12 +467,14 @@ function columnControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, value, options )
@@ -539,34 +568,6 @@ function iconControlReset( name, options = {} ) {
 }
 
 /**
- * Command for resetting the dynamic content control.
- *
- * @param {string} name
- * @param {Object} options
- */
-function dynamicContentControlReset( name, options = {} ) {
-	const {
-		isInPopover = false,
-		beforeAdjust = () => {},
-		parentSelector,
-		supportedDelimiter = [],
-	} = options
-
-	const selector = () => cy.getBaseControl( name, {
-		isInPopover,
-		parentSelector,
-		supportedDelimiter,
-	} )
-
-	beforeAdjust( name, null, options )
-	selector()
-		.contains( containsRegExp( name ) )
-		.closest( '.components-panel__body>.components-base-control' )
-		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
-		.click( { force: true } )
-}
-
-/**
  * Command for resetting the image focal point control.
  *
  * @param {string} name
@@ -578,12 +579,14 @@ function focalPointControlReset( name, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, null, options )
@@ -591,34 +594,6 @@ function focalPointControlReset( name, options = {} ) {
 		.contains( containsRegExp( name ) )
 		.closest( '.components-panel__body>.components-base-control' )
 		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
-		.click( { force: true } )
-}
-
-/**
- * Command for resetting the date time control.
- *
- * @param {string} name
- * @param {Object} options
- */
-function dateTimeControlReset( name, options = {} ) {
-	const {
-		isInPopover = false,
-		beforeAdjust = () => {},
-		parentSelector,
-		supportedDelimiter = [],
-	} = options
-
-	const selector = () => cy.getBaseControl( name, {
-		isInPopover,
-		parentSelector,
-		supportedDelimiter,
-	} )
-
-	beforeAdjust( name, null, options )
-	selector()
-		.contains( containsRegExp( name ) )
-		.closest( '.components-panel__body>.components-base-control' )
-		.find( 'button[title="Reset"]' )
 		.click( { force: true } )
 }
 
@@ -658,84 +633,6 @@ export function adjustDesign( option = '' ) {
 }
 
 /**
- * Function for adjusting the dynamic content options in the inspector.
- *
- * @param {string} name
- * @param {Object} value
- * @param {Object} options
- */
-function dynamicContentControl( name, value, options = {} ) {
-	const {
-		isInPopover = false,
-		beforeAdjust = () => {},
-		parentSelector,
-		supportedDelimiter = [],
-	} = options
-
-	const {
-		source = '',
-		post = '',
-		fieldName = '',
-		fieldOptions = {},
-	} = value
-
-	if ( typeof value === 'object' ) {
-		beforeAdjust( name, value, options )
-		cy
-			.getBaseControl( name, {
-				isInPopover, parentSelector, supportedDelimiter,
-			} )
-			.find( 'button[aria-label="Dynamic Fields"]' )
-			.click( { force: true } )
-
-		const selectFromSuggestions = option => cy
-			.get( '.stackable-dynamic-content__popover-content' )
-			.contains( containsRegExp( option ) )
-			.parentsUntil( '.components-base-control' )
-			.find( '.stackable-dynamic-content__input-container>input' )
-			.click( { force: true } )
-
-		const selectOption = option => cy
-			.get( '.react-autosuggest__suggestions-container--open' )
-			.contains( option )
-			.click( { force: true } )
-
-		if ( source.length ) {
-			selectFromSuggestions( 'Dynamic Source' )
-			selectOption( source )
-		}
-
-		if ( Array( 'Other Posts', 'Latest Post' ).includes( source ) && post.length ) {
-		// Select a post if source is Other Posts / Latest Post
-			selectFromSuggestions( `${ source === 'Other Posts' ? 'Posts/Pages' : 'Nth Latest Post' }` )
-			selectOption( post )
-		}
-
-		selectFromSuggestions( 'Field' )
-		selectOption( fieldName )
-
-		if ( ! isEmpty( fieldOptions ) ) {
-			keys( fieldOptions ).forEach( fieldOption => {
-				cy.adjust( fieldOption, fieldOptions[ fieldOption ], {
-					parentSelector: '.stackable-dynamic-content__popover-content',
-					supportedDelimiter: [ ' ' ],
-				} )
-			} )
-		}
-
-		// Apply the changes
-		cy
-			.get( '.stackable-dynamic-content__popover-content' )
-			.find( 'button.apply-changes-button' )
-			.click( { force: true } )
-
-		cy.waitLoader( '.components-spinner' )
-
-		cy.savePost()
-	}
-}
-
-/**
  * Command for adjusting the focal point control.
  *
  * @param {string} name
@@ -748,151 +645,131 @@ function focalPointControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, value, options )
 	value.forEach( ( val, index ) => {
-		selector()
-			.find( 'input.components-input-control__input' )
-			.eq( index )
-			.type( `{selectall}${ val }{enter}`, { force: true } )
+		if ( val !== undefined ) {
+			selector()
+				.find( 'input.components-input-control__input' )
+				.eq( index )
+				.type( `{selectall}${ val }{enter}`, { force: true } )
+		}
 	} )
 }
 
 /**
- * Command for adjusting the date time control.
+ * Command for adjusting the date time control of stackable.
  *
  * @param {string} name
  * @param {Object} value
  * @param {Object} options
  */
-function dateTimeControl( name, value, options = {} ) {
+function stkDateTimeControl( name, value, options = {} ) {
 	const {
-		isInPopover = false,
-		beforeAdjust = () => {},
+		isInPopover,
 		parentSelector,
-		supportedDelimiter = [],
+		supportedDelimiter,
+		mainComponentSelector,
 	} = options
 
-	const {
-		day,
-		month,
-		year,
-		hours = '12',
-		minutes = '00',
-		period = 'AM',
-	} = value
+	const selector = () => cy
+		.getBaseControl( name, {
+			isInPopover,
+			parentSelector,
+			supportedDelimiter,
+			mainComponentSelector,
+		} )
 
-	beforeAdjust( name, value, options )
-	cy.getBaseControl( name, {
-		isInPopover, parentSelector, supportedDelimiter,
-	} )
+	selector()
 		.find( `.stk-date-time-control__field button[title="${ name }"]` )
 		.click( { force: true } )
 
-	const selectPopover = () => cy
-		.get( `.stk-components-popover__content:contains(${ name })` )
+	// After clicking the field, use the dateTimePopover in gutenberg commands
+	cy.dateTimeControl( name, value, options )
 
-	// Adjust the day
-	selectPopover()
-		.find( '.components-datetime__time input[aria-label="Day"]' )
-		.type( `{selectall}${ day }`, { force: true } )
-
-	// Adjust the month
-	selectPopover()
-		.find( '.components-datetime__time select[aria-label="Month"]' )
-		.select( month, { force: true } )
-
-	// Adjust the year
-	selectPopover()
-		.find( '.components-datetime__time input[aria-label="Year"]' )
-		.type( `{selectall}${ year }`, { force: true } )
-
-	// Adjust the hours
-	selectPopover()
-		.find( '.components-datetime__time input[aria-label="Hours"]' )
-		.type( `{selectall}${ hours }`, { force: true } )
-
-	// Adjust the minutes
-	selectPopover()
-		.find( '.components-datetime__time input[aria-label="Minutes"]' )
-		.type( `{selectall}${ minutes }`, { force: true } )
-
-	// Adjust the period
-	selectPopover()
-		.find( '.components-datetime__time-field-am-pm button' )
-		.contains( containsRegExp( period ) )
+	// Click again to close popover
+	selector()
+		.find( `.stk-date-time-control__field button[title="${ name }"]` )
 		.click( { force: true } )
-
-	// Click outside to close the popover
-	cy.get( '.components-panel' ).click( { force: true } )
 }
 
 /**
- * Command for activating or deactivating the linking module in a column.
+ * Command for adjusting the date time control of stackable.
  *
- * @param {string} blockName - the parent block
- * @param {string | number | Object} selector - selector of parent block
+ * @param {string} name
  * @param {Object} options
  */
-function activateOrDeactivateLinking( blockName = 'stackable/columns', selector, options = {} ) {
+function stkDateTimeControlReset( name, options = {} ) {
 	const {
-		index = 1, // index of the column to adjust
-		columnDataType = 'stackable/column',
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
 	} = options
 
-	const selectColumn = () => cy
-		.get( '.is-selected' )
-		.find( `div[data-type="${ columnDataType }"]` )
-		.eq( index )
-
-	cy.selectBlock( blockName, selector )
-	selectColumn()
+	cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} )
+		.find( 'button[title="Reset"]' )
 		.click( { force: true } )
+}
 
-	selectColumn()
+/**
+ * Command for linking or unlinking a column block
+ *
+ * @param {*} subject - the previous subject yielded
+ * @param {boolean} value
+ */
+function toggleBlockLinking( subject, value ) {
+	cy.wrap( subject )
 		.find( '.stk-linking-wrapper > .stk-linking-wrapper__tooltip' )
-		.click( { force: true } )
+		.invoke( 'attr', 'class' )
+		.then( $classNames => {
+			const isLinked = ! $classNames.split( ' ' ).includes( 'stk--is-unlinked' )
+
+			if ( isLinked !== value ) {
+				cy.wrap( subject )
+					.find( '.stk-linking-wrapper > .stk-linking-wrapper__tooltip' )
+					.click( { force: true } )
+			}
+		} )
 }
 
 /**
- * Command for activating or deactivating the linking module in a column.
+ * Command for resizing the width of a column
  *
- * @param {string} blockName - the parent block
- * @param {string | number | Object} selector - selector of parent block
- * @param {Object} options
+ * @param {*} subject - the previous subject yielded
+ * @param {number} value
  */
-function adjustResizableColumnWidth( blockName = 'stackable/columns', selector, options = {} ) {
-	const {
-		index = 1, // index of the column to adjust
-		value,
-		columnDataType = 'stackable/column',
-	} = options
-
-	const selectColumn = () => cy
-		.get( '.is-selected' )
-		.find( `div[data-type="${ columnDataType }"]` )
-		.eq( index )
-
-	cy.selectBlock( blockName, selector )
-	selectColumn()
-		.click( { force: true } )
-
-	selectColumn()
+function resizeWidth( subject, value ) {
+	const selectTooltip = () => cy
+		.wrap( subject )
 		.find( '.stk-resizable-column__size-tooltip' )
 		.click( { force: true } )
 
+	selectTooltip()
 	cy.get( '.components-popover__content:contains(Column)' )
-		.find( 'input.components-text-control__input' )
-		.type( `{selectall}${ value }` )
+		.then( $popover => {
+			if ( $popover.length ) {
+				cy.adjust( 'Column', value, {
+					parentSelector: '.components-popover__content',
+					supportedDelimiter: [ ' ' ],
+				} )
+			}
+		} )
 
-	// Click anywhere to close the popover
-	cy.get( '.interface-interface-skeleton__sidebar' )
-		.click( { force: true } )
+	// Click the tooltip to close the popover
+	selectTooltip()
 }
