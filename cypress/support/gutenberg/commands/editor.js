@@ -330,9 +330,8 @@ export function addFeaturedImage() {
 	cy.getPostUrls().then( ( { editorUrl } ) => {
 		// Save the current post as we're going to register a post.
 		cy.savePost()
-		// Register one post to be able to add one image to media library.
-		// TODO: Find a better way to add an image to the media library.
-		cy.registerPosts( { numOfPosts: 1 } )
+		// Add one image to the media library for featured image selection.
+		cy.addMediaToServer()
 		cy.visit( editorUrl )
 		cy.openSidebar( 'Settings' )
 		cy
