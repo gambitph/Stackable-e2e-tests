@@ -283,40 +283,86 @@ class BlockModule extends Module {
 		}
 
 		if ( enablePaddings ) {
-			const states = [ 'hover', 'normal' ]
-			const willAssertUnits = [
-				{
-					unit: 'px',
-					hover: [ 141, 142, 143, 144 ],
-					normal: [ 151, 152, 153, 154 ],
+			// Unit - px
+			cy.adjust( 'Paddings', [ 141, 142, 143, 144 ], {
+				viewport, unit: 'px', state: 'hover',
+			} ).assertComputedStyle( {
+				[ `${ MAIN_SELECTOR }:hover` ]: {
+					'padding-top': '141px',
+					'padding-right': '142px',
+					'padding-bottom': '143px',
+					'padding-left': '144px',
 				},
-				{
-					unit: 'em',
-					hover: [ 23, 24, 25, 26 ],
-					normal: [ 19, 20, 21, 22 ],
+			} )
+			cy.adjust( 'Paddings', [ 151, 152, 153, 154 ], {
+				viewport, unit: 'px', state: 'normal',
+			} ).assertComputedStyle( {
+				[  MAIN_SELECTOR ]: {
+					'padding-top': '151px',
+					'padding-right': '152px',
+					'padding-bottom': '153px',
+					'padding-left': '154px',
 				},
-				{
-					unit: '%',
-					hover: [ 67, 68, 69, 70 ],
-					normal: [ 77, 78, 79, 80 ],
-				},
-			]
+			} )
+			cy.resetStyle( 'Paddings', {
+				viewport, unit: 'px', state: 'hover',
+			} )
+			cy.resetStyle( 'Paddings', {
+				viewport, unit: 'px', state: 'normal',
+			} )
 
-			willAssertUnits.forEach( values => {
-				states.forEach( state => {
-					const valToAssert = state === 'hover' ? values.hover : values.normal
+			// Unit - em
+			cy.adjust( 'Paddings', [ 23, 24, 25, 26 ], {
+				viewport, unit: 'em', state: 'hover',
+			} )
+			cy.adjust( 'Paddings', [ 19, 20, 21, 22 ], {
+				viewport, unit: 'em', state: 'normal',
+			} ).assertComputedStyle( {
+				[  MAIN_SELECTOR ]: {
+					'padding-top': '19em',
+					'padding-right': '20em',
+					'padding-bottom': '21em',
+					'padding-left': '22em',
+				},
+				[ `${ MAIN_SELECTOR }:hover` ]: {
+					'padding-top': '23em',
+					'padding-right': '24em',
+					'padding-bottom': '25em',
+					'padding-left': '26em',
+				},
+			} )
+			cy.resetStyle( 'Paddings', {
+				viewport, unit: 'em', state: 'hover',
+			} )
+			cy.resetStyle( 'Paddings', {
+				viewport, unit: 'em', state: 'normal',
+			} )
 
-					cy.adjust( 'Paddings', valToAssert, {
-						viewport, unit: values.unit, state,
-					} ).assertComputedStyle( {
-						[ `${ MAIN_SELECTOR }${ state === 'hover' ? ':hover' : '' }` ]: {
-							'padding-top': `${ valToAssert[ 0 ] }${ values.unit }`,
-							'padding-right': `${ valToAssert[ 1 ] }${ values.unit }`,
-							'padding-bottom': `${ valToAssert[ 2 ] }${ values.unit }`,
-							'padding-left': `${ valToAssert[ 3 ] }${ values.unit }`,
-						},
-					} )
-				} )
+			// Unit - %
+			cy.adjust( 'Paddings', [ 77, 78, 79, 80 ], {
+				viewport, unit: '%', state: 'normal',
+			} )
+			cy.adjust( 'Paddings', [ 67, 68, 69, 70 ], {
+				viewport, unit: '%', state: 'hover',
+			} ).assertComputedStyle( {
+				[  MAIN_SELECTOR ]: {
+					'padding-top': '77%',
+					'padding-right': '78%',
+					'padding-bottom': '79%',
+					'padding-left': '80%',
+				},
+				[ `${ MAIN_SELECTOR }:hover` ]: {
+					'padding-top': '67%',
+					'padding-right': '68%',
+					'padding-bottom': '69%',
+					'padding-left': '70%',
+				},
+			} )
+			cy.resetStyle( 'Paddings', {
+				viewport, unit: '%', state: 'hover',
+			} )
+			cy.resetStyle( 'Paddings', {
+				viewport, unit: '%', state: 'normal',
 			} )
 		}
 
@@ -373,6 +419,8 @@ class BlockModule extends Module {
 			cy.adjust( 'Borders', 'solid' ).assertComputedStyle( { [ MAIN_SELECTOR ]: { 'border-style': 'solid' } } )
 			cy.adjust( 'Borders', 'dashed' ).assertComputedStyle( { [ MAIN_SELECTOR ]: { 'border-style': 'dashed' } } )
 			cy.adjust( 'Borders', 'dotted' ).assertComputedStyle( { [ MAIN_SELECTOR ]: { 'border-style': 'dotted' } } )
+		} else {
+			cy.adjust( 'Borders', 'solid' )
 		}
 
 		cy.adjust( 'Border Width', [ 11, 12, 13, 14 ], { viewport, state: 'normal' } )

@@ -78,8 +78,8 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 	optionsToPass.beforeAdjust = ( name, value, _options ) => {
 		const options = Object.assign( _options, { name, value } )
 		changeControlViewport( options )
-		changeUnit( options )
 		changeControlState( options )
+		changeUnit( options )
 	}
 
 	// Function to call after adjusting the options
@@ -130,8 +130,8 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 	optionsToPass.beforeAdjust = ( name, value, _options ) => {
 		const options = Object.assign( _options, { name, value } )
 		changeControlViewport( options )
-		changeUnit( options )
 		changeControlState( options )
+		changeUnit( options )
 	}
 
 	const customOptions = {
@@ -139,7 +139,7 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 		 'ugb-button-icon-control': 'popoverControlReset',
 		 'ugb-advanced-autosuggest-control': 'suggestionControlClear',
 		 'ugb-four-range-control': 'fourRangeControlReset',
-		 '.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
+		 '.ugb-four-range-control__lock': 'fourRangeControlReset', // TODO: Find a better selector
 		 'ugb-icon-control': 'iconControlReset',
 		 '.stk-advanced-focal-point-control': 'focalPointControlReset',
 		 '.stk-date-time-control__field': 'stkDateTimeControlReset',
