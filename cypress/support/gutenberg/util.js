@@ -20,7 +20,7 @@ export function withInspectorTabMemory( options = {} ) {
 			const blockName = wp.data.select( 'core/block-editor' ).getBlock( subject.data( 'block' ) ).name
 			const blockPlugin = blockName.split( '/' )[ 0 ]
 
-			if ( ! Array( 'ugb', 'stk' ).includes( blockPlugin ) ) {
+			if ( ! Array( 'ugb', 'stackable' ).includes( blockPlugin ) ) {
 				return originalFn( ...args )
 			}
 
@@ -154,4 +154,16 @@ export function removeGlobalCssTransitions() {
 		.join( ' ' )
 
 	Cypress.$( 'body' ).prepend( `<style id="e2e-test-inline-styles">${ styleText }</style>` )
+}
+
+/**
+ * Function used by `setSelection` to remove all ranges from the selection
+ * and then sets the selection to be a range.
+ *
+ * @param {Array<any>} args
+ */
+export function setBaseAndExtent( ...args ) {
+	const document = args[ 0 ].ownerDocument
+	document.getSelection().removeAllRanges()
+	document.getSelection().setBaseAndExtent( ...args )
 }

@@ -4,3 +4,4 @@ import './stackable'
 
 // Use Jest assertions
 import 'cypress-jest-adapter'
+import 'cypress-real-events/support'

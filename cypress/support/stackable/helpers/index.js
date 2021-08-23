@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	lowerCase, isEmpty,
+	lowerCase, isEmpty, range,
 } from 'lodash'
 import { registerTests as _registerTests } from '~gutenberg-e2e/helpers'
 
@@ -322,7 +322,7 @@ export const assertContainer = ( selector, options = {}, attrNameTemplate = 'col
 			},
 		} ).assertComputedStyle( {
 			[ `${ selector }:before` ]: {
-				'background-image': 'linear-gradient(180deg, #a92323 11%, #404633)',
+				'background-image': 'linear-gradient(180deg, #a92323 11%, #404633, 80%)',
 				'mix-blend-mode': 'hard-light',
 			},
 		} )
@@ -340,7 +340,7 @@ export const assertContainer = ( selector, options = {}, attrNameTemplate = 'col
 				'Image Blend Mode': 'hue',
 			},
 		} ).assertComputedStyle( {
-			[ `${ selector }:before` ]: {
+			[ selector ]: {
 				'background-blend-mode': 'hue',
 				'background-image': `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
 				'background-attachment': 'fixed',
@@ -437,8 +437,78 @@ export const assertContainerLink = ( selector, options = {}, assertOptions = {} 
 				cy.adjust( 'Link / URL', 'https://www.google.com/' ).assertHtmlAttribute( `${ selector } > a`, 'href', 'https://www.google.com/', assertOptions )
 				cy.adjust( 'Link Title', 'Sample Link Title' ).assertHtmlAttribute( `${ selector } > a`, 'title', 'Sample Link Title', assertOptions )
 			}
-			cy.adjust( 'Open link in new tab', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', 'noopener noreferrer', assertOptions )
-			cy.adjust( 'Nofollow link', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', 'noopener noreferrer nofollow', assertOptions )
+			cy.adjust( 'Open link in new tab', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', /noopener noreferrer/, Object.assign( assertOptions, { assertBackend: false } ) )
+			cy.adjust( 'Nofollow link', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', /nofollow/, Object.assign( assertOptions, { assertBackend: false } ) )
+			cy.adjust( 'Sponsored', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', /sponsored/, Object.assign( assertOptions, { assertBackend: false } ) )
+			cy.adjust( 'UGC', true ).assertHtmlAttribute( `${ selector } > a`, 'rel', /ugc/, Object.assign( assertOptions, { assertBackend: false } ) )
+		} )
+	} )
+}
+
+/**
+ * Helper function for asserting the URL popover of the buttons.
+ *
+ * @param {string} blockName
+ * @param {string | number | Object} blockSelector
+ * @param {Object} options
+ * @param {Object} assertOptions
+ */
+export const assertUgbButtons = ( blockName, blockSelector, options = {}, assertOptions = {} ) => {
+	const {
+		editorSelector = '',
+		frontendSelector = '',
+		viewport = 'Desktop',
+	} = options
+	const desktopOnly = callback => viewport === 'Desktop' && callback()
+
+	desktopOnly( () => {
+		cy.get( '.is-selected' ).then( $block => {
+			// Count the number of buttons
+			const count = $block.find( editorSelector.replace( '%s', '' ) ).length
+			if ( count === 0 ) {
+				return
+			}
+
+			const parentSelector = '.components-popover__content .block-editor-link-control'
+			const supportedDelimiter = [ ' ' ]
+
+			range( 1, count + 1 ).forEach( number => {
+				cy.get( '.is-selected' ).find( editorSelector.replace( '%s', number ) ).click( { force: true } )
+
+				/**
+				 * TODO: This will not work on dynamic blocks since we need to do some extra steps
+				 * before adjusting the options again.
+				 */
+
+				cy.get( '.components-popover__content .block-editor-link-control' ).then( () => {
+					cy.get( '.components-popover__content .block-editor-link-control' )
+						.find( 'input.block-editor-url-input__input' )
+						.type( `{selectall}https://wpstackable${ number }.com/{enter}`, { force: true } )
+					cy
+						.selectBlock( blockName, blockSelector )
+						.assertHtmlAttribute( frontendSelector.replace( '%s', number ), 'href', `https://wpstackable${ number }.com/`, Object.assign( assertOptions, { assertBackend: false } ) )
+
+					cy.adjust( 'Opens in new tab', true, {
+						parentSelector,
+						supportedDelimiter,
+					} ).assertHtmlAttribute( frontendSelector.replace( '%s', number ), 'rel', /noopener noreferrer/, Object.assign( assertOptions, { assertBackend: false } ) )
+
+					cy.adjust( 'Nofollow link', true, {
+						parentSelector,
+						supportedDelimiter,
+					} ).assertHtmlAttribute( frontendSelector.replace( '%s', number ), 'rel', /nofollow/, Object.assign( assertOptions, { assertBackend: false } ) )
+
+					cy.adjust( 'Sponsored', true, {
+						parentSelector,
+						supportedDelimiter,
+					} ).assertHtmlAttribute( frontendSelector.replace( '%s', number ), 'rel', /sponsored/, Object.assign( assertOptions, { assertBackend: false } ) )
+
+					cy.adjust( 'UGC', true, {
+						parentSelector,
+						supportedDelimiter,
+					} ).assertHtmlAttribute( frontendSelector.replace( '%s', number ), 'rel', /ugc/, Object.assign( assertOptions, { assertBackend: false } ) )
+				} )
+			} )
 		} )
 	} )
 }

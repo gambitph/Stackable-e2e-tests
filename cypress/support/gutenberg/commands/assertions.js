@@ -36,6 +36,16 @@ Cypress.Commands.overwrite( 'assertHtmlTag', withInspectorTabMemory( { argumentL
 Cypress.Commands.overwrite( 'assertHtmlAttribute', withInspectorTabMemory( { argumentLength: 5 } ) )
 Cypress.Commands.overwrite( 'assertBlockContent', withInspectorTabMemory( { argumentLength: 4 } ) )
 
+/**
+ * Used for asserting the styles of a given
+ * element
+ *
+ * @param {string} selector
+ * @param {string} pseudoEl
+ * @param {Object} _cssObject
+ * @param {string} assertType
+ * @param {string} viewport
+ */
 export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop' ) {
 	cy.window().then( win => {
 		cy.document().then( doc => {
@@ -43,6 +53,8 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 				.get( selector || '' )
 				.then( $block => {
 					const element = first( $block )
+					const isPseudoClass = Array( 'hover' ).includes( pseudoEl )
+					const hasPseudoEl = !! pseudoEl
 
 					const parentEl = assertType === 'Editor'
 						? doc.querySelector( '.edit-post-visual-editor' )
@@ -74,17 +86,33 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 					element.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 					parentEl.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 
-					const computedStyles = Object.assign( {}, pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) ) )
-					const expectedStylesToEnqueue = keys( _cssObject ).map( key =>
-						`${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` )
+					if ( isPseudoClass ) {
+						cy.get( element ).realHover()
+					}
 
-					element.setAttribute( 'style', `${ expectedStylesToEnqueue.join( '; ' ) }` )
+					const computedStyles = Object.assign( {}, pick( win.getComputedStyle( element, ! isPseudoClass ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) ) )
+					const expectedStylesToEnqueue = keys( _cssObject ).map( key =>
+						`${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` ).join( '; ' )
+
+					let dummyStyle = null
+					if ( ! hasPseudoEl ) {
+						// If the element which we will be asserting is not a pseudo element,
+						// just add an inline style for styles comparison.
+						element.setAttribute( 'style', `${ expectedStylesToEnqueue }` )
+					} else {
+						// Otherwise, create a new `style` tag before the `element`
+						dummyStyle = document.createElement( 'style' )
+						const dummyStyleStyles = `${ selector }:${ pseudoEl } { ${ expectedStylesToEnqueue } }` // .selector { // styles. }
+						dummyStyle.innerHTML = dummyStyleStyles
+						// Enqueue our own dummy styles for comparison.
+						element.parentNode.insertBefore( dummyStyle, element )
+					}
 
 					element.offsetHeight // eslint-disable-line no-unused-expressions
 					element.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 					parentEl.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 
-					const expectedStyles = Object.assign( {}, pick( win.getComputedStyle( element, pseudoEl ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) ) )
+					const expectedStyles = Object.assign( {}, pick( win.getComputedStyle( element, ! isPseudoClass ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) ) )
 
 					keys( _cssObject ).forEach( key => {
 						const computedStyle = computedStyles[ camelCase( key ) ]
@@ -100,6 +128,9 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 					element.classList.remove( 'notransition' )
 					element.parentElement.classList.remove( 'notransition' )
 					parentEl.parentElement.classList.remove( 'notransition' )
+					if ( dummyStyle ) {
+						dummyStyle.remove()
+					}
 				} )
 		} )
 	} )
@@ -379,50 +410,50 @@ export function assertHtmlAttribute( subject, customSelector = '', attribute = '
 
 		cy.getBlockAttributes().then( attributes => {
 			const selector = `.${ attributes.className }`
-			cy
-				.get( subject )
-				.find( customSelector )
-				.invoke( 'attr', attribute )
-				.then( $attribute => {
-					// Assert editor classes.
-					if ( assertBackend ) {
+			// Assert editor classes.
+			if ( assertBackend ) {
+				cy
+					.get( subject )
+					.find( customSelector )
+					.invoke( 'attr', attribute )
+					.then( $attribute => {
 						if ( typeof expectedValue === 'string' ) {
 							assert.isTrue(
 								$attribute === expectedValue,
-								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor`
+								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor. Found: "${ $attribute }"`
 							)
 						} else if ( expectedValue instanceof RegExp ) {
 							assert.isTrue(
 								( $attribute || '' ).match( expectedValue ),
-								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor` )
+								`${ customSelector } must have a ${ attribute } = "${ expectedValue }" in Editor. Found: "${ $attribute }"` )
 						}
 						afterBackendAssert()
-					}
+					} )
+			}
 
-					// Assert frontend classes
-					if ( assertFrontend ) {
-						cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-							cy.visit( previewUrl )
-							cy.document().then( doc => {
-								const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
-								if ( blockElement ) {
-									assert.isTrue(
-										attribute instanceof RegExp
-											? !! blockElement.getAttribute( attribute ).match( expectedValue )
-											: blockElement.getAttribute( attribute ) === expectedValue,
-										`${ customSelector } must have ${ attribute } = "${ expectedValue } in Frontend"`
-									)
-								}
-							} )
-							cy.visit( editorUrl )
-							cy.wp().then( _wp => {
-								const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
-								cy.selectBlock( name, { clientId } )
-								afterFrontendAssert()
-							} )
-						} )
-					}
+			// Assert frontend classes
+			if ( assertFrontend ) {
+				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+					cy.visit( previewUrl )
+					cy.document().then( doc => {
+						const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
+						if ( blockElement ) {
+							assert.isTrue(
+								expectedValue instanceof RegExp
+									? !! blockElement.getAttribute( attribute ).match( expectedValue )
+									: blockElement.getAttribute( attribute ) === expectedValue,
+								`${ customSelector } must have ${ attribute } = "${ expectedValue }" in Frontend. Found: "${ blockElement.getAttribute( attribute ) }"`
+							)
+						}
+					} )
+					cy.visit( editorUrl )
+					cy.wp().then( _wp => {
+						const { clientId, name } = get( _wp.data.select( 'core/block-editor' ).getBlocks(), blockPath ) || {}
+						cy.selectBlock( name, { clientId } )
+						afterFrontendAssert()
+					} )
 				} )
+			}
 		} )
 	} )
 }
