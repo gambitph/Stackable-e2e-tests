@@ -346,7 +346,7 @@ export function editPostDiscussion( options ) {
  */
 export function addFeaturedImage() {
 	cy.getPostUrls().then( ( { editorUrl } ) => {
-		// Save the current post as we're going to register a post.
+		// Save the current post as we're going to add an image to the server.
 		cy.savePost()
 		// Add one image to the media library for featured image selection.
 		cy.addMediaToServer()

@@ -13,10 +13,10 @@ describe( 'Dynamic Content - Latest Post', registerTests( [
 	adjustFieldValues,
 ] ) )
 
-const adjustPostField = ( fieldName, fieldOptions = {}, idx ) => {
+const adjustPostField = ( fieldName, fieldOptions = {}, nth ) => {
 	cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
 		source: 'Latest Post',
-		post: `${ idx }${ nth( idx ) } Latest Post`,
+		post: `${ nth } Latest Post`,
 		fieldName,
 		fieldOptions,
 	} )
@@ -41,39 +41,54 @@ const adjustPostField = ( fieldName, fieldOptions = {}, idx ) => {
  * ]
  * ```
  *
- * @param {number} idx
  */
-function setFieldValues( idx ) {
+function setFieldValues() {
 	cy.newPost()
 	// Define the alias.
-	cy.wrap( [] ).as( `fieldsToAssert${ idx }` )
+	cy.wrap( [] ).as( 'fieldsToAssert' )
 
 	// Populate Post Title.
-	cy.typePostTitle( `Latest Post #${ idx }` )
-	addToTest( { name: 'Post Title', value: `Latest Post #${ idx }` }, idx )
+	cy.typePostTitle( 'Latest Post 10' )
+	addToTest( { name: 'Post Title', value: 'Latest Post 10' } )
 
 	// Populate Post Slug.
-	addToTest( { name: 'Post Slug', value: `latest-post-${ idx }` }, idx )
+	addToTest( { name: 'Post Slug', value: 'latest-post-10' } )
 
 	// Populate Post Excerpt.
-	cy.addPostExcerpt( `Test excerpt #${ idx }` )
-	addToTest( { name: 'Post Excerpt', value: `Test excerpt #${ idx }` }, idx )
+	cy.addPostExcerpt( 'Test excerpt' )
+	addToTest( { name: 'Post Excerpt', value: 'Test excerpt' } )
 
 	// Add a featured image.
 	cy.addFeaturedImage()
 
 	// Get the author's profile picture URL
 	cy.wp().then( wp => {
-		addToTest( { name: 'Author Profile Picture URL', value: wp.data.select( 'core' ).getAuthors()[ 0 ].avatar_urls[ 96 ] }, idx )
+		addToTest( { name: 'Author Profile Picture URL', value: wp.data.select( 'core' ).getAuthors()[ 0 ].avatar_urls[ 96 ] } )
+	} )
+
+	// Add comments
+	cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+		cy.editPostDiscussion( { 'Allow comments': true } )
+		cy.visit( previewUrl )
+		range( 1, 4 ).forEach( num => {
+			cy
+				.get( '.comment-form-comment' )
+				.find( 'textarea#comment' )
+				.click( { force: true } )
+				.type( `{selectall}{backspace}Test ${ num }` )
+			cy.get( 'input[value="Post Comment"]' ).click( { force: true } )
+		} )
+
+		cy.visit( editorUrl )
 	} )
 
 	cy.getPostData().then( data => {
 		// Post Fields
-		addToTest( { name: 'Post URL', value: data.link }, idx )
-		addToTest( { name: 'Post ID', value: data.id }, idx )
-		addToTest( { name: 'Featured Image URL', value: data.featured_image_urls.full[ 0 ] }, idx )
-		addToTest( { name: 'Post Type', value: data.type }, idx )
-		addToTest( { name: 'Post Status', value: data.status }, idx )
+		addToTest( { name: 'Post URL', value: data.link } )
+		addToTest( { name: 'Post ID', value: data.id } )
+		addToTest( { name: 'Featured Image URL', value: data.featured_image_urls.full[ 0 ] } )
+		addToTest( { name: 'Post Type', value: data.type } )
+		addToTest( { name: 'Post Status', value: data.status } )
 
 		/**
 		 * Add a custom format for date values.
@@ -85,40 +100,25 @@ function setFieldValues( idx ) {
 
 		addToTest( {
 			name: 'Post Date', value: first( data.date.split( 'T' ) ), options: dateOptions,
-		}, idx )
+		} )
 		addToTest( {
 			name: 'Post Date GMT', value: first( data.date_gmt.split( 'T' ) ), options: dateOptions,
-		}, idx )
+		} )
 		addToTest( {
 			name: 'Post Modified', value: first( data.modified.split( 'T' ) ), options: dateOptions,
-		}, idx )
+		} )
 		addToTest( {
 			name: 'Post Modified GMT', value: first( data.modified_gmt.split( 'T' ) ), options: dateOptions,
-		}, idx )
+		} )
 
 		// Author Fields
-		addToTest( { name: 'Author Name', value: data.author_info.name }, idx )
-		addToTest( { name: 'Author ID', value: data.author }, idx )
-		addToTest( { name: 'Author Posts URL', value: data.author_info.url }, idx )
+		addToTest( { name: 'Author Name', value: data.author_info.name } )
+		addToTest( { name: 'Author ID', value: data.author } )
+		addToTest( { name: 'Author Posts URL', value: data.author_info.url } )
 
 		// Misc. Fields
-		// Populating Comment Number
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.editPostDiscussion( { 'Allow comments': true } )
-			cy.visit( previewUrl )
-			range( 1, 5 ).forEach( num => {
-				cy
-					.get( '.comment-form-comment' )
-					.find( 'textarea#comment' )
-					.click( { force: true } )
-					.type( `{selectall}{backspace}Test ${ num }` )
-				cy.get( 'input[value="Post Comment"]' ).click( { force: true } )
-			} )
-
-			cy.visit( editorUrl )
-		} )
-		addToTest( { name: 'Comment Number', value: parseInt( data.comments_num ).toString() }, idx )
-		addToTest( { name: 'Comment Status', value: data.comment_status }, idx )
+		addToTest( { name: 'Comment Number', value: parseInt( data.comments_num ).toString() } )
+		addToTest( { name: 'Comment Status', value: data.comment_status } )
 	} )
 
 	cy.getPostUrls().then( ( { editorUrl } ) => {
@@ -126,15 +126,15 @@ function setFieldValues( idx ) {
 		cy.visit( '/wp-admin/profile.php' )
 
 		cy.get( 'tr.user-first-name-wrap input#first_name' ).click( { force: true } ).type( '{selectall}{backspace}Juan' )
-		addToTest( { name: 'Author First Name', value: 'Juan' }, idx )
+		addToTest( { name: 'Author First Name', value: 'Juan' } )
 
 		cy.get( 'tr.user-last-name-wrap input#last_name' ).click( { force: true } ).type( '{selectall}{backspace}Dela Cruz' )
-		addToTest( { name: 'Author Last Name', value: 'Dela Cruz' }, idx )
+		addToTest( { name: 'Author Last Name', value: 'Dela Cruz' } )
 
 		cy.get( 'input[value="Update Profile"]' ).click( { force: true } )
 
-		// Author Posts default value to 10 since there are 10 posts to assert
-		addToTest( { name: 'Author Posts', value: '10' }, idx )
+		// Assert 10 for Author Posts since we are creating 10 posts.
+		addToTest( { name: 'Author Posts', value: '10' } )
 
 		// Go back to the editor.
 		cy.visit( editorUrl )
@@ -147,46 +147,47 @@ function setFieldValues( idx ) {
  * in `fieldsToAssert`
  *
  * @param {Object} item
- * @param {number} idx
  */
-function addToTest( item, idx ) {
-	cy.get( `@fieldsToAssert${ idx }` ).then( $fta => cy.wrap( [ ...$fta, item ] ).as( `fieldsToAssert${ idx }` ) )
+function addToTest( item ) {
+	cy.get( '@fieldsToAssert' ).then( $fta => cy.wrap( [ ...$fta, item ] ).as( 'fieldsToAssert' ) )
 }
 
-/**
- * Function that returns the nth of a given number.
- * This is used to select the nth Latest Page in dynamic content popover.
- *
- * @param {number} n
- *
- * @return {string} the nth of a number. 1 returns st.
- */
-function nth( n ) {
-	// eslint-disable-next-line no-mixed-operators
-	return [ 'st', 'nd', 'rd' ][ ( ( n + 90 ) % 100 - 10 ) % 10 - 1 ] || 'th'
-}
 function matchPostData() {
-	it( 'should match dynamic content in latest posts', () => {
+	beforeEach( () => {
 		cy.setupWP()
-		//Populating 10 posts
+	} )
+
+	it( 'should test dynamic content to match all field values in latest post #10', () => {
 		range( 10, 0 ).forEach( id => {
-			setFieldValues( id )
+			// Create 10 posts
+			if ( id === 10 ) {
+				setFieldValues()
+			} else {
+				cy.newPost()
+				cy.typePostTitle( `Post ${ id }` )
+				cy.publish()
+			}
 		} )
-		range( 10, 0 ).forEach( idx => {
-			cy.newPage()
-			// assertions
-			cy.get( `@fieldsToAssert${ idx }` ).then( fieldsToAssert => {
-				fieldsToAssert.forEach( ( {
-					name: fieldName, value, options: fieldOptions = {},
-				} ) => {
-					cy.addBlock( 'ugb/cta' )
-					adjustPostField( fieldName, fieldOptions, idx )
-					cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
-					cy.deleteBlock( 'ugb/cta' )
+
+		cy.newPage()
+		cy.get( '@fieldsToAssert' ).then( fieldsToAssert => {
+			fieldsToAssert.forEach( ( {
+				name: fieldName, value, options: fieldOptions = {},
+			} ) => {
+				cy.addBlock( 'ugb/cta' )
+
+				// Adjust the dynamic content popover
+				cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
+					source: 'Latest Post',
+					post: '10th Latest Post',
+					fieldName,
+					fieldOptions,
 				} )
+				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
+				cy.deleteBlock( 'ugb/cta' )
 			} )
-			cy.savePost()
 		} )
+		cy.savePost()
 	} )
 }
 
@@ -200,7 +201,7 @@ function adjustFieldOptions() {
 		adjustPostField( 'Post Title', {
 			'Show as link': true,
 			'Open in new tab': true,
-		}, 1 )
+		}, '1st' )
 
 		// assert changes
 		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'Adjusting Latest Post 1' )
@@ -214,7 +215,7 @@ function adjustFieldOptions() {
 			'Show as link': true,
 			'Custom Text': 'This post',
 			'Open in new tab': true,
-		}, 1 )
+		}, '1st' )
 		// asserting changes
 		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'This post' )
 		cy.selectBlock( 'ugb/cta' ).assertHtmlTag( '.ugb-cta__title a', 'a', { assertBackend: false } )
@@ -225,7 +226,7 @@ function adjustFieldOptions() {
 		cy.addBlock( 'ugb/cta' )
 		adjustPostField( 'Post Excerpt', {
 			'Excerpt Length': 5,
-		}, 1 )
+		}, '1st' )
 
 		cy.publish()
 		// asserting changes
@@ -250,7 +251,7 @@ function adjustFieldOptions() {
 				cy.addBlock( 'ugb/cta' )
 				adjustPostField( dateField, {
 					'Date Format': dateFormat,
-				}, 1 )
+				}, '1st' )
 				cy.document().then( doc => {
 					cy.get( '@dateFormatValues' ).then( dateFormatValues => {
 						// Store the values to be compared in this alias.
@@ -273,7 +274,7 @@ function adjustFieldOptions() {
 			'Show as link': true,
 			'Custom text': 'Author #1',
 			'Open in new tab': true,
-		}, 1 )
+		}, '1st' )
 
 		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'Author #1' )
 		cy.selectBlock( 'ugb/cta' ).assertHtmlTag( '.ugb-cta__title a', 'a', { assertBackend: false } )
@@ -334,7 +335,7 @@ function adjustFieldValues() {
 				name: fieldName, value, options: fieldOptions = {},
 			} ) => {
 				cy.addBlock( 'ugb/cta' )
-				adjustPostField( fieldName, fieldOptions, 1 )
+				adjustPostField( fieldName, fieldOptions, '1st' )
 				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
 				cy.deleteBlock( 'ugb/cta' )
 			} )
@@ -342,12 +343,3 @@ function adjustFieldValues() {
 		cy.savePost()
 	} )
 }
-
-/**
- * Bugs:
- * 	MatchPostData:
- * 		- addFeaturedImage() creates an additional post.
- *  	- post ID and comment number placeholder string instead of value
- *  	- Author Posts does not match number of posts`
- * 		- line 149 error on fieldstoAssert
- */

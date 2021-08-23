@@ -187,7 +187,7 @@ function matchPostData() {
 	} )
 
 	range( 10, 0 ).forEach( idx => {
-		it( `should test dynamic content to match all field values in latest post #${ idx }`, () => {
+		it( `should test dynamic content to match all field values in latest page #${ idx }`, () => {
 			range( 10, 0 ).forEach( id => {
 				if ( idx === id ) {
 					// Setup field values of the page we're testing.
