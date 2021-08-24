@@ -87,13 +87,15 @@ class BlockModule extends Module {
 			// Adjust single container color options.
 			cy.adjust( 'Color Type', 'single' )
 			cy.adjust( 'Background Color', '#632d2d', { state: 'normal' } )
-			cy.adjust( 'Background Color', '#ffff00', { state: 'hover' } )
 			cy.adjust( 'Background Color Opacity', 0.8, { state: 'normal' } )
-			cy.adjust( 'Background Color Opacity', 0.6, { state: 'hover' } )
 				.assertComputedStyle( {
 					[ MAIN_SELECTOR ]: {
 						'background-color': 'rgba( 99, 45, 45, 0.8 )',
 					},
+				} )
+			cy.adjust( 'Background Color', '#ffff00', { state: 'hover' } )
+			cy.adjust( 'Background Color Opacity', 0.6, { state: 'hover' } )
+				.assertComputedStyle( {
 					[ `${ MAIN_SELECTOR }:hover` ]: {
 						'background-color': 'rgba(255, 255, 0, 0.6)',
 					},
@@ -119,8 +121,16 @@ class BlockModule extends Module {
 				},
 			} )
 
-			cy.adjust( 'Background Media Tint Strength', 7, { state: 'normal' } )
-			cy.adjust( 'Background Media Tint Strength', 4, { state: 'hover' } )
+			cy.adjust( 'Background Media Tint Strength', 7, { state: 'normal' } ).assertComputedStyle( {
+				[ `${ MAIN_SELECTOR }:before` ]: {
+					'opacity': '0.7',
+				},
+			} )
+			cy.adjust( 'Background Media Tint Strength', 4, { state: 'hover' } ).assertComputedStyle( {
+				[ `${ MAIN_SELECTOR }:before:hover` ]: { // TODO: Support assertion of a pseudo class's hover state
+					'opacity': '0.4',
+				},
+			} )
 			cy.adjust( 'Fixed Background', true )
 			cy.adjust( 'Adv. Background Image Settings', {
 				'Image Blend Mode': 'hue',
@@ -129,12 +139,6 @@ class BlockModule extends Module {
 					'background-blend-mode': 'hue',
 					'background-image': `url("${ Cypress.env( 'DUMMY_IMAGE_URL' ) }")`,
 					'background-attachment': 'fixed',
-				},
-				[ `${ MAIN_SELECTOR }:before` ]: {
-					'opacity': '0.7',
-				},
-				[ `${ MAIN_SELECTOR }:before:hover` ]: { // TODO: Support assertion of a pseudo class's hover state
-					'opacity': '0.4',
 				},
 			} )
 		}
@@ -183,14 +187,15 @@ class BlockModule extends Module {
 			// Normal state - px unit
 			cy.adjust( 'Min. Height', 387, {
 				viewport, unit: 'px', state: 'normal',
+			} ).assertComputedStyle( {
+				[ MAIN_SELECTOR ]: {
+					'min-height': '387px',
+				},
 			} )
 			// Hover state - px unit
 			cy.adjust( 'Min. Height', 491, {
 				viewport, unit: 'px', state: 'hover',
 			} ).assertComputedStyle( {
-				[ MAIN_SELECTOR ]: {
-					'min-height': '387px',
-				},
 				[ `${ MAIN_SELECTOR }:hover` ]: {
 					'min-height': '491px',
 				},
@@ -201,14 +206,15 @@ class BlockModule extends Module {
 			// Normal state - vh unit
 			cy.adjust( 'Min. Height', 53, {
 				viewport, unit: 'vh', state: 'normal',
+			} ).assertComputedStyle( {
+				[ MAIN_SELECTOR ]: {
+					'min-height': '53vh',
+				},
 			} )
 			// Hover state - vh unit
 			cy.adjust( 'Min. Height', 37, {
 				viewport, unit: 'vh', state: 'hover',
 			} ).assertComputedStyle( {
-				[ MAIN_SELECTOR ]: {
-					'min-height': '53vh',
-				},
 				[ `${ MAIN_SELECTOR }:hover` ]: {
 					'min-height': '37vh',
 				},
@@ -232,15 +238,16 @@ class BlockModule extends Module {
 			// Normal state - px unit
 			cy.adjust( 'Max. Content Width', 819, {
 				viewport, unit: 'px', state: 'normal',
-			} )
-			// Hover state - px unit
-			cy.adjust( 'Max. Content Width', 521, {
-				viewport, unit: 'px', state: 'hover',
 			} ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'max-width': '819px',
 					'min-width': 'auto',
 				},
+			} )
+			// Hover state - px unit
+			cy.adjust( 'Max. Content Width', 521, {
+				viewport, unit: 'px', state: 'hover',
+			} ).assertComputedStyle( {
 				[ `${ MAIN_SELECTOR }:hover` ]: {
 					'max-width': '521px',
 					'min-width': 'auto',
@@ -252,17 +259,16 @@ class BlockModule extends Module {
 			// Normal state - % unit
 			cy.adjust( 'Max. Content Width', 54, {
 				viewport, unit: '%', state: 'normal',
-			} )
-			// Hover state - % unit
-			cy.adjust( 'Max. Content Width', 38, {
-				viewport, unit: '%', state: 'hover',
-			} ).assertComputedStyle( {
-
 			} ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'max-width': '54%',
 					'min-width': 'auto',
 				},
+			} )
+			// Hover state - % unit
+			cy.adjust( 'Max. Content Width', 38, {
+				viewport, unit: '%', state: 'hover',
+			} ).assertComputedStyle( {
 				[ `${ MAIN_SELECTOR }:hover` ]: {
 					'max-width': '38%',
 					'min-width': 'auto',
@@ -314,6 +320,13 @@ class BlockModule extends Module {
 			// Unit - em
 			cy.adjust( 'Paddings', [ 23, 24, 25, 26 ], {
 				viewport, unit: 'em', state: 'hover',
+			} ).assertComputedStyle( {
+				[ `${ MAIN_SELECTOR }:hover` ]: {
+					'padding-top': '23em',
+					'padding-right': '24em',
+					'padding-bottom': '25em',
+					'padding-left': '26em',
+				},
 			} )
 			cy.adjust( 'Paddings', [ 19, 20, 21, 22 ], {
 				viewport, unit: 'em', state: 'normal',
@@ -323,12 +336,6 @@ class BlockModule extends Module {
 					'padding-right': '20em',
 					'padding-bottom': '21em',
 					'padding-left': '22em',
-				},
-				[ `${ MAIN_SELECTOR }:hover` ]: {
-					'padding-top': '23em',
-					'padding-right': '24em',
-					'padding-bottom': '25em',
-					'padding-left': '26em',
 				},
 			} )
 			cy.resetStyle( 'Paddings', {
@@ -341,9 +348,6 @@ class BlockModule extends Module {
 			// Unit - %
 			cy.adjust( 'Paddings', [ 77, 78, 79, 80 ], {
 				viewport, unit: '%', state: 'normal',
-			} )
-			cy.adjust( 'Paddings', [ 67, 68, 69, 70 ], {
-				viewport, unit: '%', state: 'hover',
 			} ).assertComputedStyle( {
 				[  MAIN_SELECTOR ]: {
 					'padding-top': '77%',
@@ -351,6 +355,10 @@ class BlockModule extends Module {
 					'padding-bottom': '79%',
 					'padding-left': '80%',
 				},
+			} )
+			cy.adjust( 'Paddings', [ 67, 68, 69, 70 ], {
+				viewport, unit: '%', state: 'hover',
+			} ).assertComputedStyle( {
 				[ `${ MAIN_SELECTOR }:hover` ]: {
 					'padding-top': '67%',
 					'padding-right': '68%',
@@ -369,9 +377,6 @@ class BlockModule extends Module {
 		if ( enableMargins ) {
 			cy.adjust( 'Margins', [ 141, 142, 143, 144 ], {
 				viewport, unit: 'px', state: 'normal',
-			} )
-			cy.adjust( 'Margins', [ 151, 152, 153, 154 ], {
-				viewport, unit: 'px', state: 'hover',
 			} ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'margin-top': '141px',
@@ -379,6 +384,10 @@ class BlockModule extends Module {
 					'margin-bottom': '143px',
 					'margin-left': '144px',
 				},
+			} )
+			cy.adjust( 'Margins', [ 151, 152, 153, 154 ], {
+				viewport, unit: 'px', state: 'hover',
+			} ).assertComputedStyle( {
 				[ `${ MAIN_SELECTOR }:hover` ]: {
 					'margin-top': '151px',
 					'margin-right': '152px',
@@ -389,9 +398,6 @@ class BlockModule extends Module {
 
 			cy.adjust( 'Margins', [ 67, 68, 69, 70 ], {
 				viewport, unit: '%', state: 'normal',
-			} )
-			cy.adjust( 'Margins', [ 77, 78, 79, 80 ], {
-				viewport, unit: '%', state: 'hover',
 			} ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'margin-top': '67%',
@@ -399,6 +405,10 @@ class BlockModule extends Module {
 					'margin-bottom': '69%',
 					'margin-left': '70%',
 				},
+			} )
+			cy.adjust( 'Margins', [ 77, 78, 79, 80 ], {
+				viewport, unit: '%', state: 'hover',
+			} ).assertComputedStyle( {
 				[ `${ MAIN_SELECTOR }:hover` ]: {
 					'margin-top': '77%',
 					'margin-right': '78%',
@@ -424,7 +434,6 @@ class BlockModule extends Module {
 		}
 
 		cy.adjust( 'Border Width', [ 11, 12, 13, 14 ], { viewport, state: 'normal' } )
-		cy.adjust( 'Border Width', [ 7, 8, 9, 10 ], { viewport, state: 'hover' } )
 			.assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'border-top-width': '11px',
@@ -432,6 +441,9 @@ class BlockModule extends Module {
 					'border-bottom-width': '13px',
 					'border-left-width': '14px',
 				},
+			} )
+		cy.adjust( 'Border Width', [ 7, 8, 9, 10 ], { viewport, state: 'hover' } )
+			.assertComputedStyle( {
 				[ `${ MAIN_SELECTOR }:hover` ]: {
 					'border-top-width': '7px',
 					'border-right-width': '8px',
@@ -442,11 +454,13 @@ class BlockModule extends Module {
 
 		if ( viewport === 'Desktop' ) {
 			cy.adjust( 'Border Color', '#0d00ff', { state: 'normal' } )
-			cy.adjust( 'Border Color', '#b6c44f', { state: 'hover' } )
 				.assertComputedStyle( {
 					[ MAIN_SELECTOR ]: {
 						'border-color': '#0d00ff',
 					},
+				} )
+			cy.adjust( 'Border Color', '#b6c44f', { state: 'hover' } )
+				.assertComputedStyle( {
 					[ `${ MAIN_SELECTOR }:hover` ]: {
 						'border-color': '#b6c44f',
 					},
@@ -462,11 +476,13 @@ class BlockModule extends Module {
 
 		if ( viewport === 'Desktop' ) {
 			cy.adjust( 'Shadow / Outline', 6, { state: 'normal' } )
-			cy.adjust( 'Shadow / Outline', 8, { state: 'hover' } )
 				.assertComputedStyle( {
 					[ MAIN_SELECTOR ]: {
 						'box-shadow': '0px 10px 30px rgba(0, 0, 0, 0.05)',
 					},
+				} )
+			cy.adjust( 'Shadow / Outline', 8, { state: 'hover' } )
+				.assertComputedStyle( {
 					[ `${ MAIN_SELECTOR }:hover` ]: {
 						'box-shadow': '0px 10px 60px rgba(0, 0, 0, 0.1)',
 					},

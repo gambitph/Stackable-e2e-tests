@@ -9,7 +9,7 @@ import {
  * Internal dependencies
  */
 import {
-	getBlockStringPath, createElementFromHTMLString, withInspectorTabMemory,
+	getBlockStringPath, createElementFromHTMLString, withInspectorTabMemory, removeGlobalCssTransitions,
 } from '../util'
 import {
 	blockSnapshotsAssertHtmlTag,
@@ -47,6 +47,8 @@ Cypress.Commands.overwrite( 'assertBlockContent', withInspectorTabMemory( { argu
  * @param {string} viewport
  */
 export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop' ) {
+	// We need this to remove all transition styles
+	removeGlobalCssTransitions()
 	cy.window().then( win => {
 		cy.document().then( doc => {
 			cy
@@ -86,50 +88,62 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 					element.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 					parentEl.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 
+					const assertionCallback = ( element, pseudoEl, parentEl ) => {
+						const computedStyles = Object.assign( {}, pick( win.getComputedStyle( element, ! isPseudoClass ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) ) )
+						const expectedStylesToEnqueue = keys( _cssObject ).map( key =>
+							`${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` ).join( '; ' )
+
+						let dummyStyle = null
+						if ( ! hasPseudoEl ) {
+							// If the element which we will be asserting is not a pseudo element,
+							// just add an inline style for styles comparison.
+							element.setAttribute( 'style', `${ expectedStylesToEnqueue }` )
+						} else {
+							// Otherwise, create a new `style` tag before the `element`
+							dummyStyle = document.createElement( 'style' )
+							const dummyStyleStyles = `${ selector }:${ pseudoEl } { ${ expectedStylesToEnqueue } }` // .selector { // styles. }
+							dummyStyle.innerHTML = dummyStyleStyles
+							// Enqueue our own dummy styles for comparison.
+							element.parentNode.insertBefore( dummyStyle, element )
+						}
+
+						element.offsetHeight // eslint-disable-line no-unused-expressions
+						element.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
+						parentEl.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
+
+						const expectedStyles = Object.assign( {}, pick( win.getComputedStyle( element, ! isPseudoClass ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) ) )
+
+						keys( _cssObject ).forEach( key => {
+							const computedStyle = computedStyles[ camelCase( key ) ]
+							const expectedStyle = expectedStyles[ camelCase( key ) ]
+							assert.equal(
+								computedStyle,
+								expectedStyle,
+								`'${ camelCase( key ) }' expected to be ${ expectedStyle } in ${ assertType }. Found '${ computedStyle }'. Selected '${ selector }'`
+							)
+						} )
+
+						element.removeAttribute( 'style' )
+						element.classList.remove( 'notransition' )
+						element.parentElement.classList.remove( 'notransition' )
+						parentEl.parentElement.classList.remove( 'notransition' )
+						if ( dummyStyle ) {
+							dummyStyle.remove()
+						}
+						if ( isPseudoClass ) {
+							if ( assertType === 'Editor' ) {
+								// Hover another element
+								cy.get( '[aria-label="View Pages"]' ).realHover()
+							}
+						}
+					}
+
 					if ( isPseudoClass ) {
-						cy.get( element ).realHover()
-					}
-
-					const computedStyles = Object.assign( {}, pick( win.getComputedStyle( element, ! isPseudoClass ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) ) )
-					const expectedStylesToEnqueue = keys( _cssObject ).map( key =>
-						`${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` ).join( '; ' )
-
-					let dummyStyle = null
-					if ( ! hasPseudoEl ) {
-						// If the element which we will be asserting is not a pseudo element,
-						// just add an inline style for styles comparison.
-						element.setAttribute( 'style', `${ expectedStylesToEnqueue }` )
+						cy.get( element ).realHover().then( () => {
+							assertionCallback( element, pseudoEl, parentEl )
+						} )
 					} else {
-						// Otherwise, create a new `style` tag before the `element`
-						dummyStyle = document.createElement( 'style' )
-						const dummyStyleStyles = `${ selector }:${ pseudoEl } { ${ expectedStylesToEnqueue } }` // .selector { // styles. }
-						dummyStyle.innerHTML = dummyStyleStyles
-						// Enqueue our own dummy styles for comparison.
-						element.parentNode.insertBefore( dummyStyle, element )
-					}
-
-					element.offsetHeight // eslint-disable-line no-unused-expressions
-					element.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
-					parentEl.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
-
-					const expectedStyles = Object.assign( {}, pick( win.getComputedStyle( element, ! isPseudoClass ? `:${ pseudoEl }` : undefined ), ...keys( _cssObject ).map( camelCase ) ) )
-
-					keys( _cssObject ).forEach( key => {
-						const computedStyle = computedStyles[ camelCase( key ) ]
-						const expectedStyle = expectedStyles[ camelCase( key ) ]
-						assert.equal(
-							computedStyle,
-							expectedStyle,
-							`'${ camelCase( key ) }' expected to be ${ expectedStyle } in ${ assertType }. Found '${ computedStyle }'. Selected '${ selector }'`
-						)
-					} )
-
-					element.removeAttribute( 'style' )
-					element.classList.remove( 'notransition' )
-					element.parentElement.classList.remove( 'notransition' )
-					parentEl.parentElement.classList.remove( 'notransition' )
-					if ( dummyStyle ) {
-						dummyStyle.remove()
+						assertionCallback( element, pseudoEl, parentEl )
 					}
 				} )
 		} )

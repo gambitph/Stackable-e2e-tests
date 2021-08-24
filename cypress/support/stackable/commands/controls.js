@@ -4,7 +4,7 @@
 import {
 	kebabCase, keys, first,
 } from 'lodash'
-import { containsRegExp } from '~common/util'
+import { containsRegExp, dispatchResolver } from '~common/util'
 
 /**
  * Internal dependencies
@@ -83,10 +83,18 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 	}
 
 	// Function to call after adjusting the options
-	optionsToPass.afterAdjust = ( name, value, {} ) => {
+	optionsToPass.afterAdjust = () => {
 		// Always go back to the normal state after adjusting the options to support direct assertion.
-		changeControlState( {
-			name, value, state: 'normal',
+		cy.wp().then( wp => {
+			const hoverState = wp.data.select( 'stackable/hover-state' ).getHoverState()
+			 if ( hoverState !== 'normal' ) {
+				new Cypress.Promise( resolve => {
+					wp.data.dispatch( 'stackable/hover-state' ).updateHoverState( 'normal' ).then( dispatchResolver( resolve ) )
+				} )
+			}
+			if ( hoverState !== 'normal' ) {
+				cy.wait( 300 )
+			}
 		} )
 	}
 

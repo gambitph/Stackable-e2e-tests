@@ -180,20 +180,20 @@ export function changeControlState( options = {} ) {
 		return
 	}
 
-	const selector = () => cy.getBaseControl( name, options )
-	selector()
-		.then( $baseControl => {
-			if ( $baseControl.find( '.stk-control-label__toggles .stk-label-unit-toggle button.is-active' ).length ) {
-				cy.wp().then( wp => {
-					const currState = wp.data.select( 'stackable/hover-state' ).getHoverState()
-					if ( currState !== state ) {
-						// Change the state only if the selected is not the active.
-						selector().find( '.stk-control-label__toggles .stk-label-unit-toggle button.is-active' ).click( { force: true, multiple: true } )
-						selector()
-							.find( `.stk-label-unit-toggle__wrapper button[data-value="${ state }"]` )
-							.click( { force: true } )
-					}
-				} )
-			}
-		} )
+	cy.wp().then( wp => {
+		if ( wp.data.select( 'stackable/hover-state' ).getHoverState() === state ) {
+			return null
+		}
+		const selector = () => cy.getBaseControl( name, options )
+		selector()
+			.then( $baseControl => {
+				if ( $baseControl.find( '.stk-control-label__toggles .stk-label-unit-toggle button[data-value="normal"]' ).length ) {
+					// Change the state only if the selected is not the active.
+					selector().find( '.stk-control-label__toggles .stk-label-unit-toggle button.is-active' ).click( { force: true, multiple: true } )
+					selector()
+						.find( `.stk-label-unit-toggle__wrapper button[data-value="${ state }"]` )
+						.click( { force: true } )
+				}
+			} )
+	} )
 }
