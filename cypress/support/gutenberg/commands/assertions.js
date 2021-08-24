@@ -45,8 +45,9 @@ Cypress.Commands.overwrite( 'assertBlockContent', withInspectorTabMemory( { argu
  * @param {Object} _cssObject
  * @param {string} assertType
  * @param {string} viewport
+ * @param {boolean} isHoverState
  */
-export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop' ) {
+export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType, viewport = 'Desktop', isHoverState ) {
 	// We need this to remove all transition styles
 	removeGlobalCssTransitions()
 	cy.window().then( win => {
@@ -132,13 +133,13 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 						}
 						if ( isPseudoClass ) {
 							if ( assertType === 'Editor' ) {
-								// Hover another element
+								// Hover another element to remove the hover state styles of the previous element hovered.
 								cy.get( '[aria-label="View Pages"]' ).realHover()
 							}
 						}
 					}
 
-					if ( isPseudoClass ) {
+					if ( isPseudoClass || isHoverState ) {
 						cy.get( element ).realHover().then( () => {
 							assertionCallback( element, pseudoEl, parentEl )
 						} )
@@ -166,6 +167,9 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		afterFrontendAssert = () => {},
 		afterBackendAssert = () => {},
 		activePanel = '',
+		// Used when the hover state of a pseudo element is being asserted.
+		// We can't use `<selector>:before:hover` on _assertComputedStyle
+		isHoverState = false,
 	} = options
 
 	cy.savePost()
@@ -188,7 +192,8 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 						selector.length === 2 && last( selector ),
 						cssObject[ _selector ],
 						'Editor',
-						previewMode
+						previewMode,
+						isHoverState
 					)
 				} )
 				afterBackendAssert()
@@ -234,7 +239,9 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 							documentSelector,
 							selector.length === 2 && last( selector ),
 							cssObject[ _selector ],
-							'Frontend'
+							'Frontend',
+							previewMode,
+							isHoverState
 						)
 					} )
 
@@ -575,6 +582,7 @@ export function assertFrontendStyles( subject, alias ) {
 						htmlContent,
 						viewport: $stubbedStyles[ index ].viewport,
 						style: $stubbedStyles[ index ].style,
+						isHoverState: $stubbedStyles[ index ].isHoverState,
 					}
 				} )
 
@@ -588,7 +596,7 @@ export function assertFrontendStyles( subject, alias ) {
 					combinedStubbed.forEach( combinedStubbedContent => {
 						cy.document().then( doc => {
 							const {
-								viewport, htmlContent, style, isParent, innerBlockUniqueClass,
+								viewport, htmlContent, style, isParent, innerBlockUniqueClass, isHoverState,
 							} = combinedStubbedContent
 
 							// Create a DOMElement based on the HTML string.
@@ -633,7 +641,9 @@ export function assertFrontendStyles( subject, alias ) {
 									selector.length && last( selector ),
 									style[ _selector ],
 									'Frontend',
-									viewport )
+									viewport,
+									isHoverState
+								)
 							} )
 
 							// Revert the viewport

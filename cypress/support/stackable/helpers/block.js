@@ -127,9 +127,11 @@ class BlockModule extends Module {
 				},
 			} )
 			cy.adjust( 'Background Media Tint Strength', 4, { state: 'hover' } ).assertComputedStyle( {
-				[ `${ MAIN_SELECTOR }:before:hover` ]: { // TODO: Support assertion of a pseudo class's hover state
+				[ `${ MAIN_SELECTOR }:before` ]: {
 					'opacity': '0.4',
 				},
+			}, {
+				isHoverState: true,
 			} )
 			cy.adjust( 'Fixed Background', true )
 			cy.adjust( 'Adv. Background Image Settings', {
