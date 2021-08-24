@@ -323,15 +323,8 @@ export function editPostDiscussion( options ) {
 
 		selector( optionName )
 			.then( $control => {
-				if ( $control.find( 'svg.components-checkbox-control__checked' ).length ) {
-					// If the optionValue is set to false, click the checkbox.
-					if ( ! optionValue ) {
-						selector( optionName )
-							.find( 'input.components-checkbox-control__input' )
-							.click( { force: true } )
-					}
-				} else if ( optionValue ) {
-					// If not yet checked and optionValue is set to true, click the checkbox.
+				const isChecked = !! $control.find( 'svg.components-checkbox-control__checked' ).length
+				if ( isChecked !== optionValue ) {
 					selector( optionName )
 						.find( 'input.components-checkbox-control__input' )
 						.click( { force: true } )
