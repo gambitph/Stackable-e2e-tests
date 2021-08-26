@@ -12,7 +12,7 @@ Cypress.Commands.add( 'registerPosts', registerPosts )
 Cypress.Commands.add( 'changeRole', changeRole )
 Cypress.Commands.add( 'editSiteTitle', editSiteTitle )
 Cypress.Commands.add( 'editSiteTagline', editSiteTagline )
-Cypress.Commands.add( 'addMediaToServer', addMediaToServer )
+Cypress.Commands.add( 'uploadMedia', uploadMedia )
 
 /**
  * Command used to enter the login credentials of the admin.
@@ -118,7 +118,7 @@ export function editSiteTagline( tagline ) {
 /**
  * Command for adding a media to the server.
  */
-export function addMediaToServer() {
+export function uploadMedia() {
 	cy.fixture( 'media' ).then( media => {
 		const params = new URLSearchParams( {
 			'dummyImage': media.dummy_image,

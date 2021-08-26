@@ -342,7 +342,7 @@ export function addFeaturedImage() {
 		// Save the current post as we're going to add an image to the server.
 		cy.savePost()
 		// Add one image to the media library for featured image selection.
-		cy.addMediaToServer()
+		cy.uploadMedia()
 		cy.visit( editorUrl )
 		cy.openSidebar( 'Settings' )
 		cy
