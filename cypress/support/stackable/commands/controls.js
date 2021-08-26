@@ -58,10 +58,15 @@ function adjustDynamicContentControl( originalFn, ...args ) {
 	const optionsToPass = args.length === 3 ? args.pop() : {}
 
 	if ( optionsToPass.isDynamicContent && typeof args[ 1 ] === 'object' ) {
-		cy
-			.getBaseControl( ...args, optionsToPass )
-			.find( 'button[aria-label="Dynamic Fields"]' )
-			.click( { force: true } )
+		if ( optionsToPass.isInPopover ) {
+			cy.get( '.components-base-control button[aria-label="Dynamic Fields"]' )
+				.click( { force: true } )
+		} else {
+			cy
+				.getBaseControl( ...args, optionsToPass )
+				.find( 'button[aria-label="Dynamic Fields"]' )
+				.click( { force: true } )
+		}
 
 		// Adjust popover with the `value`
 		cy.adjustDynamicContentPopover( args[ 1 ] )

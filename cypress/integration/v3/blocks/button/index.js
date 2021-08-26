@@ -42,6 +42,7 @@ function assertLink() {
 	it( 'should assert the links in buttons', () => {
 		cy.setupWP()
 		cy.newPage()
+		cy.typePostTitle( 'Test Button Link' )
 		cy.addBlock( 'stackable/button-group' )
 		cy.selectBlock( 'stackable/button-group' ).addNewColumn()
 
@@ -55,10 +56,9 @@ function assertLink() {
 			frontendSelector: '.stk-block-button__button',
 		} )
 
-		cy.typePostTitle( 'Test Dynamic Link' )
-
-		// Assert dynamic content as link / url value
+		// Assert dynamic content in link / url value
 		cy.selectBlock( 'stackable/button', 0 ).find( '.stk-block-button__inner-text' ).click( { force: true } )
+		// Current Post - Post URL
 		cy.adjust( 'Link / URL', {
 			source: 'Current Post',
 			fieldName: 'Post URL',
@@ -66,9 +66,11 @@ function assertLink() {
 			parentSelector: '.components-popover__content',
 			supportedDelimiter: [ ' ' ],
 			isDynamicContent: true,
-		} ).assertHtmlAttribute( '.stk-block-button__button', 'href', `${ Cypress.config().baseUrl }/test-dynamic-link/`, { assertBackend: false } )
+			isInPopover: true,
+		} ).assertHtmlAttribute( '.stk-block-button__button', 'href', `${ Cypress.config().baseUrl }/test-button-link/`, { assertBackend: false } )
 
-		cy.selectBlock( 'stackable/button', 1 )
+		cy.selectBlock( 'stackable/button', 1 ).find( '.stk-block-button__inner-text' ).click( { force: true } )
+		// Site - Site URL
 		cy.adjust( 'Link / URL', {
 			source: 'Site',
 			fieldName: 'Site URL',
@@ -76,6 +78,7 @@ function assertLink() {
 			parentSelector: '.components-popover__content',
 			supportedDelimiter: [ ' ' ],
 			isDynamicContent: true,
+			isInPopover: true,
 		} ).assertHtmlAttribute( '.stk-block-button__button', 'href', Cypress.config().baseUrl, { assertBackend: false } )
 	} )
 }
