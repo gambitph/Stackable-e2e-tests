@@ -57,14 +57,15 @@ export function getBaseControl( matches, options = {} ) {
 	const {
 		isInPopover = false,
 		parentSelector = '.components-panel__body',
+		mainComponentSelector = '.components-base-control',
 		supportedDelimiter = [],
 	} = options
 
-	const selector = Array( ...supportedDelimiter, '>', '>div>' ).map( d => `${ parentSelector ? `${ parentSelector }${ d }` : '' }.components-base-control` ).join( ',' )
+	const selector = Array( ...supportedDelimiter, '>', '>div>' ).map( d => `${ parentSelector ? `${ parentSelector }${ d }` : '' }${ mainComponentSelector }` ).join( ',' )
 
 	return ( ! isInPopover
 		? cy.get( selector )
-		: cy.get( '.components-popover__content' ).find( '.components-base-control' ) )
+		: cy.get( '.components-popover__content' ).find( mainComponentSelector ) )
 		.contains( containsRegExp( matches ) )
 		.closest( selector )
 }
