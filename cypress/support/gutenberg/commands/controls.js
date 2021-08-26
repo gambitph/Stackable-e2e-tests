@@ -11,6 +11,7 @@ import { containsRegExp } from '~common/util'
  */
 Cypress.Commands.add( 'colorControlClear', colorControlClear )
 Cypress.Commands.add( 'rangeControlReset', rangeControlReset )
+Cypress.Commands.add( 'dateTimeControlReset', dateTimeControlReset )
 Cypress.Commands.add( 'dropdownControl', dropdownControl )
 Cypress.Commands.add( 'colorControl', colorControl )
 Cypress.Commands.add( 'rangeControl', rangeControl )
@@ -22,10 +23,14 @@ Cypress.Commands.add( 'stylesControl', stylesControl )
 Cypress.Commands.add( 'fontSizeControl', fontSizeControl )
 Cypress.Commands.add( 'urlInputControl', urlInputControl )
 Cypress.Commands.add( 'radioControl', radioControl )
+Cypress.Commands.add( 'formTokenControl', formTokenControl )
+Cypress.Commands.add( 'checkboxControl', checkboxControl )
+Cypress.Commands.add( 'dateTimeControl', dateTimeControl )
 
 // Adjust Styles
 Cypress.Commands.add( 'adjust', adjust )
 Cypress.Commands.add( 'resetStyle', resetStyle )
+Cypress.Commands.add( 'adjustBlockStyle', adjustBlockStyle )
 
 /**
  * Command for resetting the color picker.
@@ -38,6 +43,7 @@ function colorControlClear( name, options = {} ) {
 		isInPopover = false,
 		beforeAdjust = () => {},
 		parentSelector,
+		mainComponentSelector,
 		supportedDelimiter = [],
 	} = options
 
@@ -45,6 +51,7 @@ function colorControlClear( name, options = {} ) {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, null, options )
@@ -68,18 +75,37 @@ function rangeControlReset( name, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, null, options )
 	selector()
 		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
 		.click( { force: true, multiple: true } )
+}
+
+/**
+ * Command for resetting the date time control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function dateTimeControlReset( name, options = {} ) {
+	const {
+		beforeAdjust = () => {},
+	} = options
+
+	beforeAdjust( name, null, options )
+	cy.get( '.components-datetime > .components-datetime__buttons' )
+		.find( 'button.components-datetime__date-reset-button' )
+		.click( { force: true } )
 }
 
 /**
@@ -95,12 +121,14 @@ function dropdownControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, value, options )
@@ -122,12 +150,14 @@ function colorControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	if ( typeof value === 'string' ) {
@@ -178,12 +208,14 @@ function rangeControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, value, options )
@@ -205,12 +237,14 @@ function toolbarControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	// Compatibility for default values
@@ -241,12 +275,14 @@ function toggleControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	selector()
@@ -276,12 +312,14 @@ function textControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, value, options )
@@ -303,12 +341,14 @@ function textAreaControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, value, options )
@@ -377,12 +417,14 @@ function urlInputControl( name, value, options = {} ) {
 		beforeAdjust = () => {},
 		parentSelector,
 		supportedDelimiter = [],
+		mainComponentSelector,
 	} = options
 
 	const selector = () => cy.getBaseControl( name, {
 		isInPopover,
 		parentSelector,
 		supportedDelimiter,
+		mainComponentSelector,
 	} )
 
 	beforeAdjust( name, value, options )
@@ -404,11 +446,151 @@ function radioControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		mainComponentSelector,
 	} = options
 
 	beforeAdjust( name, value, options )
-	cy.getBaseControl( name, { isInPopover } )
+	cy.getBaseControl( name, { isInPopover, mainComponentSelector } )
 		.find( `.components-radio-control__option:contains(${ value }) input` )
+		.click( { force: true } )
+}
+
+/**
+ * Command for adjusting the form token input.
+ *
+ * @param {string} name
+ * @param {*} value
+ * @param {Object} options
+ */
+function formTokenControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+		mainComponentSelector,
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} )
+
+	beforeAdjust( name, value, options )
+	value.forEach( val => {
+		// Type the string and then choose this from the suggestions.
+		selector()
+			.find( '.components-form-token-field__input' )
+			.click( { force: true } )
+			.type( val, { force: true } )
+
+		selector()
+			.find( `ul.components-form-token-field__suggestions-list li:contains(${ val })` )
+			.click( { force: true } )
+	} )
+}
+
+/**
+ * Command for changing the style of the block.
+ *
+ * @param {string} value
+ */
+export function adjustBlockStyle( value = '' ) {
+	cy.get( '.block-editor-block-styles' )
+		.find( `div[aria-label="${ value }"]` )
+		.click( { force: true } )
+}
+
+/**
+ * Command for adjusting the checkbox control
+ *
+ * @param {string} name
+ * @param {boolean} value
+ * @param {Object} options
+ */
+function checkboxControl( name, value = true, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+		mainComponentSelector,
+	} = options
+
+	const selector = name => cy
+		.getBaseControl( name, {
+			isInPopover, parentSelector, supportedDelimiter, mainComponentSelector,
+		} )
+		.find( `.components-base-control__field:contains(${ name })` )
+
+	beforeAdjust( name, value, options )
+
+	selector( name )
+		.then( $selector => {
+			if ( ( !! $selector.find( 'svg.components-checkbox-control__checked' ).length ) !== value ) {
+				selector( name )
+					.find( 'input.components-checkbox-control__input' )
+					.click( { force: true } )
+			}
+		} )
+}
+
+/**
+ * Command for adjusting the date time control.
+ *
+ * @param {string} name
+ * @param {Object} value
+ * @param {Object} options
+ */
+function dateTimeControl( name, value, options = {} ) {
+	const {
+		beforeAdjust = () => {},
+	} = options
+
+	const {
+		day,
+		month,
+		year,
+		hours = '12',
+		minutes = '00',
+		period = 'AM',
+	} = value
+
+	beforeAdjust( name, value, options )
+	const selector = () => cy
+		.get( '.components-datetime > .components-datetime__time' )
+
+	// Adjust the day
+	selector()
+		.find( 'input[aria-label="Day"]' )
+		.type( `{selectall}${ day }`, { force: true } )
+
+	// Adjust the month
+	selector()
+		.find( 'select[aria-label="Month"]' )
+		.select( month, { force: true } )
+
+	// Adjust the year
+	selector()
+		.find( 'input[aria-label="Year"]' )
+		.type( `{selectall}${ year }`, { force: true } )
+
+	// Adjust the hours
+	selector()
+		.find( 'input[aria-label="Hours"]' )
+		.type( `{selectall}${ hours }`, { force: true } )
+
+	// Adjust the minutes
+	selector()
+		.find( 'input[aria-label="Minutes"]' )
+		.type( `{selectall}${ minutes }`, { force: true } )
+
+	// Adjust the period
+	selector()
+		.find( '.components-datetime__time-field-am-pm button' )
+		.contains( containsRegExp( period ) )
 		.click( { force: true } )
 }
 
@@ -425,6 +607,8 @@ export function adjust( name, value, options ) {
 		customOptions = {},
 		// overwrite parent element selector used to locate option labels.
 		parentSelector = '.components-panel__body',
+		// overwrite the main component selector of the control we're adjusting
+		mainComponentSelector = '.components-base-control',
 		// if the option has no label, pass custom regex to find the control
 		supportedDelimiter = [],
 	} = options
@@ -445,7 +629,9 @@ export function adjust( name, value, options ) {
 	}
 
 	const baseControlSelector = () => cy
-		.getBaseControl( name, { parentSelector, supportedDelimiter } )
+		.getBaseControl( name, {
+			parentSelector, supportedDelimiter, mainComponentSelector,
+		} )
 
 	/**
 	 * Specific selector to trigger one
@@ -462,6 +648,9 @@ export function adjust( name, value, options ) {
 		'.components-textarea-control__input': 'textAreaControl',
 		'.block-editor-url-input': 'urlInputControl',
 		'.components-radio-control__input': 'radioControl',
+		'.components-form-token-field__input': 'formTokenControl',
+		'.components-checkbox-control__input': 'checkboxControl',
+		'.components-datetime': 'dateTimeControl',
 	}
 
 	baseControlSelector()
@@ -474,7 +663,7 @@ export function adjust( name, value, options ) {
 
 			if ( ! commandClassKey ) {
 				throw new Error(
-					'The `cy.adjust` function could not handle this option or the label provided is not found inside `.components-base-control element`. You may overwrite `cy.adjust` by passing customOptions and parentSelector to find the right control.'
+					'The `cy.adjust` function could not handle this option or the label provided is not found inside `.components-base-control element`. You may overwrite `cy.adjust` by passing customOptions, parentSelector, and mainComponentSelector to find the right control.'
 				)
 			}
 
@@ -512,6 +701,7 @@ export function resetStyle( name, options = {} ) {
 		// Populate default selectors.
 		'.components-input-control__input': 'rangeControlReset',
 		'.components-circular-option-picker__dropdown-link-action': 'colorControlClear',
+		'.components-datetime': 'dateTimeControlReset',
 	}
 
 	baseControlSelector()
