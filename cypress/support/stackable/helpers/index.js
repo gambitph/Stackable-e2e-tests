@@ -533,6 +533,11 @@ export const assertLinks = ( blockName, options = {} ) => {
 			const parentSelector = '.components-popover__content'
 			const supportedDelimiter = [ ' ' ]
 
+			/**
+			 * TODO: This will not work on dynamic blocks since we need to do some extra steps
+			 * before adjusting the options again.
+			 */
+
 			cy.get( parentSelector ).then( () => {
 				cy.adjust( 'Link / URL', `https://wpstackable${ index }.com/`, { parentSelector, supportedDelimiter } )
 					.assertHtmlAttribute( frontendSelector, 'href', `https://wpstackable${ index }.com/`, { assertBackend: false } )
@@ -541,6 +546,7 @@ export const assertLinks = ( blockName, options = {} ) => {
 				cy.adjust( 'Link rel', 'sponsored ugc', { parentSelector, supportedDelimiter } )
 					.assertHtmlAttribute( frontendSelector, 'rel', /sponsored ugc/, { assertBackend: false } )
 			} )
+			cy.resetStyle( 'Link / URL', { parentSelector, supportedDelimiter } )
 		} )
 	} )
 }
