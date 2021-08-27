@@ -12,6 +12,7 @@ import { containsRegExp } from '~common/util'
 Cypress.Commands.add( 'colorControlClear', colorControlClear )
 Cypress.Commands.add( 'rangeControlReset', rangeControlReset )
 Cypress.Commands.add( 'dateTimeControlReset', dateTimeControlReset )
+Cypress.Commands.add( 'urlInputControlReset', urlInputControlReset )
 Cypress.Commands.add( 'dropdownControl', dropdownControl )
 Cypress.Commands.add( 'colorControl', colorControl )
 Cypress.Commands.add( 'rangeControl', rangeControl )
@@ -70,6 +71,34 @@ function colorControlClear( name, options = {} ) {
  * @param {Object} options
  */
 function rangeControlReset( name, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+		mainComponentSelector,
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} )
+
+	beforeAdjust( name, null, options )
+	selector()
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+		.click( { force: true, multiple: true } )
+}
+
+/**
+ * Command for resetting the url input control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function urlInputControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
@@ -702,6 +731,7 @@ export function resetStyle( name, options = {} ) {
 		'.components-input-control__input': 'rangeControlReset',
 		'.components-circular-option-picker__dropdown-link-action': 'colorControlClear',
 		'.components-datetime': 'dateTimeControlReset',
+    '.block-editor-link-control': 'urlInputControlReset',
 	}
 
 	baseControlSelector()
