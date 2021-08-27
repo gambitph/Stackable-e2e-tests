@@ -93,34 +93,6 @@ function rangeControlReset( name, options = {} ) {
 }
 
 /**
- * Command for resetting the url input control.
- *
- * @param {string} name
- * @param {Object} options
- */
-function urlInputControlReset( name, options = {} ) {
-	const {
-		isInPopover = false,
-		beforeAdjust = () => {},
-		parentSelector,
-		supportedDelimiter = [],
-		mainComponentSelector,
-	} = options
-
-	const selector = () => cy.getBaseControl( name, {
-		isInPopover,
-		parentSelector,
-		supportedDelimiter,
-		mainComponentSelector,
-	} )
-
-	beforeAdjust( name, null, options )
-	selector()
-		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
-		.click( { force: true, multiple: true } )
-}
-
-/**
  * Command for resetting the date time control.
  *
  * @param {string} name
