@@ -1,9 +1,7 @@
 name: e2e-test-wp55
 on:
-  push:
-    branches: [ master ]
   pull_request:
-    branches: [ master ]
+    branches: [ latest-post-test ]
 
 jobs:
   test:
