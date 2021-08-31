@@ -2,8 +2,6 @@ name: e2e-test-wp56
 on:
   push:
     branches: [ master ]
-  pull_request:
-    branches: [ master ]
 
 jobs:
   test:
