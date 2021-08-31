@@ -302,7 +302,7 @@ export function globalColorNativeBlocks() {
 		nativeBlocks.forEach( blockName => {
 			cy.addBlock( blockName )
 			if ( ! Array( 'core/separator', 'core/buttons' ).includes( blockName ) ) {
-				cy.typeBlock( blockName, '', 'Block text', 0 )
+				cy.typeBlock( blockName, '', 'Block text' )
 			}
 			if ( blockName === 'core/buttons' ) {
 				cy.typeBlock( 'core/button', '.wp-block-button__link', 'My button' )

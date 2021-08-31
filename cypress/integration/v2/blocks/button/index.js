@@ -117,7 +117,7 @@ function styleTab( viewport, desktopOnly ) {
 			if ( index !== 1 ) {
 				cy.toggleStyle( `Button #${ index }` )
 			}
-			cy.typeBlock( 'ugb/button', `.ugb-button${ index } .ugb-button--inner`, `Button ${ index }`, index - 1 )
+			cy.typeBlock( 'ugb/button', `.ugb-button${ index } .ugb-button--inner`, `Button ${ index }` )
 			cy.waitFA()
 			desktopOnly( () => {
 				cy.adjust( 'Link / URL', 'https://www.google.com/' ).assertHtmlAttribute( `.ugb-button${ index }`, 'href', 'https://www.google.com/', { assertBackend: false } )
