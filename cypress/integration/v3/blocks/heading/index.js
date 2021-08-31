@@ -31,7 +31,7 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'stackable/heading' ).asBlock( 'headingBlock', { isStatic: true } )
 
-		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'V3 Heading', 0 )
+		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'V3 Heading' )
 			.assertBlockContent( '.stk-block-heading__text', 'V3 Heading' )
 	} )
 }
@@ -50,7 +50,7 @@ function blockTab( viewport ) {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'stackable/heading' ).asBlock( 'headingBlock', { isStatic: true } )
-		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'V3 Heading', 0 )
+		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'V3 Heading' )
 		cy.openInspector( 'stackable/heading', 'Block' )
 	} )
 

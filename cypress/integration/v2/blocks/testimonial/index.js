@@ -70,11 +70,11 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/testimonial' ).asBlock( 'testimonialBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__body', 'Hello World! 1', 0 )
+		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__body', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-testimonial__body', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__name', 'Helloo World!! 12', 0 )
+		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__name', 'Helloo World!! 12' )
 			.assertBlockContent( '.ugb-testimonial__name', 'Helloo World!! 12' )
-		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__position', 'Hellooo World!!! 123', 0 )
+		cy.typeBlock( 'ugb/testimonial', '.ugb-testimonial__position', 'Hellooo World!!! 123' )
 			.assertBlockContent( '.ugb-testimonial__position', 'Hellooo World!!! 123' )
 
 		cy.openInspector( 'ugb/testimonial', 'Style' )

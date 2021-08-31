@@ -58,7 +58,7 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/button' ).asBlock( 'buttonBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/button', '.ugb-button--inner', 'Hello World! 1234', 0 )
+		cy.typeBlock( 'ugb/button', '.ugb-button--inner', 'Hello World! 1234' )
 			.assertBlockContent( '.ugb-button--inner', 'Hello World! 1234' )
 	} )
 }

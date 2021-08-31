@@ -66,7 +66,7 @@ function typeContent() {
 		cy.openInspector( 'ugb/blog-posts', 'Style' )
 		cy.toggleStyle( 'Load More Button' )
 
-		cy.typeBlock( 'ugb/blog-posts', '.ugb-button--inner', 'Helloo World!! 12345', 0 )
+		cy.typeBlock( 'ugb/blog-posts', '.ugb-button--inner', 'Helloo World!! 12345' )
 			.assertBlockContent( '.ugb-button--inner', 'Helloo World!! 12345' )
 
 		assertBlockTitleDescriptionContent( 'ugb/blog-posts' )

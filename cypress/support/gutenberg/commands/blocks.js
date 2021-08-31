@@ -124,9 +124,8 @@ export function selectBlock( subject, selector ) {
  * @param {string} contentSelector
  * @param {string} content
  * @param {string | number | Object} customSelector
- * @param {Object} options
  */
-export function typeBlock( subject, contentSelector = '', content = '', customSelector = '', options = {} ) {
+export function typeBlock( subject, contentSelector = '', content = '', customSelector = '' ) {
 	( contentSelector
 		? cy.selectBlock( subject, customSelector ).find( contentSelector )
 		: cy.selectBlock( subject, customSelector )
@@ -134,12 +133,6 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
 		.first()
 		.click( { force: true } )
 		.type( `{selectall}${ content }`, { force: true } )
-
-	const {
-		delay = 0,
-	} = options
-
-	cy.wait( delay )
 
 	if ( content[ 0 ] !== '/' ) {
 		cy.selectBlock( subject, customSelector )

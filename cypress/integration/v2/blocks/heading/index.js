@@ -36,9 +36,9 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/heading' ).asBlock( 'headingBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Hello World! 1', 0 )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-heading__title', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Helloo World!! 12', 0 )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Helloo World!! 12' )
 			.assertBlockContent( '.ugb-heading__subtitle', 'Helloo World!! 12' )
 	} )
 }
@@ -49,8 +49,8 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'ugb/heading' ).asBlock( 'headingBlock', { isStatic: true } )
 		cy.openInspector( 'ugb/heading', 'Style' )
-		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Hello World! 1', 0 )
-		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Helloo World!! 12', 0 )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Helloo World!! 12' )
 	} )
 
 	afterEach( () => cy.assertFrontendStyles( '@headingBlock' ) )
@@ -61,7 +61,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Title options in ${ lowerCase( viewport ) }`, () => {
-		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Title here', 0 )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Title here' )
 		cy.collapse( 'Title' )
 		desktopOnly( () => {
 			cy.adjust( 'Title HTML Tag', 'h4' )
@@ -78,7 +78,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	it( `should assert Subtitle options in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'Subtitle' )
-		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Subtitle here', 0 )
+		cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Subtitle here' )
 		desktopOnly( () => {
 			cy.adjust( 'Subtitle Color', '#742f2f' ).assertComputedStyle( {
 				'.ugb-heading__subtitle': {
@@ -190,8 +190,8 @@ function advancedTab( viewport ) {
 	cy.newPage()
 	cy.addBlock( 'ugb/heading' ).asBlock( 'headingBlock', { isStatic: true } )
 
-	cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Title here', 0 )
-	cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Subtitle here', 0 )
+	cy.typeBlock( 'ugb/heading', '.ugb-heading__title', 'Title here' )
+	cy.typeBlock( 'ugb/heading', '.ugb-heading__subtitle', 'Subtitle here' )
 	cy.openInspector( 'ugb/heading', 'Advanced' )
 
 	assertAdvancedTab( '.ugb-heading', {

@@ -71,11 +71,11 @@ function typeContent() {
 		cy.toggleStyle( 'Title' )
 		cy.toggleStyle( 'Subtitle' )
 
-		cy.typeBlock( 'ugb/text', '.ugb-text__title', 'Hello World! 1', 0 )
+		cy.typeBlock( 'ugb/text', '.ugb-text__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-text__title', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/text', '.ugb-text__subtitle', 'Helloo World!! 12', 0 )
+		cy.typeBlock( 'ugb/text', '.ugb-text__subtitle', 'Helloo World!! 12' )
 			.assertBlockContent( '.ugb-text__subtitle', 'Helloo World!! 12' )
-		cy.typeBlock( 'ugb/text', '.ugb-text__text-1', 'Hellooo World!!! 123', 0 )
+		cy.typeBlock( 'ugb/text', '.ugb-text__text-1', 'Hellooo World!!! 123' )
 			.assertBlockContent( '.ugb-text__text-1', 'Hellooo World!!! 123' )
 	} )
 }
@@ -88,8 +88,8 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/text', 'Style' )
 		cy.collapse( 'General' )
 		cy.adjust( 'Columns', 2 )
-		cy.typeBlock( 'ugb/text', '.ugb-text__text-1', 'Text 1', 0 )
-		cy.typeBlock( 'ugb/text', '.ugb-text__text-2', 'Text 2', 0 )
+		cy.typeBlock( 'ugb/text', '.ugb-text__text-1', 'Text 1' )
+		cy.typeBlock( 'ugb/text', '.ugb-text__text-2', 'Text 2' )
 	} )
 
 	afterEach( () => cy.assertFrontendStyles( '@textBlock' ) )
@@ -145,7 +145,7 @@ function styleTab( viewport, desktopOnly ) {
 		// Test Title
 		cy.collapse( 'Title' )
 		cy.toggleStyle( 'Title' )
-		cy.typeBlock( 'ugb/text', '.ugb-text__title', 'Title here', 0 )
+		cy.typeBlock( 'ugb/text', '.ugb-text__title', 'Title here' )
 
 		desktopOnly( () => {
 			cy.adjust( 'Title HTML Tag', 'h3' )
@@ -178,7 +178,7 @@ function styleTab( viewport, desktopOnly ) {
 		// Test Subtitle options
 		cy.collapse( 'Subtitle' )
 		cy.toggleStyle( 'Subtitle' )
-		cy.typeBlock( 'ugb/text', '.ugb-text__subtitle', 'Subtitle here', 0 )
+		cy.typeBlock( 'ugb/text', '.ugb-text__subtitle', 'Subtitle here' )
 
 		desktopOnly( () => {
 			cy.adjust( 'Subtitle on Top', true )

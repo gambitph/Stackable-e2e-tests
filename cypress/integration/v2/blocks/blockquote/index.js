@@ -66,7 +66,7 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/blockquote' ).asBlock( 'blockquoteBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/blockquote', '.ugb-blockquote__text', 'Hello World! 1234', 0 )
+		cy.typeBlock( 'ugb/blockquote', '.ugb-blockquote__text', 'Hello World! 1234' )
 			.assertBlockContent( '.ugb-blockquote__text', 'Hello World! 1234' )
 	} )
 }

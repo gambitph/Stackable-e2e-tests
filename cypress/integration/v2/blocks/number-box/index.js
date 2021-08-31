@@ -68,9 +68,9 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/number-box' ).asBlock( 'numberBoxBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__title', 'Hello World! 1', 0 )
+		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-number-box__title', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__description', 'Helloo World!! 12', 0 )
+		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__description', 'Helloo World!! 12' )
 			.assertBlockContent( '.ugb-number-box__description', 'Helloo World!! 12' )
 
 		cy.openInspector( 'ugb/number-box', 'Style' )
@@ -166,11 +166,11 @@ function styleTab( viewport, desktopOnly ) {
 			},
 		} )
 		desktopOnly( () => {
-			cy.typeBlock( 'ugb/number-box', '.ugb-number-box__item1 .ugb-number-box__number', '10', 0 )
+			cy.typeBlock( 'ugb/number-box', '.ugb-number-box__item1 .ugb-number-box__number', '10' )
 				.assertBlockContent( '.ugb-number-box__item1 .ugb-number-box__number', '10' )
-			cy.typeBlock( 'ugb/number-box', '.ugb-number-box__item2 .ugb-number-box__number', '20', 0 )
+			cy.typeBlock( 'ugb/number-box', '.ugb-number-box__item2 .ugb-number-box__number', '20' )
 				.assertBlockContent( '.ugb-number-box__item2 .ugb-number-box__number', '20' )
-			cy.typeBlock( 'ugb/number-box', '.ugb-number-box__item3 .ugb-number-box__number', '30', 0 )
+			cy.typeBlock( 'ugb/number-box', '.ugb-number-box__item3 .ugb-number-box__number', '30' )
 				.assertBlockContent( '.ugb-number-box__item3 .ugb-number-box__number', '30' )
 
 			cy.adjust( 'Number Shape', 'none' ).assertClassName( '.ugb-number-box', 'ugb-number-box--number-style-none' )

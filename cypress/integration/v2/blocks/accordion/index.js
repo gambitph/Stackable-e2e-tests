@@ -73,7 +73,7 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', 'Hello World! 1234', 0 )
+		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', 'Hello World! 1234' )
 			.assertBlockContent( '.ugb-accordion__title', 'Hello World! 1234' )
 	} )
 }
@@ -178,7 +178,7 @@ function styleTab( viewport, desktopOnly ) {
 				},
 			} )
 		} )
-		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', 'Accordion 1', 0 )
+		cy.typeBlock( 'ugb/accordion', '.ugb-accordion__title', 'Accordion 1' )
 		cy.document().then( doc => {
 			if ( ! doc.querySelector( '.ugb-accordion--open' ) ) {
 				cy.get( '.ugb-accordion__heading' ).click( { force: true } )

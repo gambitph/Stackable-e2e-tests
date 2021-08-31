@@ -87,11 +87,11 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/header' ).asBlock( 'headerBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/header', '.ugb-header__title', 'Hello World! 1', 0 )
+		cy.typeBlock( 'ugb/header', '.ugb-header__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-header__title', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/header', '.ugb-header__subtitle', 'Helloo World!! 12', 0 )
+		cy.typeBlock( 'ugb/header', '.ugb-header__subtitle', 'Helloo World!! 12' )
 			.assertBlockContent( '.ugb-header__subtitle', 'Helloo World!! 12' )
-		cy.typeBlock( 'ugb/header', '.ugb-button--inner', 'Hellooo World!!! 123', 0 )
+		cy.typeBlock( 'ugb/header', '.ugb-button--inner', 'Hellooo World!!! 123' )
 			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
 	} )
 }
@@ -195,7 +195,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( `should assert Button 1 options in ${ lowerCase( viewport ) }`, () => {
-		cy.typeBlock( 'ugb/header', '.ugb-button1 .ugb-button--inner', 'Button 1', 0 )
+		cy.typeBlock( 'ugb/header', '.ugb-button1 .ugb-button--inner', 'Button 1' )
 		cy.collapse( 'Button #1' )
 		cy.toggleStyle( 'Button #1' )
 		desktopOnly( () => {
@@ -266,7 +266,7 @@ function styleTab( viewport, desktopOnly ) {
 	it( `should assert Button 2 options in ${ lowerCase( viewport ) }`, () => {
 		cy.collapse( 'Button #2' )
 		cy.toggleStyle( 'Button #2' )
-		cy.typeBlock( 'ugb/header', '.ugb-button2 .ugb-button--inner', 'Button 2', 0 )
+		cy.typeBlock( 'ugb/header', '.ugb-button2 .ugb-button--inner', 'Button 2' )
 		desktopOnly( () => {
 			cy.adjust( 'Link / URL', 'https://www.google.com/' ).assertHtmlAttribute( '.ugb-button2', 'href', 'https://www.google.com/', { assertBackend: false } )
 			cy.adjust( 'Open link in new tab', true ).assertHtmlAttribute( '.ugb-button2', 'rel', /noopener noreferrer/, { assertBackend: false } )

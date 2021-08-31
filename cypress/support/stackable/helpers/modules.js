@@ -104,7 +104,7 @@ export const assertBlockTitleDescriptionContent = ( subject, assertOptions = {} 
 		cy.collapse( `Block ${ typographyAssertion }` )
 		cy.toggleStyle( `Block ${ typographyAssertion }` )
 
-		cy.typeBlock( subject, typographySelector, 'Hello World! 1234', 0 )
+		cy.typeBlock( subject, typographySelector, 'Hello World! 1234' )
 			.assertBlockContent( typographySelector, 'Hello World! 1234', assertOptions )
 	} )
 }

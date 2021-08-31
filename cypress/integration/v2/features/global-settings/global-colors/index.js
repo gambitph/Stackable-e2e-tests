@@ -96,7 +96,7 @@ export function adjustGlobalColorTest() {
 						if ( name === 'text' ) {
 							cy.toggleStyle( 'Title' )
 						}
-						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block', 0 )
+						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
 					}
 
 					cy.collapse( 'Title' )
@@ -187,7 +187,7 @@ export function changeGlobalColorTest() {
 						if ( name === 'text' ) {
 							cy.toggleStyle( 'Title' )
 						}
-						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block', 0 )
+						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
 					}
 
 					cy.collapse( 'Title' )
@@ -305,7 +305,7 @@ export function globalColorNativeBlocks() {
 				cy.typeBlock( blockName, '', 'Block text', 0 )
 			}
 			if ( blockName === 'core/buttons' ) {
-				cy.typeBlock( 'core/button', '.wp-block-button__link', 'My button', 0 )
+				cy.typeBlock( 'core/button', '.wp-block-button__link', 'My button' )
 			}
 		} )
 
@@ -382,7 +382,7 @@ export function deleteGlobalColorTest() {
 						if ( name === 'text' ) {
 							cy.toggleStyle( 'Title' )
 						}
-						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block', 0 )
+						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
 					}
 
 					cy.collapse( 'Title' )

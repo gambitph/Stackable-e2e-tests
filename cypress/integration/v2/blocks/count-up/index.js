@@ -65,11 +65,11 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/count-up' ).asBlock( 'countUpBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/count-up', '.ugb-countup__title', 'Hello World! 1', 0 )
+		cy.typeBlock( 'ugb/count-up', '.ugb-countup__title', 'Hello World! 1' )
 			.assertBlockContent( '.ugb-countup__title', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/count-up', '.ugb-countup__counter', '1234', 0 )
+		cy.typeBlock( 'ugb/count-up', '.ugb-countup__counter', '1234' )
 			.assertBlockContent( '.ugb-countup__counter', '1234' )
-		cy.typeBlock( 'ugb/count-up', '.ugb-countup__description', 'Helloo World!! 12', 0 )
+		cy.typeBlock( 'ugb/count-up', '.ugb-countup__description', 'Helloo World!! 12' )
 			.assertBlockContent( '.ugb-countup__description', 'Helloo World!! 12' )
 
 		cy.openInspector( 'ugb/count-up', 'Style' )
