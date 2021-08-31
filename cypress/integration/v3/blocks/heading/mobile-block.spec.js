@@ -8,4 +8,4 @@ import { registerTests } from '~stackable-e2e/helpers'
  */
 import { mobileBlock } from '.'
 
-describe( 'V3 Heading Block ( Mobile Block )', registerTests( [ mobileBlock ] ) )
+describe( 'Heading Block ( Mobile Block )', registerTests( [ mobileBlock ] ) )

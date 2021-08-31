@@ -8,4 +8,4 @@ import { registerTests } from '~stackable-e2e/helpers'
  */
 import { desktopBlock } from '.'
 
-describe( 'V3 Heading Block ( Desktop Block )', registerTests( [ desktopBlock ] ) )
+describe( 'Heading Block ( Desktop Block )', registerTests( [ desktopBlock ] ) )

@@ -734,7 +734,7 @@ export function resetStyle( name, options = {} ) {
 		'.components-input-control__input': 'rangeControlReset',
 		'.components-circular-option-picker__dropdown-link-action': 'colorControlClear',
 		'.components-datetime': 'dateTimeControlReset',
-    '.block-editor-link-control': 'urlInputControlReset',
+		'.block-editor-link-control': 'urlInputControlReset',
 	}
 
 	baseControlSelector()

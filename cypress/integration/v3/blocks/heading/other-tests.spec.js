@@ -12,7 +12,7 @@ import {
 	typeContent,
 } from '.'
 
-describe( 'V3 Heading Block ( Other Tests )', registerTests( [
+describe( 'Heading Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	typeContent,
