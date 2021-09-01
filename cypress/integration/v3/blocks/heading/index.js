@@ -38,12 +38,16 @@ function pressEnterKey() {
 		cy.addBlock( 'stackable/heading' )
 
 		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Heading', 0 )
-		cy.type( '{enter}', { force: true } )
+		cy.get( '.stk-block-heading__text' ).type( '{enter}', { force: true } )
+
 		cy.get( '.block-editor-block-list__block.is-selected' ).invoke( 'attr', 'data-type' ).then( blockName => {
 			assert.isTrue(
 				blockName === 'stackable/text',
 				'Expected text block to be added upon pressing enter key in Heading.'
 			)
 		} )
+		cy.savePost()
+		// Reloading should not cause a block error
+		cy.reload()
 	} )
-} // Run test again. failing: `pressEnterKey`
+}
