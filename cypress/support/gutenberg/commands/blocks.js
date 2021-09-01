@@ -224,10 +224,15 @@ export function asBlock( subject, alias, options = {} ) {
  * Command for adding a new column.
  *
  * @param {*} subject
+ * @param {Object} options
  */
-export function addNewColumn( subject ) {
+export function addNewColumn( subject, options = {} ) {
+	const {
+		label = 'Add Button',
+	} = options
+
 	cy.wrap( subject )
 		.find( '.block-list-appender' )
-		.find( 'button[aria-label="Add Button"], button[aria-label="Add Column"]' )
+		.find( `button[aria-label="${ label }"], button[aria-label="Add Column"]` )
 		.click( { force: true } )
 }
