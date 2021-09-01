@@ -49,7 +49,7 @@ function typeContent() {
 		cy.openInspector( 'ugb/icon', 'Style' )
 		cy.toggleStyle( 'Title' )
 
-		cy.typeBlock( 'ugb/icon', '.ugb-icon__title', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/icon', '.ugb-icon__title', 'Helloo World!! 12', 0 )
 			.assertBlockContent( '.ugb-icon__title', 'Helloo World!! 12' )
 
 		assertBlockTitleDescriptionContent( 'ugb/icon' )
@@ -86,10 +86,10 @@ function styleTab( viewport, desktopOnly ) {
 		// Test Title options
 		cy.collapse( 'Title' )
 		cy.toggleStyle( 'Title' )
-		cy.typeBlock( 'ugb/icon', '.ugb-icon__item1 .ugb-icon__title', 'Title 1' )
-		cy.typeBlock( 'ugb/icon', '.ugb-icon__item2 .ugb-icon__title', 'Title 2' )
-		cy.typeBlock( 'ugb/icon', '.ugb-icon__item3 .ugb-icon__title', 'Title 3' )
-		cy.typeBlock( 'ugb/icon', '.ugb-icon__item4 .ugb-icon__title', 'Title 4' )
+		cy.typeBlock( 'ugb/icon', '.ugb-icon__item1 .ugb-icon__title', 'Title 1', 0 )
+		cy.typeBlock( 'ugb/icon', '.ugb-icon__item2 .ugb-icon__title', 'Title 2', 0 )
+		cy.typeBlock( 'ugb/icon', '.ugb-icon__item3 .ugb-icon__title', 'Title 3', 0 )
+		cy.typeBlock( 'ugb/icon', '.ugb-icon__item4 .ugb-icon__title', 'Title 4', 0 )
 
 		cy.adjust( 'Title on Top', true )
 		desktopOnly( () => {

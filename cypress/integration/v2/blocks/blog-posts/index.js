@@ -324,7 +324,7 @@ function styleTab( viewport, desktopOnly ) {
 
 	it( `should assert Load More Button options in ${ lowerCase( viewport ) }`, () => {
 		cy.toggleStyle( 'Load More Button' )
-		cy.typeBlock( 'ugb/blog-posts', '.ugb-button .ugb-button--inner', 'More Posts' )
+		cy.typeBlock( 'ugb/blog-posts', '.ugb-button .ugb-button--inner', 'More Posts', 0 )
 		cy.collapse( 'Load More Button' )
 		cy.waitFA()
 		cy.adjust( 'Icon', 'info' )
