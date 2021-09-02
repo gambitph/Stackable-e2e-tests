@@ -46,8 +46,8 @@ function typeContent() {
 			.assertBlockContent( '.stk-block-heading__text', 'Feature grid block' )
 		cy.typeBlock( 'stackable/feature-grid', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
 			.assertBlockContent( '.stk-block-text__text', 'Lorem ipsum dolor sit amet.' )
-		cy.typeBlock( 'stackable/feature-grid', '.stk-block-button__inner-text', 'Click here', 0 )
-			.assertBlockContent( '.stk-block-button__inner-text', 'Click here' )
+		cy.typeBlock( 'stackable/feature-grid', '.stk-button__inner-text', 'Click here', 0 )
+			.assertBlockContent( '.stk-button__inner-text', 'Click here' )
 	} )
 }
 

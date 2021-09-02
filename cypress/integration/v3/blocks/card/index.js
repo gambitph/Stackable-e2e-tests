@@ -46,8 +46,8 @@ function typeContent() {
 			.assertBlockContent( '.stk-block-heading__text', 'Test Card block' )
 		cy.typeBlock( 'stackable/card', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
 			.assertBlockContent( '.stk-block-text__text', 'Lorem ipsum dolor sit amet.' )
-		cy.typeBlock( 'stackable/card', '.stk-block-button__inner-text', 'Click here', 0 )
-			.assertBlockContent( '.stk-block-button__inner-text', 'Click here' )
+		cy.typeBlock( 'stackable/card', '.stk-button__inner-text', 'Click here', 0 )
+			.assertBlockContent( '.stk-button__inner-text', 'Click here' )
 	} )
 }
 // TODO: Add test for adding image content to Card's image

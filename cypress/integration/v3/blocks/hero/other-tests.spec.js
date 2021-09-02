@@ -13,7 +13,7 @@ import {
 	typeContent,
 } from '.'
 
-describe( 'Header Block ( Other Tests )', registerTests( [
+describe( 'Hero Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	innerBlocks,

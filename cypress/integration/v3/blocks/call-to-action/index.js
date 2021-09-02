@@ -46,7 +46,7 @@ function typeContent() {
 			.assertBlockContent( '.stk-block-heading__text', 'Test CTA block' )
 		cy.typeBlock( 'stackable/call-to-action', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
 			.assertBlockContent( '.stk-block-call-to-action .stk-block-text__text', 'Lorem ipsum dolor sit amet.' )
-		cy.typeBlock( 'stackable/call-to-action', '.stk-block-button__inner-text', 'Click here', 0 )
-			.assertBlockContent( '.stk-block-call-to-action .stk-block-button__inner-text', 'Click here' )
+		cy.typeBlock( 'stackable/call-to-action', '.stk-button__inner-text', 'Click here', 0 )
+			.assertBlockContent( '.stk-block-call-to-action .stk-button__inner-text', 'Click here' )
 	} )
 }

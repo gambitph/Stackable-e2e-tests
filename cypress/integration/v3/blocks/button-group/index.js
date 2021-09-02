@@ -26,11 +26,11 @@ function addColumn() {
 		cy.newPage()
 		cy.addBlock( 'stackable/button-group' ).asBlock( 'buttonGroupBlock', { isStatic: true } )
 
-		cy.typeBlock( 'stackable/button', '.stk-block-button__inner-text', 'Click', 0 )
+		cy.typeBlock( 'stackable/button', '.stk-button__inner-text', 'Button', 0 )
 		// Add 3 more buttons
-		cy.selectBlock( 'stackable/button-group' ).addNewColumn()
-		cy.selectBlock( 'stackable/button-group' ).addNewColumn()
-		cy.selectBlock( 'stackable/button-group' ).addNewColumn()
+		cy.selectBlock( 'stackable/button-group' ).addNewColumn( { blockToAdd: 'Button' } )
+		cy.selectBlock( 'stackable/button-group' ).addNewColumn( { blockToAdd: 'Button' } )
+		cy.selectBlock( 'stackable/button-group' ).addNewColumn( { blockToAdd: 'Button' } )
 		cy.savePost()
 
 		const assertAddedButtons = assertType => cy
