@@ -10,14 +10,10 @@ import {
 	blockExist,
 	blockError,
 	innerBlocks,
-	typeContent,
-	loadedFiles,
 } from '.'
 
-describe( 'Accordion Block ( Other Tests )', registerTests( [
+describe( 'Container Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	innerBlocks,
-	typeContent,
-	loadedFiles,
 ] ) )

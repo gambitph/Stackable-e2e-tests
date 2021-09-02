@@ -164,7 +164,7 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 export function changeIcon( index = 1, keyword = '', icon ) {
 	cy
 		.get( '.block-editor-block-list__block.is-selected' )
-		.find( '.ugb-svg-icon-placeholder__button' )
+		.find( '.ugb-svg-icon-placeholder__button, .stk--inner-svg' )
 		.eq( index - 1 )
 		.click( { force: true } )
 

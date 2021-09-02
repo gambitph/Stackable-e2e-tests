@@ -485,12 +485,15 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 			const selector = `.${ attributes.className }`
 			cy
 				.get( subject )
-				.then( $block => {
+				.then( () => {
 					if ( assertBackend ) {
-						assert.isTrue(
-							! isEmpty( $block.find( `${ customSelector }:contains(${ expectedValue })` ) ),
-							`${ customSelector } must have content '${ expectedValue }' in Editor'`
-						)
+						cy.get( subject ).find( customSelector ).invoke( 'text' ).then( actualValue => {
+							assert.isTrue(
+								actualValue === expectedValue,
+								`${ customSelector } must have content '${ expectedValue }' in Editor. Found: '${ actualValue }'`
+							)
+						} )
+
 						afterBackendAssert()
 					}
 

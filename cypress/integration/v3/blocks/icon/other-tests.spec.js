@@ -9,15 +9,11 @@ import { registerTests } from '~stackable-e2e/helpers'
 import {
 	blockExist,
 	blockError,
-	innerBlocks,
-	typeContent,
-	loadedFiles,
+	selectIcon,
 } from '.'
 
-describe( 'Accordion Block ( Other Tests )', registerTests( [
+describe( 'Icon Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
-	innerBlocks,
-	typeContent,
-	loadedFiles,
+	selectIcon,
 ] ) )

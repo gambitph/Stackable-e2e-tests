@@ -12,7 +12,6 @@ export {
 	blockError,
 	typeContent,
 	innerBlocks,
-	pressEnterKey,
 	loadedFiles,
 }
 
@@ -49,24 +48,6 @@ function typeContent() {
 
 		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'My sample description here 12343', 0 )
 			.assertBlockContent( '.stk-block-text__text', 'My sample description here 12343' )
-	} )
-}
-
-function pressEnterKey() {
-	it( 'should test clicking the enter key in heading and text block', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/accordion' )
-
-		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Heading', 0 )
-		cy.get( '.stk-block-heading__text' ).type( '{enter}', { force: true } )
-
-		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'My sample text', 0 )
-		cy.get( '.stk-block-text__text' ).type( '{enter}', { force: true } )
-
-		cy.savePost()
-		// Reloading should not cause a block error
-		cy.reload()
 	} )
 }
 
