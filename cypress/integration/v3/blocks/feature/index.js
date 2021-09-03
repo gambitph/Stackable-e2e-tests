@@ -69,4 +69,3 @@ function assertWidth() {
 		}, { assertBackend: false } )
 	} )
 }
-// TODO: Add test for adding image content

@@ -12,6 +12,7 @@ export {
 	blockError,
 	innerBlocks,
 	typeContent,
+	addImage,
 }
 
 function blockExist() {
@@ -50,4 +51,34 @@ function typeContent() {
 			.assertBlockContent( '.stk-button__inner-text', 'Click here' )
 	} )
 }
-// TODO: Add test for adding image content to Card's image
+
+function addImage() {
+	it( 'should add an image content and test the image size tooltip', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/card' )
+		cy.selectBlock( 'stackable/card' )
+			.find( '.stk-img-placeholder' )
+			.click( { force: true } )
+		cy.selectFromMediaLibrary( 1 )
+		cy.savePost()
+		cy.reload()
+
+		// Adjust the Image Size tooltip
+		cy.selectBlock( 'stackable/card' )
+			.find( '.stk-img-resizer-tooltip' )
+			.click( { force: true } )
+			.then( () => {
+				cy.get( '.components-popover__content:contains(Image Height)' )
+				cy.adjust( 'Image Height', 412, {
+					parentSelector: '.stk-image-size-popup__control-wrapper',
+				} )
+				cy.selectBlock( 'stackable/card' )
+					.assertComputedStyle( {
+						'img.stk-img': {
+							'height': '412px',
+						},
+					} )
+			} )
+	} )
+}

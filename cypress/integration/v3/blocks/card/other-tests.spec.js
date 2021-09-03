@@ -11,6 +11,7 @@ import {
 	blockError,
 	innerBlocks,
 	typeContent,
+	addImage,
 } from '.'
 
 describe( 'Card Block ( Other Tests )', registerTests( [
@@ -18,4 +19,5 @@ describe( 'Card Block ( Other Tests )', registerTests( [
 	blockError,
 	innerBlocks,
 	typeContent,
+	addImage,
 ] ) )

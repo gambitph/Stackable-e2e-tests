@@ -9,9 +9,11 @@ import { registerTests } from '~stackable-e2e/helpers'
 import {
 	blockExist,
 	blockError,
+	addImage,
 } from '.'
 
 describe( 'Image Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
+	addImage,
 ] ) )
