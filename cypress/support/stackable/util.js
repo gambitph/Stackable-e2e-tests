@@ -63,18 +63,14 @@ export function changeUnit( options = {} ) {
 	if ( unit ) {
 		selector()
 			.then( $baseControl => {
-				if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
-					if ( $baseControl.find( '.stk-control-label__units' ).length ) {
-						// We need to check this for control units that do not have the `.is-active` class.
-						if ( $baseControl.find( '.stk-control-label__units button.is-active' ).length ) {
+				if ( $baseControl.find( '.stk-control-label__units' ).length ) {
+					selector().find( '.stk-control-label__units button.is-active' ).invoke( 'attr', 'data-value' ).then( value => {
+						if ( value !== unit ) {
+							// Change the unit only if the selected unit is not the active unit.
 							selector().find( '.stk-control-label__units button.is-active' ).click( { force: true } )
-						} else {
-							// Click the first `.ugb-button-component` instead
-							selector().find( '.stk-control-label__units .ugb-button-component' ).first().click( { force: true } )
+							selector().find( `.stk-control-label__units button[data-value="${ unit }"]` ).click( { force: true } )
 						}
-						selector().find( `.stk-control-label__units button[data-value="${ unit }"]` ).click( { force: true } )
-					}
-					return
+					} )
 				}
 
 				if ( $baseControl.find( '.ugb-base-control-multi-label__units', { log: false } ).length ) {
@@ -104,21 +100,23 @@ export function changeControlViewport( options = {} ) {
 	const selector = () => cy.getBaseControl( name, options )
 	selector()
 		.then( $baseControl => {
-			if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
-				if ( $baseControl.find( '.stk-control-responsive-toggle button.is-active' ).length ) {
-					selector().find( '.stk-control-responsive-toggle button.is-active' ).click( { force: true } )
-					selector()
-						.find( '.stk-control-responsive-toggle' )
-						.invoke( 'attr', 'aria-expanded' )
-						.then( ariaExpanded => {
-							if ( ariaExpanded === 'true' ) {
-								selector()
-									.find( `button[aria-label="${ viewport }"]` )
-									.click( { force: true, log: false } )
-							}
-						} )
-				}
-				return
+			if ( $baseControl.find( '.stk-control-responsive-toggle button.is-active' ).length ) {
+				selector().find( '.stk-control-responsive-toggle button.is-active' ).invoke( 'attr', 'aria-label' ).then( value => {
+					if ( value !== viewport ) {
+						// Change the viewport only if the selected viewport is not the active viewport.
+						selector().find( '.stk-control-responsive-toggle button.is-active' ).click( { force: true } )
+						selector()
+							.find( '.stk-control-responsive-toggle' )
+							.invoke( 'attr', 'aria-expanded' )
+							.then( ariaExpanded => {
+								if ( ariaExpanded === 'true' ) {
+									selector()
+										.find( `button[aria-label="${ viewport }"]` )
+										.click( { force: true, log: false } )
+								}
+							} )
+					}
+				} )
 			}
 
 			if ( $baseControl.find( 'button[aria-label="Desktop"]' ).length ) {
@@ -126,17 +124,19 @@ export function changeControlViewport( options = {} ) {
 				const hover = () => selector().find( 'button[aria-label="Desktop"]' ).trigger( 'mouseover', { force: true } )
 				const selectViewport = () => selector().find( `button[aria-label="${ viewport }"]` ).click( { force: true } )
 				const isActive = () => $baseControl.find( `button.is-active[aria-label="${ viewport }"]` ).length
-				if ( viewport !== 'Desktop' ) {
-					if ( ! hovered ) {
-						hover()
-						selectViewport()
-					} else if ( ! isActive() ) {
+				if ( ! isActive() ) {
+					if ( viewport !== 'Desktop' ) {
+						if ( ! hovered ) {
+							hover()
+							selectViewport()
+						} else {
+							selectViewport()
+						}
+					} else if ( hovered ) {
 						selectViewport()
 					}
-				} else if ( hovered ) {
-					selectViewport()
+					cy.wait( 1 )
 				}
-				cy.wait( 1 )
 			}
 		} )
 }
@@ -173,29 +173,36 @@ export function elementContainsText( $parentElement = Cypress.$( 'body' ), textT
  */
 export function changeControlState( options = {} ) {
 	const {
-		state = 'Normal',
+		state = 'normal',
 		name = '',
 	} = options
 	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
-	if ( Cypress.env( 'STACKABLE_VERSION' ) === 3 ) {
-		const selector = () => cy.getBaseControl( name, options )
-		selector()
-			.then( $baseControl => {
-				if ( $baseControl.find( `.stk-control-label__toggles .stk-label-unit-toggle button[aria-label="${ state }"]` ).length ) {
-					selector().find( '.stk-control-label__toggles .stk-label-unit-toggle button.is-active' ).click( { force: true } )
+
+	let currentState
+	cy.wp().then( wp => {
+		currentState = wp.data.select( 'stackable/hover-state' ).getHoverState()
+	} )
+
+	const selector = () => cy.getBaseControl( name, options )
+	selector()
+		.then( $baseControl => {
+			if ( $baseControl.find( `.stk-control-label__toggles .stk-label-unit-toggle button[data-value="${ state }"]` ).length ) {
+				if ( currentState !== state ) {
+					// Change the state only if the selected state is not the active state.
+					selector().find( '.stk-control-label__toggles .stk-label-unit-toggle button.is-active' ).click( { force: true, multiple: true } )
 					selector()
 						.find( '.stk-control-label__toggles .stk-label-unit-toggle' )
 						.invoke( 'attr', 'aria-expanded' )
 						.then( ariaExpanded => {
 							if ( ariaExpanded === 'true' ) {
 								selector()
-									.find( `.stk-control-label__toggles .stk-label-unit-toggle button[aria-label="${ state }"]` )
+									.find( `.stk-control-label__toggles .stk-label-unit-toggle button[data-value="${ state }"]` )
 									.click( { force: true, log: false } )
 							}
 						} )
 				}
-			} )
-	}
+			}
+		} )
 }
