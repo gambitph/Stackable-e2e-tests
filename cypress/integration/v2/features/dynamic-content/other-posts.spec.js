@@ -44,7 +44,7 @@ function matchPostFieldValues() {
 				} )
 
 				// Assert the value.
-				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', escape( value ), { assertFrontend: false } )
+				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', escape( value ), { assertFrontend: false } ) // escaped value in backend
 				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value, { assertBackend: false } )
 				cy.deleteBlock( 'ugb/cta' )
 			} )
