@@ -34,8 +34,13 @@ export function assertBlockError() {
  * Command for adding a specific block in the inserter button.
  *
  * @param {string} blockName
+ * @param {Object} options
  */
-export function addBlock( blockName = 'ugb/accordion' ) {
+export function addBlock( blockName = 'ugb/accordion', options = {} ) {
+	const {
+		variation = '',
+	} = options
+
 	cy.wp().then( wp => {
 		return new Cypress.Promise( resolve => {
 			const block = wp.blocks.createBlock( blockName, { className: `e2etest-block-${ uniqueId() }` } )
@@ -53,6 +58,12 @@ export function addBlock( blockName = 'ugb/accordion' ) {
 				} ) )
 		} )
 	} )
+	if ( variation ) {
+		cy.get( '.block-editor-block-list__block.is-selected' )
+			.find( '.block-editor-block-variation-picker' )
+			.find( `button[aria-label="${ variation }"]` )
+			.click( { force: true } )
+	}
 }
 
 /**

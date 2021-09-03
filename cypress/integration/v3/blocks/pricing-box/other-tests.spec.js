@@ -13,7 +13,7 @@ import {
 	assertWidth,
 } from '.'
 
-describe( 'Feature Grid Block ( Other Tests )', registerTests( [
+describe( 'Pricing Box Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	typeContent,

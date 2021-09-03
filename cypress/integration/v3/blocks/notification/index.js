@@ -12,6 +12,7 @@ export {
 	blockError,
 	innerBlocks,
 	typeContent,
+	loadedFiles,
 }
 
 function blockExist() {
@@ -47,5 +48,36 @@ function typeContent() {
 			.assertBlockContent( '.stk-block-text__text', 'Lorem ipsum dolor sit amet.' )
 		cy.typeBlock( 'stackable/button', '.stk-button__inner-text', 'Click here', 0 )
 			.assertBlockContent( '.stk-button__inner-text', 'Click here' )
+	} )
+}
+
+function loadedFiles() {
+	it( 'should assert the loaded files in the frontend', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.typePostTitle( 'Check frontend files' )
+		cy.addBlock( 'stackable/notification' )
+		cy.savePost()
+
+		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+			cy.visit( previewUrl )
+			cy.document().then( doc => {
+				assert.isTrue(
+					doc.querySelector( '#stk-frontend-notification-js' ) !== null,
+					'Expected notification block js files are loaded in the frontend'
+				)
+			} )
+			// Remove the block and assert that files does not exist in frontend
+			cy.visit( editorUrl )
+			cy.deleteBlock( 'stackable/notification' )
+			cy.savePost()
+			cy.visit( previewUrl )
+			cy.document().then( doc => {
+				assert.isTrue(
+					doc.querySelector( '#stk-frontend-notification-js' ) === null,
+					'Expected notification block js files are not loaded in the frontend'
+				)
+			} )
+		} )
 	} )
 }

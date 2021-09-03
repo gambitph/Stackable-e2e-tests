@@ -11,6 +11,7 @@ import {
 	blockError,
 	innerBlocks,
 	typeContent,
+	loadedFiles,
 } from '.'
 
 describe( 'Notification Block ( Other Tests )', registerTests( [
@@ -18,4 +19,5 @@ describe( 'Notification Block ( Other Tests )', registerTests( [
 	blockError,
 	innerBlocks,
 	typeContent,
+	loadedFiles,
 ] ) )

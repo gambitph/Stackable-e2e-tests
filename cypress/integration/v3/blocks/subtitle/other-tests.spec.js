@@ -10,12 +10,10 @@ import {
 	blockExist,
 	blockError,
 	typeContent,
-	assertWidth,
 } from '.'
 
-describe( 'Feature Grid Block ( Other Tests )', registerTests( [
+describe( 'Subtitle Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	typeContent,
-	assertWidth,
 ] ) )

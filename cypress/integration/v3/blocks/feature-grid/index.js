@@ -4,12 +4,10 @@
 import {
 	assertBlockExist, blockErrorTest,
 } from '~stackable-e2e/helpers'
-import { stkBlocks } from '~stackable-e2e/config'
 
 export {
 	blockExist,
 	blockError,
-	innerBlocks,
 	typeContent,
 	assertWidth,
 }
@@ -20,20 +18,6 @@ function blockExist() {
 
 function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/feature-grid' ) )
-}
-
-function innerBlocks() {
-	it( 'should allow adding inner blocks', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/feature-grid' )
-
-		stkBlocks
-			.filter( blockName => blockName !== 'stackable/feature-grid' )
-			.forEach( blockName => cy.addInnerBlock( 'stackable/container', blockName, 0 ) )
-
-		cy.savePost()
-	} )
 }
 
 function typeContent() {
@@ -69,4 +53,3 @@ function assertWidth() {
 		}, { assertBackend: false } )
 	} )
 }
-// TODO: Add test for adding image content
