@@ -397,15 +397,16 @@ function globalTypographyNativeBlocks() {
 						},
 					} )
 				} )
-			} else if ( blockName === 'core/paragraph' || blockName === 'core/list' ) {
+			}
+			if ( blockName === 'core/paragraph' || blockName === 'core/list' ) {
 				cy.selectBlock( blockName ).assertComputedStyle( {
 					[ `${ blockName === 'core/paragraph' ? '' : 'li' }` ]: {
-						'font-family': `${ willAssertTypographyStyles[ 6 ].font }, sans-serif`,
-						'font-size': `${ willAssertTypographyStyles[ 6 ].size }px`,
-						'font-weight': willAssertTypographyStyles[ 6 ].weight,
-						'text-transform': willAssertTypographyStyles[ 6 ].transform,
-						'line-height': `${ willAssertTypographyStyles[ 6 ].lineHeight }em`,
-						'letter-spacing': `${ willAssertTypographyStyles[ 6 ].letterSpacing }px`,
+						'font-family': `${ willAssertTypographyStyles[ 7 ].font }, sans-serif`, // Body text assertion
+						'font-size': `${ willAssertTypographyStyles[ 7 ].size }px`,
+						'font-weight': willAssertTypographyStyles[ 7 ].weight,
+						'text-transform': willAssertTypographyStyles[ 7 ].transform,
+						'line-height': `${ willAssertTypographyStyles[ 7 ].lineHeight }em`,
+						'letter-spacing': `${ willAssertTypographyStyles[ 7 ].letterSpacing }px`,
 					},
 				} )
 			}
