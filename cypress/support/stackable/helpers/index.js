@@ -22,16 +22,16 @@ export { assertAdvancedTab } from './advanced'
  * Helper function for creating block validation test.
  *
  * @param {string} blockName
- * @param {Object} options
+ * @param {Object} addBlockOptions
  */
-export const blockErrorTest = ( blockName = 'ugb/accordion', options = {} ) =>
+export const blockErrorTest = ( blockName = 'ugb/accordion', addBlockOptions = {} ) =>
 	() => {
 		cy.setupWP()
 		if ( blockName === 'ugb/blog-posts' ) {
 			cy.registerPosts( { numOfPosts: 1 } )
 		}
 		cy.newPage()
-		cy.addBlock( blockName, options )
+		cy.addBlock( blockName, addBlockOptions )
 		cy.savePost()
 		cy.reload()
 	}
@@ -41,15 +41,15 @@ export const blockErrorTest = ( blockName = 'ugb/accordion', options = {} ) =>
  *
  * @param {string} blockName
  * @param {string} selector
- * @param {Object} options
+ * @param {Object} addBlockOptions
  */
-export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-accordion', options = {} ) => () => {
+export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-accordion', addBlockOptions = {} ) => () => {
 	cy.setupWP()
 	if ( blockName === 'ugb/blog-posts' ) {
 		cy.registerPosts( { numOfPosts: 1 } )
 	}
 	cy.newPage()
-	cy.addBlock( blockName, options )
+	cy.addBlock( blockName, addBlockOptions )
 	cy.get( selector ).should( 'exist' )
 	cy.savePost()
 }
