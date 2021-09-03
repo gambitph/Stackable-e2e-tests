@@ -12,6 +12,7 @@ Cypress.Commands.add( 'registerPosts', registerPosts )
 Cypress.Commands.add( 'changeRole', changeRole )
 Cypress.Commands.add( 'editSiteTitle', editSiteTitle )
 Cypress.Commands.add( 'editSiteTagline', editSiteTagline )
+Cypress.Commands.add( 'uploadMedia', uploadMedia )
 
 /**
  * Command used to enter the login credentials of the admin.
@@ -112,4 +113,18 @@ export function editSiteTagline( tagline ) {
 		.get( '#customize-header-actions' )
 		.find( 'input[value="Publish"]' )
 		.click( { force: true } )
+}
+
+/**
+ * Command for adding a media to the server.
+ */
+export function uploadMedia() {
+	cy.fixture( 'media' ).then( media => {
+		const params = new URLSearchParams( {
+			'dummyImage': media.dummy_image,
+			'imageName': media.image_name,
+			'add-media': 'true',
+		} )
+		cy.visit( '/?' + params.toString() )
+	} )
 }
