@@ -73,11 +73,11 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/image-box' ).asBlock( 'imageBoxBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__subtitle', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__subtitle', 'Hello World! 1', 0 )
 			.assertBlockContent( '.ugb-image-box__subtitle', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__title', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__title', 'Helloo World!! 12', 0 )
 			.assertBlockContent( '.ugb-image-box__title', 'Helloo World!! 12' )
-		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__description', 'Hellooo World!!! 123' )
+		cy.typeBlock( 'ugb/image-box', '.ugb-image-box__description', 'Hellooo World!!! 123', 0 )
 			.assertBlockContent( '.ugb-image-box__description', 'Hellooo World!!! 123' )
 
 		cy.openInspector( 'ugb/image-box', 'Style' )
