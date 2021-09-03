@@ -552,3 +552,39 @@ export const assertLinks = ( blockName, options = {} ) => {
 		} )
 	} )
 }
+
+/**
+ * Helper function for asserting the loaded js files of a block
+ *
+ * @param {string} blockName
+ * @param {string} selector
+ * @param {Object} addBlockOptions
+ */
+export const checkJsFiles = ( blockName = 'ugb/accordion', selector = '#stk-frontend-accordion-js', addBlockOptions = {} ) => () => {
+	cy.setupWP()
+	cy.newPage()
+	cy.typePostTitle( 'Check frontend files' )
+	cy.addBlock( blockName, addBlockOptions )
+	cy.savePost()
+
+	cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+		cy.visit( previewUrl )
+		cy.document().then( doc => {
+			assert.isTrue(
+				doc.querySelector( selector ) !== null,
+				`Expected '${ blockName }' js files are loaded in the frontend`
+			)
+		} )
+		// Remove the block and assert that files does not exist in frontend
+		cy.visit( editorUrl )
+		cy.deleteBlock( blockName )
+		cy.savePost()
+		cy.visit( previewUrl )
+		cy.document().then( doc => {
+			assert.isTrue(
+				doc.querySelector( selector ) === null,
+				`Expected '${ blockName }' js files are not loaded in the frontend`
+			)
+		} )
+	} )
+}

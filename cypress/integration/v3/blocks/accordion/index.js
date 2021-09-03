@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, checkJsFiles,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
 
@@ -52,32 +52,5 @@ function typeContent() {
 }
 
 function loadedFiles() {
-	it( 'should assert the loaded files in the frontend', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.typePostTitle( 'Check frontend files' )
-		cy.addBlock( 'stackable/accordion' )
-		cy.savePost()
-
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.document().then( doc => {
-				assert.isTrue(
-					doc.querySelector( '#stk-frontend-accordion-js' ) !== null,
-					'Expected accordion block js files are loaded in the frontend'
-				)
-			} )
-			// Remove the block and assert that files does not exist in frontend
-			cy.visit( editorUrl )
-			cy.deleteBlock( 'stackable/accordion' )
-			cy.savePost()
-			cy.visit( previewUrl )
-			cy.document().then( doc => {
-				assert.isTrue(
-					doc.querySelector( '#stk-frontend-accordion-js' ) === null,
-					'Expected accordion block js files are not loaded in the frontend'
-				)
-			} )
-		} )
-	} )
+	it( 'should assert the loaded files in the frontend', checkJsFiles( 'stackable/accordion', '#stk-frontend-accordion-js' ) )
 }

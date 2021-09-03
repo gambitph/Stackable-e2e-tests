@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, checkJsFiles,
 } from '~stackable-e2e/helpers'
 
 export {
@@ -39,32 +39,5 @@ function typeContent() {
 }
 
 function loadedFiles() {
-	it( 'should assert the loaded files in the frontend', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.typePostTitle( 'Check frontend files' )
-		cy.addBlock( 'stackable/expand' )
-		cy.savePost()
-
-		cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.document().then( doc => {
-				assert.isTrue(
-					doc.querySelector( '#stk-frontend-expand-js' ) !== null,
-					'Expected expand block js files are loaded in the frontend'
-				)
-			} )
-			// Remove the block and assert that files does not exist in frontend
-			cy.visit( editorUrl )
-			cy.deleteBlock( 'stackable/expand' )
-			cy.savePost()
-			cy.visit( previewUrl )
-			cy.document().then( doc => {
-				assert.isTrue(
-					doc.querySelector( '#stk-frontend-expand-js' ) === null,
-					'Expected expand block js files are not loaded in the frontend'
-				)
-			} )
-		} )
-	} )
+	it( 'should assert the loaded files in the frontend', checkJsFiles( 'stackable/expand', '#stk-frontend-expand-js' ) )
 }
