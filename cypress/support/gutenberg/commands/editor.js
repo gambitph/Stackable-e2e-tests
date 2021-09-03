@@ -321,22 +321,15 @@ export function editPostDiscussion( options ) {
 	Object.keys( options ).forEach( optionName => {
 		const optionValue = options[ optionName ]
 
-		selector( optionName ).find( 'svg.components-checkbox-control__checked' ).its( 'length' ).then( length => {
-			// Check if the checkbox is already true
-			if ( length > 0 ) {
-				// If the optionValue is set to false, click the checkbox.
-				if ( ! optionValue ) {
+		selector( optionName )
+			.then( $control => {
+				const isChecked = !! $control.find( 'svg.components-checkbox-control__checked' ).length
+				if ( isChecked !== optionValue ) {
 					selector( optionName )
 						.find( 'input.components-checkbox-control__input' )
 						.click( { force: true } )
 				}
-			} else if ( optionValue ) {
-				// If not yet checked and optionValue is set to true, click the checkbox.
-				selector( optionName )
-					.find( 'input.components-checkbox-control__input' )
-					.click( { force: true } )
-			}
-		} )
+			} )
 	} )
 	cy.savePost()
 }
@@ -346,11 +339,10 @@ export function editPostDiscussion( options ) {
  */
 export function addFeaturedImage() {
 	cy.getPostUrls().then( ( { editorUrl } ) => {
-		// Save the current post as we're going to register a post.
+		// Save the current post as we're going to add an image to the server.
 		cy.savePost()
-		// Register one post to be able to add one image to media library.
-		// TODO: Find a better way to add an image to the media library.
-		cy.registerPosts( { numOfPosts: 1 } )
+		// Add one image to the media library for featured image selection.
+		cy.uploadMedia()
 		cy.visit( editorUrl )
 		cy.openSidebar( 'Settings' )
 		cy
