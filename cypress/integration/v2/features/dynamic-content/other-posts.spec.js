@@ -1,10 +1,9 @@
 /**
  * External dependencies
  */
-import {
-	first, range,
-} from 'lodash'
+import { range } from 'lodash'
 import { registerTests } from '~stackable-e2e/helpers'
+import { setupMatchPostFieldValues } from './helpers'
 
 describe( 'Dynamic Content Other Posts', registerTests( [
 	matchPostFieldValues,
@@ -23,146 +22,11 @@ const adjustField = ( fieldName, fieldOptions = {} ) => {
 	} )
 }
 
-/**
- * Setup function.
- *
- * This is where we populate `@fieldsToAssert` for
- * assertions.
- *
- * Prefetch field values and store it as alias.
- *
- * @example `@fieldsToAssert` structure
- * ```
- * [
- * 		{
- * 			name: <fieldName>
- * 			value: <will assert value>,
- * 			options: { ...<`adjustDynamicContent` command options> }
- * 		}
- * ]
- * ```
- */
-function setupMatchPostFieldValues() {
-	cy.setupWP()
-	cy.newPost()
-
-	// Define the alias.
-	cy.wrap( [] ).as( 'fieldsToAssert' )
-
-	// Populate Post Title.
-	cy.typePostTitle( 'First Post' )
-	addToTest( { name: 'Post Title', value: 'First Post' } )
-
-	// Populate Post Slug.
-	addToTest( { name: 'Post Slug', value: 'first-post' } )
-
-	// Populate Post Excerpt.
-	cy.addPostExcerpt( 'Excerpt content.' )
-	addToTest( { name: 'Post Excerpt', value: 'Excerpt content.' } )
-
-	/**
-	 * Populate the following fields:
-	 * - Post URL
-	 * - Post ID
-	 * - Featured Image URL
-	 * - Post Date
-	 * - Post Date GMT
-	 * - Post Modified
-	 * - Post Modified GMT
-	 * - Post Type
-	 * - Post Status
-	 * - Author Name
-	 * - Author ID
-	 * - Author Posts URL
-	 * - Comment Number
-	 * - Comment Status
-	 */
-
-	// Add a featured image.
-	cy.addFeaturedImage()
-	cy.getPostData().then( data => {
-		// Post Fields
-		addToTest( { name: 'Post URL', value: data.link } )
-		addToTest( { name: 'Post ID', value: data.id } )
-		addToTest( { name: 'Featured Image URL', value: data.featured_image_urls.full[ 0 ] } )
-		addToTest( { name: 'Post Type', value: data.type } )
-		addToTest( { name: 'Post Status', value: data.status } )
-
-		/**
-		 * Add a custom format for date values.
-		 */
-		const dateOptions = {
-			'Date Format': 'custom',
-			'Custom Format': 'Y-m-d',
-		}
-
-		addToTest( {
-			name: 'Post Date', value: first( data.date.split( 'T' ) ), options: dateOptions,
-		} )
-		addToTest( {
-			name: 'Post Date GMT', value: first( data.date_gmt.split( 'T' ) ), options: dateOptions,
-		} )
-		addToTest( {
-			name: 'Post Modified', value: first( data.modified.split( 'T' ) ), options: dateOptions,
-		} )
-		addToTest( {
-			name: 'Post Modified GMT', value: first( data.modified_gmt.split( 'T' ) ), options: dateOptions,
-		} )
-
-		// Author Fields
-		addToTest( { name: 'Author Name', value: data.author_info.name } )
-		addToTest( { name: 'Author ID', value: data.author } )
-		addToTest( { name: 'Author Posts URL', value: data.author_info.url } )
-
-		// Misc. Fields
-		addToTest( { name: 'Comment Number', value: parseInt( data.comments_num ).toString() } )
-		addToTest( { name: 'Comment Status', value: data.comment_status } )
-	} )
-
-	// Get the author's profile picture URL
-	cy.wp().then( wp => {
-		addToTest( { name: 'Author Profile Picture URL', value: wp.data.select( 'core' ).getAuthors()[ 0 ].avatar_urls[ 96 ] } )
-	} )
-
-	/**
-	 * Populate the following fields:
-	 *
-	 * - Author First Name
-	 * - Author Last Name
-	 * - Author Posts
-	 */
-
-	// Set Author first & last name in profile settings
-	cy.visit( '/wp-admin/profile.php' )
-
-	cy.get( 'tr.user-first-name-wrap input#first_name' ).click( { force: true } ).type( '{selectall}{backspace}Juan' )
-	addToTest( { name: 'Author First Name', value: 'Juan' } )
-
-	cy.get( 'tr.user-last-name-wrap input#last_name' ).click( { force: true } ).type( '{selectall}{backspace}Dela Cruz' )
-	addToTest( { name: 'Author Last Name', value: 'Dela Cruz' } )
-
-	cy.get( 'input[value="Update Profile"]' ).click( { force: true } )
-
-	cy.visit( '/wp-admin/users.php' )
-	cy.get( '[data-colname="Posts"] span[aria-hidden="true"]' ).invoke( 'text' ).then( numberOfPosts => {
-		addToTest( { name: 'Author Posts', value: numberOfPosts } )
-	} )
-}
-
-/**
- * Helper function for adding a new entry
- * in `fieldsToAssert`
- *
- * @param {Object} item
- */
-function addToTest( item ) {
-	cy.get( '@fieldsToAssert' ).then( $fta => cy.wrap( [ ...$fta, item ] ).as( 'fieldsToAssert' ) )
-}
-
 function matchPostFieldValues() {
 	it( 'should test dynamic content to match all field values', () => {
+		cy.setupWP()
 		// Setup function
-		setupMatchPostFieldValues()
+		setupMatchPostFieldValues( 'post' )
 		// Create a new page to assert the Other Posts / created post's field values.
 		cy.newPage()
 		cy.get( '@fieldsToAssert' ).then( fieldsToAssert => {
@@ -172,7 +36,12 @@ function matchPostFieldValues() {
 				cy.addBlock( 'ugb/cta' )
 
 				// Adjust the dynamic content popover.
-				adjustField( fieldName, fieldOptions )
+				cy.adjustDynamicContent( 'ugb/cta', 0, '.ugb-cta__title', {
+					source: 'Other Posts',
+					post: 'Dynamic Content test',
+					fieldName,
+					fieldOptions,
+				} )
 
 				// Assert the value.
 				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
