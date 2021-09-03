@@ -65,8 +65,8 @@ function adjustFieldOptions() {
 		} )
 
 		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', 'e2etest' )
-		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener' )
-		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'href', fields[ 2 ].defaultValue )
+		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
+		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'href', fields[ 2 ].defaultValue, { assertBackend: false } )
 		cy.deleteBlock( 'ugb/cta' )
 
 		// adjusting Site URL
@@ -77,8 +77,8 @@ function adjustFieldOptions() {
 			'Open in new tab': true,
 		} )
 		cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', fields[ 2 ].testValue )
-		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener' )
-		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'href', fields[ 2 ].defaultValue )
+		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
+		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'href', fields[ 2 ].defaultValue, { assertBackend: false } )
 		cy.deleteBlock( 'ugb/cta' )
 	} )
 }
