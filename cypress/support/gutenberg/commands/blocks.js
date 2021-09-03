@@ -21,6 +21,7 @@ Cypress.Commands.add( 'typeBlock', typeBlock )
 Cypress.Commands.add( 'deleteBlock', deleteBlock )
 Cypress.Commands.add( 'addInnerBlock', addInnerBlock )
 Cypress.Commands.add( 'asBlock', { prevSubject: true }, asBlock )
+Cypress.Commands.add( 'addNewColumn', { prevSubject: true }, addNewColumn )
 
 /**
  * Command for asserting block error.
@@ -123,8 +124,9 @@ export function selectBlock( subject, selector ) {
  * @param {string} contentSelector
  * @param {string} content
  * @param {string | number | Object} customSelector
+ * @param {Object} options
  */
-export function typeBlock( subject, contentSelector = '', content = '', customSelector = '' ) {
+export function typeBlock( subject, contentSelector = '', content = '', customSelector = '', options ) {
 	( contentSelector
 		? cy.selectBlock( subject, customSelector ).find( contentSelector )
 		: cy.selectBlock( subject, customSelector )
@@ -132,6 +134,12 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
 		.first()
 		.click( { force: true } )
 		.type( `{selectall}${ content }`, { force: true } )
+
+	const {
+		delay = 0,
+	} = options
+
+	cy.wait( delay )
 
 	if ( content[ 0 ] !== '/' ) {
 		cy.selectBlock( subject, customSelector )
@@ -219,3 +227,14 @@ export function asBlock( subject, alias, options = {} ) {
 	} )
 }
 
+/**
+ * Command for adding a new column.
+ *
+ * @param {*} subject
+ */
+export function addNewColumn( subject ) {
+	cy.wrap( subject )
+		.find( '.block-list-appender' )
+		.find( 'button[aria-label="Add Button"], button[aria-label="Add Column"]' )
+		.click( { force: true } )
+}
