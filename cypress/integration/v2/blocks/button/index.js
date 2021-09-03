@@ -58,7 +58,7 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/button' ).asBlock( 'buttonBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/button', '.ugb-button--inner', 'Hello World! 1234' )
+		cy.typeBlock( 'ugb/button', '.ugb-button--inner', 'Hello World! 1234', 0 )
 			.assertBlockContent( '.ugb-button--inner', 'Hello World! 1234' )
 	} )
 }
@@ -117,7 +117,7 @@ function styleTab( viewport, desktopOnly ) {
 			if ( index !== 1 ) {
 				cy.toggleStyle( `Button #${ index }` )
 			}
-			cy.typeBlock( 'ugb/button', `.ugb-button${ index } .ugb-button--inner`, `Button ${ index }` )
+			cy.typeBlock( 'ugb/button', `.ugb-button${ index } .ugb-button--inner`, `Button ${ index }`, 0 )
 			cy.waitFA()
 			desktopOnly( () => {
 				cy.adjust( 'Link / URL', 'https://www.google.com/' ).assertHtmlAttribute( `.ugb-button${ index }`, 'href', 'https://www.google.com/', { assertBackend: false } )

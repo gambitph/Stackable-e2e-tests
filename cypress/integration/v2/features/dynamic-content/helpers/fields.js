@@ -34,7 +34,7 @@ export function setupMatchPostFieldValues( type ) {
 		cy.newPage()
 		cy.addBlock( 'core/paragraph' )
 		// For page assertion, add text content as the excerpt since pages doesn't have post excerpt editor.
-		cy.typeBlock( 'core/paragraph', '', 'Excerpt content.' )
+		cy.typeBlock( 'core/paragraph', '', 'Excerpt content.', 0 )
 	}
 	// Define the alias.
 	cy.wrap( [] ).as( 'fieldsToAssert' )

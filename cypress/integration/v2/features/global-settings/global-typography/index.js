@@ -219,7 +219,7 @@ function assertGlobalTypography( viewport, desktopOnly ) {
 					if ( name === 'text' ) {
 						cy.toggleStyle( 'Title' )
 					}
-					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
+					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block', 0 )
 				}
 
 				if ( blocksWithTitle.includes( blockName ) ) {
@@ -296,7 +296,7 @@ function globalTypographyUnits( viewport ) {
 					if ( name === 'text' ) {
 						cy.toggleStyle( 'Title' )
 					}
-					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
+					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block', 0 )
 				}
 
 				// Adjust preview to the current viewport
