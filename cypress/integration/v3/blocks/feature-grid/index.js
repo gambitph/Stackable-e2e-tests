@@ -26,11 +26,11 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'stackable/feature-grid' )
 
-		cy.typeBlock( 'stackable/feature-grid', '.stk-block-heading__text', 'Feature grid block', 0 )
+		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Feature grid block', 0 )
 			.assertBlockContent( '.stk-block-heading__text', 'Feature grid block' )
-		cy.typeBlock( 'stackable/feature-grid', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
+		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
 			.assertBlockContent( '.stk-block-text__text', 'Lorem ipsum dolor sit amet.' )
-		cy.typeBlock( 'stackable/feature-grid', '.stk-button__inner-text', 'Click here', 0 )
+		cy.typeBlock( 'stackable/button', '.stk-button__inner-text', 'Click here', 0 )
 			.assertBlockContent( '.stk-button__inner-text', 'Click here' )
 	} )
 }
