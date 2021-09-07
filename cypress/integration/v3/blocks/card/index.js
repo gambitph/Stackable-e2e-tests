@@ -66,12 +66,12 @@ function addImage() {
 
 		// Adjust the Image Size tooltip
 		cy.selectBlock( 'stackable/card' )
-			.find( '.stk-img-resizer-tooltip' )
+			.find( '.stk-resizer-tooltip' )
 			.click( { force: true } )
 			.then( () => {
 				cy.get( '.components-popover__content:contains(Image Height)' )
 				cy.adjust( 'Image Height', 412, {
-					parentSelector: '.stk-image-size-popup__control-wrapper',
+					parentSelector: '.stk-resizer-popup__control-wrapper',
 				} )
 				cy.selectBlock( 'stackable/card' )
 					.assertComputedStyle( {

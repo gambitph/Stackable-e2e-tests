@@ -34,7 +34,7 @@ function addImage() {
 
 		const clickPopover = () => cy
 			.selectBlock( 'stackable/image' )
-			.find( '.stk-img-resizer-tooltip' )
+			.find( '.stk-resizer-tooltip' )
 			.click( { force: true } )
 
 		// Adjust the Image Size tooltip
@@ -42,11 +42,11 @@ function addImage() {
 		cy.get( '.components-popover__content:contains(Image Size)' )
 		cy.adjust( 'Width', 78, {
 			unit: '%',
-			parentSelector: '.stk-image-size-popup__control-wrapper',
+			parentSelector: '.stk-resizer-popup__control-wrapper',
 		} )
 		cy.adjust( 'Height', 390, {
 			unit: 'px',
-			parentSelector: '.stk-image-size-popup__control-wrapper',
+			parentSelector: '.stk-resizer-popup__control-wrapper',
 		} )
 		cy.selectBlock( 'stackable/image' )
 			.assertComputedStyle( {
@@ -61,11 +61,11 @@ function addImage() {
 		cy.get( '.components-popover__content:contains(Image Size)' )
 		cy.adjust( 'Width', 548, {
 			unit: 'px',
-			parentSelector: '.stk-image-size-popup__control-wrapper',
+			parentSelector: '.stk-resizer-popup__control-wrapper',
 		} )
 		cy.adjust( 'Height', 51, {
 			unit: 'vh',
-			parentSelector: '.stk-image-size-popup__control-wrapper',
+			parentSelector: '.stk-resizer-popup__control-wrapper',
 		} )
 		cy.selectBlock( 'stackable/image' )
 			.assertComputedStyle( {
