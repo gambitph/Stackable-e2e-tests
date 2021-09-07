@@ -42,7 +42,7 @@ export function addBlock( blockName = 'ugb/accordion' ) {
 				.then( dispatchResolver( () => {
 					const className = wp.data.select( 'core/block-editor' ).getBlock( block.clientId ).attributes.className
 					// Only append the e2e className if there is a default value.
-					wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { className: `${ className ? className : '' } e2etest-block-${ uniqueId() }` } )
+					wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { className: `${ className ? className + ' ' : '' }e2etest-block-${ uniqueId() }` } )
 
 					// If there are innerBlocks, add unique classes.
 					const newlyAddedBlock = wp.data.select( 'core/block-editor' ).getBlock( block.clientId )
@@ -51,7 +51,7 @@ export function addBlock( blockName = 'ugb/accordion' ) {
 						newlyAddedBlock.innerBlocks.forEach( ( { clientId } ) => {
 							const innerBlockClassName = wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes.className
 							// Only append the e2e className if there is a default value.
-							wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `${ innerBlockClassName ? innerBlockClassName : '' } e2etest-block-${ uniqueId() }` } )
+							wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `${ innerBlockClassName ? innerBlockClassName + ' ' : '' }e2etest-block-${ uniqueId() }` } )
 						} )
 					}
 
