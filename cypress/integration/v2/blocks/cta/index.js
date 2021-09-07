@@ -93,11 +93,11 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/cta' ).asBlock( 'ctaBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/cta', '.ugb-cta__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/cta', '.ugb-cta__title', 'Hello World! 1', 0 )
 			.assertBlockContent( '.ugb-cta__title', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/cta', '.ugb-cta__description', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/cta', '.ugb-cta__description', 'Helloo World!! 12', 0 )
 			.assertBlockContent( '.ugb-cta__description', 'Helloo World!! 12' )
-		cy.typeBlock( 'ugb/cta', '.ugb-button--inner', 'Hellooo World!!! 123' )
+		cy.typeBlock( 'ugb/cta', '.ugb-button--inner', 'Hellooo World!!! 123', 0 )
 			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
 	} )
 }

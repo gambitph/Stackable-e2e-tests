@@ -86,11 +86,11 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/feature-grid' ).asBlock( 'featureGridBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__title', 'Hello World! 1', 0 )
 			.assertBlockContent( '.ugb-feature-grid__title', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__description', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/feature-grid', '.ugb-feature-grid__description', 'Helloo World!! 12', 0 )
 			.assertBlockContent( '.ugb-feature-grid__description', 'Helloo World!! 12' )
-		cy.typeBlock( 'ugb/feature-grid', '.ugb-button--inner', 'Hellooo World!!! 123' )
+		cy.typeBlock( 'ugb/feature-grid', '.ugb-button--inner', 'Hellooo World!!! 123', 0 )
 			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
 
 		cy.openInspector( 'ugb/feature-grid', 'Style' )
