@@ -30,6 +30,7 @@ function typeContent() {
 			.type( 'Icon list 2', { force: true } )
 		cy.get( '.stk-block-icon-list' ).find( 'ul[role="textbox"]' ).type( '{enter}', { force: true } )
 			.type( 'Icon list 3', { force: true } )
+		cy.savePost()
 		cy.selectBlock( 'stackable/icon-list' )
 			.assertBlockContent( '.stk-block-icon-list ul', 'Icon listIcon list 2Icon list 3' )
 	} )

@@ -170,7 +170,7 @@ export function changeIcon( index = 1, keyword = '', icon ) {
 		.get( '.block-editor-block-list__block.is-selected' )
 		.find( '.ugb-svg-icon-placeholder__button, .stk--inner-svg' )
 		.eq( index - 1 )
-		.click( { force: true } )
+		.realClick()
 
 	cy
 		.get( 'input[placeholder="Type to search icon"]' )

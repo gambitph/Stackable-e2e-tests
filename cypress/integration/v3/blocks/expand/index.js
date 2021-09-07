@@ -27,14 +27,14 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'stackable/expand' ).asBlock( 'expandBlock', { isStatic: true } )
 
-		cy.typeBlock( 'stackable/expand', '.stk-block-expand__short-text .stk-block-text__text', 'Helloo World!! 12', 0 )
-			.assertBlockContent( '.stk-block-expand__short-text .stk-block-text__text', 'Helloo World!! 12' )
-		cy.typeBlock( 'stackable/expand', '.stk-block-expand__show-button .stk-button__inner-text', 'Hellooo World!!! 123', 0 )
-			.assertBlockContent( '.stk-block-expand__show-button .stk-button__inner-text', 'Hellooo World!!! 123' )
-		cy.typeBlock( 'stackable/expand', '.stk-block-expand__more-text .stk-block-text__text', 'Helloooo World!!!! 1234', 0 )
-			.assertBlockContent( '.stk-block-expand__more-text .stk-block-text__text', 'Helloooo World!!!! 1234' )
-		cy.typeBlock( 'stackable/expand', '.stk-block-expand__hide-button .stk-button__inner-text', 'Hellooooo World!!!!! 12345', 0 )
-			.assertBlockContent( '.stk-block-expand__hide-button .stk-button__inner-text', 'Hellooooo World!!!!! 12345' )
+		cy.typeBlock( 'stackable/text', '.stk-block-expand__short-text .stk-block-text__text', 'Short text here', 0 )
+			.assertBlockContent( '.stk-block-expand__short-text .stk-block-text__text', 'Short text here' )
+		cy.typeBlock( 'stackable/button', '.stk-block-expand__show-button .stk-button__inner-text', 'Click to load', 0 )
+			.assertBlockContent( '.stk-block-expand__show-button .stk-button__inner-text', 'Click to load' )
+		cy.typeBlock( 'stackable/text', '.stk-block-expand__more-text .stk-block-text__text', 'Long text that can be shown', 1 )
+			.assertBlockContent( '.stk-block-expand__more-text .stk-block-text__text', 'Long text that can be shown' )
+		cy.typeBlock( 'stackable/button', '.stk-block-expand__hide-button .stk-button__inner-text', 'Click to hide', 1 )
+			.assertBlockContent( '.stk-block-expand__hide-button .stk-button__inner-text', 'Click to hide' )
 	} )
 }
 

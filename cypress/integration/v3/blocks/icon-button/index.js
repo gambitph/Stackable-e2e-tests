@@ -1,11 +1,6 @@
-
 /**
  * External dependencies
  */
-import {
-	assertBlockExist, blockErrorTest,
-} from '~stackable-e2e/helpers'
-
 export {
 	blockExist,
 	blockError,
@@ -13,11 +8,27 @@ export {
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/icon-button', '.stk-block-icon-button' ) )
+	it( 'should show the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/button-group' )
+		cy.deleteBlock( 'stackable/button' )
+		cy.selectBlock( 'stackable/button-group' ).addNewColumn( { blockToAdd: 'Icon Button' } )
+		cy.get( '.stk-block-icon-button' ).should( 'exist' )
+		cy.savePost()
+	} )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/icon-button' ) )
+	it( 'should not trigger block error when refreshing the page', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/button-group' )
+		cy.deleteBlock( 'stackable/button' )
+		cy.selectBlock( 'stackable/button-group' ).addNewColumn( { blockToAdd: 'Icon Button' } )
+		cy.savePost()
+		cy.reload()
+	} )
 }
 
 function selectIcon() {
@@ -25,6 +36,7 @@ function selectIcon() {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'stackable/button-group' )
+		cy.deleteBlock( 'stackable/button' )
 		cy.selectBlock( 'stackable/button-group' ).addNewColumn( { blockToAdd: 'Icon Button' } )
 		cy.selectBlock( 'stackable/icon-button' )
 		cy.changeIcon( 1, 'facebook', 'ugb-icon--facebook' )

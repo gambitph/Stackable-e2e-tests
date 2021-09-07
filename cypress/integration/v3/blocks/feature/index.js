@@ -42,11 +42,11 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'stackable/feature' ).asBlock( 'featureBlock', { isStatic: true } )
 
-		cy.typeBlock( 'stackable/feature', '.stk-block-heading__text', 'Feature block', 0 )
+		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Feature block', 0 )
 			.assertBlockContent( '.stk-block-heading__text', 'Feature block' )
-		cy.typeBlock( 'stackable/feature', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
+		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
 			.assertBlockContent( '.stk-block-text__text', 'Lorem ipsum dolor sit amet.' )
-		cy.typeBlock( 'stackable/feature', '.stk-button__inner-text', 'Click here', 0 )
+		cy.typeBlock( 'stackable/button', '.stk-button__inner-text', 'Click here', 0 )
 			.assertBlockContent( '.stk-button__inner-text', 'Click here' )
 	} )
 }
