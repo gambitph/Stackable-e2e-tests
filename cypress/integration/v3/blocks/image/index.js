@@ -32,47 +32,50 @@ function addImage() {
 		cy.savePost()
 		cy.reload()
 
-		const clickPopover = () => cy
-			.selectBlock( 'stackable/image' )
-			.find( '.stk-resizer-tooltip' )
-			.click( { force: true } )
-
 		// Adjust the Image Size tooltip
-		clickPopover()
-		cy.get( '.components-popover__content:contains(Image Size)' )
-		cy.adjust( 'Width', 78, {
-			unit: '%',
-			parentSelector: '.stk-resizer-popup__control-wrapper',
-		} )
-		cy.adjust( 'Height', 390, {
-			unit: 'px',
-			parentSelector: '.stk-resizer-popup__control-wrapper',
-		} )
-		cy.selectBlock( 'stackable/image' )
-			.assertComputedStyle( {
-				'img.stk-img': {
-					'height': '390px',
-					'width': '78%',
-				},
+		cy.get( '.stk-img-wrapper' ).realHover()
+		cy.get( '.stk-resizer-tooltip' )
+			.click( { force: true } )
+			.then( () => {
+				cy.get( '.components-popover__content:contains(Image Size)' )
+				cy.adjust( 'Width', 78, {
+					unit: '%',
+					parentSelector: '.stk-resizer-popup__control-wrapper',
+				} )
+				cy.adjust( 'Height', 390, {
+					unit: 'px',
+					parentSelector: '.stk-resizer-popup__control-wrapper',
+				} )
+				cy.selectBlock( 'stackable/image' )
+					.assertComputedStyle( {
+						'img.stk-img': {
+							'height': '390px',
+							'width': '78%',
+						},
+					} )
 			} )
 
 		// Test the other units.
-		clickPopover()
-		cy.get( '.components-popover__content:contains(Image Size)' )
-		cy.adjust( 'Width', 548, {
-			unit: 'px',
-			parentSelector: '.stk-resizer-popup__control-wrapper',
-		} )
-		cy.adjust( 'Height', 51, {
-			unit: 'vh',
-			parentSelector: '.stk-resizer-popup__control-wrapper',
-		} )
-		cy.selectBlock( 'stackable/image' )
-			.assertComputedStyle( {
-				'img.stk-img': {
-					'height': '51vh',
-					'width': '548px',
-				},
+		cy.get( '.stk-img-wrapper' ).realHover()
+		cy.get( '.stk-resizer-tooltip' )
+			.click( { force: true } )
+			.then( () => {
+				cy.get( '.components-popover__content:contains(Image Size)' )
+				cy.adjust( 'Width', 548, {
+					unit: 'px',
+					parentSelector: '.stk-resizer-popup__control-wrapper',
+				} )
+				cy.adjust( 'Height', 51, {
+					unit: 'vh',
+					parentSelector: '.stk-resizer-popup__control-wrapper',
+				} )
+				cy.selectBlock( 'stackable/image' )
+					.assertComputedStyle( {
+						'img.stk-img': {
+							'height': '51vh',
+							'width': '548px',
+						},
+					} )
 			} )
 	} )
 }

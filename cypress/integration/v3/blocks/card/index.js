@@ -43,11 +43,11 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'stackable/card' ).asBlock( 'cardBlock', { isStatic: true } )
 
-		cy.typeBlock( 'stackable/card', '.stk-block-heading__text', 'Test Card block', 0 )
+		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Test Card block', 0 )
 			.assertBlockContent( '.stk-block-heading__text', 'Test Card block' )
-		cy.typeBlock( 'stackable/card', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
+		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
 			.assertBlockContent( '.stk-block-text__text', 'Lorem ipsum dolor sit amet.' )
-		cy.typeBlock( 'stackable/card', '.stk-button__inner-text', 'Click here', 0 )
+		cy.typeBlock( 'stackable/button', '.stk-button__inner-text', 'Click here', 0 )
 			.assertBlockContent( '.stk-button__inner-text', 'Click here' )
 	} )
 }
@@ -65,8 +65,8 @@ function addImage() {
 		cy.reload()
 
 		// Adjust the Image Size tooltip
-		cy.selectBlock( 'stackable/card' )
-			.find( '.stk-resizer-tooltip' )
+		cy.get( '.stk-block-card__image' ).realHover()
+		cy.get( '.stk-resizer-tooltip' )
 			.click( { force: true } )
 			.then( () => {
 				cy.get( '.components-popover__content:contains(Image Height)' )

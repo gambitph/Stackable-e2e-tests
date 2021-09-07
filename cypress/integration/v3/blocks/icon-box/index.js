@@ -26,9 +26,9 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'stackable/icon-box' ).asBlock( 'iconBoxBlock', { isStatic: true } )
 
-		cy.typeBlock( 'stackable/icon-box', '.stk-block-heading__text', 'Icon box', 0 )
+		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Icon box', 0 )
 			.assertBlockContent( '.stk-block-heading__text', 'Icon box' )
-		cy.typeBlock( 'stackable/icon-box', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
+		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
 			.assertBlockContent( '.stk-block-text__text', 'Lorem ipsum dolor sit amet.' )
 	} )
 }
