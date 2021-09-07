@@ -50,6 +50,7 @@ export function addBlock( blockName = 'ugb/accordion' ) {
 					if ( newlyAddedBlock.innerBlocks.length ) {
 						newlyAddedBlock.innerBlocks.forEach( ( { clientId } ) => {
 							const innerBlockClassName = wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes.className
+							// TODO: Use updateBlockAttributes to update multiple blocks if gutenberg supports it already.
 							// Only append the e2e className if there is a default value.
 							wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `${ innerBlockClassName ? innerBlockClassName + ' ' : '' }e2etest-block-${ uniqueId() }` } )
 						} )
