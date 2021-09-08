@@ -31,8 +31,11 @@ function typeContent() {
 			.assertBlockContent( '.stk-block-expand__short-text .stk-block-text__text', 'Short text here' )
 		cy.typeBlock( 'stackable/button', '.stk-block-expand__show-button .stk-button__inner-text', 'Click to load', 0 )
 			.assertBlockContent( '.stk-block-expand__show-button .stk-button__inner-text', 'Click to load' )
+		// Expand must be selected first to expand the entire block and show the long text
+		cy.selectBlock( 'stackable/expand' )
 		cy.typeBlock( 'stackable/text', '.stk-block-expand__more-text .stk-block-text__text', 'Long text that can be shown', 1 )
 			.assertBlockContent( '.stk-block-expand__more-text .stk-block-text__text', 'Long text that can be shown' )
+		cy.selectBlock( 'stackable/expand' )
 		cy.typeBlock( 'stackable/button', '.stk-block-expand__hide-button .stk-button__inner-text', 'Click to hide', 1 )
 			.assertBlockContent( '.stk-block-expand__hide-button .stk-button__inner-text', 'Click to hide' )
 	} )
