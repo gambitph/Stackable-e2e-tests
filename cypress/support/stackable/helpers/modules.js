@@ -138,7 +138,7 @@ export const assertBlockBackground = ( selector, options = {}, assertOptions = {
 			cy.adjust( 'Background Color #1', '#6d6d6d' )
 			cy.adjust( 'Background Color #2', '#cd2653' )
 			cy.adjust( 'Adv. Gradient Color Settings', {
-				'Gradient Direction (degrees)': '180deg',
+				'Gradient Direction (degrees)': '180',
 				'Color 1 Location': '11',
 				'Color 2 Location': '80',
 				'Background Gradient Blend Mode': 'multiply',
