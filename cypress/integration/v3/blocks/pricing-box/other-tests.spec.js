@@ -9,6 +9,7 @@ import { registerTests } from '~stackable-e2e/helpers'
 import {
 	blockExist,
 	blockError,
+	innerBlocks,
 	typeContent,
 	assertWidth,
 } from '.'
@@ -16,6 +17,7 @@ import {
 describe( 'Pricing Box Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
+	innerBlocks,
 	typeContent,
 	assertWidth,
 ] ) )

@@ -4,10 +4,12 @@
 import {
 	assertBlockExist, blockErrorTest,
 } from '~stackable-e2e/helpers'
+import { stkBlocks } from '~stackable-e2e/config'
 
 export {
 	blockExist,
 	blockError,
+	innerBlocks,
 	typeContent,
 	assertWidth,
 }
@@ -18,6 +20,20 @@ function blockExist() {
 
 function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/pricing-box' ) )
+}
+
+function innerBlocks() {
+	it( 'should allow adding inner blocks', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/pricing-box' )
+
+		stkBlocks
+			.filter( blockName => blockName !== 'stackable/pricing-box' )
+			.forEach( blockName => cy.addInnerBlock( 'stackable/pricing-box', blockName ) )
+
+		cy.savePost()
+	} )
 }
 
 function typeContent() {
