@@ -42,7 +42,7 @@ export function adjustDynamicContentPopover( options = {} ) {
 		.click( { force: true } )
 
 	if ( source.length ) {
-		selectFromSuggestions( 'Dynamic Source' )
+		selectFromSuggestions( 'Dynamic Source', source )
 		selectOption( source )
 	}
 
