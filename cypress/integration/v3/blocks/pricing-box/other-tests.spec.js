@@ -11,7 +11,6 @@ import {
 	blockError,
 	innerBlocks,
 	typeContent,
-	assertWidth,
 } from '.'
 
 describe( 'Pricing Box Block ( Other Tests )', registerTests( [
@@ -19,5 +18,4 @@ describe( 'Pricing Box Block ( Other Tests )', registerTests( [
 	blockError,
 	innerBlocks,
 	typeContent,
-	assertWidth,
 ] ) )
