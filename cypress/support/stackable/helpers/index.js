@@ -27,7 +27,7 @@ export { assertAdvancedTab } from './advanced'
 export const blockErrorTest = ( blockName = 'ugb/accordion', addBlockOptions = {} ) =>
 	() => {
 		cy.setupWP()
-		if ( blockName === 'ugb/blog-posts' ) {
+		if ( Array( 'ugb/blog-posts', 'stackable/posts' ).includes( blockName ) ) {
 			cy.registerPosts( { numOfPosts: 1 } )
 		}
 		cy.newPage()
@@ -45,7 +45,7 @@ export const blockErrorTest = ( blockName = 'ugb/accordion', addBlockOptions = {
  */
 export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-accordion', addBlockOptions = {} ) => () => {
 	cy.setupWP()
-	if ( blockName === 'ugb/blog-posts' ) {
+	if ( Array( 'ugb/blog-posts', 'stackable/posts' ).includes( blockName ) ) {
 		cy.registerPosts( { numOfPosts: 1 } )
 	}
 	cy.newPage()
@@ -62,7 +62,7 @@ export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-
  */
 export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => () => {
 	cy.setupWP()
-	if ( blockName === 'ugb/blog-posts' ) {
+	if ( Array( 'ugb/blog-posts', 'stackable/posts' ).includes( blockName ) ) {
 		cy.registerPosts( { numOfPosts: 1 } )
 	}
 	cy.newPage()
@@ -88,7 +88,7 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
  */
 export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => () => {
 	cy.setupWP()
-	if ( blockName === 'ugb/blog-posts' ) {
+	if ( Array( 'ugb/blog-posts', 'stackable/posts' ).includes( blockName ) ) {
 		cy.registerPosts( { numOfPosts: 1 } )
 	}
 	cy.newPage()
