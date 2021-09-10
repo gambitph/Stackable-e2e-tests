@@ -24,7 +24,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/heading' )
+		cy.addBlock( 'stackable/heading' ).asBlock( 'headingBlock', { isStatic: true } )
 
 		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Heading block', 0 )
 			.assertBlockContent( '.stk-block-heading__text', 'Heading block' )

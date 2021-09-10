@@ -23,7 +23,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/subtitle' )
+		cy.addBlock( 'stackable/subtitle' ).asBlock( 'subtitleBlock', { isStatic: true } )
 
 		cy.typeBlock( 'stackable/subtitle', '.stk-block-subtitle__text', 'Subtitle block', 0 )
 			.assertBlockContent( '.stk-block-subtitle__text', 'Subtitle block' )

@@ -24,18 +24,9 @@ function selectIcon() {
 	it( 'should assert selected icon', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/icon' )
+		cy.addBlock( 'stackable/icon' ).asBlock( 'iconBlock', { isStatic: true } )
 		cy.selectBlock( 'stackable/icon' )
 		cy.changeIcon( 1, 'facebook', 'ugb-icon--facebook' )
-		cy.selectBlock( 'stackable/icon' )
-			.find( 'svg[data-icon="facebook"]' )
-			.should( 'exist' )
-		cy.savePost()
-		cy.getPostUrls().then( ( { previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.get( '.stk-block-icon' )
-				.find( 'svg[data-icon="facebook"]' )
-				.should( 'exist' )
-		} )
+		cy.selectBlock( 'stackable/icon' ).assertHtmlAttribute( '.stk--inner-svg .svg-inline--fa', 'data-icon', 'facebook' )
 	} )
 }

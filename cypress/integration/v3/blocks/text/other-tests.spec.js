@@ -11,6 +11,7 @@ import {
 	blockError,
 	typeContent,
 	pressEnterKey,
+	addBlocks,
 } from '.'
 
 describe( 'Text Block ( Other Tests )', registerTests( [
@@ -18,4 +19,5 @@ describe( 'Text Block ( Other Tests )', registerTests( [
 	blockError,
 	typeContent,
 	pressEnterKey,
+	addBlocks,
 ] ) )

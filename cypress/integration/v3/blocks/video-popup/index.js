@@ -10,7 +10,6 @@ export {
 	blockError,
 	innerBlocksExist,
 	loadedFiles,
-	selectIcon,
 }
 
 function blockExist() {
@@ -30,25 +29,5 @@ function innerBlocksExist() {
 
 function loadedFiles() {
 	it( 'should assert the loaded files in the frontend', checkJsFiles( 'stackable/video-popup', '#stk-frontend-video-popup-js' ) )
-}
-
-function selectIcon() {
-	it( 'should assert selected icon', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/video-popup' )
-		cy.selectBlock( 'stackable/icon' )
-		cy.changeIcon( 1, 'youtube', 'ugb-icon--youtube' )
-		cy.selectBlock( 'stackable/video-popup' )
-			.find( 'svg[data-icon="youtube"]' )
-			.should( 'exist' )
-		cy.savePost()
-		cy.getPostUrls().then( ( { previewUrl } ) => {
-			cy.visit( previewUrl )
-			cy.get( '.stk-block-video-popup' )
-				.find( 'svg[data-icon="youtube"]' )
-				.should( 'exist' )
-		} )
-	} )
 }
 // TODO: Assert play icon

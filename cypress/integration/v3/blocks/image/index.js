@@ -24,7 +24,7 @@ function addImage() {
 	it( 'should add an image content and test the image size tooltip', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/image' )
+		cy.addBlock( 'stackable/image' ).asBlock( 'imageBlock', { isStatic: true } )
 		cy.selectBlock( 'stackable/image' )
 			.find( '.stk-img-placeholder' )
 			.click( { force: true } )

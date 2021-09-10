@@ -11,6 +11,7 @@ export {
 	blockError,
 	typeContent,
 	pressEnterKey,
+	addBlocks,
 }
 
 function blockExist() {
@@ -25,7 +26,7 @@ function typeContent() {
 	it( 'should allow typing in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/text' )
+		cy.addBlock( 'stackable/text' ).asBlock( 'textBlock', { isStatic: true } )
 
 		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
 			.assertBlockContent( '.stk-block-text__text', 'Lorem ipsum dolor sit amet.' )
@@ -50,5 +51,27 @@ function pressEnterKey() {
 		cy.savePost()
 		// Reloading should not cause a block error
 		cy.reload()
+	} )
+}
+
+function addBlocks() {
+	it( 'should test adding stackable blocks using the / command', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/text' )
+		cy.typeBlock( 'stackable/text', '.stk-block-text__text', '/accordion', 0 )
+		cy.get( '.components-popover__content' )
+			.contains( 'Accordion' )
+			.first()
+			.click( { force: true } )
+		cy.get( '.stk-block-accordion' ).should( 'exist' )
+
+		cy.addBlock( 'stackable/text' )
+		cy.typeBlock( 'stackable/text', '.stk-block-text__text', '/feature-grid', 0 )
+		cy.get( '.components-popover__content' )
+			.contains( 'Feature Grid' )
+			.first()
+			.click( { force: true } )
+		cy.get( '.stk-block-feature-grid' ).should( 'exist' )
 	} )
 }

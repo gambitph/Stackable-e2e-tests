@@ -9,13 +9,11 @@ import { registerTests } from '~stackable-e2e/helpers'
 import {
 	blockExist,
 	blockError,
-	selectIcon,
 	innerBlocksExist,
 } from '.'
 
 describe( 'Icon Label Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
-	selectIcon,
 	innerBlocksExist,
 ] ) )

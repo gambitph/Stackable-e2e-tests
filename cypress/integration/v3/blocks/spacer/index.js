@@ -23,7 +23,7 @@ function resizeHeight() {
 	it( 'should resize the height using the tooltip', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/spacer' )
+		cy.addBlock( 'stackable/spacer' ).asBlock( 'spacerBlock', { isStatic: true } )
 
 		// Adjust the Height tooltip
 		cy.get( '.stk-block-spacer' ).realHover()
