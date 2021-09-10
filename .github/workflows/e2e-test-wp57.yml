@@ -63,7 +63,7 @@ jobs:
     - name: Run Test Suite
       uses: cypress-io/github-action@v2
       with:
-        command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec=cypress/integration/**/*.spec.js --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=1 --config=baseUrl=http://localhost:8889
+        command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec=cypress/integration/v3/**/*.spec.js --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=1 --config=baseUrl=http://localhost:8889
 
     - name: Upload E2E Test Results
       uses: actions/upload-artifact@v2
