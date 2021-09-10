@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { lowerCase } from 'lodash'
+
+/**
  * Internal dependencies
  */
 import { Module } from './internals'
@@ -11,6 +16,8 @@ class BlockModule extends Module {
 		this.registerTest( 'Size & Spacing', this.assertSizeSpacing )
 		this.registerTest( 'Borders & Shadows', this.assertBordersShadows )
 		this.registerTest( 'Link', this.assertLink )
+		this.registerTest( 'Top Separator', this.assertTopSeparator )
+		this.registerTest( 'Bottom Separator', this.assertBottomSeparator )
 		this.setModuleName( 'Block Tab' )
 	}
 
@@ -28,10 +35,14 @@ class BlockModule extends Module {
 		if ( enableContentAlignment ) {
 			const textAligns = [ 'left', 'center', 'right' ]
 			textAligns.forEach( align => {
+				const alignValue = align === 'left' ? 'start'
+					: align === 'right' ? 'end'
+						: align
+				const responsiveClass = viewport === 'Desktop' ? '' : `-${ lowerCase( viewport ) }`
 				cy.adjust( 'Content Alignment', align, { viewport } )
-					.assertComputedStyle( { [ alignmentSelector ]: { 'text-align': align } } )
+					.assertComputedStyle( { [ alignmentSelector ]: { 'text-align': alignValue } } )
 				cy.get( '.block-editor-block-list__block.is-selected' )
-					.assertClassName( alignmentSelector, `has-text-align-${ align }` )
+					.assertClassName( alignmentSelector, `has-text-align-${ align }${ responsiveClass }` )
 			} )
 		}
 
@@ -511,6 +522,212 @@ class BlockModule extends Module {
 			cy.adjust( 'Open in new tab', true ).assertHtmlAttribute( '.stk-block-link', 'rel', /noreferrer noopener/, { assertBackend: false } )
 			cy.adjust( 'Link rel', 'sponsored ugc' ).assertHtmlAttribute( '.stk-block-link', 'rel', /sponsored ugc/, { assertBackend: false } )
 		}
+	}
+
+	assertTopSeparator( {
+		viewport,
+	} ) {
+		cy.toggleStyle( 'Top Separator' )
+		cy.adjust( 'Design', 'slant-2' )
+		if ( viewport === 'Desktop' ) {
+			cy.adjust( 'Color', '#bb3e3e' )
+			cy.adjust( 'Width', 1.4 )
+			cy.adjust( 'Shadow / Outline', 3 )
+			cy.adjust( 'Invert Design', true )
+			cy.adjust( 'Flip Horizontally', true )
+			cy.adjust( 'Bring to Front', true ).assertComputedStyle( {
+				'.stk-separator__top svg': {
+					'fill': '#bb3e3e',
+					'filter': 'drop-shadow(2px 4px 6px #000)',
+				},
+				'.stk-separator__top .stk-separator__wrapper': {
+					'transform': 'scaleX(1.4)',
+				},
+				'.stk-separator__top': {
+					'z-index': '6',
+					'transform': 'scaleX(-1) scaleY(-1)',
+				},
+			} )
+		}
+		cy.adjust( 'Height', 248, { viewport } ).assertComputedStyle( {
+			'.stk-separator__top .stk-separator__wrapper': {
+				'height': '248px',
+			},
+		} )
+		cy.adjust( 'Separator Layer 2', true )
+		if ( viewport === 'Desktop' ) {
+			cy.adjust( 'Separator Layer 2', {
+				'Color': '#2b60ff',
+				'Layer Width': 1.7,
+			} ).assertComputedStyle( {
+				'.stk-separator__top .stk-separator__wrapper .stk-separator__layer-2': {
+					'fill': '#2b60ff',
+					'transform': 'scaleX(1.7)',
+				},
+			} )
+			cy.adjust( 'Separator Layer 2', {
+				'Flip Horizontally': true,
+				'Opacity': 0.5,
+				'Mix Blend Mode': 'difference',
+			} ).assertComputedStyle( {
+				'.stk-separator__top .stk-separator__wrapper .stk-separator__layer-2': {
+					'transform': 'scaleX(-1) scaleX(1.7)',
+					'opacity': '0.5',
+					'mix-blend-mode': 'difference',
+				},
+			} )
+			cy.resetStyle( 'Separator Layer 2' )
+			cy.adjust( 'Separator Layer 2', true )
+		}
+
+		cy.adjust( 'Separator Layer 2', {
+			'Layer Height': {
+				value: 1.06,
+				viewport,
+			},
+		} ).assertComputedStyle( {
+			'.stk-separator__top .stk-separator__wrapper .stk-separator__layer-2': {
+				'transform': 'scaleY(1.06)',
+			},
+		} )
+
+		cy.adjust( 'Separator Layer 3', true )
+		if ( viewport === 'Desktop' ) {
+			cy.adjust( 'Separator Layer 3', {
+				'Color': '#ff7543',
+				'Layer Width': 2.7,
+			} ).assertComputedStyle( {
+				'.stk-separator__top .stk-separator__wrapper .stk-separator__layer-3': {
+					'fill': '#ff7543',
+					'transform': 'scaleX(2.7)',
+				},
+			} )
+			cy.adjust( 'Separator Layer 3', {
+				'Flip Horizontally': true,
+				'Opacity': 0.3,
+			} ).assertComputedStyle( {
+				'.stk-separator__top .stk-separator__wrapper .stk-separator__layer-3': {
+					'transform': 'scaleX(-1) scaleX(2.7)',
+					'opacity': '0.3',
+				},
+			} )
+			cy.resetStyle( 'Separator Layer 3' )
+			cy.adjust( 'Separator Layer 3', true )
+		}
+
+		cy.adjust( 'Separator Layer 3', {
+			'Layer Height': {
+				value: 0.93,
+				viewport,
+			},
+		} ).assertComputedStyle( {
+			'.stk-separator__top .stk-separator__wrapper .stk-separator__layer-3': {
+				'transform': 'scaleY(0.93)',
+			},
+		} )
+	}
+
+	assertBottomSeparator( {
+		viewport,
+	} ) {
+		cy.toggleStyle( 'Bottom Separator' )
+		cy.adjust( 'Design', 'slant-2' )
+		if ( viewport === 'Desktop' ) {
+			cy.adjust( 'Color', '#5dc8af' )
+			cy.adjust( 'Width', 1.4 )
+			cy.adjust( 'Shadow / Outline', 3 )
+			cy.adjust( 'Invert Design', true )
+			cy.adjust( 'Flip Horizontally', true )
+			cy.adjust( 'Bring to Front', true ).assertComputedStyle( {
+				'.stk-separator__bottom svg': {
+					'fill': '#5dc8af',
+					'filter': 'drop-shadow(2px 4px 6px #000)',
+				},
+				'.stk-separator__bottom .stk-separator__wrapper': {
+					'transform': 'scaleX(1.4)',
+				},
+				'.stk-separator__bottom': {
+					'z-index': '6',
+					'transform': 'scaleX(-1) scaleY(-1)',
+				},
+			} )
+		}
+		cy.adjust( 'Height', 248, { viewport } ).assertComputedStyle( {
+			'.stk-separator__bottom .stk-separator__wrapper': {
+				'height': '248px',
+			},
+		} )
+		cy.adjust( 'Separator Layer 2', true )
+		if ( viewport === 'Desktop' ) {
+			cy.adjust( 'Separator Layer 2', {
+				'Color': '#2b60ff',
+				'Layer Width': 1.7,
+			} ).assertComputedStyle( {
+				'.stk-separator__bottom .stk-separator__wrapper .stk-separator__layer-2': {
+					'fill': '#2b60ff',
+					'transform': 'scaleX(1.7)',
+				},
+			} )
+			cy.adjust( 'Separator Layer 2', {
+				'Flip Horizontally': true,
+				'Opacity': 0.5,
+				'Mix Blend Mode': 'difference',
+			} ).assertComputedStyle( {
+				'.stk-separator__bottom .stk-separator__wrapper .stk-separator__layer-2': {
+					'transform': 'scaleX(-1) scaleX(1.7)',
+					'opacity': '0.5',
+					'mix-blend-mode': 'difference',
+				},
+			} )
+			cy.resetStyle( 'Separator Layer 2' )
+			cy.adjust( 'Separator Layer 2', true )
+		}
+
+		cy.adjust( 'Separator Layer 2', {
+			'Layer Height': {
+				value: 1.06,
+				viewport,
+			},
+		} ).assertComputedStyle( {
+			'.stk-separator__bottom .stk-separator__wrapper .stk-separator__layer-2': {
+				'transform': 'scaleY(1.06)',
+			},
+		} )
+
+		cy.adjust( 'Separator Layer 3', true )
+		if ( viewport === 'Desktop' ) {
+			cy.adjust( 'Separator Layer 3', {
+				'Color': '#ff7543',
+				'Layer Width': 2.7,
+			} ).assertComputedStyle( {
+				'.stk-separator__bottom .stk-separator__wrapper .stk-separator__layer-3': {
+					'fill': '#ff7543',
+					'transform': 'scaleX(2.7)',
+				},
+			} )
+			cy.adjust( 'Separator Layer 3', {
+				'Flip Horizontally': true,
+				'Opacity': 0.3,
+			} ).assertComputedStyle( {
+				'.stk-separator__bottom .stk-separator__wrapper .stk-separator__layer-3': {
+					'transform': 'scaleX(-1) scaleX(2.7)',
+					'opacity': '0.3',
+				},
+			} )
+			cy.resetStyle( 'Separator Layer 3' )
+			cy.adjust( 'Separator Layer 3', true )
+		}
+
+		cy.adjust( 'Separator Layer 3', {
+			'Layer Height': {
+				value: 0.93,
+				viewport,
+			},
+		} ).assertComputedStyle( {
+			'.stk-separator__bottom .stk-separator__wrapper .stk-separator__layer-3': {
+				'transform': 'scaleY(0.93)',
+			},
+		} )
 	}
 }
 
