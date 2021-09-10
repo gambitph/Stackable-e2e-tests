@@ -33,7 +33,7 @@ function typeContent() {
 }
 
 function pressEnterKey() {
-	it( 'should test clicking the enter key in text block', () => {
+	it( 'should test pressing the enter key in text block', () => {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'stackable/text' )

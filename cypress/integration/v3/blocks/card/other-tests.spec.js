@@ -10,7 +10,7 @@ import {
 	blockExist,
 	blockError,
 	innerBlocks,
-	typeContent,
+	innerBlocksExist,
 	addImage,
 } from '.'
 
@@ -18,6 +18,6 @@ describe( 'Card Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	innerBlocks,
-	typeContent,
+	innerBlocksExist,
 	addImage,
 ] ) )

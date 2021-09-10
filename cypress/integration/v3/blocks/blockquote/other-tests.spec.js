@@ -9,13 +9,11 @@ import { registerTests } from '~stackable-e2e/helpers'
 import {
 	blockExist,
 	blockError,
-	typeContent,
-	pressEnterKey,
+	innerBlocksExist,
 } from '.'
 
 describe( 'Blockquote Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
-	typeContent,
-	pressEnterKey,
+	innerBlocksExist,
 ] ) )

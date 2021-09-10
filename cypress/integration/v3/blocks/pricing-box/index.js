@@ -2,7 +2,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, assertInnerBlocks,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
 
@@ -10,7 +10,7 @@ export {
 	blockExist,
 	blockError,
 	innerBlocks,
-	typeContent,
+	innerBlocksExist,
 }
 
 function blockExist() {
@@ -35,21 +35,11 @@ function innerBlocks() {
 	} )
 }
 
-function typeContent() {
-	it( 'should allow typing in the block', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/pricing-box' )
-
-		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Pricing box block', 0 )
-			.assertBlockContent( '.stk-block-heading__text', 'Pricing box block' )
-		cy.typeBlock( 'stackable/text', '.stk-block-text__text', '£', 0 )
-			.assertBlockContent( '.stk-block-text__text', '£' )
-		cy.typeBlock( 'stackable/text', '.stk-block-text__text', '21', 1 )
-			.assertBlockContent( '.stk-block-text__text', '21' )
-		cy.typeBlock( 'stackable/text', '.stk-block-text__text', '.59', 2 )
-			.assertBlockContent( '.stk-block-text__text', '.59' )
-		cy.typeBlock( 'stackable/button', '.stk-button__inner-text', 'Buy', 0 )
-			.assertBlockContent( '.stk-button__inner-text', 'Buy' )
-	} )
+function innerBlocksExist() {
+	it( 'should assert presence of inner blocks when the block is added', assertInnerBlocks( 'stackable/pricing-box', [
+		'.stk-block-heading',
+		'.stk-block-text',
+		'.stk-block-icon-list',
+		'.stk-block-button',
+	] ) )
 }

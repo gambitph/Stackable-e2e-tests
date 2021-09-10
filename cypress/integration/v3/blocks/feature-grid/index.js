@@ -2,13 +2,13 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, assertInnerBlocks,
 } from '~stackable-e2e/helpers'
 
 export {
 	blockExist,
 	blockError,
-	typeContent,
+	innerBlocksExist,
 	assertWidth,
 }
 
@@ -20,19 +20,13 @@ function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/feature-grid' ) )
 }
 
-function typeContent() {
-	it( 'should allow typing in the block', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/feature-grid' )
-
-		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Feature grid block', 0 )
-			.assertBlockContent( '.stk-block-heading__text', 'Feature grid block' )
-		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
-			.assertBlockContent( '.stk-block-text__text', 'Lorem ipsum dolor sit amet.' )
-		cy.typeBlock( 'stackable/button', '.stk-button__inner-text', 'Click here', 0 )
-			.assertBlockContent( '.stk-button__inner-text', 'Click here' )
-	} )
+function innerBlocksExist() {
+	it( 'should assert presence of inner blocks when the block is added', assertInnerBlocks( 'stackable/feature-grid', [
+		'.stk-block-image',
+		'.stk-block-heading',
+		'.stk-block-text',
+		'.stk-block-button',
+	] ) )
 }
 
 function assertWidth() {

@@ -3,15 +3,14 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, assertInnerBlocks,
 } from '~stackable-e2e/helpers'
 
 export {
 	blockExist,
 	blockError,
 	selectIcon,
-	typeContent,
-	pressEnterKey,
+	innerBlocksExist,
 }
 
 function blockExist() {
@@ -42,28 +41,9 @@ function selectIcon() {
 	} )
 }
 
-function typeContent() {
-	it( 'should allow typing in the block', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/icon-label' )
-
-		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Icon label', 0 )
-			.assertBlockContent( '.stk-block-heading__text', 'Icon label' )
-	} )
-}
-
-function pressEnterKey() {
-	it( 'should test clicking the enter key in heading block', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/icon-label' )
-
-		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Icon label', 0 )
-		cy.get( '.stk-block-heading__text' ).type( '{enter}', { force: true } )
-
-		cy.savePost()
-		// Reloading should not cause a block error
-		cy.reload()
-	} )
+function innerBlocksExist() {
+	it( 'should assert presence of inner blocks when the block is added', assertInnerBlocks( 'stackable/icon-label', [
+		'.stk-block-heading',
+		'.stk-block-icon',
+	] ) )
 }

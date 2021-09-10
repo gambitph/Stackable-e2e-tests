@@ -3,15 +3,15 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, checkJsFiles,
+	assertBlockExist, blockErrorTest, checkJsFiles, assertInnerBlocks,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
 
 export {
 	blockExist,
 	blockError,
-	typeContent,
 	innerBlocks,
+	innerBlocksExist,
 	loadedFiles,
 }
 
@@ -37,18 +37,11 @@ function innerBlocks() {
 	} )
 }
 
-function typeContent() {
-	it( 'should allow typing in the block', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/accordion' )
-
-		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Accordion 1', 0 )
-			.assertBlockContent( '.stk-block-heading__text', 'Accordion 1' )
-
-		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'My sample description here 12343', 0 )
-			.assertBlockContent( '.stk-block-text__text', 'My sample description here 12343' )
-	} )
+function innerBlocksExist() {
+	it( 'should assert presence of inner blocks when the block is added', assertInnerBlocks( 'stackable/accordion', [
+		'.stk-block-icon-label',
+		'.stk-block-text',
+	] ) )
 }
 
 function loadedFiles() {

@@ -10,12 +10,12 @@ import {
 	blockExist,
 	blockError,
 	innerBlocks,
-	typeContent,
+	innerBlocksExist,
 } from '.'
 
 describe( 'Testimonial Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	innerBlocks,
-	typeContent,
+	innerBlocksExist,
 ] ) )

@@ -3,13 +3,13 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, assertInnerBlocks,
 } from '~stackable-e2e/helpers'
 
 export {
 	blockExist,
 	blockError,
-	typeContent,
+	innerBlocksExist,
 }
 
 function blockExist() {
@@ -20,17 +20,12 @@ function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/image-box', { variation: 'Basic' } ) )
 }
 
-function typeContent() {
-	it( 'should allow typing in the block', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/image-box', { variation: 'Basic' } )
-
-		cy.typeBlock( 'stackable/subtitle', '.stk-block-subtitle__text', 'My subtitle', 0 )
-			.assertBlockContent( '.stk-block-subtitle__text', 'My subtitle' )
-		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Image box', 0 )
-			.assertBlockContent( '.stk-block-heading__text', 'Image box' )
-		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'Lorem ipsum dolor sit amet.', 0 )
-			.assertBlockContent( '.stk-block-text__text', 'Lorem ipsum dolor sit amet.' )
-	} )
+function innerBlocksExist() {
+	it( 'should assert presence of inner blocks when the block is added', assertInnerBlocks( 'stackable/image-box', [
+		'.stk-block-subtitle',
+		'.stk-block-heading',
+		'.stk-block-text',
+		'.stk-block-icon',
+		'.stk-block-image',
+	], { variation: 'Basic' } ) )
 }

@@ -10,14 +10,12 @@ import {
 	blockExist,
 	blockError,
 	selectIcon,
-	typeContent,
-	pressEnterKey,
+	innerBlocksExist,
 } from '.'
 
 describe( 'Icon Label Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	selectIcon,
-	typeContent,
-	pressEnterKey,
+	innerBlocksExist,
 ] ) )

@@ -9,6 +9,7 @@ import { registerTests } from '~stackable-e2e/helpers'
 import {
 	blockExist,
 	blockError,
+	innerBlocksExist,
 	loadedFiles,
 	selectIcon,
 } from '.'
@@ -16,6 +17,7 @@ import {
 describe( 'Video Popup Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
+	innerBlocksExist,
 	loadedFiles,
 	selectIcon,
 ] ) )

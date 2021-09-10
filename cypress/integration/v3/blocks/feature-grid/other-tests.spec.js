@@ -9,13 +9,13 @@ import { registerTests } from '~stackable-e2e/helpers'
 import {
 	blockExist,
 	blockError,
-	typeContent,
+	innerBlocksExist,
 	assertWidth,
 } from '.'
 
 describe( 'Feature Grid Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
-	typeContent,
+	innerBlocksExist,
 	assertWidth,
 ] ) )

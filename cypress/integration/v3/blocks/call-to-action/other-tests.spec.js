@@ -10,12 +10,12 @@ import {
 	blockExist,
 	blockError,
 	innerBlocks,
-	typeContent,
+	innerBlocksExist,
 } from '.'
 
 describe( 'Call To Action Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	innerBlocks,
-	typeContent,
+	innerBlocksExist,
 ] ) )

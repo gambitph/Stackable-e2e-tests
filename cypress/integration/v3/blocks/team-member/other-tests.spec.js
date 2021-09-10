@@ -9,11 +9,11 @@ import { registerTests } from '~stackable-e2e/helpers'
 import {
 	blockExist,
 	blockError,
-	typeContent,
+	innerBlocksExist,
 } from '.'
 
 describe( 'Team Member Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
-	typeContent,
+	innerBlocksExist,
 ] ) )

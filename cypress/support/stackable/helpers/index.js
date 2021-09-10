@@ -588,3 +588,22 @@ export const checkJsFiles = ( blockName = 'ugb/accordion', selector = '#stk-fron
 		} )
 	} )
 }
+
+/**
+ * Helper function for asserting the presence of inner blocks.
+ *
+ * @param {string} blockName
+ * @param {Array} innerBlockSelectors
+ * @param {Object} addBlockOptions
+ */
+export const assertInnerBlocks = ( blockName = 'stackable/accordion', innerBlockSelectors = [], addBlockOptions = {} ) => () => {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( blockName, addBlockOptions )
+	innerBlockSelectors.forEach( selector => {
+		cy.selectBlock( blockName )
+			.find( selector )
+			.should( 'exist' )
+	} )
+	cy.savePost()
+}

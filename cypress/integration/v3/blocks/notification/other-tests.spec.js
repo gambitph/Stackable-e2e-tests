@@ -10,7 +10,7 @@ import {
 	blockExist,
 	blockError,
 	innerBlocks,
-	typeContent,
+	innerBlocksExist,
 	loadedFiles,
 } from '.'
 
@@ -18,6 +18,6 @@ describe( 'Notification Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	innerBlocks,
-	typeContent,
+	innerBlocksExist,
 	loadedFiles,
 ] ) )

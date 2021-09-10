@@ -2,12 +2,13 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, checkJsFiles,
+	assertBlockExist, blockErrorTest, checkJsFiles, assertInnerBlocks,
 } from '~stackable-e2e/helpers'
 
 export {
 	blockExist,
 	blockError,
+	innerBlocksExist,
 	loadedFiles,
 	selectIcon,
 }
@@ -18,6 +19,13 @@ function blockExist() {
 
 function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/video-popup' ) )
+}
+
+function innerBlocksExist() {
+	it( 'should assert presence of inner blocks when the block is added', assertInnerBlocks( 'stackable/video-popup', [
+		'.stk-block-image',
+		'.stk-block-icon',
+	] ) )
 }
 
 function loadedFiles() {

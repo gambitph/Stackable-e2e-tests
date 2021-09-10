@@ -32,7 +32,7 @@ function typeContent() {
 }
 
 function pressEnterKey() {
-	it( 'should test clicking the enter key in heading block', () => {
+	it( 'should test pressing the enter key in heading block', () => {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'stackable/heading' )
