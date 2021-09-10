@@ -11,7 +11,6 @@ export {
 	blockExist,
 	blockError,
 	innerBlocks,
-	assertLinking,
 	assertWidth,
 }
 
@@ -33,18 +32,6 @@ function innerBlocks() {
 			.filter( blockName => blockName !== 'stackable/column' )
 			.forEach( blockName => cy.addInnerBlock( 'stackable/column', blockName, 0 ) )
 
-		cy.savePost()
-	} )
-}
-
-function assertLinking() {
-	it( 'should toggle the linking of the column block', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/columns', { variation: 'Two columns; equal split' } )
-		cy.selectBlock( 'stackable/column', 0 ).toggleBlockLinking( true )
-		cy.selectBlock( 'stackable/column', 1 ).toggleBlockLinking( false )
-		cy.selectBlock( 'stackable/column', 1 ).find( '.stk-linking-wrapper > .stk--is-unlinked' ).should( 'exist' )
 		cy.savePost()
 	} )
 }

@@ -10,6 +10,7 @@ import {
 	blockExist,
 	blockError,
 	typeContent,
+	pressEnterKey,
 	assertLink,
 } from '.'
 
@@ -17,5 +18,6 @@ describe( 'Button Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	typeContent,
+	pressEnterKey,
 	assertLink,
 ] ) )

@@ -10,6 +10,7 @@ export {
 	blockExist,
 	blockError,
 	typeContent,
+	pressEnterKey,
 	assertLink,
 }
 
@@ -38,6 +39,26 @@ function typeContent() {
 	} )
 }
 
+function pressEnterKey() {
+	it( 'should test pressing the enter key in button block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/button-group' )
+
+		cy.typeBlock( 'stackable/button', '.stk-button__inner-text', 'Click me', 0 )
+		cy.get( '.stk-button__inner-text' ).type( '{enter}', { force: true } )
+
+		cy.selectBlock( 'stackable/button-group' )
+			.find( '.stk-block-button' )
+			.its( 'length' )
+			.should( 'eq', 2 )
+
+		cy.savePost()
+		// Reloading should not cause a block error
+		cy.reload()
+	} )
+}
+
 function assertLink() {
 	it( 'should assert the links in buttons', () => {
 		cy.setupWP()
@@ -55,30 +76,5 @@ function assertLink() {
 			editorSelector: '.stk-button__inner-text',
 			frontendSelector: '.stk-button',
 		} )
-
-		// Assert dynamic content in link / url value
-		cy.selectBlock( 'stackable/button', 0 ).find( '.stk-button__inner-text' ).click( { force: true } )
-		// Current Post - Post URL
-		cy.adjust( 'Link / URL', {
-			source: 'Current Post',
-			fieldName: 'Post URL',
-		}, {
-			parentSelector: '.components-popover__content',
-			supportedDelimiter: [ ' ' ],
-			isDynamicContent: true,
-			isInPopover: true,
-		} ).assertHtmlAttribute( '.stk-button', 'href', `${ Cypress.config().baseUrl }/test-button-link/`, { assertBackend: false } )
-
-		cy.selectBlock( 'stackable/button', 1 ).find( '.stk-button__inner-text' ).click( { force: true } )
-		// Site - Site URL
-		cy.adjust( 'Link / URL', {
-			source: 'Site',
-			fieldName: 'Site URL',
-		}, {
-			parentSelector: '.components-popover__content',
-			supportedDelimiter: [ ' ' ],
-			isDynamicContent: true,
-			isInPopover: true,
-		} ).assertHtmlAttribute( '.stk-button', 'href', Cypress.config().baseUrl, { assertBackend: false } )
 	} )
 }

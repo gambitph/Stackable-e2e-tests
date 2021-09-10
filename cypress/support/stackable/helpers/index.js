@@ -560,7 +560,7 @@ export const assertLinks = ( blockName, options = {} ) => {
  * @param {string} selector
  * @param {Object} addBlockOptions
  */
-export const checkJsFiles = ( blockName = 'ugb/accordion', selector = '#stk-frontend-accordion-js', addBlockOptions = {} ) => () => {
+export const checkJsFiles = ( blockName = 'stackable/accordion', selector = '#stk-frontend-accordion-js', addBlockOptions = {} ) => () => {
 	cy.setupWP()
 	cy.newPage()
 	cy.typePostTitle( 'Check frontend files' )

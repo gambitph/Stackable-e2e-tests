@@ -47,3 +47,4 @@ function innerBlocksExist() {
 function loadedFiles() {
 	it( 'should assert the loaded files in the frontend', checkJsFiles( 'stackable/accordion', '#stk-frontend-accordion-js' ) )
 }
+// TODO: Assert down arrow icon

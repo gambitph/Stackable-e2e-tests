@@ -51,3 +51,4 @@ function selectIcon() {
 		} )
 	} )
 }
+// TODO: Assert play icon

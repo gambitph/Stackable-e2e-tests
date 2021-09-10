@@ -17,5 +17,4 @@ function blockExist() {
 function blockError() {
 	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/columns', { variation: 'Two columns; equal split' } ) )
 }
-// TODO: Add test for column collapsing in Desktop, Tablet, Mobile
-// New build change: Adding columns in the inspector instead of block appender
+// TODO: Add test for column collapsing in Desktop, Tablet, Mobile - Block snapshots

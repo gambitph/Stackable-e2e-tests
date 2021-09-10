@@ -35,6 +35,7 @@ function selectIcon() {
 	it( 'should assert selected icon', () => {
 		cy.setupWP()
 		cy.newPage()
+		// add asBlock isStatic
 		cy.addBlock( 'stackable/button-group' )
 		cy.deleteBlock( 'stackable/button' )
 		cy.selectBlock( 'stackable/button-group' ).addNewColumn( { blockToAdd: 'Icon Button' } )
@@ -43,6 +44,7 @@ function selectIcon() {
 		cy.selectBlock( 'stackable/icon-button' )
 			.find( 'svg[data-icon="facebook"]' )
 			.should( 'exist' )
+		// use assertHtmlAttribute
 		cy.savePost()
 		cy.getPostUrls().then( ( { previewUrl } ) => {
 			cy.visit( previewUrl )

@@ -10,7 +10,6 @@ import {
 	blockExist,
 	blockError,
 	innerBlocks,
-	assertLinking,
 	assertWidth,
 } from '.'
 
@@ -18,6 +17,5 @@ describe( 'Column Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	innerBlocks,
-	assertLinking,
 	assertWidth,
 ] ) )
