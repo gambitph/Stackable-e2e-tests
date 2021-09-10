@@ -28,6 +28,7 @@ Cypress.Commands.add( 'popoverControl', popoverControl )
 Cypress.Commands.add( 'suggestionControl', suggestionControl )
 Cypress.Commands.add( 'focalPointControl', focalPointControl )
 Cypress.Commands.add( 'stkDateTimeControl', stkDateTimeControl )
+Cypress.Commands.add( 'imageControl', imageControl )
 
 // Reset
 Cypress.Commands.add( 'iconControlReset', iconControlReset )
@@ -36,6 +37,7 @@ Cypress.Commands.add( 'suggestionControlClear', suggestionControlClear )
 Cypress.Commands.add( 'popoverControlReset', popoverControlReset )
 Cypress.Commands.add( 'focalPointControlReset', focalPointControlReset )
 Cypress.Commands.add( 'stkDateTimeControlReset', stkDateTimeControlReset )
+Cypress.Commands.add( 'imageControlReset', imageControlReset )
 
 // Adjust styles
 Cypress.Commands.add( 'adjustLayout', adjustLayout )
@@ -52,16 +54,21 @@ Cypress.Commands.add( 'resizeWidth', { prevSubject: true }, resizeWidth )
  */
 Cypress.Commands.overwrite( 'textControl', adjustDynamicContentControl )
 Cypress.Commands.overwrite( 'urlInputControl', adjustDynamicContentControl )
-// TODO: Add overwrite for `imageControl`
+Cypress.Commands.overwrite( 'imageControl', adjustDynamicContentControl )
 
 function adjustDynamicContentControl( originalFn, ...args ) {
 	const optionsToPass = args.length === 3 ? args.pop() : {}
 
 	if ( optionsToPass.isDynamicContent && typeof args[ 1 ] === 'object' ) {
-		cy
-			.getBaseControl( ...args, optionsToPass )
-			.find( 'button[aria-label="Dynamic Fields"]' )
-			.click( { force: true } )
+		if ( optionsToPass.isInPopover ) {
+			cy.get( '.components-base-control button[aria-label="Dynamic Fields"]' )
+				.click( { force: true } )
+		} else {
+			cy
+				.getBaseControl( ...args, optionsToPass )
+				.find( 'button[aria-label="Dynamic Fields"]' )
+				.click( { force: true } )
+		}
 
 		// Adjust popover with the `value`
 		cy.adjustDynamicContentPopover( args[ 1 ] )
@@ -117,6 +124,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		'.ugb-icon-control': 'iconControl',
 		'.stk-advanced-focal-point-control': 'focalPointControl',
 		'.stk-date-time-control__field': 'stkDateTimeControl',
+		'.ugb-image-control': 'imageControl',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -151,6 +159,7 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 		 'ugb-icon-control': 'iconControlReset',
 		 '.stk-advanced-focal-point-control': 'focalPointControlReset',
 		 '.stk-date-time-control__field': 'stkDateTimeControlReset',
+		 '.ugb-image-control': 'imageControlReset',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -175,9 +184,9 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 export function changeIcon( index = 1, keyword = '', icon ) {
 	cy
 		.get( '.block-editor-block-list__block.is-selected' )
-		.find( '.ugb-svg-icon-placeholder__button' )
+		.find( '.ugb-svg-icon-placeholder__button, .stk--inner-svg' )
 		.eq( index - 1 )
-		.click( { force: true } )
+		.realClick()
 
 	cy
 		.get( 'input[placeholder="Type to search icon"]' )
@@ -711,7 +720,7 @@ function stkDateTimeControl( name, value, options = {} ) {
 }
 
 /**
- * Command for adjusting the date time control of stackable.
+ * Command for resetting the date time control of stackable.
  *
  * @param {string} name
  * @param {Object} options
@@ -780,4 +789,63 @@ function resizeWidth( subject, value ) {
 
 	// Click the tooltip to close the popover
 	selectTooltip()
+}
+
+/**
+ * Command for adjusting the image control
+ *
+ * @param {string} name
+ * @param {number} value
+ * @param {Object} options
+ */
+function imageControl( name, value, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+		mainComponentSelector,
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} )
+
+	beforeAdjust( name, value, options )
+	selector()
+		.find( '.ugb-placeholder' ).click( { force: true } )
+	cy.selectFromMediaLibrary( value )
+}
+
+/**
+ * Command for resetting the image control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function imageControlReset( name, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+		mainComponentSelector,
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} )
+
+	beforeAdjust( name, null, options )
+	selector()
+		.contains( containsRegExp( name ) )
+		.closest( '.components-panel__body>.components-base-control' )
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+		.click( { force: true } )
 }

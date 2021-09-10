@@ -25,6 +25,7 @@ Cypress.Commands.add( 'getPostData', getPostData )
 Cypress.Commands.add( 'addPostExcerpt', addPostExcerpt )
 Cypress.Commands.add( 'addPostSlug', addPostSlug )
 Cypress.Commands.add( 'editPostDiscussion', editPostDiscussion )
+Cypress.Commands.add( 'selectFromMediaLibrary', selectFromMediaLibrary )
 Cypress.Commands.add( 'addFeaturedImage', addFeaturedImage )
 Cypress.Commands.add( 'setSelection', { prevSubject: true }, setSelection )
 Cypress.Commands.add( 'selection', { prevSubject: true }, selection )
@@ -307,58 +308,60 @@ export function editPostDiscussion( options ) {
 	Object.keys( options ).forEach( optionName => {
 		const optionValue = options[ optionName ]
 
-		selector( optionName ).find( 'svg.components-checkbox-control__checked' ).its( 'length' ).then( length => {
-			// Check if the checkbox is already true
-			if ( ( length > 0 ) !== optionValue ) {
-				selector( optionName )
-					.find( 'input.components-checkbox-control__input' )
-					.click( { force: true } )
-			}
-		} )
+		selector( optionName )
+			.then( $control => {
+				const isChecked = !! $control.find( 'svg.components-checkbox-control__checked' ).length
+				if ( isChecked !== optionValue ) {
+					selector( optionName )
+						.find( 'input.components-checkbox-control__input' )
+						.click( { force: true } )
+				}
+			} )
 	} )
 	cy.savePost()
+}
+
+/**
+ * Command for selecting an image in the media library
+ *
+ * @param {number} image
+ */
+export function selectFromMediaLibrary( image = 1 ) {
+	const selector = () => cy
+		.get( '.media-modal-content' )
+
+	selector()
+		.find( '.media-frame-router' )
+		.contains( containsRegExp( 'Media Library' ) )
+		.click( { force: true } )
+
+	selector()
+		.find( 'ul.attachments li.attachment' )
+		.eq( image - 1 )
+		.click( { force: true } )
+
+	selector()
+		.find( 'button.media-button-select:contains(Set featured image), button.media-button-select:contains(Select)' )
+		.click( { force: true } )
 }
 
 /**
  * Command for adding a featured image to a post.
  */
 export function addFeaturedImage() {
-	cy.getPostUrls().then( ( { editorUrl } ) => {
-		// Save the current post as we're going to register a post.
-		cy.savePost()
-		// Register one post to be able to add one image to media library.
-		// TODO: Find a better way to add an image to the media library.
-		cy.registerPosts( { numOfPosts: 1 } )
-		cy.visit( editorUrl )
-		cy.openSidebar( 'Settings' )
-		cy
-			.get( '.edit-post-sidebar__panel-tabs' )
-			.find( 'li:first-child button.edit-post-sidebar__panel-tab' )
-			.click( { force: true } )
-		cy.collapse( 'Featured image' )
-		cy
-			.get( '.editor-post-featured-image' )
-			.contains( containsRegExp( 'Set featured image' ) )
-			.click( { force: true } )
+	cy.openSidebar( 'Settings' )
+	cy
+		.get( '.edit-post-sidebar__panel-tabs' )
+		.find( 'li:first-child button.edit-post-sidebar__panel-tab' )
+		.click( { force: true } )
+	cy.collapse( 'Featured image' )
+	cy
+		.get( '.editor-post-featured-image' )
+		.contains( containsRegExp( 'Set featured image' ) )
+		.click( { force: true } )
 
-		const selector = () => cy
-			.get( '.media-modal-content' )
-
-		selector()
-			.find( '.media-frame-router' )
-			.contains( containsRegExp( 'Media Library' ) )
-			.click( { force: true } )
-
-		selector()
-			.find( 'ul.attachments li.attachment' )
-			.eq( 0 )
-			.click( { force: true } )
-
-		selector()
-			.find( 'button.media-button-select:contains(Set featured image)' )
-			.click( { force: true } )
-		cy.savePost()
-	} )
+	cy.selectFromMediaLibrary( 1 )
+	cy.savePost()
 }
 
 /**

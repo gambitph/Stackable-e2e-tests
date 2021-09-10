@@ -10,10 +10,12 @@ import {
 	blockExist,
 	blockError,
 	typeContent,
+	pressEnterKey,
 } from '.'
 
 describe( 'Heading Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	typeContent,
+	pressEnterKey,
 ] ) )

@@ -458,8 +458,6 @@ function urlInputControl( name, value, options = {} ) {
 
 	beforeAdjust( name, value, options )
 	selector()
-		.contains( containsRegExp( name ) )
-		.closest( '.components-panel__body>.components-base-control' )
 		.find( 'input.block-editor-url-input__input' )
 		.type( `{selectall}${ value }{enter}`, { force: true } )
 }
