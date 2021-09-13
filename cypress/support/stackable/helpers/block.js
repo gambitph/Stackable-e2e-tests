@@ -50,7 +50,29 @@ class BlockModule extends Module {
 			const columnAligns = [ 'flex-start', 'center', 'flex-end', 'stretch' ]
 			columnAligns.forEach( align => {
 				cy.adjust( 'Column Alignment', align, { viewport } )
-					.assertComputedStyle( { [ MAIN_SELECTOR ]: { 'align-self': align } } )
+				cy.get( MAIN_SELECTOR ).invoke( 'attr', 'data-block-id' ).then( blockId => {
+					cy.get( '.block-editor-block-list__block.is-selected' ).then( $block => {
+						if ( $block.find( `.stk--block-align-${ blockId }` ).length ) {
+							// If the block alignment classname is present, separate the assertion for backend and frontend
+							cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+								[ `.stk--block-align-${ blockId } > .block-editor-inner-blocks > .block-editor-block-list__layout` ]: {
+									'align-items': align,
+								},
+							}, { assertFrontend: false } )
+							cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+								[ `.stk--block-align-${ blockId }` ]: {
+									'align-items': align,
+								},
+							}, { assertBackend: false } )
+							return
+						}
+						cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+							[ `.stk-${ blockId }` ]: {
+								'align-self': align,
+							},
+						} )
+					} )
+				} )
 			} )
 		}
 
@@ -507,18 +529,8 @@ class BlockModule extends Module {
 		viewport,
 	} ) {
 		if ( viewport === 'Desktop' ) {
-			cy.getPostData().then( data => {
-				cy.toggleStyle( 'Link' )
-				cy.adjust( 'Link / URL', 'https://wpstackable.com/' ).assertHtmlAttribute( '.stk-block-link', 'href', 'https://wpstackable.com/', { assertBackend: false } )
-				cy.resetStyle( 'Link / URL' )
-				cy.adjust( 'Link / URL', {
-					source: 'Current Post',
-					fieldName: 'Post URL',
-				}, {
-					isDynamicContent: true,
-				} ).assertHtmlAttribute( '.stk-block-link', 'href', data.link, { assertBackend: false } )
-			} )
-
+			cy.toggleStyle( 'Link' )
+			cy.adjust( 'Link / URL', 'https://wpstackable.com/' ).assertHtmlAttribute( '.stk-block-link', 'href', 'https://wpstackable.com/', { assertBackend: false } )
 			cy.adjust( 'Open in new tab', true ).assertHtmlAttribute( '.stk-block-link', 'rel', /noreferrer noopener/, { assertBackend: false } )
 			cy.adjust( 'Link rel', 'sponsored ugc' ).assertHtmlAttribute( '.stk-block-link', 'rel', /sponsored ugc/, { assertBackend: false } )
 		}
