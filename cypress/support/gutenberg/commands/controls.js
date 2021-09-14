@@ -93,6 +93,23 @@ function rangeControlReset( name, options = {} ) {
 }
 
 /**
+ * Command for resetting the date time control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function dateTimeControlReset( name, options = {} ) {
+	const {
+		beforeAdjust = () => {},
+	} = options
+
+	beforeAdjust( name, null, options )
+	cy.get( '.components-datetime > .components-datetime__buttons' )
+		.find( 'button.components-datetime__date-reset-button' )
+		.click( { force: true } )
+}
+
+/**
  * Command for resetting the url input control.
  *
  * @param {string} name
@@ -118,23 +135,6 @@ function urlInputControlReset( name, options = {} ) {
 	selector()
 		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
 		.click( { force: true, multiple: true } )
-}
-
-/**
- * Command for resetting the date time control.
- *
- * @param {string} name
- * @param {Object} options
- */
-function dateTimeControlReset( name, options = {} ) {
-	const {
-		beforeAdjust = () => {},
-	} = options
-
-	beforeAdjust( name, null, options )
-	cy.get( '.components-datetime > .components-datetime__buttons' )
-		.find( 'button.components-datetime__date-reset-button' )
-		.click( { force: true } )
 }
 
 /**
@@ -458,8 +458,6 @@ function urlInputControl( name, value, options = {} ) {
 
 	beforeAdjust( name, value, options )
 	selector()
-		.contains( containsRegExp( name ) )
-		.closest( '.components-panel__body>.components-base-control' )
 		.find( 'input.block-editor-url-input__input' )
 		.type( `{selectall}${ value }{enter}`, { force: true } )
 }
