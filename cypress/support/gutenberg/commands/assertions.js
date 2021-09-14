@@ -489,7 +489,7 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 					if ( assertBackend ) {
 						assert.isTrue(
 							! isEmpty( $block.find( `${ customSelector }:contains(${ expectedValue })` ) ),
-							`${ customSelector } must have content '${ expectedValue }' in Editor'`
+							`${ customSelector } must have content '${ expectedValue }' in Editor. Received: ${ $block.find( `${ customSelector }` )[ 0 ] ? $block.find( `${ customSelector }` )[ 0 ].outerHTML : undefined }`
 						)
 						afterBackendAssert()
 					}

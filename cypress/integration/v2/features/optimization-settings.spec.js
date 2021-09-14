@@ -11,7 +11,7 @@ describe( 'Optimization Settings', registerTests( [
 ] ) )
 
 const cssJsSelectors = [
-	'#ugb-style-css-inline-css',
+	'#ugb-style-css-v2-inline-css',
 	'#ugb-style-css-v2-css',
 	'#ugb-style-css-premium-v2-css',
 	'#ugb-block-frontend-js-v2-js-extra',

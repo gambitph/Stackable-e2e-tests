@@ -1,7 +1,9 @@
 /**
  * External dependencies
  */
-import { range, first } from 'lodash'
+import {
+	range, first,
+} from 'lodash'
 
 /**
  * Setup function.
@@ -40,11 +42,12 @@ export function setupMatchPostFieldValues( type ) {
 	cy.wrap( [] ).as( 'fieldsToAssert' )
 
 	// Populate Post Title.
-	cy.typePostTitle( 'Dynamic Content test' )
-	addToTest( { name: 'Post Title', value: 'Dynamic Content test' } )
+	const id = new Date().getTime() % 1000
+	cy.typePostTitle( `Dynamic Content test ${ id }` )
+	addToTest( { name: 'Post Title', value: `Dynamic Content test ${ id }` } )
 
 	// Populate Post Slug.
-	addToTest( { name: 'Post Slug', value: 'dynamic-content-test' } )
+	addToTest( { name: 'Post Slug', value: `dynamic-content-test-${ id }` } )
 
 	// Populate Post Excerpt.
 	if ( type === 'post' ) {
