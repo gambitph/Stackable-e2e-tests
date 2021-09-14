@@ -3,9 +3,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -13,6 +15,9 @@ export {
 	innerBlocks,
 	innerBlocksExist,
 	addImage,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
@@ -74,5 +79,34 @@ function addImage() {
 						},
 					} )
 			} )
+	} )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+		'Link',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/card' ).asBlock( 'cardBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/card', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-card',
+		alignmentSelector: '.stk-block-card .stk-inner-blocks',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@cardBlock' )
 	} )
 }
