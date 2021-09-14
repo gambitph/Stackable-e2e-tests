@@ -13,6 +13,7 @@ export {
 	innerBlocks,
 	innerBlocksExist,
 	loadedFiles,
+	assertIcon,
 }
 
 function blockExist() {
@@ -47,4 +48,12 @@ function innerBlocksExist() {
 function loadedFiles() {
 	it( 'should assert the loaded files in the frontend', checkJsFiles( 'stackable/accordion', '#stk-frontend-accordion-js' ) )
 }
-// TODO: Assert down arrow icon
+
+function assertIcon() {
+	it( 'should assert the correct icon is added for the accordion', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/accordion' )
+		cy.get( '.stk-block-accordion .fa-chevron-down' ).should( 'exist' )
+	} )
+}

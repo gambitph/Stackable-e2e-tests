@@ -10,6 +10,7 @@ export {
 	blockError,
 	innerBlocksExist,
 	loadedFiles,
+	assertIcon,
 }
 
 function blockExist() {
@@ -30,4 +31,12 @@ function innerBlocksExist() {
 function loadedFiles() {
 	it( 'should assert the loaded files in the frontend', checkJsFiles( 'stackable/video-popup', '#stk-frontend-video-popup-js' ) )
 }
-// TODO: Assert play icon
+
+function assertIcon() {
+	it( 'should assert the correct icon is added for the video popup', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/video-popup' )
+		cy.get( '.stk-block-video-popup .fa-play' ).should( 'exist' )
+	} )
+}
