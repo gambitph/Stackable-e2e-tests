@@ -2,9 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -12,6 +14,9 @@ export {
 	innerBlocks,
 	innerBlocksExist,
 	assertWidth,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
@@ -61,5 +66,37 @@ function assertWidth() {
 				'max-width': '25%',
 			},
 		}, { assertBackend: false } )
+	} )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+		'Top Separator',
+		'Bottom Separator',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/feature' ).asBlock( 'featureBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/feature', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-feature',
+		alignmentSelector: '.stk-block-feature > .stk-inner-blocks',
+		enableInnerBlockAlignment: false,
+		enableInnerBlockVerticalAlignment: false,
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@featureBlock' )
 	} )
 }

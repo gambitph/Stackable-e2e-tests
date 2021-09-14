@@ -2,14 +2,19 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
 	blockError,
 	innerBlocksExist,
 	assertWidth,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
@@ -45,5 +50,37 @@ function assertWidth() {
 				'max-width': '30%',
 			},
 		}, { assertBackend: false } )
+	} )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+		'Top Separator', // TODO: The implementation will be changed. Check this.
+		'Bottom Separator',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/feature-grid' ).asBlock( 'featureGridBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/feature-grid', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-feature-grid',
+		alignmentSelector: '.stk-block-feature-grid > .stk-inner-blocks',
+		enableInnerBlockAlignment: false,
+		enableInnerBlockVerticalAlignment: false,
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@featureGridBlock' )
 	} )
 }
