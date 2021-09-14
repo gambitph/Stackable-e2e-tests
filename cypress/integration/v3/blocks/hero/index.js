@@ -2,15 +2,20 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
 	blockError,
 	innerBlocks,
 	innerBlocksExist,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
@@ -41,4 +46,37 @@ function innerBlocksExist() {
 		'.stk-block-text',
 		'.stk-block-button',
 	] ) )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+		'Top Separator',
+		'Bottom Separator',
+		'Link',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/hero' ).asBlock( 'heroBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/hero', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-hero',
+		alignmentSelector: '.stk-block-hero > .stk-inner-blocks',
+		enableColumnAlignment: false,
+		enableInnerBlockVerticalAlignment: false,
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@heroBlock' )
+	} )
 }
