@@ -1,9 +1,9 @@
 name: e2e-test-wp56
 on:
   push:
-    branches: [ master ]
+    branches: [ v3-commands ]
   pull_request:
-    branches: [ master, v3-commands ]
+    branches: [ v3-commands ]
 
 jobs:
   test:
@@ -15,7 +15,18 @@ jobs:
         total-machines: [20]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2 # Checkout the current branch (e2e).
+    - uses: actions/checkout@v2 # Checkout the Stackable Free repo.
+      with:
+        repository: 'gambitph/Stackable'
+        ref: 'compiled-fixes-for-e2e'
+        path: 'Stackable'
+    - uses: actions/checkout@v2 # Checkout the Stackable Premium repo.
+      with:
+        repository: 'bfintal/Stackable-Premium'
+        ref: 'v3'
+        path: 'Stackable/pro__premium_only'
+        token: '${{ secrets.ACCESS_KEY }}'
 
     - name: Cache node modules
       uses: actions/cache@v2
@@ -28,13 +39,6 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-
-    - name: Setup the Stackable Free and Premium Repository
-      run: |
-        git clone -b v3 https://github.com/gambitph/Stackable.git
-        cd Stackable
-        git clone -b v3 https://${{ secrets.ACCESS_KEY }}@github.com/bfintal/Stackable-Premium pro__premium_only
-        cd ..
 
     - name: Setup Node
       uses: actions/setup-node@v1
