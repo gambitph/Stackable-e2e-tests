@@ -93,9 +93,13 @@ export function setupMatchPostFieldValues( type ) {
 	cy.addFeaturedImage()
 	cy.getPostData().then( data => {
 		// Post Fields
-		addToTest( { name: 'Post URL', value: data.link } )
+		addToTest( {
+			name: 'Post URL', value: data.link,
+		} )
 		addToTest( { name: 'Post ID', value: data.id } )
-		addToTest( { name: 'Featured Image URL', value: data.featured_image_urls.full[ 0 ] } )
+		addToTest( {
+			name: 'Featured Image URL', value: data.featured_image_urls.full[ 0 ], willEscape: true,
+		} )
 		addToTest( { name: 'Post Type', value: data.type } )
 		addToTest( { name: 'Post Status', value: data.status } )
 
@@ -123,7 +127,9 @@ export function setupMatchPostFieldValues( type ) {
 		// Author Fields
 		addToTest( { name: 'Author Name', value: data.author_info.name } )
 		addToTest( { name: 'Author ID', value: data.author } )
-		addToTest( { name: 'Author Posts URL', value: data.author_info.url } )
+		addToTest( {
+			name: 'Author Posts URL', value: data.author_info.url, willEscape: true,
+		} )
 
 		// Misc. Fields
 		addToTest( { name: 'Comment Number', value: parseInt( data.comments_num ).toString() } )
@@ -132,7 +138,9 @@ export function setupMatchPostFieldValues( type ) {
 
 	// Get the author's profile picture URL
 	cy.wp().then( wp => {
-		addToTest( { name: 'Author Profile Picture URL', value: wp.data.select( 'core' ).getAuthors()[ 0 ].avatar_urls[ 96 ] } )
+		addToTest( {
+			name: 'Author Profile Picture URL', value: wp.data.select( 'core' ).getAuthors()[ 0 ].avatar_urls[ 96 ], willEscape: true,
+		} )
 	} )
 
 	/**

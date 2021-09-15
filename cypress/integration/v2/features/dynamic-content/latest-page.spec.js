@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { range, escape } from 'lodash'
+import { range } from 'lodash'
 import { registerTests } from '~stackable-e2e/helpers'
 import { setupMatchPostFieldValues } from './helpers/'
 
@@ -52,8 +52,7 @@ function matchPostData() {
 				} )
 
 				// Assert the value.
-				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', escape( value ), { assertFrontend: false } )
-				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value, { assertBackend: false } )
+				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
 				cy.deleteBlock( 'ugb/cta' )
 			} )
 		} )
