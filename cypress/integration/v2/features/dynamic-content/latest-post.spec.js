@@ -4,7 +4,7 @@
  */
 import { registerTests } from '~stackable-e2e/helpers'
 import { setupMatchPostFieldValues } from './helpers'
-import { range } from 'lodash'
+import { range, escape } from 'lodash'
 
 describe( 'Dynamic Content - Latest Post', registerTests( [
 	matchPostData,
@@ -40,7 +40,8 @@ function matchPostData() {
 					fieldName,
 					fieldOptions,
 				} )
-				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
+				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', escape( value ), { assertFrontend: false } )
+				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value, { assertBackend: false } )
 				cy.deleteBlock( 'ugb/cta' )
 			} )
 		} )
