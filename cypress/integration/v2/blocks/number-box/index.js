@@ -68,10 +68,10 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/number-box' ).asBlock( 'numberBoxBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__title', 'Hello World! 1', 0 )
-			.assertBlockContent( '.ugb-number-box__title', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__description', 'Helloo World!! 12', 0 )
-			.assertBlockContent( '.ugb-number-box__description', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__item1 .ugb-number-box__title', 'Hello World! 1', 0 )
+			.assertBlockContent( '.ugb-number-box__item1 .ugb-number-box__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/number-box', '.ugb-number-box__item1 .ugb-number-box__description', 'Helloo World!! 12', 0 )
+			.assertBlockContent( '.ugb-number-box__item1 .ugb-number-box__description', 'Helloo World!! 12' )
 
 		cy.openInspector( 'ugb/number-box', 'Style' )
 		assertBlockTitleDescriptionContent( 'ugb/number-box' )
