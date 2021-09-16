@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v2 # Checkout the Stackable Free repo.
       with:
         repository: 'gambitph/Stackable'
-        ref: 'compiled-fixes-for-e2e'
+        ref: 'v3'
         path: 'Stackable'
     - uses: actions/checkout@v2 # Checkout the Stackable Premium repo.
       with:
