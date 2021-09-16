@@ -219,43 +219,23 @@ class BlockModule extends Module {
 		const aligns = [ 'flex-start', 'center', 'flex-end' ]
 
 		if ( enableMinHeight ) {
-			// Normal state - px unit
 			cy.adjust( 'Min. Height', 387, {
-				viewport, unit: 'px', state: 'normal',
+				viewport, unit: 'px',
 			} ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'min-height': '387px',
 				},
 			} )
-			// Hover state - px unit
-			cy.adjust( 'Min. Height', 491, {
-				viewport, unit: 'px', state: 'hover',
-			} ).assertComputedStyle( {
-				[ `${ MAIN_SELECTOR }:hover` ]: {
-					'min-height': '491px',
-				},
-			} )
-			cy.resetStyle( 'Min. Height', { viewport, state: 'normal' } )
-			cy.resetStyle( 'Min. Height', { viewport, state: 'hover' } )
+			cy.resetStyle( 'Min. Height', { viewport } )
 
-			// Normal state - vh unit
 			cy.adjust( 'Min. Height', 53, {
-				viewport, unit: 'vh', state: 'normal',
+				viewport, unit: 'vh',
 			} ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'min-height': '53vh',
 				},
 			} )
-			// Hover state - vh unit
-			cy.adjust( 'Min. Height', 37, {
-				viewport, unit: 'vh', state: 'hover',
-			} ).assertComputedStyle( {
-				[ `${ MAIN_SELECTOR }:hover` ]: {
-					'min-height': '37vh',
-				},
-			} )
-			cy.resetStyle( 'Min. Height', { viewport, state: 'normal' } )
-			cy.resetStyle( 'Min. Height', { viewport, state: 'hover' } )
+			cy.resetStyle( 'Min. Height', { viewport } )
 		}
 
 		if ( enableContentVerticalAlign ) {
@@ -270,47 +250,24 @@ class BlockModule extends Module {
 		}
 
 		if ( enableMaxContentWidth ) {
-			// Normal state - px unit
 			cy.adjust( 'Max. Content Width', 819, {
-				viewport, unit: 'px', state: 'normal',
+				viewport, unit: 'px',
 			} ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'max-width': '819px',
 					'min-width': 'auto',
 				},
 			} )
-			// Hover state - px unit
-			cy.adjust( 'Max. Content Width', 521, {
-				viewport, unit: 'px', state: 'hover',
-			} ).assertComputedStyle( {
-				[ `${ MAIN_SELECTOR }:hover` ]: {
-					'max-width': '521px',
-					'min-width': 'auto',
-				},
-			} )
-			cy.resetStyle( 'Max. Content Width', { viewport, state: 'normal' } )
-			cy.resetStyle( 'Max. Content Width', { viewport, state: 'hover' } )
+			cy.resetStyle( 'Max. Content Width', { viewport } )
 
-			// Normal state - % unit
 			cy.adjust( 'Max. Content Width', 54, {
-				viewport, unit: '%', state: 'normal',
+				viewport, unit: '%',
 			} ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'max-width': '54%',
 					'min-width': 'auto',
 				},
 			} )
-			// Hover state - % unit
-			cy.adjust( 'Max. Content Width', 38, {
-				viewport, unit: '%', state: 'hover',
-			} ).assertComputedStyle( {
-				[ `${ MAIN_SELECTOR }:hover` ]: {
-					'max-width': '38%',
-					'min-width': 'auto',
-				},
-			} )
-			// Reset only the hover state so we can adjust Content Horizontal Align
-			cy.resetStyle( 'Max. Content Width', { viewport, state: 'hover' } )
 
 			// Additional control added when Max. Content Width is adjusted:
 			aligns.forEach( align => {
@@ -411,7 +368,7 @@ class BlockModule extends Module {
 
 		if ( enableMargins ) {
 			cy.adjust( 'Margins', [ 141, 142, 143, 144 ], {
-				viewport, unit: 'px', state: 'normal',
+				viewport, unit: 'px',
 			} ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'margin-top': '141px',
@@ -420,35 +377,15 @@ class BlockModule extends Module {
 					'margin-left': '144px',
 				},
 			} )
-			cy.adjust( 'Margins', [ 151, 152, 153, 154 ], {
-				viewport, unit: 'px', state: 'hover',
-			} ).assertComputedStyle( {
-				[ `${ MAIN_SELECTOR }:hover` ]: {
-					'margin-top': '151px',
-					'margin-right': '152px',
-					'margin-bottom': '153px',
-					'margin-left': '154px',
-				},
-			} )
 
 			cy.adjust( 'Margins', [ 67, 68, 69, 70 ], {
-				viewport, unit: '%', state: 'normal',
+				viewport, unit: '%',
 			} ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'margin-top': '67%',
 					'margin-right': '68%',
 					'margin-bottom': '69%',
 					'margin-left': '70%',
-				},
-			} )
-			cy.adjust( 'Margins', [ 77, 78, 79, 80 ], {
-				viewport, unit: '%', state: 'hover',
-			} ).assertComputedStyle( {
-				[ `${ MAIN_SELECTOR }:hover` ]: {
-					'margin-top': '77%',
-					'margin-right': '78%',
-					'margin-bottom': '79%',
-					'margin-left': '80%',
 				},
 			} )
 		}

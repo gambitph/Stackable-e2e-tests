@@ -3,13 +3,18 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
 	blockError,
 	addImage,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
@@ -77,5 +82,33 @@ function addImage() {
 						},
 					} )
 			} )
+	} )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/image' ).asBlock( 'imageBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/image', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-image',
+		alignmentSelector: '.stk-block-image',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@imageBlock' )
 	} )
 }
