@@ -34,8 +34,13 @@ export function assertBlockError() {
  * Command for adding a specific block in the inserter button.
  *
  * @param {string} blockName
+ * @param {Object} options
  */
-export function addBlock( blockName = 'ugb/accordion' ) {
+export function addBlock( blockName = 'ugb/accordion', options = {} ) {
+	const {
+		variation = '',
+	} = options
+
 	cy.wp().then( wp => {
 		return new Cypress.Promise( resolve => {
 			const block = wp.blocks.createBlock( blockName )
@@ -61,6 +66,12 @@ export function addBlock( blockName = 'ugb/accordion' ) {
 				} ) )
 		} )
 	} )
+	if ( variation ) {
+		cy.get( '.block-editor-block-list__block.is-selected' )
+			.find( '.block-editor-block-variation-picker' )
+			.find( `button[aria-label="${ variation }"]` )
+			.click( { force: true } )
+	}
 }
 
 /**
@@ -239,10 +250,15 @@ export function asBlock( subject, alias, options = {} ) {
  * Command for adding a new column.
  *
  * @param {*} subject
+ * @param {Object} options
  */
-export function addNewColumn( subject ) {
+export function addNewColumn( subject, options = {} ) {
+	const {
+		label = 'Add Button',
+	} = options
+
 	cy.wrap( subject )
 		.find( '.block-list-appender' )
-		.find( 'button[aria-label="Add Button"], button[aria-label="Add Column"]' )
+		.find( `button[aria-label="${ label }"], button[aria-label="Add Column"]` )
 		.click( { force: true } )
 }

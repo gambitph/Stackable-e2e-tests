@@ -24,6 +24,9 @@ export function adjustDynamicContentPopover( options = {} ) {
 		fieldOptions = {},
 	} = options
 
+	// Wait for resolvers to finish.
+	cy.waitLoader( '.components-spinner' )
+
 	const selectFromSuggestions = ( option, value = '' ) => {
 		cy
 			.get( '.stackable-dynamic-content__popover-content' )

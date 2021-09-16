@@ -3,7 +3,7 @@
  */
 import { range } from 'lodash'
 import { registerTests } from '~stackable-e2e/helpers'
-import { setupMatchPostFieldValues } from './helpers/index'
+import { setupMatchPostFieldValues } from './helpers/'
 
 describe( 'Dynamic Content - Latest Page', registerTests( [
 	matchPostData,

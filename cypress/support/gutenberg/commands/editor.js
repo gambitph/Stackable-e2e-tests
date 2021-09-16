@@ -25,6 +25,7 @@ Cypress.Commands.add( 'getPostData', getPostData )
 Cypress.Commands.add( 'addPostExcerpt', addPostExcerpt )
 Cypress.Commands.add( 'addPostSlug', addPostSlug )
 Cypress.Commands.add( 'editPostDiscussion', editPostDiscussion )
+Cypress.Commands.add( 'selectFromMediaLibrary', selectFromMediaLibrary )
 Cypress.Commands.add( 'addFeaturedImage', addFeaturedImage )
 Cypress.Commands.add( 'setSelection', { prevSubject: true }, setSelection )
 Cypress.Commands.add( 'selection', { prevSubject: true }, selection )
@@ -335,44 +336,46 @@ export function editPostDiscussion( options ) {
 }
 
 /**
+ * Command for selecting an image in the media library
+ *
+ * @param {number} image
+ */
+export function selectFromMediaLibrary( image = 1 ) {
+	const selector = () => cy
+		.get( '.media-modal-content' )
+
+	selector()
+		.find( '.media-frame-router' )
+		.contains( containsRegExp( 'Media Library' ) )
+		.click( { force: true } )
+
+	selector()
+		.find( 'ul.attachments li.attachment' )
+		.eq( image - 1 )
+		.click( { force: true } )
+
+	selector()
+		.find( 'button.media-button-select:contains(Set featured image), button.media-button-select:contains(Select)' )
+		.click( { force: true } )
+}
+
+/**
  * Command for adding a featured image to a post.
  */
 export function addFeaturedImage() {
-	cy.getPostUrls().then( ( { editorUrl } ) => {
-		// Save the current post as we're going to add an image to the server.
-		cy.savePost()
-		// Add one image to the media library for featured image selection.
-		cy.uploadMedia()
-		cy.visit( editorUrl )
-		cy.openSidebar( 'Settings' )
-		cy
-			.get( '.edit-post-sidebar__panel-tabs' )
-			.find( 'li:first-child button.edit-post-sidebar__panel-tab' )
-			.click( { force: true } )
-		cy.collapse( 'Featured image' )
-		cy
-			.get( '.editor-post-featured-image' )
-			.contains( containsRegExp( 'Set featured image' ) )
-			.click( { force: true } )
+	cy.openSidebar( 'Settings' )
+	cy
+		.get( '.edit-post-sidebar__panel-tabs' )
+		.find( 'li:first-child button.edit-post-sidebar__panel-tab' )
+		.click( { force: true } )
+	cy.collapse( 'Featured image' )
+	cy
+		.get( '.editor-post-featured-image' )
+		.contains( containsRegExp( 'Set featured image' ) )
+		.click( { force: true } )
 
-		const selector = () => cy
-			.get( '.media-modal-content' )
-
-		selector()
-			.find( '.media-frame-router' )
-			.contains( containsRegExp( 'Media Library' ) )
-			.click( { force: true } )
-
-		selector()
-			.find( 'ul.attachments li.attachment' )
-			.eq( 0 )
-			.click( { force: true } )
-
-		selector()
-			.find( 'button.media-button-select:contains(Set featured image)' )
-			.click( { force: true } )
-		cy.savePost()
-	} )
+	cy.selectFromMediaLibrary( 1 )
+	cy.savePost()
 }
 
 /**

@@ -16,10 +16,12 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 	if ( Cypress.env( 'STACKABLE_PREMIUM_CODE' ) && ! isStackableActivated ) {
 		cy.activateLicense()
 	}
-	if ( Cypress.env( 'STACKABLE_VERSION' ) === 2 ) {
-		// Enable optimization setting by default.
-		cy.loadFrontendJsCssFiles()
-	}
+
+	// TODO: Remove this after V3 Release.
+	// Enable optimization setting by default.
+	cy.loadFrontendJsCssFiles()
+	// Upload media to the server
+	cy.uploadMedia()
 } )
 
 function _activateLicense() {
