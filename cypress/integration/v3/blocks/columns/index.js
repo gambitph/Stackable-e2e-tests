@@ -38,7 +38,8 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/columns', { variation: 'Two columns; equal split' } ).asBlock( 'columnsBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/columns', { variation: 'Two columns; equal split' } )
+		cy.selectBlock( 'stackable/columns' ).asBlock( 'columnsBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/columns', 'Block' )
 	} )
 

@@ -71,7 +71,7 @@ function blockTab( viewport ) {
 		cy.newPage()
 		cy.addBlock( 'stackable/columns', { variation: 'Two columns; equal split' } )
 		cy.selectBlock( 'stackable/column', 0 ).asBlock( 'columnBlock', { isStatic: true } )
-		cy.openInspector( 'stackable/column', 'Block', '@columnBlock' )
+		cy.openInspector( 'stackable/column', 'Block', 0 )
 	} )
 
 	assertBlockTab( {

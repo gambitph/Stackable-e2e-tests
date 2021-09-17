@@ -80,6 +80,7 @@ class BlockModule extends Module {
 			if ( viewport === 'Desktop' ) {
 				cy.adjust( 'Inner Block Alignment', 'horizontal' )
 					.assertClassName( alignmentSelector, 'stk--block-orientation-horizontal' )
+				cy.resetStyle( 'Inner Block Alignment' )
 			}
 		}
 
@@ -89,14 +90,14 @@ class BlockModule extends Module {
 				cy.adjust( 'Inner Block Vertical Alignment', align, { viewport } )
 					.assertComputedStyle( {
 						'.block-editor-block-list__layout': {
-							'align-items': align,
+							'justify-content': align,
 						},
 					}, { assertFrontend: false } )
 
 				cy.adjust( 'Inner Block Vertical Alignment', align, { viewport } )
 					.assertComputedStyle( {
 						[ alignmentSelector ]: {
-							'align-items': align,
+							'justify-content': align,
 						},
 					}, { assertBackend: false } )
 			} )
@@ -271,6 +272,10 @@ class BlockModule extends Module {
 
 			// Additional control added when Max. Content Width is adjusted:
 			aligns.forEach( align => {
+				// Content Horizontal Align is conditionally rendered upon editing the Width
+				cy.adjust( 'Max. Content Width', 54, {
+					viewport, unit: '%',
+				} )
 				cy.adjust( 'Content Horizontal Align', align, { viewport } )
 					.assertComputedStyle( {
 						[ MAIN_SELECTOR ]: {
@@ -597,7 +602,7 @@ class BlockModule extends Module {
 				},
 				'.stk-separator__bottom': {
 					'z-index': '6',
-					'transform': 'scaleX(-1) scaleY(-1)',
+					'transform': 'scaleX(-1)',
 				},
 			} )
 		}

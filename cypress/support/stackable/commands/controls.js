@@ -38,6 +38,7 @@ Cypress.Commands.add( 'popoverControlReset', popoverControlReset )
 Cypress.Commands.add( 'focalPointControlReset', focalPointControlReset )
 Cypress.Commands.add( 'stkDateTimeControlReset', stkDateTimeControlReset )
 Cypress.Commands.add( 'imageControlReset', imageControlReset )
+Cypress.Commands.add( 'toolbarControlReset', toolbarControlReset )
 
 // Adjust styles
 Cypress.Commands.add( 'adjustLayout', adjustLayout )
@@ -160,6 +161,7 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 		 '.stk-advanced-focal-point-control': 'focalPointControlReset',
 		 '.stk-date-time-control__field': 'stkDateTimeControlReset',
 		 '.ugb-image-control': 'imageControlReset',
+		 '.ugb-advanced-toolbar-control': 'toolbarControlReset',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -827,6 +829,36 @@ function imageControl( name, value, options = {} ) {
  * @param {Object} options
  */
 function imageControlReset( name, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+		mainComponentSelector,
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} )
+
+	beforeAdjust( name, null, options )
+	selector()
+		.contains( containsRegExp( name ) )
+		.closest( '.components-panel__body>.components-base-control' )
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+		.click( { force: true } )
+}
+
+/**
+ * Command for resetting the toolbar control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function toolbarControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},

@@ -49,7 +49,8 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/image-box', { variation: 'Basic' } ).asBlock( 'imageBoxBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/image-box', { variation: 'Basic' } )
+		cy.selectBlock( 'stackable/image-box' ).asBlock( 'imageBoxBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/image-box', 'Block' )
 	} )
 
