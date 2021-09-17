@@ -466,11 +466,11 @@ class BlockModule extends Module {
 		viewport,
 	} ) {
 		if ( viewport === 'Desktop' ) {
-			cy.toggleStyle( 'Link' )
 			cy.adjust( 'Link / URL', 'https://wpstackable.com/' ).assertHtmlAttribute( '.stk-block-link', 'href', 'https://wpstackable.com/', { assertBackend: false } )
 			cy.adjust( 'Open in new tab', true ).assertHtmlAttribute( '.stk-block-link', 'rel', /noreferrer noopener/, { assertBackend: false } )
 			cy.adjust( 'Link rel', 'sponsored ugc' ).assertHtmlAttribute( '.stk-block-link', 'rel', /sponsored ugc/, { assertBackend: false } )
 		}
+		cy.savePost()
 	}
 
 	assertTopSeparator( {
