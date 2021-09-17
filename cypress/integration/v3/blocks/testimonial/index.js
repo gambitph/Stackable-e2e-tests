@@ -3,15 +3,20 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
 	blockError,
 	innerBlocks,
 	innerBlocksExist,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
@@ -42,4 +47,35 @@ function innerBlocksExist() {
 		'.stk-block-subtitle',
 		'.stk-block-text',
 	] ) )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+		'Link',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/testimonial' ).asBlock( 'testimonialBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/testimonial', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-testimonial',
+		alignmentSelector: '.stk-block-testimonial > .stk-inner-blocks',
+		enableColumnAlignment: false,
+		enableInnerBlockVerticalAlignment: false,
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@testimonialBlock' )
+	} )
 }

@@ -3,8 +3,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -12,6 +14,9 @@ export {
 	typeContent,
 	pressEnterKey,
 	addBlocks,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
@@ -73,5 +78,36 @@ function addBlocks() {
 			.first()
 			.click( { force: true } )
 		cy.get( '.stk-block-feature-grid' ).should( 'exist' )
+	} )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/text' ).asBlock( 'textBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/text', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-text',
+		alignmentSelector: '.stk-block-text__text',
+		enableColumnAlignment: false,
+		enableInnerBlockAlignment: false,
+		enableInnerBlockVerticalAlignment: false,
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@textBlock' )
 	} )
 }
