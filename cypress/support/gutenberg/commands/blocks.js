@@ -41,6 +41,30 @@ export function addBlock( blockName = 'ugb/accordion', options = {} ) {
 		variation = '',
 	} = options
 
+	let clientIdCache
+	const addInnerBlockClasses = clientId => {
+		cy.wp().then( wp => {
+			if ( ! clientId ) {
+				clientId = clientIdCache
+			}
+
+			// If there are innerBlocks, add unique classes.
+			const newlyAddedBlock = wp.data.select( 'core/block-editor' ).getBlock( clientId )
+
+			if ( newlyAddedBlock.innerBlocks.length ) {
+				newlyAddedBlock.innerBlocks.forEach( ( { clientId } ) => {
+					const innerBlockClassName = wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes.className
+					// TODO: Use updateBlockAttributes to update multiple blocks if gutenberg supports it already.
+					// Only append the e2e className if there is a default value.
+					wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `${ innerBlockClassName ? innerBlockClassName + ' ' : '' }e2etest-block-${ uniqueId() }` } )
+				} )
+			}
+
+			clientIdCache = clientId
+			return newlyAddedBlock
+		} )
+	}
+
 	cy.wp().then( wp => {
 		return new Cypress.Promise( resolve => {
 			const block = wp.blocks.createBlock( blockName )
@@ -49,28 +73,19 @@ export function addBlock( blockName = 'ugb/accordion', options = {} ) {
 					const className = wp.data.select( 'core/block-editor' ).getBlock( block.clientId ).attributes.className
 					// Only append the e2e className if there is a default value.
 					wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { className: `${ className ? className + ' ' : '' }e2etest-block-${ uniqueId() }` } )
-
-					// If there are innerBlocks, add unique classes.
-					const newlyAddedBlock = wp.data.select( 'core/block-editor' ).getBlock( block.clientId )
-
-					if ( newlyAddedBlock.innerBlocks.length ) {
-						newlyAddedBlock.innerBlocks.forEach( ( { clientId } ) => {
-							const innerBlockClassName = wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes.className
-							// TODO: Use updateBlockAttributes to update multiple blocks if gutenberg supports it already.
-							// Only append the e2e className if there is a default value.
-							wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `${ innerBlockClassName ? innerBlockClassName + ' ' : '' }e2etest-block-${ uniqueId() }` } )
-						} )
-					}
-
-					resolve( newlyAddedBlock )
 				} ) )
+
+			resolve( addInnerBlockClasses( block.clientId ) )
 		} )
 	} )
+
 	if ( variation ) {
 		cy.get( '.block-editor-block-list__block.is-selected' )
 			.find( '.block-editor-block-variation-picker' )
 			.find( `button[aria-label="${ variation }"]` )
 			.click( { force: true } )
+
+		addInnerBlockClasses()
 	}
 }
 
