@@ -66,7 +66,7 @@ function pressBackspace() {
 		cy.get( '.block-editor-block-list__block.is-selected' ).invoke( 'attr', 'data-type' ).then( block => {
 			assert.isTrue(
 				block === 'stackable/card',
-				`Expected that the text block is deleted and focus is on 'stackable/card'. Found: '${ block }'`
+				`Expected that the block is deleted and focus is on 'stackable/card'. Found: '${ block }'`
 			)
 		} )
 	} )
