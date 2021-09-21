@@ -31,6 +31,7 @@ jobs:
     - name: Install dependencies
       working-directory: pro__premium_only
       run: |
+        composer require roots/wordpress:${{ matrix.wp-versions }} --dev
         composer install --prefer-dist --no-progress
 
     - name: Cache node modules
