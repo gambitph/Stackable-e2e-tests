@@ -164,6 +164,12 @@ export const assertBlockBackground = ( selector, options = {}, assertOptions = {
 				viewport,
 				value: 'bottom left',
 			},
+		} ).assertComputedStyle( {
+			[ selector ]: {
+				'background-position': '0% 100%',
+			},
+		}, assertOptions )
+		cy.adjust( 'Adv. Background Image Settings', {
 			'Image Repeat': {
 				viewport,
 				value: 'repeat-x',
@@ -179,7 +185,6 @@ export const assertBlockBackground = ( selector, options = {}, assertOptions = {
 			},
 		} ).assertComputedStyle( {
 			[ selector ]: {
-				'background-position': '100% 0%',
 				'background-repeat': 'repeat-x',
 				'background-size': '19%',
 			},
