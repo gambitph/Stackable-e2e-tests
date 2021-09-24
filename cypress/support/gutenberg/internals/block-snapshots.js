@@ -68,12 +68,11 @@ function createContentSnapshot( alias ) {
  * @param {string} alias
  * @param {Object} style
  * @param {string} viewport
- * @param {boolean} isHoverState
  */
-function stubStyles( alias, style, viewport, isHoverState ) {
+function stubStyles( alias, style, viewport ) {
 	cy.get( `@${ alias }.stubbedStyles` ).then( $stubbedStyles => {
 		$stubbedStyles.push( {
-			style, viewport, isHoverState,
+			style, viewport,
 		} )
 		cy.wrap( $stubbedStyles ).as( `${ alias }.stubbedStyles` )
 	} )
@@ -99,7 +98,7 @@ export function blockSnapshotsAssertComputedStyle( originalFn, ...args ) {
 				const optionsToPass = cloneDeep( options )
 				optionsToPass.assertFrontend = false
 				if ( options.assertFrontend === undefined || ( isBoolean( options.assertFrontend ) && options.assertFrontend ) ) {
-					stubStyles( alias, passedArgs[ 1 ], options.viewportFrontend || viewport, options.isHoverState )
+					stubStyles( alias, passedArgs[ 1 ], options.viewportFrontend || viewport )
 					createContentSnapshot( alias )
 				}
 				originalFn( ...[ ...passedArgs, optionsToPass ] )

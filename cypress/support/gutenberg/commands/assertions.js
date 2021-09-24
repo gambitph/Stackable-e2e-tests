@@ -180,9 +180,6 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 		afterFrontendAssert = () => {},
 		afterBackendAssert = () => {},
 		activePanel = '',
-		// Used when the hover state of a pseudo element is being asserted.
-		// We can't use `<selector>:before:hover` on _assertComputedStyle
-		isHoverState = false,
 	} = options
 
 	cy.savePost()
@@ -209,8 +206,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 						selector.length === 2 && last( selector ),
 						cssObject[ _selector ],
 						'Editor',
-						previewMode,
-						isHoverState
+						previewMode
 					)
 				} )
 				afterBackendAssert()
@@ -261,8 +257,7 @@ export function assertComputedStyle( subject, cssObject = {}, options = {} ) {
 							selector.length === 2 && last( selector ),
 							cssObject[ _selector ],
 							'Frontend',
-							previewMode,
-							isHoverState
+							previewMode
 						)
 					} )
 
@@ -606,7 +601,6 @@ export function assertFrontendStyles( subject, alias ) {
 						htmlContent,
 						viewport: $stubbedStyles[ index ].viewport,
 						style: $stubbedStyles[ index ].style,
-						isHoverState: $stubbedStyles[ index ].isHoverState,
 					}
 				} )
 
@@ -620,7 +614,7 @@ export function assertFrontendStyles( subject, alias ) {
 					combinedStubbed.forEach( combinedStubbedContent => {
 						cy.document().then( doc => {
 							const {
-								viewport, htmlContent, style, isParent, innerBlockUniqueClass, isHoverState,
+								viewport, htmlContent, style, isParent, innerBlockUniqueClass,
 							} = combinedStubbedContent
 
 							// Create a DOMElement based on the HTML string.
@@ -648,7 +642,6 @@ export function assertFrontendStyles( subject, alias ) {
 							// Append the stubbed block in .entry-content
 							doc.querySelector( '.entry-content' ).appendChild( blockElement )
 
-							// .stk-button before:hover
 							keys( style ).forEach( _selector => {
 								let selector = _selector.split( ':' )
 								if ( selector.length > 2 ) {
@@ -671,8 +664,7 @@ export function assertFrontendStyles( subject, alias ) {
 									selector.length === 2 && last( selector ),
 									style[ _selector ],
 									'Frontend',
-									viewport,
-									isHoverState
+									viewport
 								)
 							} )
 

@@ -84,7 +84,11 @@ function addImage() {
 
 const assertBlockTab = Block
 	.includes( [
+		'Alignment',
 		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+		'Link',
 	] )
 	.run
 
