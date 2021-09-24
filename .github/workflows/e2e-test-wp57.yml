@@ -13,6 +13,7 @@ jobs:
       matrix:
         containers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
         total-machines: [20]
+        wp-versions: '5.7.2'
 
     steps:
     - uses: actions/checkout@v2 # Checkout the current branch (e2e).
@@ -85,7 +86,7 @@ jobs:
     # Install all dependencies from composer.json
     - name: Install WordPress Version
       run: |
-        composer require roots/wordpress:5.7.2 --dev
+        composer require roots/wordpress:${{ matrix.wp-versions }} --dev
 
     - name: Run WordPress Environment
       run: wp-env start

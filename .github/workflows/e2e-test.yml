@@ -42,16 +42,16 @@ jobs:
     - name: Install dependencies
       working-directory: Stackable
       run: |
-        composer require wp-phpunit/wp-phpunit:${{ matrix.wp-versions }} --dev
-        composer require roots/wordpress:${{ matrix.wp-versions }} --dev
+        composer require wp-phpunit/wp-phpunit --dev
+        composer require roots/wordpress --dev
         composer install --prefer-dist --no-progress
 
     # Install all dependencies from composer.json
     - name: Install dependencies in premium
       working-directory: Stackable/pro__premium_only
       run: |
-        composer require wp-phpunit/wp-phpunit:${{ matrix.wp-versions }} --dev
-        composer require roots/wordpress:${{ matrix.wp-versions }} --dev
+        composer require wp-phpunit/wp-phpunit --dev
+        composer require roots/wordpress --dev
         composer install --prefer-dist --no-progress
 
     - name: Cache node modules
