@@ -49,6 +49,7 @@ function blockTab( viewport ) {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'stackable/subtitle' ).asBlock( 'subtitleBlock', { isStatic: true } )
+		cy.typeBlock( 'stackable/subtitle', '.stk-block-subtitle__text', 'Subtitle', 0 )
 		cy.openInspector( 'stackable/subtitle', 'Block' )
 	} )
 
