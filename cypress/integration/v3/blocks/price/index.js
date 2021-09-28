@@ -53,7 +53,8 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/price' ).asBlock( 'priceBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/price' )
+		cy.selectBlock( 'stackable/price' ).asBlock( 'priceBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/price', 'Block' )
 	} )
 

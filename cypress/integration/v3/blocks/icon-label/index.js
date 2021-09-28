@@ -45,7 +45,8 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/icon-label' ).asBlock( 'iconLabelBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/icon-label' )
+		cy.selectBlock( 'stackable/icon-label' ).asBlock( 'iconLabelBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/icon-label', 'Block' )
 	} )
 

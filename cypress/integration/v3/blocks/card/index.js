@@ -96,7 +96,8 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/card' ).asBlock( 'cardBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/card' )
+		cy.selectBlock( 'stackable/card' ).asBlock( 'cardBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/card', 'Block' )
 	} )
 

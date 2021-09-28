@@ -67,7 +67,8 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/button-group' ).asBlock( 'buttonGroupBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/button-group' )
+		cy.selectBlock( 'stackable/button-group' ).asBlock( 'buttonGroupBlock', { isStatic: true } )
 		cy.typeBlock( 'stackable/button', '.stk-button__inner-text', 'Button', 0 )
 		cy.openInspector( 'stackable/button-group', 'Block' )
 	} )

@@ -65,7 +65,8 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/call-to-action' ).asBlock( 'callToActionBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/call-to-action' )
+		cy.selectBlock( 'stackable/call-to-action' ).asBlock( 'callToActionBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/call-to-action', 'Block' )
 	} )
 

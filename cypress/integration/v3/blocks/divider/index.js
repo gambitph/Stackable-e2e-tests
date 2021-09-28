@@ -36,7 +36,8 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/divider' ).asBlock( 'dividerBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/divider' )
+		cy.selectBlock( 'stackable/divider' ).asBlock( 'dividerBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/divider', 'Block' )
 	} )
 

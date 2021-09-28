@@ -68,7 +68,8 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/accordion' )
+		cy.selectBlock( 'stackable/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/accordion', 'Block' )
 	} )
 

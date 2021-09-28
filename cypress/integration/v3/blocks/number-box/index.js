@@ -49,7 +49,8 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/number-box' ).asBlock( 'numberBoxBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/number-box' )
+		cy.selectBlock( 'stackable/number-box' ).asBlock( 'numberBoxBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/number-box', 'Block' )
 	} )
 

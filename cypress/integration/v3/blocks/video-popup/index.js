@@ -50,7 +50,8 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/video-popup' ).asBlock( 'videoPopupBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/video-popup' )
+		cy.selectBlock( 'stackable/video-popup' ).asBlock( 'videoPopupBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/video-popup', 'Block' )
 	} )
 

@@ -48,7 +48,8 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/team-member' ).asBlock( 'teamMemberBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/team-member' )
+		cy.selectBlock( 'stackable/team-member' ).asBlock( 'teamMemberBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/team-member', 'Block' )
 	} )
 
