@@ -17,9 +17,6 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 		cy.activateLicense()
 	}
 
-	// TODO: Remove this after V3 Release.
-	// Enable optimization setting by default.
-	cy.loadFrontendJsCssFiles()
 	// Upload media to the server
 	cy.uploadMedia()
 } )
