@@ -13,6 +13,7 @@ jobs:
       matrix:
         containers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
         total-machines: [20]
+        wp-versions: ['5.6.4']
 
     steps:
     - uses: actions/checkout@v2 # Checkout the current branch (e2e).
@@ -28,6 +29,30 @@ jobs:
         path: 'Stackable/pro__premium_only'
         token: '${{ secrets.ACCESS_KEY }}'
 
+    # Change the PHP version to v7.4.1
+    - name: Setup PHP v7.4.1
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4.1'
+
+    # Check the current PHP version installed
+    - name: Check PHP version
+      run: php -v
+      
+    # Install all dependencies from composer.json
+    - name: Install dependencies
+      working-directory: Stackable
+      run: |
+        composer require wp-phpunit/wp-phpunit:${{ matrix.wp-versions }} --dev
+        composer require roots/wordpress:${{ matrix.wp-versions }} --dev
+        composer install --prefer-dist --no-progress
+    # Install all dependencies from composer.json
+    - name: Install dependencies in premium
+      working-directory: Stackable/pro__premium_only
+      run: |
+        composer require wp-phpunit/wp-phpunit:${{ matrix.wp-versions }} --dev
+        composer require roots/wordpress:${{ matrix.wp-versions }} --dev
+        composer install --prefer-dist --no-progress
     - name: Cache node modules
       uses: actions/cache@v2
       env:
@@ -39,7 +64,6 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-
     - name: Setup Node
       uses: actions/setup-node@v1
       with:
@@ -55,19 +79,17 @@ jobs:
         cd pro__premium_only
         npm ci
         npm run build --if-present
-
     # Install all dependencies from composer.json
     - name: Install WordPress Version
       run: |
-        composer require roots/wordpress:5.6.4 --dev
-
+        composer require roots/wordpress:${{ matrix.wp-versions }} --dev
     - name: Run WordPress Environment
       run: wp-env start
 
     - name: Run Test Suite
       uses: cypress-io/github-action@v2
       with:
-        command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec=cypress/integration/v2/**/*.spec.js --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=1 --config=baseUrl=http://localhost:8889
+        command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec=cypress/integration/v3/**/*.spec.js --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=1 --config=baseUrl=http://localhost:8889
 
     - name: Upload E2E Test Results
       uses: actions/upload-artifact@v2
@@ -79,7 +101,6 @@ jobs:
     name: Publish E2E Test Results
     needs: test
     runs-on: ubuntu-latest
-    if: success() || failure()
 
     steps:
     - name: Download Artifacts
@@ -89,7 +110,6 @@ jobs:
 
     - name: Publish E2E Test Results
       uses: EnricoMi/publish-unit-test-result-action@v1
-      if: always()
       with:
         files: artifacts/**/*.xml
         check_name: E2E Test Results
