@@ -22,6 +22,7 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 		cy.activateLicense()
 	}
 
+	// TODO: Remove this when version is released.
 	// Turn on Load Version 2 blocks in the editor
 	const selectCheckbox = () => cy
 		.get( 'article[id="other-settings"]' )
@@ -34,6 +35,8 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 			selectCheckbox().find( 'input.components-checkbox-control__input' ).click( { force: true } )
 		}
 	} )
+	// Activate optimization setting for version 2
+	cy.loadFrontendJsCssFiles()
 
 	// Upload media to the server
 	cy.uploadMedia()
