@@ -269,15 +269,33 @@ class BlockModule extends Module {
 			} )
 
 			// Additional control added when Max. Content Width is adjusted:
-			aligns.forEach( align => {
+			const contentHorizontalValues = [
+				{
+					align: 'flex-start',
+					right: 'auto',
+					left: '0px',
+				},
+				{
+					align: 'center',
+					right: 'auto',
+					left: 'auto',
+				},
+				{
+					align: 'flex-end',
+					right: '0px',
+					left: 'auto',
+				},
+			]
+			contentHorizontalValues.forEach( value => {
 				// Content Horizontal Align is conditionally rendered upon editing the Width
 				cy.adjust( 'Max. Content Width', 54, {
 					viewport, unit: '%',
 				} )
-				cy.adjust( 'Content Horizontal Align', align, { viewport } )
+				cy.adjust( 'Content Horizontal Align', value.align, { viewport } )
 					.assertComputedStyle( {
 						[ MAIN_SELECTOR ]: {
-							'justify-content': align,
+							'margin-right': value.right,
+							'margin-left': value.left,
 						},
 					} )
 			} )
@@ -370,6 +388,8 @@ class BlockModule extends Module {
 		}
 
 		if ( enableMargins ) {
+			// Reset the Content Horizontal Align before changing the Margins to avoid style conflict.
+			cy.resetStyle( 'Content Horizontal Align', { viewport } )
 			cy.adjust( 'Margins', [ 141, 142, 143, 144 ], {
 				viewport, unit: 'px',
 			} ).assertComputedStyle( {
