@@ -52,7 +52,6 @@ function resizeHeight() {
 const assertBlockTab = Block
 	.includes( [
 		'Background',
-		'Size & Spacing',
 		'Borders & Shadows',
 	] )
 	.run
