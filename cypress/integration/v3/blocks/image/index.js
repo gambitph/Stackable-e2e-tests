@@ -47,19 +47,23 @@ function addImage() {
 				cy.adjust( 'Width', 78, {
 					unit: '%',
 					parentSelector: '.stk-resizer-popup__control-wrapper',
-				} )
+				} ).assertHtmlAttribute( 'img.stk-img', 'width', '78', { assertFrontend: false } )
+
 				cy.adjust( 'Height', 390, {
 					unit: 'px',
 					parentSelector: '.stk-resizer-popup__control-wrapper',
-				} )
-				cy.selectBlock( 'stackable/image' )
-					.assertComputedStyle( {
-						'img.stk-img': {
-							'height': '390px',
-							'width': '78%',
-						},
-					} )
+				} ).assertHtmlAttribute( 'img.stk-img', 'height', '390', { assertFrontend: false } )
+
+				cy.selectBlock( 'stackable/image' ).assertComputedStyle( {
+					'.stk-img-wrapper': {
+						'width': '78%',
+						'height': '390px',
+					},
+				}, { assertBackend: false } )
 			} )
+
+		cy.savePost()
+		cy.reload()
 
 		// Test the other units.
 		cy.get( '.stk-img-wrapper' ).realHover()
@@ -70,18 +74,19 @@ function addImage() {
 				cy.adjust( 'Width', 548, {
 					unit: 'px',
 					parentSelector: '.stk-resizer-popup__control-wrapper',
-				} )
+				} ).assertHtmlAttribute( 'img.stk-img', 'width', '548', { assertFrontend: false } )
+
 				cy.adjust( 'Height', 51, {
 					unit: 'vh',
 					parentSelector: '.stk-resizer-popup__control-wrapper',
-				} )
-				cy.selectBlock( 'stackable/image' )
-					.assertComputedStyle( {
-						'img.stk-img': {
-							'height': '51vh',
-							'width': '548px',
-						},
-					} )
+				} ).assertHtmlAttribute( 'img.stk-img', 'height', '51', { assertFrontend: false } )
+
+				cy.selectBlock( 'stackable/image' ).assertComputedStyle( {
+					'.stk-img-wrapper': {
+						'width': '548px',
+						'height': '51vh',
+					},
+				}, { assertBackend: false } )
 			} )
 	} )
 }
