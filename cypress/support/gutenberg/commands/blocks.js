@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	first, uniqueId,
+	first, uniqueId, last,
 } from 'lodash'
 
 /**
@@ -44,8 +44,13 @@ export function addBlock( blockName = 'ugb/accordion', options = {} ) {
 	let clientIdCache
 	const addInnerBlockClasses = clientId => {
 		cy.wp().then( wp => {
-			if ( ! clientId ) {
+			if ( ! clientId && clientIdCache ) {
 				clientId = clientIdCache
+			}
+
+			if ( ! clientId ) {
+				const lastBlock = last( wp.data.select( 'core/block-editor' ).getBlocks() )
+				clientId = lastBlock ? lastBlock.clientId : clientId
 			}
 
 			// If there are innerBlocks, add unique classes.
@@ -73,9 +78,9 @@ export function addBlock( blockName = 'ugb/accordion', options = {} ) {
 					const className = wp.data.select( 'core/block-editor' ).getBlock( block.clientId ).attributes.className
 					// Only append the e2e className if there is a default value.
 					wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { className: `${ className ? className + ' ' : '' }e2etest-block-${ uniqueId() }` } )
-				} ) )
 
-			resolve( addInnerBlockClasses( block.clientId ) )
+					resolve( addInnerBlockClasses( block.clientId ) )
+				} ) )
 		} )
 	} )
 
