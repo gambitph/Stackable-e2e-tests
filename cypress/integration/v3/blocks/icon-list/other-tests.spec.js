@@ -10,12 +10,10 @@ import {
 	blockExist,
 	blockError,
 	typeContent,
-	indentList,
 } from '.'
 
 describe( 'Icon List Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	typeContent,
-	indentList,
 ] ) )

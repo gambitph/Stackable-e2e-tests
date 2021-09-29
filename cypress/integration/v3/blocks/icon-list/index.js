@@ -10,7 +10,6 @@ export {
 	blockExist,
 	blockError,
 	typeContent,
-	indentList,
 }
 
 function blockExist() {
@@ -37,27 +36,30 @@ function typeContent() {
 	} )
 }
 
-function indentList() {
-	it( 'should allow indenting and outdenting the list item', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/icon-list' )
-		cy.typeBlock( 'stackable/icon-list', '.stk-block-icon-list ul', 'August', 0 )
-		cy.get( '.stk-block-icon-list' ).find( 'ul[role="textbox"]' ).type( '{enter}', { force: true } )
-			.type( 'September', { force: true } )
-		cy.adjustToolbar( 'Indent' )
-		cy.get( '.stk-block-icon-list' ).contains( 'August' ).find( 'ul li' ).invoke( 'text' ).then( item => {
-			assert.isTrue(
-				item === 'September',
-				'Expected list item 2 to be indented'
-			)
-		} )
-		cy.adjustToolbar( 'Outdent' )
-		cy.get( '.stk-block-icon-list ul > li' ).eq( 1 ).invoke( 'text' ).then( item => {
-			assert.isTrue(
-				item === 'September',
-				'Expected list item 2 to be outdented'
-			)
-		} )
-	} )
-}
+// TODO: Temporarily commenting this out as we're experiencing issues.
+// Uncomment when feature is readded to v3 Icon List block
+//
+// function indentList() {
+// 	it( 'should allow indenting and outdenting the list item', () => {
+// 		cy.setupWP()
+// 		cy.newPage()
+// 		cy.addBlock( 'stackable/icon-list' )
+// 		cy.typeBlock( 'stackable/icon-list', '.stk-block-icon-list ul', 'August', 0 )
+// 		cy.get( '.stk-block-icon-list' ).find( 'ul[role="textbox"]' ).type( '{enter}', { force: true } )
+// 			.type( 'September', { force: true } )
+// 		cy.adjustToolbar( 'Indent' )
+// 		cy.get( '.stk-block-icon-list' ).contains( 'August' ).find( 'ul li' ).invoke( 'text' ).then( item => {
+// 			assert.isTrue(
+// 				item === 'September',
+// 				'Expected list item 2 to be indented'
+// 			)
+// 		} )
+// 		cy.adjustToolbar( 'Outdent' )
+// 		cy.get( '.stk-block-icon-list ul > li' ).eq( 1 ).invoke( 'text' ).then( item => {
+// 			assert.isTrue(
+// 				item === 'September',
+// 				'Expected list item 2 to be outdented'
+// 			)
+// 		} )
+// 	} )
+// }
