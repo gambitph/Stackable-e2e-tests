@@ -6,7 +6,6 @@ export default [
 	'stackable/call-to-action',
 	'stackable/card',
 	'stackable/columns',
-	'stackable/container',
 	'stackable/count-up',
 	'stackable/divider',
 	'stackable/expand',
