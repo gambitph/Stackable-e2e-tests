@@ -319,12 +319,7 @@ export function globalColorNativeBlocks() {
 
 		const isWpLessThan58 = compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' )
 
-		const isWpEqual55 = compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.6.0', '<' )
-		// For WP 5.5, the separator selector is different.
-		const separatorSelector = isWpEqual55 ? '.wp-block-separator' : ''
-
 		nativeBlocks
-			.filter( blockName => isWpEqual55 ? blockName !== 'core/list' : blockName )
 			.forEach( blockName => {
 				cy.selectBlock( `${ blockName === 'core/buttons' ? 'core/button' : blockName }` )
 				cy.openSidebar( 'Settings' )
@@ -339,9 +334,7 @@ export function globalColorNativeBlocks() {
 						.assertComputedStyle( {
 							[ `${ blockName === 'core/buttons'
 								? '.wp-block-button__link'
-								: blockName === 'core/separator'
-									? separatorSelector
-									: ''
+								: ''
 							}` ]: {
 								'color': val.color,
 							},
