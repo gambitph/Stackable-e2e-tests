@@ -127,8 +127,7 @@ function globalSettingTest() {
 		]
 
 		const globalCssSelectors = [
-			'#ugb-style-global-colors-inline-css',
-			'#ugb-style-global-typography-inline-css',
+			'#ugb-style-css-nodep-inline-css',
 		]
 
 		// Optimization is enabled by default upon calling setupWP
