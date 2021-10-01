@@ -210,6 +210,7 @@ class BlockModule extends Module {
 		enableMaxContentWidth = true,
 		enablePaddings = true,
 		enableMargins = true,
+		contentVerticalAlignStyle = 'align-items',
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 		const aligns = [ 'flex-start', 'center', 'flex-end' ]
@@ -239,7 +240,7 @@ class BlockModule extends Module {
 				cy.adjust( 'Content Vertical Align', align, { viewport } )
 					.assertComputedStyle( {
 						[ MAIN_SELECTOR ]: {
-							'align-items': align,
+							[ contentVerticalAlignStyle ]: align,
 						},
 					} )
 			} )

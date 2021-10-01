@@ -83,6 +83,7 @@ function blockTab( viewport ) {
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
 		enableInnerBlockVerticalAlignment: false,
+		contentVerticalAlignStyle: 'justify-content',
 	} )
 
 	afterEach( () => {
