@@ -53,17 +53,12 @@ class BlockModule extends Module {
 				cy.get( MAIN_SELECTOR ).invoke( 'attr', 'data-block-id' ).then( blockId => {
 					cy.get( '.block-editor-block-list__block.is-selected' ).then( $block => {
 						if ( $block.find( `.stk--block-align-${ blockId }` ).length ) {
-							// If the block alignment classname is present, separate the assertion for backend and frontend
-							cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-								[ `.stk--block-align-${ blockId } > .block-editor-inner-blocks > .block-editor-block-list__layout` ]: {
-									'align-items': align,
-								},
-							}, { assertFrontend: false } )
+							// The block alignment classname is present
 							cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 								[ `.stk--block-align-${ blockId }` ]: {
 									'align-items': align,
 								},
-							}, { assertBackend: false } )
+							} )
 							return
 						}
 						cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
@@ -89,10 +84,12 @@ class BlockModule extends Module {
 			verticalAligns.forEach( align => {
 				cy.adjust( 'Inner Block Vertical Alignment', align, { viewport } )
 					.assertComputedStyle( {
-						'.block-editor-block-list__layout': {
+						[ alignmentSelector ]: {
 							'justify-content': align,
 						},
 					}, { assertFrontend: false } )
+
+				cy.resetStyle( 'Inner Block Vertical Alignment', { viewport } )
 
 				cy.adjust( 'Inner Block Vertical Alignment', align, { viewport } )
 					.assertComputedStyle( {
