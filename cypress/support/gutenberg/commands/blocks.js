@@ -21,6 +21,7 @@ Cypress.Commands.add( 'typeBlock', typeBlock )
 Cypress.Commands.add( 'deleteBlock', deleteBlock )
 Cypress.Commands.add( 'addInnerBlock', addInnerBlock )
 Cypress.Commands.add( 'asBlock', { prevSubject: true }, asBlock )
+Cypress.Commands.add( 'addNewColumn', { prevSubject: true }, addNewColumn )
 
 /**
  * Command for asserting block error.
@@ -33,18 +34,31 @@ export function assertBlockError() {
  * Command for adding a specific block in the inserter button.
  *
  * @param {string} blockName
+ * @param {Object} options
  */
-export function addBlock( blockName = 'ugb/accordion' ) {
+export function addBlock( blockName = 'ugb/accordion', options = {} ) {
+	const {
+		variation = '',
+	} = options
+
 	cy.wp().then( wp => {
 		return new Cypress.Promise( resolve => {
-			const block = wp.blocks.createBlock( blockName, { className: `e2etest-block-${ uniqueId() }` } )
+			const block = wp.blocks.createBlock( blockName )
 			wp.data.dispatch( 'core/editor' ).insertBlock( block )
 				.then( dispatchResolver( () => {
-				  // If there are innerBlocks, add unique classes.
+					const className = wp.data.select( 'core/block-editor' ).getBlock( block.clientId ).attributes.className
+					// Only append the e2e className if there is a default value.
+					wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { className: `${ className ? className + ' ' : '' }e2etest-block-${ uniqueId() }` } )
+
+					// If there are innerBlocks, add unique classes.
 					const newlyAddedBlock = wp.data.select( 'core/block-editor' ).getBlock( block.clientId )
+
 					if ( newlyAddedBlock.innerBlocks.length ) {
 						newlyAddedBlock.innerBlocks.forEach( ( { clientId } ) => {
-							wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `e2etest-block-${ uniqueId() }` } )
+							const innerBlockClassName = wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes.className
+							// TODO: Use updateBlockAttributes to update multiple blocks if gutenberg supports it already.
+							// Only append the e2e className if there is a default value.
+							wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `${ innerBlockClassName ? innerBlockClassName + ' ' : '' }e2etest-block-${ uniqueId() }` } )
 						} )
 					}
 
@@ -52,6 +66,12 @@ export function addBlock( blockName = 'ugb/accordion' ) {
 				} ) )
 		} )
 	} )
+	if ( variation ) {
+		cy.get( '.block-editor-block-list__block.is-selected' )
+			.find( '.block-editor-block-variation-picker' )
+			.find( `button[aria-label="${ variation }"]` )
+			.click( { force: true } )
+	}
 }
 
 /**
@@ -123,8 +143,9 @@ export function selectBlock( subject, selector ) {
  * @param {string} contentSelector
  * @param {string} content
  * @param {string | number | Object} customSelector
+ * @param {Object} options
  */
-export function typeBlock( subject, contentSelector = '', content = '', customSelector = '' ) {
+export function typeBlock( subject, contentSelector = '', content = '', customSelector = '', options ) {
 	( contentSelector
 		? cy.selectBlock( subject, customSelector ).find( contentSelector )
 		: cy.selectBlock( subject, customSelector )
@@ -132,6 +153,12 @@ export function typeBlock( subject, contentSelector = '', content = '', customSe
 		.first()
 		.click( { force: true } )
 		.type( `{selectall}${ content }`, { force: true } )
+
+	const {
+		delay = 0,
+	} = options
+
+	cy.wait( delay )
 
 	if ( content[ 0 ] !== '/' ) {
 		cy.selectBlock( subject, customSelector )
@@ -219,3 +246,19 @@ export function asBlock( subject, alias, options = {} ) {
 	} )
 }
 
+/**
+ * Command for adding a new column.
+ *
+ * @param {*} subject
+ * @param {Object} options
+ */
+export function addNewColumn( subject, options = {} ) {
+	const {
+		label = 'Add Button',
+	} = options
+
+	cy.wrap( subject )
+		.find( '.block-list-appender' )
+		.find( `button[aria-label="${ label }"], button[aria-label="Add Column"]` )
+		.click( { force: true } )
+}

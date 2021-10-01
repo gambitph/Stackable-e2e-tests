@@ -65,7 +65,7 @@ function adjustFieldOptions() {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'core/paragraph' )
-		cy.typeBlock( 'core/paragraph', '', 'Excerpt content here. Lorem ipsum dolor sit amet.' )
+		cy.typeBlock( 'core/paragraph', '', 'Excerpt content here. Lorem ipsum dolor sit amet.', 0 )
 		// Adjusting Post Title
 		cy.typePostTitle( 'Latest Page 1' )
 		cy.addBlock( 'ugb/cta' )

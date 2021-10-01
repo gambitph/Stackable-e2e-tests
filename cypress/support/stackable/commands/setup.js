@@ -18,6 +18,8 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 	}
 	// Enable optimization setting by default.
 	cy.loadFrontendJsCssFiles()
+	// Upload media to the server
+	cy.uploadMedia()
 } )
 
 function _activateLicense() {
