@@ -20,13 +20,13 @@ function addInnerBlocksToQueryLoop() {
 
 		stkBlocks.forEach( blockName => {
 			cy.addInnerBlock( 'core/query', blockName )
-			cy.savePost()
+			cy.publish()
+			// This should not cause block error
 			cy.reload()
 			cy.deleteBlock( blockName )
-			cy.savePost()
+			cy.publish()
+			// This should not cause block error
 			cy.reload()
 		} )
-
-		// TODO refactor / add more
 	} )
 }
