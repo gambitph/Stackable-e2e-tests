@@ -197,6 +197,13 @@ export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/ac
 			const selectedBlockClientId = wp.data.select( 'core/block-editor' ).getSelectedBlockClientId()
 			const newBlock = wp.blocks.createBlock( blockToAdd, { className: `e2etest-block-${ uniqueId() }` } )
 			wp.data.dispatch( 'core/editor' ).insertBlock( newBlock, 0, selectedBlockClientId ).then( dispatchResolver( resolve ) )
+			cy.get( '.block-editor-block-list__layout' ).then( $editor => {
+				if ( $editor.find( '.block-editor-block-variation-picker' ).length ) {
+					cy.get( '.block-editor-block-variation-picker' )
+						.find( '.block-editor-block-variation-picker__skip button' )
+						.click( { force: true } )
+				}
+			} )
 		} )
 	} )
 }

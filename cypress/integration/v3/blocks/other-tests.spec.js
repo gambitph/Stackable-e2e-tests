@@ -9,10 +9,10 @@ describe( 'Other Tests', registerTests( [ addInnerBlocksToQueryLoop ] ) )
 
 function addInnerBlocksToQueryLoop() {
 	it( 'should add stackable as inner blocks in query loop', () => {
+		cy.setupWP()
+		cy.registerPosts( { numOfPosts: 2 } )
 		// Only for WP 5.8 and above. Query Loop was introduced in 5.8
 		if ( compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.7.3', '>' ) ) {
-			cy.setupWP()
-			cy.registerPosts( { numOfPosts: 2 } )
 			cy.newPage()
 			cy.addBlock( 'core/query' )
 			cy.get( '.block-editor-block-list__block.is-selected' )
@@ -20,16 +20,42 @@ function addInnerBlocksToQueryLoop() {
 				.contains( containsRegExp( 'Choose' ) )
 				.click( { force: true } )
 
-			stkBlocks.forEach( blockName => {
-				cy.addInnerBlock( 'core/query', blockName )
-				cy.publish()
-				// This should not cause block error
-				cy.reload()
-				cy.deleteBlock( blockName )
-				cy.publish()
-				// This should not cause block error
-				cy.reload()
-			} )
+			// Filter out button & icon button when adding inner blocks.
+			// We'll add button group instead.
+			stkBlocks
+				.filter( blockName => ! Array( 'stackable/button', 'stackable/icon-button' ).includes( blockName ) )
+				.forEach( blockName => {
+					cy.addInnerBlock( 'core/query', blockName )
+					cy.assertBlockError()
+					cy.publish()
+					cy.reload()
+					cy.waitLoader( '.components-spinner' )
+					cy.deleteBlock( blockName )
+					cy.assertBlockError()
+					cy.publish()
+					cy.reload()
+					cy.waitLoader( '.components-spinner' )
+				} )
+
+			stkBlocks
+				.filter( blockName => ! Array( 'stackable/button', 'stackable/icon-button' ).includes( blockName ) )
+				.forEach( blockName => {
+					cy.addInnerBlock( 'core/post-template', blockName )
+					cy.assertBlockError()
+					cy.publish()
+					cy.reload()
+					cy.waitLoader( '.components-spinner' )
+					cy.selectBlock( blockName )
+					cy.adjustToolbar( 'Options', () => {
+						cy.get( '.components-popover__content' )
+							.contains( 'Remove block' )
+							.click( { force: true } )
+					} )
+					cy.assertBlockError()
+					cy.publish()
+					cy.reload()
+					cy.waitLoader( '.components-spinner' )
+				} )
 		}
 	} )
 }
