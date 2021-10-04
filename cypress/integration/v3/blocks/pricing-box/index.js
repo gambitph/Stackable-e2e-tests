@@ -19,18 +19,18 @@ export {
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/pricing-box', '.stk-block-pricing-box' ) )
+	it( 'should show the block', assertBlockExist( 'stackable/pricing-box', '.stk-block-pricing-box', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/pricing-box' ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/pricing-box', { variation: 'Default Layout' } ) )
 }
 
 function innerBlocks() {
 	it( 'should allow adding inner blocks', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/pricing-box' )
+		cy.addBlock( 'stackable/pricing-box', { variation: 'Default Layout' } )
 
 		stkBlocks
 			.filter( blockName => blockName !== 'stackable/pricing-box' )
@@ -46,7 +46,7 @@ function innerBlocksExist() {
 		'.stk-block-text',
 		'.stk-block-icon-list',
 		'.stk-block-button',
-	] ) )
+	], { variation: 'Default Layout' } ) )
 }
 
 const assertBlockTab = Block
@@ -63,7 +63,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/pricing-box' )
+		cy.addBlock( 'stackable/pricing-box', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/pricing-box' ).asBlock( 'pricingBoxBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/pricing-box', 'Block' )
 	} )

@@ -21,18 +21,18 @@ export {
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/accordion', '.stk-block-accordion' ) )
+	it( 'should show the block', assertBlockExist( 'stackable/accordion', '.stk-block-accordion', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/accordion' ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/accordion', { variation: 'Default Layout' } ) )
 }
 
 function innerBlocks() {
 	it( 'should allow adding inner blocks', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/accordion' )
+		cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } )
 
 		stkBlocks
 			.filter( blockName => blockName !== 'stackable/accordion' )
@@ -46,11 +46,11 @@ function innerBlocksExist() {
 	it( 'should assert presence of inner blocks when the block is added', assertInnerBlocks( 'stackable/accordion', [
 		'.stk-block-icon-label',
 		'.stk-block-text',
-	] ) )
+	], { variation: 'Default Layout' } ) )
 }
 
 function loadedFiles() {
-	it( 'should assert the loaded files in the frontend', checkJsFiles( 'stackable/accordion', '#stk-frontend-accordion-js' ) )
+	it( 'should assert the loaded files in the frontend', checkJsFiles( 'stackable/accordion', '#stk-frontend-accordion-js', { variation: 'Default Layout' } ) )
 }
 
 // TODO: Assert down arrow icon
@@ -68,7 +68,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/accordion' )
+		cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/accordion', 'Block' )
 	} )

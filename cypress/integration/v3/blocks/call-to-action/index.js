@@ -20,17 +20,17 @@ export {
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/call-to-action', '.stk-block-call-to-action' ) )
+	it( 'should show the block', assertBlockExist( 'stackable/call-to-action', '.stk-block-call-to-action', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/call-to-action' ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/call-to-action', { variation: 'Default Layout' } ) )
 }
 function innerBlocks() {
 	it( 'should allow adding inner blocks', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/call-to-action' )
+		cy.addBlock( 'stackable/call-to-action', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/call-to-action' )
 
 		stkBlocks
@@ -46,7 +46,7 @@ function innerBlocksExist() {
 		'.stk-block-heading',
 		'.stk-block-text',
 		'.stk-block-button',
-	] ) )
+	], { variation: 'Default Layout' } ) )
 }
 
 const assertBlockTab = Block
@@ -65,7 +65,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/call-to-action' )
+		cy.addBlock( 'stackable/call-to-action', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/call-to-action' ).asBlock( 'callToActionBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/call-to-action', 'Block' )
 	} )

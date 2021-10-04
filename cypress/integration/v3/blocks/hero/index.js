@@ -19,18 +19,18 @@ export {
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/hero', '.stk-block-hero' ) )
+	it( 'should show the block', assertBlockExist( 'stackable/hero', '.stk-block-hero', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/hero' ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/hero', { variation: 'Default Layout' } ) )
 }
 
 function innerBlocks() {
 	it( 'should allow adding inner blocks', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/hero' )
+		cy.addBlock( 'stackable/hero', { variation: 'Default Layout' } )
 
 		stkBlocks
 			.filter( blockName => blockName !== 'stackable/hero' )
@@ -45,7 +45,7 @@ function innerBlocksExist() {
 		'.stk-block-heading',
 		'.stk-block-text',
 		'.stk-block-button',
-	] ) )
+	], { variation: 'Default Layout' } ) )
 }
 
 const assertBlockTab = Block
@@ -64,7 +64,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/hero' )
+		cy.addBlock( 'stackable/hero', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/hero' ).asBlock( 'heroBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/hero', 'Block' )
 	} )

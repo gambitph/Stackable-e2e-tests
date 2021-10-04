@@ -20,18 +20,18 @@ export {
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/feature', '.stk-block-feature', { variation: 'Plain Layout' } ) )
+	it( 'should show the block', assertBlockExist( 'stackable/feature', '.stk-block-feature', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/feature', { variation: 'Plain Layout' } ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/feature', { variation: 'Default Layout' } ) )
 }
 
 function innerBlocks() {
 	it( 'should allow adding inner blocks', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/feature', { variation: 'Plain Layout' } )
+		cy.addBlock( 'stackable/feature', { variation: 'Default Layout' } )
 
 		stkBlocks
 			.filter( blockName => blockName !== 'stackable/feature' )
@@ -47,14 +47,14 @@ function innerBlocksExist() {
 		'.stk-block-heading',
 		'.stk-block-text',
 		'.stk-block-button',
-	], { variation: 'Plain Layout' } ) )
+	], { variation: 'Default Layout' } ) )
 }
 
 function assertWidth() {
 	it( 'should test the adjustment of width using the tooltip', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/feature', { variation: 'Plain Layout' } )
+		cy.addBlock( 'stackable/feature', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/column', 0 ).resizeWidth( 25 )
 		cy.selectBlock( 'stackable/column', 0 ).assertComputedStyle( {
 			'': { // Assert the `.is-selected` element
@@ -84,7 +84,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/feature', { variation: 'Plain Layout' } )
+		cy.addBlock( 'stackable/feature', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/feature' ).asBlock( 'featureBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/feature', 'Block' )
 	} )

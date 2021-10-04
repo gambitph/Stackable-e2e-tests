@@ -18,11 +18,11 @@ export {
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/image-box', '.stk-block-image-box', { variation: 'Basic' } ) )
+	it( 'should show the block', assertBlockExist( 'stackable/image-box', '.stk-block-image-box', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/image-box', { variation: 'Basic' } ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/image-box', { variation: 'Default Layout' } ) )
 }
 
 function innerBlocksExist() {
@@ -32,7 +32,7 @@ function innerBlocksExist() {
 		'.stk-block-text',
 		'.stk-block-icon',
 		'.stk-block-image',
-	], { variation: 'Basic' } ) )
+	], { variation: 'Default Layout' } ) )
 }
 
 const assertBlockTab = Block
@@ -49,7 +49,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/image-box', { variation: 'Basic' } )
+		cy.addBlock( 'stackable/image-box', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/image-box' ).asBlock( 'imageBoxBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/image-box', 'Block' )
 	} )

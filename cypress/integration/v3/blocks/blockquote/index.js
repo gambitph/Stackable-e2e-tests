@@ -18,18 +18,18 @@ export {
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/blockquote', '.stk-block-blockquote', { variation: 'Plain Layout' } ) )
+	it( 'should show the block', assertBlockExist( 'stackable/blockquote', '.stk-block-blockquote', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/blockquote', { variation: 'Plain Layout' } ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/blockquote', { variation: 'Default Layout' } ) )
 }
 
 function innerBlocksExist() {
 	it( 'should assert presence of inner blocks when the block is added', assertInnerBlocks( 'stackable/blockquote', [
 		'.stk-block-icon',
 		'.stk-block-text',
-	], { variation: 'Plain Layout' } ) )
+	], { variation: 'Default Layout' } ) )
 }
 
 // TODO: Assert quote icon
@@ -48,7 +48,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/blockquote', { variation: 'Plain Layout' } )
+		cy.addBlock( 'stackable/blockquote', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/blockquote' ).asBlock( 'blockquoteBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/blockquote', 'Block' )
 	} )

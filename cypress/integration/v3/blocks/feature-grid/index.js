@@ -18,11 +18,11 @@ export {
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/feature-grid', '.stk-block-feature-grid' ) )
+	it( 'should show the block', assertBlockExist( 'stackable/feature-grid', '.stk-block-feature-grid', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/feature-grid' ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/feature-grid', { variation: 'Default Layout' } ) )
 }
 
 function innerBlocksExist() {
@@ -31,14 +31,14 @@ function innerBlocksExist() {
 		'.stk-block-heading',
 		'.stk-block-text',
 		'.stk-block-button',
-	] ) )
+	], { variation: 'Default Layout' } ) )
 }
 
 function assertWidth() {
 	it( 'should test the adjustment of width using the tooltip', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/feature-grid' )
+		cy.addBlock( 'stackable/feature-grid', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/column', 0 ).resizeWidth( 30 )
 		cy.selectBlock( 'stackable/column', 0 ).assertComputedStyle( {
 			'': { // Assert the `.is-selected` element
@@ -68,7 +68,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/feature-grid' )
+		cy.addBlock( 'stackable/feature-grid', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/feature-grid' ).asBlock( 'featureGridBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/feature-grid', 'Block' )
 	} )

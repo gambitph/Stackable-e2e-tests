@@ -21,17 +21,17 @@ export {
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/card', '.stk-block-card' ) )
+	it( 'should show the block', assertBlockExist( 'stackable/card', '.stk-block-card', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/card' ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/card', { variation: 'Default Layout' } ) )
 }
 function innerBlocks() {
 	it( 'should allow adding inner blocks', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/card' )
+		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/card' )
 
 		stkBlocks
@@ -48,14 +48,14 @@ function innerBlocksExist() {
 		'.stk-block-subtitle',
 		'.stk-block-text',
 		'.stk-block-button',
-	] ) )
+	], { variation: 'Default Layout' } ) )
 }
 
 function addImage() {
 	it( 'should add an image content and test the image size tooltip', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/card' )
+		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/card' ).asBlock( 'cardBlock', { isStatic: true } )
 		cy.selectBlock( 'stackable/card' )
 			.find( '.stk-img-placeholder' )
@@ -97,7 +97,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/card' )
+		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/card' ).asBlock( 'cardBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/card', 'Block' )
 	} )

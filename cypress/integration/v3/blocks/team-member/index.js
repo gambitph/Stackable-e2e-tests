@@ -17,11 +17,11 @@ export {
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/team-member', '.stk-block-team-member' ) )
+	it( 'should show the block', assertBlockExist( 'stackable/team-member', '.stk-block-team-member', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/team-member' ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/team-member', { variation: 'Default Layout' } ) )
 }
 
 function innerBlocksExist() {
@@ -31,7 +31,7 @@ function innerBlocksExist() {
 		'.stk-block-subtitle',
 		'.stk-block-text',
 		'.stk-block-button-group',
-	] ) )
+	], { variation: 'Default Layout' } ) )
 }
 
 const assertBlockTab = Block
@@ -48,7 +48,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/team-member' )
+		cy.addBlock( 'stackable/team-member', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/team-member' ).asBlock( 'teamMemberBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/team-member', 'Block' )
 	} )
