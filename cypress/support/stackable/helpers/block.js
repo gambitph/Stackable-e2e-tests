@@ -84,7 +84,7 @@ class BlockModule extends Module {
 			verticalAligns.forEach( align => {
 				cy.adjust( 'Inner Block Vertical Alignment', align, { viewport } )
 					.assertComputedStyle( {
-						[ alignmentSelector ]: {
+						[ `${ alignmentSelector } > .block-editor-inner-blocks > .block-editor-block-list__layout` ]: {
 							'justify-content': align,
 						},
 					}, { assertFrontend: false } )
