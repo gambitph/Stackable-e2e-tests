@@ -6,6 +6,11 @@ import {
 } from 'lodash'
 
 /**
+ * Internal dependencies
+ */
+import { Module } from './internals'
+
+/**
  *
  * Assertion function for Advanced Tab.
  *
@@ -288,4 +293,251 @@ export const assertAdvancedTab = ( selector, options = {} ) => {
 
 	_adjust( `Hide on ${ viewport }`, true, {}, 'assertClassName', MAIN_SELECTOR, `ugb--hide-${ lowerCase( viewport ) }` )
 }
+class AdvancedModule extends Module {
+	constructor() {
+		super()
+		this.registerTest( 'General', this.assertGeneral )
+		this.registerTest( 'Position', this.assertPosition )
+		this.registerTest( 'Transform & Transition', this.assertTransformTransition )
+		this.registerTest( 'Motion Effects', this.assertMotionEffects )
+		this.registerTest( 'Custom Attributes', this.assertCustomAttributes )
+		this.registerTest( 'Custom CSS', this.assertCustomCSS )
+		this.registerTest( 'Responsive', this.assertResponsive )
+		this.registerTest( 'Conditional Display', this.assertConditionalDisplay )
+		this.registerTest( 'Advanced', this.assertAdvanced )
+		this.setModuleName( 'Advanced Tab' )
+	}
 
+	assertGeneral( {
+		viewport,
+		mainSelector = null,
+	} ) {
+		const MAIN_SELECTOR = mainSelector || '.stk-block'
+
+		if ( viewport === 'Desktop' ) {
+			const tags = [ 'address', 'article', 'aside', 'blockquote', 'div', 'details', 'footer', 'header', 'hgroup', 'main', 'nav', 'section', 'summary' ]
+			tags.forEach( tag => {
+				cy.adjust( 'Block HTML Tag', tag ).assertHtmlTag( MAIN_SELECTOR, tag )
+			} )
+
+			const clear = [ 'left', 'right', 'both', 'none' ]
+			clear.forEach( value => {
+				cy.adjust( 'Clear', value ).assertComputedStyle( {
+					[ MAIN_SELECTOR ]: {
+						'clear': value,
+					},
+				} )
+			} )
+		}
+
+		const overflow = [ 'auto', 'hidden', 'scroll', 'visible' ]
+		overflow.forEach( value => {
+			cy.adjust( 'Overflow', value, { viewport } ).assertComputedStyle( {
+				[ MAIN_SELECTOR ]: {
+					'overflow': value,
+				},
+			} )
+		} )
+	}
+
+	assertPosition( {
+		viewport,
+		mainSelector = null,
+	} ) {
+		const MAIN_SELECTOR = mainSelector || '.stk-block'
+
+		cy.adjust( 'Opacity', 0.6, { viewport, state: 'hover' } ).assertComputedStyle( {
+			[ `${ MAIN_SELECTOR }:hover` ]: {
+				'opacity': '0.6',
+			},
+		} )
+
+		cy.adjust( 'Opacity', 0.8, { viewport, state: 'normal' } ).assertComputedStyle( {
+			[ MAIN_SELECTOR ]: {
+				'opacity': '0.8',
+			},
+		} )
+
+		cy.adjust( 'Z-Index', 7, { viewport } ).assertComputedStyle( {
+			'': { // assert the .is-selected element in editor
+				'z-index': '7',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+			[ MAIN_SELECTOR ]: {
+				'z-index': '7',
+			},
+		}, { assertBackend: false } )
+
+		const positions = [ 'static', 'relative', 'absolute', 'sticky' ]
+		positions.forEach( value => {
+			cy.adjust( 'Position', value, { viewport } ).assertComputedStyle( {
+				[ MAIN_SELECTOR ]: {
+					'position': value,
+				},
+			} )
+		} )
+
+		// TODO: There are 2 `Position` options. This part may fail.
+		// Hover state - px unit
+		cy.adjust( 'Position', [ 16, 17, 18, 19 ], {
+			viewport, state: 'hover', unit: 'px',
+		} ).assertComputedStyle( {
+			[ `${ MAIN_SELECTOR }:hover` ]: {
+				'top': '16px',
+				'right': '17px',
+				'bottom': '18px',
+				'left': '19px',
+			},
+		} )
+
+		// Hover state - % unit
+		cy.adjust( 'Position', [ 20, 21, 22, 23 ], {
+			viewport, state: 'hover', unit: '%',
+		} ).assertComputedStyle( {
+			[ `${ MAIN_SELECTOR }:hover` ]: {
+				'top': '20%',
+				'right': '21%',
+				'bottom': '22%',
+				'left': '23%',
+			},
+		} )
+
+		// Normal state - px unit
+		cy.adjust( 'Position', [ 5, 4, 3, 2 ], {
+			viewport, state: 'normal', unit: 'px',
+		} ).assertComputedStyle( {
+			[ MAIN_SELECTOR ]: {
+				'top': '5px',
+				'right': '4px',
+				'bottom': '3px',
+				'left': '2px',
+			},
+		} )
+
+		// Normal state - % unit
+		cy.adjust( 'Position', [ 23, 24, 25, 26 ], {
+			viewport, state: 'normal', unit: '%',
+		} ).assertComputedStyle( {
+			[ MAIN_SELECTOR ]: {
+				'top': '23%',
+				'right': '24%',
+				'bottom': '25%',
+				'left': '26%',
+			},
+		} )
+	}
+
+	assertTransformTransition( {
+		viewport,
+		mainSelector = null,
+	} ) {
+		const MAIN_SELECTOR = mainSelector || '.stk-block'
+
+		if ( viewport === 'Desktop' ) {
+			cy.adjust( 'Transition Duration (secs)', 1.14 ).assertComputedStyle( {
+				[ MAIN_SELECTOR ]: {
+					'transition-duration': '1.14',
+				},
+			} )
+
+			const transitions = [
+				'ease',
+				'ease-in',
+				'ease-out',
+				'ease-in-out',
+				'linear',
+				'cubic-bezier(0.11, 0, 0.5, 0)',
+				'cubic-bezier(0.5, 1, 0.89, 1)',
+				'cubic-bezier(0.45, 0, 0.55, 1)',
+				'cubic-bezier(0.7, 0, 0.84, 0)',
+				'cubic-bezier(0.16, 1, 0.3, 1)',
+				'cubic-bezier(0.87, 0, 0.13, 1)',
+				'cubic-bezier(0.36, 0, 0.66, -0.56)',
+				'cubic-bezier(0.34, 1.56, 0.64, 1)',
+				'cubic-bezier(0.68, -0.6, 0.32, 1.6)',
+			]
+			transitions.forEach( value => {
+				cy.adjust( 'Transition Function', value ).assertComputedStyle( {
+					[ MAIN_SELECTOR ]: {
+						'transition-timing-function': value,
+					},
+				} )
+			} )
+
+			const transformOrigin = [ 'top left', 'top center', 'top center', 'center left', 'center center', 'center right', 'bottom left', 'bottom center', 'bottom right' ]
+			transformOrigin.forEach( value => {
+				cy.adjust( 'Transform Origin', value ).assertComputedStyle( {
+					[ MAIN_SELECTOR ]: {
+						'transform-origin': value,
+					},
+				} )
+			} )
+		}
+
+		// TODO: support null values in Stackable overwrite commands -> only to change the viewport & state controls
+		cy.adjust( 'Transform', null, { viewport, state: 'normal' } )
+		cy.adjust( 'Translate X', 21, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		cy.adjust( 'Translate Y', 16, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		cy.adjust( 'Rotate', 14.3, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		cy.adjust( 'Scale', 0.89, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+			.assertComputedStyle( {
+				[ MAIN_SELECTOR ]: {
+					'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
+				},
+			} )
+
+		// TODO: support null values in Stackable overwrite commands -> only to change the viewport & state controls
+		cy.adjust( 'Transform', null, { viewport, state: 'hover' } )
+		cy.adjust( 'Translate X', '-40', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		cy.adjust( 'Translate Y', '-23', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		cy.adjust( 'Rotate', '-11.2', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		cy.adjust( 'Scale', 1.37, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+			.assertComputedStyle( {
+				[ `${ MAIN_SELECTOR }:hover` ]: {
+					'transform': 'translateX(-40px) translateY(-23px) rotate(-11.2deg) scale(1.37)',
+				},
+			} )
+	}
+
+	assertMotionEffects( {
+		viewport,
+		mainSelector = null,
+	} ) {
+		const MAIN_SELECTOR = mainSelector || '.stk-block'
+
+		// Entrance Animation
+		cy.adjust( 'Effect', 'entrance' )
+
+		// TODO: support null values in Stackable overwrite commands -> only to change the viewport & state controls
+		cy.adjust( 'Start Position', null, { viewport } )
+		cy.adjust( 'Horizontal Position', 34 )
+		cy.adjust( 'Vertical Position', 52 )
+		cy.adjust( 'Scale', 0.85 )
+		cy.adjust( 'Rotate', 136.8 )
+			.assertComputedStyle( {
+				[ MAIN_SELECTOR ]: {
+					'--entrance-transform': 'translateX(34px) translateY(52px) scale(0.85) rotate(136.8deg)',
+				},
+			} )
+
+		if ( viewport === 'Desktop' ) {
+			Array( 'slow', 'fast' ).forEach( value => {
+				cy.adjust( 'Entrance Animation Speed', value ).assertComputedStyle( {
+					[ MAIN_SELECTOR ]: {
+						'--entrance-duration': `${ value === 'slow' ? '2s' : '0.75s' }`,
+					},
+				} )
+			} )
+			cy.adjust( 'Entrance Animation Delay', 0.85 ).assertComputedStyle( {
+				[ MAIN_SELECTOR ]: {
+					'--entrance-delay': '0.85',
+				},
+			} )
+		}
+
+		// TODO: Continue tests for Scroll Animation Effect.
+	}
+}
+
+export const Advanced = new AdvancedModule()
