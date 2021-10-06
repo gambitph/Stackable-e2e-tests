@@ -536,7 +536,11 @@ class AdvancedModule extends Module {
 			} )
 		}
 
-		// TODO: Continue tests for Scroll Animation Effect.
+		// Scroll Animation
+		cy.adjust( 'Effect', 'scroll' )
+		cy.adjust( 'Smoothen Scroll Animation', true ).assertClassName( MAIN_SELECTOR, 'stk-animate-smooth', { assertBackend: false } )
+		cy.adjust( 'Use 3D Transforms', true ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-perspective-in', '1000' )
+		cy.get( '.block-editor-block-list__block.is-selected' )
 	}
 }
 
