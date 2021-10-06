@@ -71,27 +71,41 @@ export function addBlock( blockName = 'ugb/accordion', options = {} ) {
 	}
 
 	cy.wp().then( wp => {
-		return new Cypress.Promise( resolve => {
-			const block = wp.blocks.createBlock( blockName )
+		const block = wp.blocks.createBlock( blockName )
+		new Cypress.Promise( resolve => {
 			wp.data.dispatch( 'core/editor' ).insertBlock( block )
-				.then( dispatchResolver( () => {
-					const className = wp.data.select( 'core/block-editor' ).getBlock( block.clientId ).attributes.className
-					// Only append the e2e className if there is a default value.
-					wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { className: `${ className ? className + ' ' : '' }e2etest-block-${ uniqueId() }` } )
-
-					resolve( addInnerBlockClasses( block.clientId ) )
-				} ) )
+				.then( dispatchResolver( resolve ) )
 		} )
+
+		if ( variation ) {
+			cy.get( '.block-editor-block-list__block.is-selected' )
+				.find( '.block-editor-block-variation-picker' )
+				.find( `button[aria-label="${ variation }"]` )
+				.click( { force: true } )
+		}
 	} )
 
-	if ( variation ) {
-		cy.get( '.block-editor-block-list__block.is-selected' )
-			.find( '.block-editor-block-variation-picker' )
-			.find( `button[aria-label="${ variation }"]` )
-			.click( { force: true } )
+	cy.wp().then( wp => {
+		const { clientId: newBlockId, attributes: { className } } = last( wp.data.select( 'core/block-editor' ).getBlocks() )
 
-		addInnerBlockClasses()
-	}
+		new Cypress.Promise( resolve => {
+			wp.data.dispatch( 'core/block-editor' ).selectBlock( newBlockId ).then( dispatchResolver( resolve ) )
+		} )
+
+		addInnerBlockClasses( newBlockId )
+
+		// Only append the e2e className if there is a default value.
+
+		cy.wp().then( newWp => {
+			new Cypress.Promise( resolve => {
+				newWp.data.dispatch( 'core/block-editor' )
+					.updateBlockAttributes( newBlockId, { className: `${ className ? className + ' ' : '' }e2etest-block-${ uniqueId() }` } )
+					.then( dispatchResolver( resolve ) )
+			} )
+		} )
+
+		return cy.get( '[data-block].is-selected' )
+	} )
 }
 
 /**
