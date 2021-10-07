@@ -534,14 +534,89 @@ class AdvancedModule extends Module {
 					'--entrance-delay': '0.85',
 				},
 			} )
-		}
 
-		// Scroll Animation
-		cy.adjust( 'Effect', 'scroll' )
-		cy.adjust( 'Smoothen Scroll Animation', true ).assertClassName( MAIN_SELECTOR, 'stk-animate-smooth', { assertBackend: false } )
-		cy.adjust( 'Use 3D Transforms', true ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-perspective-in', '1000' )
-		cy.get( '.block-editor-block-list__block.is-selected' )
+			// Scroll Animation
+			cy.adjust( 'Effect', 'scroll' )
+			cy.adjust( 'Smoothen Scroll Animation', true ).assertClassName( MAIN_SELECTOR, 'stk-animate-smooth', { assertBackend: false } )
+			cy.adjust( 'Use 3D Transforms', true )
+			cy.adjust( 'Perspective', 1700 ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-perspective-in', '1700' )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-perspective-out', '1700' )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ MAIN_SELECTOR ]: {
+					'transform': 'perspective(1700px) translate3d(0.0001px, 0.0001px, 0.0001px)', // TODO: Update to correct value
+				},
+			}, { assertBackend: false } )
+
+			// TODO: Update the parent selectors
+			const entranceAnimationParentSelector = '.stk-effects-entrance-transforms-control:contains(Entrance Animation) .stk-control-content'
+			const exitAnimationParentSelector = '.stk-effects-entrance-transforms-control:contains(Exit Animation) .stk-control-content'
+
+			// Entrance Animation
+			cy.adjust( 'Opacity', '0.45', { parentSelector: entranceAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-opacity-in', '0.45' )
+			cy.adjust( 'Translate X', '57', { parentSelector: entranceAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-translatex-in', '57' )
+			cy.adjust( 'TranslateY', '-31', { parentSelector: entranceAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-translatey-in', '-31' )
+			cy.adjust( 'TranslateZ', '-26', { parentSelector: entranceAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-translatez-in', '-26' )
+			cy.adjust( 'RotateX', '107', { parentSelector: entranceAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-rotatex-in', '107' )
+			cy.adjust( 'RotateY', '89', { parentSelector: entranceAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-rotatey-in', '89' )
+			cy.adjust( 'Rotate', '-65', { parentSelector: entranceAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-rotate-in', '-65' )
+			cy.adjust( 'Scale', '0.8', { parentSelector: entranceAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-scale-in', '0.8' )
+			cy.adjust( 'Blur', '2', { parentSelector: entranceAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-blur-in', '2' )
+			cy.adjust( 'Skew X', '11', { parentSelector: entranceAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-skewx-in', '11' )
+			cy.adjust( 'Skew Y', '16', { parentSelector: entranceAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-skewy-in', '16' )
+
+			// Exit Animation
+			cy.adjust( 'Opacity', '0.75', { parentSelector: exitAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-opacity-out', '0.75' )
+			cy.adjust( 'Translate X', '-56', { parentSelector: exitAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-translatex-out', '-56' )
+			cy.adjust( 'TranslateY', '48', { parentSelector: exitAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-translatey-out', '48' )
+			cy.adjust( 'TranslateZ', '-74', { parentSelector: exitAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-translatez-out', '-74' )
+			cy.adjust( 'RotateX', '51', { parentSelector: exitAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-rotatex-out', '51' )
+			cy.adjust( 'RotateY', '-43', { parentSelector: exitAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-rotatey-out', '-43' )
+			cy.adjust( 'Rotate', '64', { parentSelector: exitAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-rotate-out', '64' )
+			cy.adjust( 'Scale', '1.2', { parentSelector: exitAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-scale-out', '1.2' )
+			cy.adjust( 'Blur', '3', { parentSelector: exitAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-blur-out', '3' )
+			cy.adjust( 'Skew X', '9', { parentSelector: exitAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-skewx-out', '9' )
+			cy.adjust( 'Skew Y', '20', { parentSelector: exitAnimationParentSelector } ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-skewy-out', '20' )
+		}
 	}
+
+	assertCustomAttributes( {
+		mainSelector = null,
+	} ) {
+		const MAIN_SELECTOR = mainSelector || '.stk-block'
+
+		cy.adjust( 'Custom Attributes', 'data-type="some-text"' ).assertHtmlAttribute( MAIN_SELECTOR, 'data-type', 'some-text' )
+		cy.adjust( 'Custom Attributes', 'data-type="some-text" aria-label="block"' ).assertHtmlAttribute( MAIN_SELECTOR, 'aria-label', 'block' )
+		cy.adjust( 'Custom Attributes', 'data-type="some-text" aria-label="block" data-title="title123"' ).assertHtmlAttribute( MAIN_SELECTOR, 'data-title', 'title123' )
+	}
+
+	assertCustomCSS( {
+		mainSelector = null,
+	} ) {
+		const MAIN_SELECTOR = mainSelector || '.stk-block'
+
+		const assertionObj = {}
+		const customCssString = `
+			${ MAIN_SELECTOR } {
+				color: #808080;
+			}
+		`
+		assertionObj[ MAIN_SELECTOR ] = { 'color': '#808080' }
+
+		cy.setBlockAttribute( {
+			'customCSS': customCssString,
+		} )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( assertionObj )
+	}
+
+	assertResponsive( {
+		viewport,
+		mainSelector = null,
+	} ) {
+		const MAIN_SELECTOR = mainSelector || null
+		cy.adjust( `Hide on ${ viewport }`, true ).assertClassName( MAIN_SELECTOR, `stk--hide-${ lowerCase( viewport ) }` )
+	}
+
+	// TODO: Add tests for Conditional Display
 }
 
 export const Advanced = new AdvancedModule()
