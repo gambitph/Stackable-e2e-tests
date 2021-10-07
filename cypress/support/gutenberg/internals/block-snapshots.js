@@ -46,7 +46,7 @@ function createContentSnapshot( alias ) {
 		cy.get( `@${ alias }` ).then( _block => {
 			cy.get( 'body' ).then( $body => {
 				const { className } = _block.attributes
-				const $block = $body.find( `.${ className.replace( ' ', '.' ) }` )
+				const $block = $body.find( `.${ className.replace( / /g, '.' ) }` )
 				// Check if the $block element has the data-block attribute already
 				const blockElement = $block.data( 'block' ) ? $block : $block.closest( '[data-block]' )
 				const clientId = blockElement.data( 'block' )
@@ -127,7 +127,7 @@ function isBlockAStaticBlock( $el, $blockSnapshotBlocks ) {
 	return $blockSnapshotBlocks
 		.find( ( { attributes: { className } } ) =>
 			className.split( ' ' ).some( c => $el.attr( 'class' ).match( c ) ) ||
-			( $el.find( `.${ className.replace( ' ', '.' ) }` ).length &&
+			( $el.find( `.${ className.replace( / /g, '.' ) }` ).length &&
 			! $el.find( `.block-editor-inner-blocks .${ className }` ).length ) )
 }
 
