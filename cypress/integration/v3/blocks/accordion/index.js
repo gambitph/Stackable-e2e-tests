@@ -77,6 +77,7 @@ function blockTab( viewport ) {
 		viewport,
 		mainSelector: '.stk-block-accordion',
 		alignmentSelector: '.stk-block-accordion',
+		columnAlignmentEditorSelector: true,
 		enableInnerBlockAlignment: false,
 		enableInnerBlockVerticalAlignment: false,
 	} )

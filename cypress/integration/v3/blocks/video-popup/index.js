@@ -59,6 +59,7 @@ function blockTab( viewport ) {
 		viewport,
 		mainSelector: '.stk-block-video-popup',
 		alignmentSelector: '.stk-block-video-popup > .stk-inner-blocks',
+		columnAlignmentEditorSelector: true,
 		enableInnerBlockAlignment: false,
 		enableInnerBlockVerticalAlignment: false,
 	} )

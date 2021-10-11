@@ -29,6 +29,7 @@ class BlockModule extends Module {
 		enableColumnAlignment = true,
 		enableInnerBlockAlignment = true,
 		enableInnerBlockVerticalAlignment = true,
+		columnAlignmentEditorSelector = false,
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 
@@ -55,7 +56,7 @@ class BlockModule extends Module {
 						if ( $block.find( `.stk--block-align-${ blockId }` ).length ) {
 							// The block alignment classname is present
 							cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-								[ `.stk--block-align-${ blockId }` ]: {
+								[ `.stk--block-align-${ blockId }${ columnAlignmentEditorSelector ? ' > .block-editor-inner-blocks > .block-editor-block-list__layout' : '' }` ]: {
 									'align-items': align,
 								},
 							} )
