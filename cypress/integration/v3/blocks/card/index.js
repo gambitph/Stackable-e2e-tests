@@ -55,14 +55,11 @@ function addImage() {
 	it( 'should add an image content and test the image size tooltip', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } )
-		cy.selectBlock( 'stackable/card' ).asBlock( 'cardBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } ).asBlock( 'cardBlock', { isStatic: true } )
 		cy.selectBlock( 'stackable/card' )
-			.find( '.stk-img-placeholder' )
-			.click( { force: true } )
-		cy.selectFromMediaLibrary( 1 )
-		cy.savePost()
-		cy.reload()
+		cy.openInspector( 'stackable/card', 'Style' )
+		cy.collapse( 'Image' )
+		cy.adjust( 'Select Image', 1 )
 
 		// Adjust the Image Size tooltip
 		cy.get( '.stk-block-card__image' ).realHover()

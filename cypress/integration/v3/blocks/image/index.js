@@ -32,18 +32,15 @@ function addImage() {
 		cy.addBlock( 'stackable/image' )
 		cy.selectBlock( 'stackable/image' ).asBlock( 'imageBlock', { isStatic: true } )
 		cy.selectBlock( 'stackable/image' )
-			.find( '.stk-img-placeholder' )
-			.click( { force: true } )
-		cy.selectFromMediaLibrary( 1 )
-		cy.savePost()
-		cy.reload()
+		cy.openInspector( 'stackable/image', 'Style' )
+		cy.collapse( 'Image' )
+		cy.adjust( 'Select Image', 1 )
 
 		// Adjust the Image Size tooltip
 		cy.get( '.stk-img-wrapper' ).realHover()
 		cy.get( '.stk-resizer-tooltip' )
 			.click( { force: true } )
 			.then( () => {
-				cy.get( '.components-popover__content:contains(Image Size)' )
 				cy.adjust( 'Width', 78, {
 					unit: '%',
 					parentSelector: '.stk-resizer-popup__control-wrapper',
@@ -70,7 +67,6 @@ function addImage() {
 		cy.get( '.stk-resizer-tooltip' )
 			.click( { force: true } )
 			.then( () => {
-				cy.get( '.components-popover__content:contains(Image Size)' )
 				cy.adjust( 'Width', 548, {
 					unit: 'px',
 					parentSelector: '.stk-resizer-popup__control-wrapper',
@@ -85,6 +81,26 @@ function addImage() {
 					'.stk-img-wrapper': {
 						'width': '548px',
 						'height': '51vh',
+					},
+				}, { assertBackend: false } )
+			} )
+
+		cy.savePost()
+		cy.reload()
+
+		cy.get( '.stk-img-wrapper' ).realHover()
+		cy.get( '.stk-resizer-tooltip' )
+			.click( { force: true } )
+			.then( () => {
+				cy.get( '.components-popover__content:contains(Image Size)' )
+				cy.adjust( 'Height', 65, {
+					unit: '%',
+					parentSelector: '.stk-resizer-popup__control-wrapper',
+				} ).assertHtmlAttribute( 'img.stk-img', 'height', '65', { assertFrontend: false } )
+
+				cy.selectBlock( 'stackable/image' ).assertComputedStyle( {
+					'.stk-img-wrapper': {
+						'height': '65%',
 					},
 				}, { assertBackend: false } )
 			} )
