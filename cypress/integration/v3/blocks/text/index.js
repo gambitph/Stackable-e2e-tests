@@ -61,6 +61,11 @@ function pressEnterKey() {
 
 function addBlocks() {
 	it( 'should test adding stackable blocks using the / command', () => {
+		const selectSkip = () => cy
+			.get( '.block-editor-block-variation-picker' )
+			.find( '.block-editor-block-variation-picker__skip button' )
+			.click( { force: true } )
+
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'stackable/text' )
@@ -69,6 +74,8 @@ function addBlocks() {
 			.contains( 'Accordion' )
 			.first()
 			.click( { force: true } )
+
+		selectSkip()
 		cy.get( '.stk-block-accordion' ).should( 'exist' )
 
 		cy.addBlock( 'stackable/text' )
@@ -77,6 +84,7 @@ function addBlocks() {
 			.contains( 'Feature Grid' )
 			.first()
 			.click( { force: true } )
+		selectSkip()
 		cy.get( '.stk-block-feature-grid' ).should( 'exist' )
 	} )
 }
