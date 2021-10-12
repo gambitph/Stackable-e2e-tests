@@ -14,9 +14,9 @@ export {
 } from './modules'
 
 /*
-* Export Advanced Tab assertions.
+* Export Tab assertions.
 */
-export { assertAdvancedTab } from './advanced'
+export { assertAdvancedTab, Advanced } from './advanced'
 
 /**
  * Helper function for creating block validation test.

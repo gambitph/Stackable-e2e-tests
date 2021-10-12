@@ -4,6 +4,7 @@
 import {
 	keys, compact, lowerCase,
 } from 'lodash'
+import { containsRegExp } from '~common/util'
 
 /**
  * Internal dependencies
@@ -616,7 +617,44 @@ class AdvancedModule extends Module {
 		cy.adjust( `Hide on ${ viewport }`, true ).assertClassName( MAIN_SELECTOR, `stk--hide-${ lowerCase( viewport ) }` )
 	}
 
-	// TODO: Add tests for Conditional Display
+	assertConditionalDisplay( {
+		viewport,
+		mainSelector = null,
+		blockName,
+	} ) {
+		if ( viewport === 'Desktop' ) {
+			const MAIN_SELECTOR = mainSelector || null
+
+			const assertExistence = assertionValue => {
+				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+					cy.visit( previewUrl )
+					cy.get( MAIN_SELECTOR ).should( assertionValue )
+					cy.visit( editorUrl )
+				} )
+			}
+
+			const selectInspector = () => {
+				cy.selectBlock( blockName )
+				cy.openInspector( blockName, 'Advanced' )
+				cy.collapse( 'Conditional Display' )
+			}
+
+			const parentSelector = '.stk-condition-component'
+
+			cy.get( '.ugb-panel--conditional-display' ).contains( containsRegExp( 'Add New Condition' ) ).click( { force: true } )
+			cy.adjust( 'Condition Type', 'login-status', { parentSelector } )
+			cy.adjust( 'Login Status', 'logged-in', { parentSelector } )
+			cy.savePost()
+			assertExistence( 'exist' )
+
+			// TODO: Check this, still failing.
+
+			selectInspector()
+			cy.adjust( 'Login Status', 'logged-out', { parentSelector } )
+			cy.savePost()
+			assertExistence( 'not.exist' )
+		}
+	}
 }
 
 export const Advanced = new AdvancedModule()

@@ -3,9 +3,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, checkJsFiles, assertInnerBlocks,
+	assertBlockExist, blockErrorTest, checkJsFiles, assertInnerBlocks, responsiveAssertHelper, Advanced,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
+
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -13,6 +15,9 @@ export {
 	innerBlocks,
 	innerBlocksExist,
 	loadedFiles,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 }
 
 function blockExist() {
@@ -48,3 +53,29 @@ function loadedFiles() {
 	it( 'should assert the loaded files in the frontend', checkJsFiles( 'stackable/accordion', '#stk-frontend-accordion-js' ) )
 }
 // TODO: Assert down arrow icon
+
+const assertAdvancedTab = Advanced
+	.includes( [
+		'Conditional Display',
+	] )
+	.run
+
+function advancedTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } )
+		cy.selectBlock( 'stackable/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/accordion', 'Advanced' )
+	} )
+
+	assertAdvancedTab( {
+		viewport,
+		mainSelector: '.stk-block-accordion',
+		blockName: 'stackable/accordion',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@accordionBlock' )
+	} )
+}
