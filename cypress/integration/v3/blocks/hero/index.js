@@ -56,7 +56,6 @@ const assertBlockTab = Block
 		'Borders & Shadows',
 		'Top Separator',
 		'Bottom Separator',
-		'Link',
 	] )
 	.run
 

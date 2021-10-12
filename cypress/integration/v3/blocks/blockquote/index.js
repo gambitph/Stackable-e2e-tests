@@ -40,7 +40,6 @@ const assertBlockTab = Block
 		'Background',
 		'Size & Spacing',
 		'Borders & Shadows',
-		'Link',
 	] )
 	.run
 
