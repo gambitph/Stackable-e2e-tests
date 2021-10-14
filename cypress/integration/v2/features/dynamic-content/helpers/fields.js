@@ -96,9 +96,9 @@ export function setupMatchPostFieldValues( type ) {
 		addToTest( {
 			name: 'Post URL', value: data.link,
 		} )
-		addToTest( { name: 'Post ID', value: data.id } )
+		addToTest( { name: 'Post ID', value: `${ data.id.toString() }` } )
 		addToTest( {
-			name: 'Featured Image URL', value: data.featured_image_urls.full[ 0 ], willEscape: true,
+			name: 'Featured Image URL', value: data.featured_image_urls.full[ 0 ],
 		} )
 		addToTest( { name: 'Post Type', value: data.type } )
 		addToTest( { name: 'Post Status', value: data.status } )
@@ -126,9 +126,9 @@ export function setupMatchPostFieldValues( type ) {
 
 		// Author Fields
 		addToTest( { name: 'Author Name', value: data.author_info.name } )
-		addToTest( { name: 'Author ID', value: data.author } )
+		addToTest( { name: 'Author ID', value: `${ data.author.toString() }` } )
 		addToTest( {
-			name: 'Author Posts URL', value: data.author_info.url, willEscape: true,
+			name: 'Author Posts URL', value: data.author_info.url,
 		} )
 
 		// Misc. Fields
