@@ -1,7 +1,7 @@
 /**
  * External dependencies
  */
-import { range } from 'lodash'
+import { range, escape } from 'lodash'
 import { registerTests } from '~stackable-e2e/helpers'
 import { setupMatchPostFieldValues } from './helpers/'
 
