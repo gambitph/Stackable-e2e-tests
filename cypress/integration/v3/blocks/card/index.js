@@ -102,6 +102,7 @@ function blockTab( viewport ) {
 		viewport,
 		mainSelector: '.stk-block-card',
 		alignmentSelector: '.stk-block-card .stk-inner-blocks',
+		enableColumnAlignment: false,
 	} )
 
 	afterEach( () => {

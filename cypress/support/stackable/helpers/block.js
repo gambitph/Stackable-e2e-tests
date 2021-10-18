@@ -28,7 +28,6 @@ class BlockModule extends Module {
 		enableContentAlignment = true,
 		enableColumnAlignment = true,
 		enableInnerBlockAlignment = true,
-		enableInnerBlockVerticalAlignment = true,
 		columnAlignmentEditorSelector = false,
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
@@ -78,27 +77,6 @@ class BlockModule extends Module {
 					.assertClassName( alignmentSelector, 'stk--block-orientation-horizontal' )
 				cy.resetStyle( 'Inner Block Alignment' )
 			}
-		}
-
-		if ( enableInnerBlockVerticalAlignment ) {
-			const verticalAligns = [ 'flex-start', 'center', 'flex-end' ]
-			verticalAligns.forEach( align => {
-				cy.adjust( 'Inner Block Vertical Alignment', align, { viewport } )
-					.assertComputedStyle( {
-						[ `${ alignmentSelector } > .block-editor-inner-blocks > .block-editor-block-list__layout` ]: {
-							'justify-content': align,
-						},
-					}, { assertFrontend: false } )
-
-				cy.resetStyle( 'Inner Block Vertical Alignment', { viewport } )
-
-				cy.adjust( 'Inner Block Vertical Alignment', align, { viewport } )
-					.assertComputedStyle( {
-						[ alignmentSelector ]: {
-							'justify-content': align,
-						},
-					}, { assertBackend: false } )
-			} )
 		}
 	}
 

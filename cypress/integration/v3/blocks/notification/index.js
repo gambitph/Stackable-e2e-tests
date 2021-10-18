@@ -77,7 +77,6 @@ function blockTab( viewport ) {
 		mainSelector: '.stk-block-notification',
 		alignmentSelector: '.stk-block-notification > .stk-inner-blocks',
 		enableColumnAlignment: false,
-		enableInnerBlockVerticalAlignment: false,
 	} )
 
 	afterEach( () => {

@@ -82,7 +82,6 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-heading__text',
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
-		enableInnerBlockVerticalAlignment: false,
 		contentVerticalAlignStyle: 'justify-content',
 	} )
 

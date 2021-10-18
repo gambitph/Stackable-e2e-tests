@@ -60,7 +60,6 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-number-box',
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
-		enableInnerBlockVerticalAlignment: false,
 	} )
 
 	afterEach( () => {

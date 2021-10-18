@@ -57,7 +57,7 @@ function blockTab( viewport ) {
 		mainSelector: '.stk-block-icon-box',
 		alignmentSelector: '.stk-block-icon-box > .stk-inner-blocks',
 		enableColumnAlignment: false,
-		enableInnerBlockVerticalAlignment: false,
+		enableInnerBlockAlignment: false,
 	} )
 
 	afterEach( () => {

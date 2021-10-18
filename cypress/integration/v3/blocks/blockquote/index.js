@@ -57,7 +57,7 @@ function blockTab( viewport ) {
 		mainSelector: '.stk-block-blockquote',
 		alignmentSelector: '.stk-block-blockquote > .stk-inner-blocks',
 		enableColumnAlignment: false,
-		enableInnerBlockVerticalAlignment: false,
+		enableInnerBlockAlignment: false,
 	} )
 
 	afterEach( () => {

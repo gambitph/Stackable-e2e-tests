@@ -75,7 +75,6 @@ function blockTab( viewport ) {
 		mainSelector: '.stk-block-call-to-action',
 		alignmentSelector: '.stk-block-call-to-action > .stk-inner-blocks',
 		enableColumnAlignment: false,
-		enableInnerBlockVerticalAlignment: false,
 	} )
 
 	afterEach( () => {

@@ -60,7 +60,6 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-subtitle__text',
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
-		enableInnerBlockVerticalAlignment: false,
 	} )
 
 	afterEach( () => {

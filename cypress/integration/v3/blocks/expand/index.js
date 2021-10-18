@@ -63,7 +63,6 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-expand > .stk-inner-blocks',
 		columnAlignmentEditorSelector: true,
 		enableInnerBlockAlignment: false,
-		enableInnerBlockVerticalAlignment: false,
 	} )
 
 	afterEach( () => {

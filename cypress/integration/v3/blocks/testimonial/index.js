@@ -73,7 +73,6 @@ function blockTab( viewport ) {
 		mainSelector: '.stk-block-testimonial',
 		alignmentSelector: '.stk-block-testimonial > .stk-inner-blocks',
 		enableColumnAlignment: false,
-		enableInnerBlockVerticalAlignment: false,
 	} )
 
 	afterEach( () => {

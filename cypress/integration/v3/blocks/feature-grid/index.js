@@ -59,7 +59,7 @@ const assertBlockTab = Block
 		'Background',
 		'Size & Spacing',
 		'Borders & Shadows',
-		'Top Separator', // TODO: The implementation will be changed. Check this.
+		'Top Separator',
 		'Bottom Separator',
 	] )
 	.run
@@ -79,7 +79,6 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-feature-grid > .stk-inner-blocks',
 		columnAlignmentEditorSelector: true,
 		enableInnerBlockAlignment: false,
-		enableInnerBlockVerticalAlignment: false,
 	} )
 
 	afterEach( () => {

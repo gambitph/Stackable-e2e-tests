@@ -131,7 +131,6 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-image',
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
-		enableInnerBlockVerticalAlignment: false,
 	} )
 
 	afterEach( () => {
