@@ -19,7 +19,7 @@ Cypress.Commands.add( 'addToReusableBlocks', addToReusableBlocks )
 export function selectTopToolbar() {
 	const options = () => cy
 		.get( '.edit-post-more-menu' )
-		.find( 'button[aria-label="Options"], button[aria-label="More tools & options"]' )
+		.find( 'button[aria-label="Options"]' )
 		.click( { force: true } )
 
 	const toolbar = () => cy
@@ -144,7 +144,7 @@ export function addToReusableBlocks( blockName, blockSelector ) {
 
 	cy.selectTopToolbar()
 	cy.get( '.block-editor-block-toolbar' )
-		.find( 'button[aria-label="Options"], button[aria-label="More options"]' ) // For backwards compatibility: WP 5.5
+		.find( 'button[aria-label="Options"], button[aria-label="More options"]' ) // For backwards compatibility: WP 5.6
 		.click( { force: true } )
 
 	cy.get( '.components-dropdown-menu__menu' )
