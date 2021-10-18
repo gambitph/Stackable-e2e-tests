@@ -155,7 +155,7 @@ export const registerTests = ( testsList = [] ) => () => _registerTests(
 			cy.server()
 			cy.route( {
 				method: 'GET',
-				url: '/wp-json/stackable/v2/design_library',
+				url: /design_library/,
 				status: 200,
 			} ).as( 'designLibrary' )
 		} )
