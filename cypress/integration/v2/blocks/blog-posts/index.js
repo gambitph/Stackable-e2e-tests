@@ -90,7 +90,7 @@ function styleTab( viewport, desktopOnly ) {
 			cy.adjust( 'Post Type', 'post' )
 			cy.adjust( 'Filter by Taxonomy', 'category' )
 			cy.adjust( 'Taxonomy Filter Type', '__in' )
-			cy.adjust( 'Categories', 'Uncategorized' )
+			cy.adjust( 'Add item', 'Uncategorized' )
 			cy.adjust( 'Exclude Post IDs', '1,3' )
 			cy.adjust( 'Display Specific Post IDs', '2,4' )
 
