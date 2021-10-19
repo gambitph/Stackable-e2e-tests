@@ -86,15 +86,17 @@ function styleTab( viewport, desktopOnly ) {
 				.should( 'have.length', 2 )
 			cy.resetStyle( 'Offset' )
 
+			cy.adjust( 'Order by', 'title,asc' )
+			cy.adjust( 'Post Type', 'post' )
+			cy.adjust( 'Filter by Taxonomy', 'category' )
+			cy.adjust( 'Taxonomy Filter Type', '__in' )
+			cy.adjust( 'Categories', 'Uncategorized' )
+			cy.adjust( 'Exclude Post IDs', '1,3' )
+			cy.adjust( 'Display Specific Post IDs', '2,4' )
+
 			/**
 			 * TODOs:
-			 * - Order by
-			 * - Post Type
-			 * - Filter by Taxonomy
-			 * - Taxonomy Filter Type
-			 * - Categories / Tags
-			 * - Exclude Post IDs
-			 * - Display Specific Post IDs
+			 * - Assertion of Post Type values above
 			 */
 			cy.savePost()
 		} )
