@@ -121,6 +121,7 @@ const willAssertTypographyStyles = [
 		lineHeight: 1.4,
 		letterSpacing: 3.5,
 	},
+	{}, // TODO: For subtitle
 	{
 		tag: 'p',
 		font: 'Alice',
@@ -141,6 +142,9 @@ function assertGlobalTypography( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'core/paragraph' )
 		willAssertTypographyStyles.forEach( val => {
+			if ( ! Object.keys( val ).length ) {
+				return
+			}
 			desktopOnly( () => {
 				cy.adjustGlobalTypography( val.tag, {
 					'Font Family': val.font,
@@ -176,27 +180,31 @@ function assertGlobalTypography( viewport, desktopOnly ) {
 		const adjustAssertTypographyStyles = selector => {
 			desktopOnly( () => {
 				willAssertTypographyStyles.forEach( val => {
-					cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-						[ selector ]: {
-							'font-family': `${ val.font }, sans-serif`,
-							'font-size': `${ val.size }px`,
-							'font-weight': val.weight,
-							'text-transform': val.transform,
-							'line-height': `${ val.lineHeight }em`,
-							'letter-spacing': `${ val.letterSpacing }px`,
-						},
-					} )
+					if ( val.tag ) {
+						cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
+							[ selector ]: {
+								'font-family': `${ val.font }, sans-serif`,
+								'font-size': `${ val.size }px`,
+								'font-weight': val.weight,
+								'text-transform': val.transform,
+								'line-height': `${ val.lineHeight }em`,
+								'letter-spacing': `${ val.letterSpacing }px`,
+							},
+						} )
+					}
 				} )
 			} )
 			if ( viewport !== 'Desktop' ) {
 				willAssertTypographyStyles.forEach( val => {
 					cy.changePreviewMode( viewport )
-					cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
-						[ selector ]: {
-							'font-size': `${ val.size }px`,
-							'line-height': `${ val.lineHeight }em`,
-						},
-					} )
+					if ( val.tag ) {
+						cy.adjust( 'Title HTML Tag', val.tag ).assertComputedStyle( {
+							[ selector ]: {
+								'font-size': `${ val.size }px`,
+								'line-height': `${ val.lineHeight }em`,
+							},
+						} )
+					}
 				} )
 			}
 		}
@@ -219,7 +227,7 @@ function assertGlobalTypography( viewport, desktopOnly ) {
 					if ( name === 'text' ) {
 						cy.toggleStyle( 'Title' )
 					}
-					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
+					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block', 0 )
 				}
 
 				if ( blocksWithTitle.includes( blockName ) ) {
@@ -249,11 +257,14 @@ function globalTypographyUnits( viewport ) {
 		cy.newPage()
 
 		// Test fontSize em and lineHeight px values for all viewports
-		const emFontSize = [ 4.2, 4.1, 3.9, 3.8, 3.7, 3.6, 3.5 ]
-		const pxLineHeight = [ 64, 58, 54, 48, 44, 38, 34 ]
+		const emFontSize = [ 4.2, 4.1, 3.9, 3.8, 3.7, 3.6, 3.5, 3.4 ]
+		const pxLineHeight = [ 64, 58, 54, 48, 44, 38, 34, 30 ]
 
 		cy.addBlock( 'core/paragraph' )
 		emFontSize.forEach( ( fontSize, idx ) => {
+			if ( ! Object.keys( willAssertTypographyStyles[ idx ] ).length ) {
+				return
+			}
 			cy.adjustGlobalTypography( willAssertTypographyStyles[ idx ].tag, {
 				'Size': {
 					value: fontSize,
@@ -277,12 +288,14 @@ function globalTypographyUnits( viewport ) {
 			// Adjust preview to the current viewport
 			// We need to do this because Title HTML tag does not have viewport controls.
 			cy.changePreviewMode( viewport )
-			cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx ].tag ).assertComputedStyle( {
-				'.ugb-blog-posts__title': {
-					'font-size': `${ fontSize }em`,
-					'line-height': `${ pxLineHeight[ idx ] }px`,
-				},
-			} )
+			if ( willAssertTypographyStyles[ idx ].tag ) {
+				cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx ].tag ).assertComputedStyle( {
+					'.ugb-blog-posts__title': {
+						'font-size': `${ fontSize }em`,
+						'line-height': `${ pxLineHeight[ idx ] }px`,
+					},
+				} )
+			}
 		} )
 
 		blocks
@@ -296,7 +309,7 @@ function globalTypographyUnits( viewport ) {
 					if ( name === 'text' ) {
 						cy.toggleStyle( 'Title' )
 					}
-					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
+					cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block', 0 )
 				}
 
 				// Adjust preview to the current viewport
@@ -307,22 +320,26 @@ function globalTypographyUnits( viewport ) {
 				emFontSize.forEach( ( fontSize, idx ) => {
 					if ( blocksWithTitle.includes( blockName ) ) {
 						cy.collapse( 'Title' )
-						cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx ].tag ).assertComputedStyle( {
-							[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
-								'font-size': `${ fontSize }em`,
-								'line-height': `${ pxLineHeight[ idx ] }px`,
-							},
-						} )
+						if ( willAssertTypographyStyles[ idx ].tag ) {
+							cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx ].tag ).assertComputedStyle( {
+								[ `.ugb-${ name === 'count-up' ? 'countup' : name }__title` ]: {
+									'font-size': `${ fontSize }em`,
+									'line-height': `${ pxLineHeight[ idx ] }px`,
+								},
+							} )
+						}
 					}
 
 					if ( blocksWithBlockTitle.includes( blockName ) ) {
 						cy.toggleStyle( 'Block Title' )
-						cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx ].tag ).assertComputedStyle( {
-							[ `.ugb-${ name } .ugb-block-title` ]: {
-								'font-size': `${ fontSize }em`,
-								'line-height': `${ pxLineHeight[ idx ] }px`,
-							},
-						} )
+						if ( willAssertTypographyStyles[ idx ].tag ) {
+							cy.adjust( 'Title HTML Tag', willAssertTypographyStyles[ idx ].tag ).assertComputedStyle( {
+								[ `.ugb-${ name } .ugb-block-title` ]: {
+									'font-size': `${ fontSize }em`,
+									'line-height': `${ pxLineHeight[ idx ] }px`,
+								},
+							} )
+						}
 					}
 				} )
 
@@ -339,7 +356,11 @@ function globalTypographyNativeBlocks() {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'ugb/divider' ) // placeholder
-		range( 1, 8 ).forEach( idx => {
+
+		range( 1, 9 ).forEach( idx => {
+			if ( ! Object.keys( willAssertTypographyStyles[ idx - 1 ] ).length ) {
+				return
+			}
 			cy.adjustGlobalTypography( willAssertTypographyStyles[ idx - 1 ].tag, {
 				'Font Family': willAssertTypographyStyles[ idx - 1 ].font,
 				'Size': {
@@ -376,15 +397,16 @@ function globalTypographyNativeBlocks() {
 						},
 					} )
 				} )
-			} else if ( blockName === 'core/paragraph' || blockName === 'core/list' ) {
+			}
+			if ( blockName === 'core/paragraph' || blockName === 'core/list' ) {
 				cy.selectBlock( blockName ).assertComputedStyle( {
 					[ `${ blockName === 'core/paragraph' ? '' : 'li' }` ]: {
-						'font-family': `${ willAssertTypographyStyles[ 6 ].font }, sans-serif`,
-						'font-size': `${ willAssertTypographyStyles[ 6 ].size }px`,
-						'font-weight': willAssertTypographyStyles[ 6 ].weight,
-						'text-transform': willAssertTypographyStyles[ 6 ].transform,
-						'line-height': `${ willAssertTypographyStyles[ 6 ].lineHeight }em`,
-						'letter-spacing': `${ willAssertTypographyStyles[ 6 ].letterSpacing }px`,
+						'font-family': `${ willAssertTypographyStyles[ 7 ].font }, sans-serif`, // Body text assertion
+						'font-size': `${ willAssertTypographyStyles[ 7 ].size }px`,
+						'font-weight': willAssertTypographyStyles[ 7 ].weight,
+						'text-transform': willAssertTypographyStyles[ 7 ].transform,
+						'line-height': `${ willAssertTypographyStyles[ 7 ].lineHeight }em`,
+						'letter-spacing': `${ willAssertTypographyStyles[ 7 ].letterSpacing }px`,
 					},
 				} )
 			}

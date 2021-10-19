@@ -13,7 +13,7 @@ function multipleDynamicContent() {
 		cy.newPost()
 		cy.typePostTitle( 'Foo' )
 		cy.addBlock( 'core/paragraph' )
-		cy.typeBlock( 'core/paragraph', '', 'Sample paragraph text here. Lorem ipsum dolor.' )
+		cy.typeBlock( 'core/paragraph', '', 'Sample paragraph text here. Lorem ipsum dolor.', 0 )
 	} )
 
 	it( 'should allow adding multiple dynamic content in one line', () => {

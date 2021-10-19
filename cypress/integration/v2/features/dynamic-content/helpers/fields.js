@@ -1,7 +1,9 @@
 /**
  * External dependencies
  */
-import { range, first } from 'lodash'
+import {
+	range, first,
+} from 'lodash'
 
 /**
  * Setup function.
@@ -34,17 +36,18 @@ export function setupMatchPostFieldValues( type ) {
 		cy.newPage()
 		cy.addBlock( 'core/paragraph' )
 		// For page assertion, add text content as the excerpt since pages doesn't have post excerpt editor.
-		cy.typeBlock( 'core/paragraph', '', 'Excerpt content.' )
+		cy.typeBlock( 'core/paragraph', '', 'Excerpt content.', 0 )
 	}
 	// Define the alias.
 	cy.wrap( [] ).as( 'fieldsToAssert' )
 
 	// Populate Post Title.
-	cy.typePostTitle( 'Dynamic Content test' )
-	addToTest( { name: 'Post Title', value: 'Dynamic Content test' } )
+	const id = new Date().getTime() % 1000
+	cy.typePostTitle( `Dynamic Content test ${ id }` )
+	addToTest( { name: 'Post Title', value: `Dynamic Content test ${ id }` } )
 
 	// Populate Post Slug.
-	addToTest( { name: 'Post Slug', value: 'dynamic-content-test' } )
+	addToTest( { name: 'Post Slug', value: `dynamic-content-test-${ id }` } )
 
 	// Populate Post Excerpt.
 	if ( type === 'post' ) {
@@ -90,9 +93,13 @@ export function setupMatchPostFieldValues( type ) {
 	cy.addFeaturedImage()
 	cy.getPostData().then( data => {
 		// Post Fields
-		addToTest( { name: 'Post URL', value: data.link } )
-		addToTest( { name: 'Post ID', value: data.id } )
-		addToTest( { name: 'Featured Image URL', value: data.featured_image_urls.full[ 0 ] } )
+		addToTest( {
+			name: 'Post URL', value: data.link,
+		} )
+		addToTest( { name: 'Post ID', value: `${ data.id.toString() }` } )
+		addToTest( {
+			name: 'Featured Image URL', value: data.featured_image_urls.full[ 0 ],
+		} )
 		addToTest( { name: 'Post Type', value: data.type } )
 		addToTest( { name: 'Post Status', value: data.status } )
 
@@ -119,8 +126,10 @@ export function setupMatchPostFieldValues( type ) {
 
 		// Author Fields
 		addToTest( { name: 'Author Name', value: data.author_info.name } )
-		addToTest( { name: 'Author ID', value: data.author } )
-		addToTest( { name: 'Author Posts URL', value: data.author_info.url } )
+		addToTest( { name: 'Author ID', value: `${ data.author.toString() }` } )
+		addToTest( {
+			name: 'Author Posts URL', value: data.author_info.url,
+		} )
 
 		// Misc. Fields
 		addToTest( { name: 'Comment Number', value: parseInt( data.comments_num ).toString() } )
@@ -129,7 +138,9 @@ export function setupMatchPostFieldValues( type ) {
 
 	// Get the author's profile picture URL
 	cy.wp().then( wp => {
-		addToTest( { name: 'Author Profile Picture URL', value: wp.data.select( 'core' ).getAuthors()[ 0 ].avatar_urls[ 96 ] } )
+		addToTest( {
+			name: 'Author Profile Picture URL', value: wp.data.select( 'core' ).getAuthors()[ 0 ].avatar_urls[ 96 ], willEscape: true,
+		} )
 	} )
 
 	/**

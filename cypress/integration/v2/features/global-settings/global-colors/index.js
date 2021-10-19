@@ -96,7 +96,7 @@ export function adjustGlobalColorTest() {
 						if ( name === 'text' ) {
 							cy.toggleStyle( 'Title' )
 						}
-						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
+						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block', 0 )
 					}
 
 					cy.collapse( 'Title' )
@@ -187,7 +187,7 @@ export function changeGlobalColorTest() {
 						if ( name === 'text' ) {
 							cy.toggleStyle( 'Title' )
 						}
-						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
+						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block', 0 )
 					}
 
 					cy.collapse( 'Title' )
@@ -302,10 +302,10 @@ export function globalColorNativeBlocks() {
 		nativeBlocks.forEach( blockName => {
 			cy.addBlock( blockName )
 			if ( ! Array( 'core/separator', 'core/buttons' ).includes( blockName ) ) {
-				cy.typeBlock( blockName, '', 'Block text' )
+				cy.typeBlock( blockName, '', 'Block text', 0 )
 			}
 			if ( blockName === 'core/buttons' ) {
-				cy.typeBlock( 'core/button', '.wp-block-button__link', 'My button' )
+				cy.typeBlock( 'core/button', '.wp-block-button__link', 'My button', 0 )
 			}
 		} )
 
@@ -319,12 +319,7 @@ export function globalColorNativeBlocks() {
 
 		const isWpLessThan58 = compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.8.0', '<' )
 
-		const isWpEqual55 = compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.6.0', '<' )
-		// For WP 5.5, the separator selector is different.
-		const separatorSelector = isWpEqual55 ? '.wp-block-separator' : ''
-
 		nativeBlocks
-			.filter( blockName => isWpEqual55 ? blockName !== 'core/list' : blockName )
 			.forEach( blockName => {
 				cy.selectBlock( `${ blockName === 'core/buttons' ? 'core/button' : blockName }` )
 				cy.openSidebar( 'Settings' )
@@ -339,9 +334,7 @@ export function globalColorNativeBlocks() {
 						.assertComputedStyle( {
 							[ `${ blockName === 'core/buttons'
 								? '.wp-block-button__link'
-								: blockName === 'core/separator'
-									? separatorSelector
-									: ''
+								: ''
 							}` ]: {
 								'color': val.color,
 							},
@@ -382,7 +375,7 @@ export function deleteGlobalColorTest() {
 						if ( name === 'text' ) {
 							cy.toggleStyle( 'Title' )
 						}
-						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block' )
+						cy.typeBlock( blockName, `.ugb-${ name }__title`, 'Title for this block', 0 )
 					}
 
 					cy.collapse( 'Title' )

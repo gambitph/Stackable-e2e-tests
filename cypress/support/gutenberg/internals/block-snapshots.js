@@ -279,9 +279,11 @@ export function blockSnapshotsAssertBlockContent( originalFn, ...args ) {
 				const saveElement = createElementFromHTMLString( wp.blocks.getBlockContent( block ) )
 				const parsedClassList = Array.from( saveElement.classList ).map( _class => `.${ _class }` ).join( '' )
 
+				const element = parsedClassList.match( customSelector ) ? saveElement : saveElement.querySelector( customSelector )
+
 				assert.isTrue(
-					( parsedClassList.match( customSelector ) ? saveElement : saveElement.querySelector( customSelector ) ).textContent === expectedValue,
-					`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+					element.textContent === expectedValue,
+					`${ customSelector } must have content '${ expectedValue }' in Frontend. Found: '${ element.textContent }''`
 				)
 			} )
 

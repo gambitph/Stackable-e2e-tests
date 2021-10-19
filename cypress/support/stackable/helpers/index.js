@@ -22,15 +22,16 @@ export { assertAdvancedTab } from './advanced'
  * Helper function for creating block validation test.
  *
  * @param {string} blockName
+ * @param {Object} addBlockOptions
  */
-export const blockErrorTest = ( blockName = 'ugb/accordion' ) =>
+export const blockErrorTest = ( blockName = 'ugb/accordion', addBlockOptions = {} ) =>
 	() => {
 		cy.setupWP()
-		if ( blockName === 'ugb/blog-posts' ) {
+		if ( Array( 'ugb/blog-posts', 'stackable/posts' ).includes( blockName ) ) {
 			cy.registerPosts( { numOfPosts: 1 } )
 		}
 		cy.newPage()
-		cy.addBlock( blockName )
+		cy.addBlock( blockName, addBlockOptions )
 		cy.savePost()
 		cy.reload()
 	}
@@ -40,14 +41,15 @@ export const blockErrorTest = ( blockName = 'ugb/accordion' ) =>
  *
  * @param {string} blockName
  * @param {string} selector
+ * @param {Object} addBlockOptions
  */
-export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-accordion' ) => () => {
+export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-accordion', addBlockOptions = {} ) => () => {
 	cy.setupWP()
-	if ( blockName === 'ugb/blog-posts' ) {
+	if ( Array( 'ugb/blog-posts', 'stackable/posts' ).includes( blockName ) ) {
 		cy.registerPosts( { numOfPosts: 1 } )
 	}
 	cy.newPage()
-	cy.addBlock( blockName )
+	cy.addBlock( blockName, addBlockOptions )
 	cy.get( selector ).should( 'exist' )
 	cy.savePost()
 }
@@ -60,7 +62,7 @@ export const assertBlockExist = ( blockName = 'ugb/accordion', selector = '.ugb-
  */
 export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => () => {
 	cy.setupWP()
-	if ( blockName === 'ugb/blog-posts' ) {
+	if ( Array( 'ugb/blog-posts', 'stackable/posts' ).includes( blockName ) ) {
 		cy.registerPosts( { numOfPosts: 1 } )
 	}
 	cy.newPage()
@@ -86,7 +88,7 @@ export const switchDesigns = ( blockName = 'ugb/accordion', designs = [] ) => ()
  */
 export const switchLayouts = ( blockName = 'ugb/accordion', layouts = [] ) => () => {
 	cy.setupWP()
-	if ( blockName === 'ugb/blog-posts' ) {
+	if ( Array( 'ugb/blog-posts', 'stackable/posts' ).includes( blockName ) ) {
 		cy.registerPosts( { numOfPosts: 1 } )
 	}
 	cy.newPage()
@@ -153,7 +155,7 @@ export const registerTests = ( testsList = [] ) => () => _registerTests(
 			cy.server()
 			cy.route( {
 				method: 'GET',
-				url: /stk_design_library/,
+				url: /design_library/,
 				status: 200,
 			} ).as( 'designLibrary' )
 		} )
@@ -511,4 +513,97 @@ export const assertUgbButtons = ( blockName, blockSelector, options = {}, assert
 			} )
 		} )
 	} )
+}
+
+/**
+ * Helper function for asserting the links in stackable buttons.
+ *
+ * @param {string} blockName
+ * @param {Object} options
+ */
+export const assertLinks = ( blockName, options = {} ) => {
+	const {
+		editorSelector = '',
+		frontendSelector = '',
+	} = options
+
+	cy.get( editorSelector ).its( 'length' ).then( links => {
+		range( 0, links ).forEach( index => {
+			// Click the button to open popover
+			cy.selectBlock( blockName, index ).find( editorSelector ).click( { force: true } )
+
+			const parentSelector = '.components-popover__content'
+			const supportedDelimiter = [ ' ' ]
+
+			/**
+			 * TODO: This will not work on dynamic blocks since we need to do some extra steps
+			 * before adjusting the options again.
+			 */
+
+			cy.get( parentSelector ).then( () => {
+				cy.adjust( 'Link / URL', `https://wpstackable${ index }.com/`, { parentSelector, supportedDelimiter } )
+					.assertHtmlAttribute( frontendSelector, 'href', `https://wpstackable${ index }.com/`, { assertBackend: false } )
+				cy.adjust( 'Open in new tab', true, { parentSelector, supportedDelimiter } )
+					.assertHtmlAttribute( frontendSelector, 'rel', /noreferrer noopener/, { assertBackend: false } )
+				cy.adjust( 'Link rel', 'sponsored ugc', { parentSelector, supportedDelimiter } )
+					.assertHtmlAttribute( frontendSelector, 'rel', /sponsored ugc/, { assertBackend: false } )
+			} )
+			cy.resetStyle( 'Link / URL', { parentSelector, supportedDelimiter } )
+		} )
+	} )
+}
+
+/**
+ * Helper function for asserting the loaded js files of a block
+ *
+ * @param {string} blockName
+ * @param {string} selector
+ * @param {Object} addBlockOptions
+ */
+export const checkJsFiles = ( blockName = 'stackable/accordion', selector = '#stk-frontend-accordion-js', addBlockOptions = {} ) => () => {
+	cy.setupWP()
+	cy.newPage()
+	cy.typePostTitle( 'Check frontend files' )
+	cy.addBlock( blockName, addBlockOptions )
+	cy.savePost()
+
+	cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+		cy.visit( previewUrl )
+		cy.document().then( doc => {
+			assert.isTrue(
+				doc.querySelector( selector ) !== null,
+				`Expected '${ blockName }' js files are loaded in the frontend`
+			)
+		} )
+		// Remove the block and assert that files does not exist in frontend
+		cy.visit( editorUrl )
+		cy.deleteBlock( blockName )
+		cy.savePost()
+		cy.visit( previewUrl )
+		cy.document().then( doc => {
+			assert.isTrue(
+				doc.querySelector( selector ) === null,
+				`Expected '${ blockName }' js files are not loaded in the frontend`
+			)
+		} )
+	} )
+}
+
+/**
+ * Helper function for asserting the presence of inner blocks.
+ *
+ * @param {string} blockName
+ * @param {Array} innerBlockSelectors
+ * @param {Object} addBlockOptions
+ */
+export const assertInnerBlocks = ( blockName = 'stackable/accordion', innerBlockSelectors = [], addBlockOptions = {} ) => () => {
+	cy.setupWP()
+	cy.newPage()
+	cy.addBlock( blockName, addBlockOptions )
+	innerBlockSelectors.forEach( selector => {
+		cy.selectBlock( blockName )
+			.find( selector )
+			.should( 'exist' )
+	} )
+	cy.savePost()
 }
