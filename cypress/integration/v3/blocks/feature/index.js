@@ -93,7 +93,6 @@ function blockTab( viewport ) {
 		viewport,
 		mainSelector: '.stk-block-feature',
 		alignmentSelector: '.stk-block-feature > .stk-inner-blocks',
-		columnAlignmentEditorSelector: true,
 		enableInnerBlockAlignment: false,
 	} )
 
