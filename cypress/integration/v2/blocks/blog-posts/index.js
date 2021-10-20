@@ -98,32 +98,42 @@ function styleTab( viewport, desktopOnly ) {
 			// Reset the values since we cannot determine the post IDs of our added posts
 			cy.resetStyle( 'Exclude Post IDs' )
 			cy.resetStyle( 'Display Specific Post IDs' )
-			cy.savePost()
 
-			/**
-			 * TODOs:
-			 * Assertion of Post Type values:
-			 * - Post type
-			 * - Filter by taxonomy
-			 * - Taxonomy filter type
-			 * - Categories / Add item
-			 * - Exclude Post IDs
-			 * - Display Specific Post IDs
-			 */
+			const editorTitleOrder = []
+
+			// Get the all the posts loaded in the editor to compare with posts in frontend
+			cy.get( '.ugb-blog-posts__title a' ).then( titles => {
+				Object.keys( titles ).forEach( post => {
+					if ( titles[ post ].innerText !== undefined ) {
+						editorTitleOrder.push( titles[ post ].innerText )
+					}
+				} )
+				// Assert the Order by option
+				assert.isTrue(
+					editorTitleOrder.every( ( item, index ) => index === 0 || item >= editorTitleOrder[ index - 1 ] ),
+					'Expected the title of the posts to be in ascending order in Editor.'
+				)
+			} )
+			cy.savePost()
 
 			cy.getPostUrls().then( ( { previewUrl } ) => {
 				cy.visit( previewUrl )
 				cy.get( '.ugb-blog-posts__title a' ).then( titles => {
-					const titleOrder = []
+					const frontendTitleOrder = []
 					Object.keys( titles ).forEach( post => {
 						if ( titles[ post ].innerText !== undefined ) {
-							titleOrder.push( titles[ post ].innerText )
+							frontendTitleOrder.push( titles[ post ].innerText )
 						}
 					} )
 					// Assert the Order by option
 					assert.isTrue(
-						titleOrder.every( ( item, index ) => index === 0 || item >= titleOrder[ index - 1 ] ),
-						'Expected the title of the posts to be in ascending order.'
+						frontendTitleOrder.every( ( item, index ) => index === 0 || item >= frontendTitleOrder[ index - 1 ] ),
+						'Expected the title of the posts to be in ascending order in Frontend.'
+					)
+					// Assert the posts rendered in Editor is the same in Frontend
+					assert.isTrue(
+						JSON.stringify( editorTitleOrder ) === JSON.stringify( frontendTitleOrder ),
+						'Expected the posts rendered in Editor is the same in Frontend.'
 					)
 				} )
 			} )
