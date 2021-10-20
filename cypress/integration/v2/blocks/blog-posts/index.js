@@ -90,15 +90,43 @@ function styleTab( viewport, desktopOnly ) {
 			cy.adjust( 'Post Type', 'post' )
 			cy.adjust( 'Filter by Taxonomy', 'category' )
 			cy.adjust( 'Taxonomy Filter Type', '__in' )
-			cy.adjust( 'Add item', 'Uncategorized' )
+			cy.adjust( 'Add item', [ 'Uncategorized' ] )
+
+			// Adjust the options only to check the presence in inspector
 			cy.adjust( 'Exclude Post IDs', '1,3' )
 			cy.adjust( 'Display Specific Post IDs', '2,4' )
+			// Reset the values since we cannot determine the post IDs of our added posts
+			cy.resetStyle( 'Exclude Post IDs' )
+			cy.resetStyle( 'Display Specific Post IDs' )
+			cy.savePost()
 
 			/**
 			 * TODOs:
-			 * - Assertion of Post Type values above
+			 * Assertion of Post Type values:
+			 * - Post type
+			 * - Filter by taxonomy
+			 * - Taxonomy filter type
+			 * - Categories / Add item
+			 * - Exclude Post IDs
+			 * - Display Specific Post IDs
 			 */
-			cy.savePost()
+
+			cy.getPostUrls().then( ( { previewUrl } ) => {
+				cy.visit( previewUrl )
+				cy.get( '.ugb-blog-posts__title a' ).then( titles => {
+					const titleOrder = []
+					Object.keys( titles ).forEach( post => {
+						if ( titles[ post ].innerText !== undefined ) {
+							titleOrder.push( titles[ post ].innerText )
+						}
+					} )
+					// Assert the Order by option
+					assert.isTrue(
+						titleOrder.every( ( item, index ) => index === 0 || item >= titleOrder[ index - 1 ] ),
+						'Expected the title of the posts to be in ascending order.'
+					)
+				} )
+			} )
 		} )
 	} )
 

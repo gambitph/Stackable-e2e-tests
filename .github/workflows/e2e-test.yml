@@ -1,9 +1,9 @@
 name: e2e-test-latest
 on:
   push:
-    branches: [ master ]
+    branches: [ master, v3 ]
   pull_request:
-    branches: [ master ]
+    branches: [ master, v3 ]
 
 jobs:
   test:
