@@ -103,15 +103,14 @@ function styleTab( viewport, desktopOnly ) {
 
 			// Get the all the posts loaded in the editor to compare with posts in frontend
 			cy.get( '.ugb-blog-posts__title a' ).then( titles => {
-				Object.keys( titles ).forEach( post => {
-					if ( titles[ post ].innerText !== undefined ) {
-						editorTitleOrder.push( titles[ post ].innerText )
-					}
+				titles.each( function() {
+					editorTitleOrder.push( this.innerText )
 				} )
+
 				// Assert the Order by option
 				assert.isTrue(
 					editorTitleOrder.every( ( item, index ) => index === 0 || item >= editorTitleOrder[ index - 1 ] ),
-					'Expected the title of the posts to be in ascending order in Editor.'
+					`Expected the title of the posts to be in ascending order in Editor. Found: '${ editorTitleOrder }'`
 				)
 			} )
 			cy.savePost()
@@ -120,15 +119,14 @@ function styleTab( viewport, desktopOnly ) {
 				cy.visit( previewUrl )
 				cy.get( '.ugb-blog-posts__title a' ).then( titles => {
 					const frontendTitleOrder = []
-					Object.keys( titles ).forEach( post => {
-						if ( titles[ post ].innerText !== undefined ) {
-							frontendTitleOrder.push( titles[ post ].innerText )
-						}
+					titles.each( function() {
+						frontendTitleOrder.push( this.innerText )
 					} )
+
 					// Assert the Order by option
 					assert.isTrue(
 						frontendTitleOrder.every( ( item, index ) => index === 0 || item >= frontendTitleOrder[ index - 1 ] ),
-						'Expected the title of the posts to be in ascending order in Frontend.'
+						`Expected the title of the posts to be in ascending order in Frontend. Found: '${ frontendTitleOrder }'`
 					)
 					// Assert the posts rendered in Editor is the same in Frontend
 					assert.isTrue(
