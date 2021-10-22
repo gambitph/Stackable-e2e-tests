@@ -10,6 +10,7 @@ export {
 	blockError,
 	typeContent,
 	pressEnterKey,
+	pressBackspace,
 }
 
 function blockExist() {
@@ -49,5 +50,24 @@ function pressEnterKey() {
 		cy.savePost()
 		// Reloading should not cause a block error
 		cy.reload()
+	} )
+}
+
+function pressBackspace() {
+	it( 'should test pressing the backspace in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/card' )
+		cy.addBlock( 'stackable/heading' )
+
+		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Hello World!', 1 )
+		cy.get( '.stk-block-heading__text' ).eq( 1 ).type( '{selectall}{backspace}{backspace}', { force: true } )
+
+		cy.get( '.block-editor-block-list__block.is-selected' ).invoke( 'attr', 'data-type' ).then( block => {
+			assert.isTrue(
+				block === 'stackable/card',
+				`Expected that the block is deleted and focus is on 'stackable/card'. Found: '${ block }'`
+			)
+		} )
 	} )
 }

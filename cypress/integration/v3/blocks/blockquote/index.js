@@ -26,4 +26,3 @@ function innerBlocksExist() {
 		'.stk-block-text',
 	] ) )
 }
-// TODO: Assert quote icon
