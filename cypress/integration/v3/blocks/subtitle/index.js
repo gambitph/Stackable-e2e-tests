@@ -37,8 +37,8 @@ function typeContent() {
 
 const assertBlockTab = Block
 	.includes( [
-		'Alignment',
-		'Background',
+		// 'Alignment',
+		// 'Background',
 		'Size & Spacing',
 		'Borders & Shadows',
 	] )
