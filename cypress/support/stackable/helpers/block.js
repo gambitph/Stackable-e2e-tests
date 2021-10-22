@@ -188,6 +188,7 @@ class BlockModule extends Module {
 		enableMaxContentWidth = true,
 		enablePaddings = true,
 		enableMargins = true,
+		contentVerticalAlignFrontendProperty = 'justify-content',
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 		const aligns = [ 'flex-start', 'center', 'flex-end' ]
@@ -219,7 +220,13 @@ class BlockModule extends Module {
 						[ MAIN_SELECTOR ]: {
 							'justify-content': align,
 						},
-					} )
+					}, { assertFrontend: false } )
+				cy.get( '.block-editor-block-list__block.is-selected' )
+					.assertComputedStyle( {
+						[ MAIN_SELECTOR ]: {
+							[ contentVerticalAlignFrontendProperty ]: align,
+						},
+					}, { assertBackend: false } )
 			} )
 		}
 
