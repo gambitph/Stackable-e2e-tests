@@ -55,7 +55,7 @@ function blockTab( viewport ) {
 	assertBlockTab( {
 		viewport,
 		mainSelector: '.stk-block-team-member',
-		alignmentSelector: '.stk-block-team-member > .stk-inner-blocks',
+		alignmentSelector: '.stk-block-team-member .stk-inner-blocks',
 		enableColumnAlignment: false,
 	} )
 
