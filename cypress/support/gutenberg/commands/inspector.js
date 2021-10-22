@@ -51,7 +51,7 @@ export function closeSidebar( sidebarName = '' ) {
  * element that matches the label or regex
  *
  * @param {string | RegExp} matches
- * @param {Object} options
+ * @param {GetBaseControlOptions} options
  */
 export function getBaseControl( matches, options = {} ) {
 	const {
@@ -61,14 +61,22 @@ export function getBaseControl( matches, options = {} ) {
 		supportedDelimiter = [],
 	} = options
 
-	const selector = Array( ...supportedDelimiter, '>', '>div>' ).map( d => `${ parentSelector ? `${ parentSelector }${ d }` : '' }${ mainComponentSelector }` ).join( ',' )
+	if ( matches.match( /^(\.|#|:)/g ) ) {
+		return ( ! isInPopover
+			? cy.get( matches )
+			: cy.get( '.components-popover__content' ).find( matches )
+		)
+	}
+
+	const selector = Array( ...supportedDelimiter, '>', '>div>' )
+		.map( d => `${ parentSelector ? `${ parentSelector }${ d }` : '' }${ mainComponentSelector }` )
+		.join( ',' )
 
 	return ( ! isInPopover
 		? cy.get( selector )
 		: cy.get( '.components-popover__content' ).find( mainComponentSelector ) )
 		.contains( containsRegExp( matches ) )
 		.closest( selector )
-		// .find( `.components-base-control__label:contains(${ matches }), .components-toggle-control__label:contains(${ matches })` ) // TODO: failing on Single / Gradient option of Container
 }
 
 /**

@@ -372,16 +372,15 @@ class AdvancedModule extends Module {
 
 		const positions = [ 'static', 'relative', 'absolute', 'sticky' ]
 		positions.forEach( value => {
-			cy.adjust( 'Position', value, { viewport } ).assertComputedStyle( {
+			cy.adjust( '.components-base-control:contains(Position):first', value, { viewport } ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'position': value,
 				},
 			} )
 		} )
 
-		// TODO: There are 2 `Position` options. This part may fail.
 		// Hover state - px unit
-		cy.adjust( 'Position', [ 16, 17, 18, 19 ], {
+		cy.adjust( '.components-base-control:contains(Position):last', [ 16, 17, 18, 19 ], {
 			viewport, state: 'hover', unit: 'px',
 		} ).assertComputedStyle( {
 			[ `${ MAIN_SELECTOR }:hover` ]: {
@@ -393,7 +392,7 @@ class AdvancedModule extends Module {
 		} )
 
 		// Hover state - % unit
-		cy.adjust( 'Position', [ 20, 21, 22, 23 ], {
+		cy.adjust( '.components-base-control:contains(Position):last', [ 20, 21, 22, 23 ], {
 			viewport, state: 'hover', unit: '%',
 		} ).assertComputedStyle( {
 			[ `${ MAIN_SELECTOR }:hover` ]: {
@@ -405,7 +404,7 @@ class AdvancedModule extends Module {
 		} )
 
 		// Normal state - px unit
-		cy.adjust( 'Position', [ 5, 4, 3, 2 ], {
+		cy.adjust( '.components-base-control:contains(Position):last', [ 5, 4, 3, 2 ], {
 			viewport, state: 'normal', unit: 'px',
 		} ).assertComputedStyle( {
 			[ MAIN_SELECTOR ]: {
@@ -417,7 +416,7 @@ class AdvancedModule extends Module {
 		} )
 
 		// Normal state - % unit
-		cy.adjust( 'Position', [ 23, 24, 25, 26 ], {
+		cy.adjust( '.components-base-control:contains(Position):last', [ 23, 24, 25, 26 ], {
 			viewport, state: 'normal', unit: '%',
 		} ).assertComputedStyle( {
 			[ MAIN_SELECTOR ]: {

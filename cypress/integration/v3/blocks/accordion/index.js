@@ -56,7 +56,7 @@ function loadedFiles() {
 
 const assertAdvancedTab = Advanced
 	.includes( [
-		'Conditional Display',
+		'Transform & Transition',
 	] )
 	.run
 
