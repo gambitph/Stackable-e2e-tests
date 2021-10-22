@@ -89,6 +89,15 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		changeControlState( options )
 	}
 
+	// TODO: support null value in cy.adjust
+	// if ( args[ 1 ] === null ) {
+	// 	const options = Object.assign( args[ 2 ], { name: label, value: args[ 1 ] } )
+	// 	changeControlViewport( options )
+	// 	changeUnit( options )
+	// 	changeControlState( options )
+	// 	return cy.get( '.block-editor-block-list__block.is-selected' )
+	// }
+
 	// Handle options with no label
 	if ( label === 'Color Type' ) {
 		args.shift()

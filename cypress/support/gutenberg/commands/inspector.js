@@ -68,6 +68,7 @@ export function getBaseControl( matches, options = {} ) {
 		: cy.get( '.components-popover__content' ).find( mainComponentSelector ) )
 		.contains( containsRegExp( matches ) )
 		.closest( selector )
+		// .find( `.components-base-control__label:contains(${ matches }), .components-toggle-control__label:contains(${ matches })` ) // TODO: failing on Single / Gradient option of Container
 }
 
 /**
