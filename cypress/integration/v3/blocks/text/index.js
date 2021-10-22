@@ -102,8 +102,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/text' )
-		cy.selectBlock( 'stackable/text' ).asBlock( 'textBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/text' ).asBlock( 'textBlock', { isStatic: true } )
 		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'Text block', 0 )
 		cy.openInspector( 'stackable/text', 'Block' )
 	} )

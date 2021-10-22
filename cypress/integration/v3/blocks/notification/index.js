@@ -67,8 +67,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/notification', { variation: 'Default Layout' } )
-		cy.selectBlock( 'stackable/notification' ).asBlock( 'notificationBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/notification', { variation: 'Default Layout' } ).asBlock( 'notificationBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/notification', 'Block' )
 	} )
 

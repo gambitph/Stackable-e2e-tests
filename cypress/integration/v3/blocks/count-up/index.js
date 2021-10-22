@@ -53,8 +53,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/count-up' )
-		cy.selectBlock( 'stackable/count-up' ).asBlock( 'countUpBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/count-up' ).asBlock( 'countUpBlock', { isStatic: true } )
 		cy.typeBlock( 'stackable/count-up', '.stk-block-count-up__text', '145,234.99', 0 )
 		cy.openInspector( 'stackable/count-up', 'Block' )
 	} )

@@ -52,8 +52,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/expand' )
-		cy.selectBlock( 'stackable/expand' ).asBlock( 'expandBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/expand' ).asBlock( 'expandBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/expand', 'Block' )
 	} )
 

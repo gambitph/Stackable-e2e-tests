@@ -63,8 +63,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/pricing-box', { variation: 'Default Layout' } )
-		cy.selectBlock( 'stackable/pricing-box' ).asBlock( 'pricingBoxBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/pricing-box', { variation: 'Default Layout' } ).asBlock( 'pricingBoxBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/pricing-box', 'Block' )
 	} )
 

@@ -63,8 +63,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/testimonial', { variation: 'Default Layout' } )
-		cy.selectBlock( 'stackable/testimonial' ).asBlock( 'testimonialBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/testimonial', { variation: 'Default Layout' } ).asBlock( 'testimonialBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/testimonial', 'Block' )
 	} )
 

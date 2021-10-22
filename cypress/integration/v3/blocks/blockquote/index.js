@@ -47,8 +47,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/blockquote', { variation: 'Default Layout' } )
-		cy.selectBlock( 'stackable/blockquote' ).asBlock( 'blockquoteBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/blockquote', { variation: 'Default Layout' } ).asBlock( 'blockquoteBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/blockquote', 'Block' )
 	} )
 

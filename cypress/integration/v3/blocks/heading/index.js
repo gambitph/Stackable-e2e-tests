@@ -70,8 +70,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/heading' )
-		cy.selectBlock( 'stackable/heading' ).asBlock( 'headingBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/heading' ).asBlock( 'headingBlock', { isStatic: true } )
 		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Heading', 0 )
 		cy.openInspector( 'stackable/heading', 'Block' )
 	} )

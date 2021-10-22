@@ -55,8 +55,7 @@ function blockTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/icon-list' )
-		cy.selectBlock( 'stackable/icon-list' ).asBlock( 'iconListBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/icon-list' ).asBlock( 'iconListBlock', { isStatic: true } )
 		cy.typeBlock( 'stackable/icon-list', '.stk-block-icon-list ul', 'Icon list', 0 )
 		cy.openInspector( 'stackable/icon-list', 'Block' )
 	} )
