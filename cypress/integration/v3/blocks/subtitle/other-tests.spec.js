@@ -10,10 +10,12 @@ import {
 	blockExist,
 	blockError,
 	typeContent,
+	pressBackspace,
 } from '.'
 
 describe( 'Subtitle Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	typeContent,
+	pressBackspace,
 ] ) )

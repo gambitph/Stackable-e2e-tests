@@ -32,8 +32,6 @@ function innerBlocksExist() {
 	], { variation: 'Default Layout' } ) )
 }
 
-// TODO: Assert quote icon
-
 const assertBlockTab = Block
 	.includes( [
 		'Alignment',
@@ -63,3 +61,6 @@ function blockTab( viewport ) {
 		cy.assertFrontendStyles( '@blockquoteBlock' )
 	} )
 }
+
+// TODO: Assert quote icon
+
