@@ -70,7 +70,7 @@ function blockTab( viewport ) {
 	assertBlockTab( {
 		viewport,
 		mainSelector: '.stk-block-pricing-box',
-		alignmentSelector: '.stk-block-pricing-box > .stk-inner-blocks',
+		alignmentSelector: '.stk-block-pricing-box .stk-inner-blocks',
 		enableColumnAlignment: false,
 	} )
 

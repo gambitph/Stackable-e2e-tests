@@ -91,7 +91,7 @@ function blockTab( viewport ) {
 	assertBlockTab( {
 		viewport,
 		mainSelector: '.stk-block-feature',
-		alignmentSelector: '.stk-block-feature > .stk-inner-blocks',
+		alignmentSelector: '.stk-block-feature .stk-inner-blocks',
 		enableInnerBlockAlignment: false,
 	} )
 

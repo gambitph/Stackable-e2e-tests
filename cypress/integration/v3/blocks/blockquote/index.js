@@ -54,7 +54,7 @@ function blockTab( viewport ) {
 	assertBlockTab( {
 		viewport,
 		mainSelector: '.stk-block-blockquote',
-		alignmentSelector: '.stk-block-blockquote > .stk-inner-blocks',
+		alignmentSelector: '.stk-block-blockquote .stk-inner-blocks',
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
 	} )

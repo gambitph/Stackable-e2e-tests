@@ -74,7 +74,7 @@ function blockTab( viewport ) {
 	assertBlockTab( {
 		viewport,
 		mainSelector: '.stk-block-notification',
-		alignmentSelector: '.stk-block-notification > .stk-inner-blocks',
+		alignmentSelector: '.stk-block-notification .stk-inner-blocks',
 		enableColumnAlignment: false,
 	} )
 

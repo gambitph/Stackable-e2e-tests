@@ -77,7 +77,7 @@ function blockTab( viewport ) {
 	assertBlockTab( {
 		viewport,
 		mainSelector: '.stk-block-column',
-		alignmentSelector: '.stk-block-column > .stk-inner-blocks',
+		alignmentSelector: '.stk-block-column .stk-inner-blocks',
 	} )
 
 	afterEach( () => {

@@ -70,7 +70,7 @@ function blockTab( viewport ) {
 	assertBlockTab( {
 		viewport,
 		mainSelector: '.stk-block-testimonial',
-		alignmentSelector: '.stk-block-testimonial > .stk-inner-blocks',
+		alignmentSelector: '.stk-block-testimonial .stk-inner-blocks',
 		enableColumnAlignment: false,
 	} )
 
