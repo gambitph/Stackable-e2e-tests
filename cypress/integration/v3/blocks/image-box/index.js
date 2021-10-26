@@ -10,6 +10,7 @@ export {
 	blockExist,
 	blockError,
 	innerBlocksExist,
+	assertIcon,
 }
 
 function blockExist() {
@@ -28,4 +29,13 @@ function innerBlocksExist() {
 		'.stk-block-icon',
 		'.stk-block-image',
 	], { variation: 'Basic' } ) )
+}
+
+function assertIcon() {
+	it( 'should assert the correct icon is added for the image box', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/image-box', { variation: 'Basic' } )
+		cy.get( '.stk-block-image-box .fa-arrow-right' ).should( 'exist' )
+	} )
 }
