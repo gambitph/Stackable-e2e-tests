@@ -57,6 +57,7 @@ function blockTab( viewport ) {
 		mainSelector: '.stk-block-team-member',
 		alignmentSelector: '.stk-block-team-member .stk-inner-blocks',
 		enableColumnAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 
 	afterEach( () => {

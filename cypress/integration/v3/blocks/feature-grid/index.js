@@ -77,6 +77,7 @@ function blockTab( viewport ) {
 		mainSelector: '.stk-block-feature-grid',
 		alignmentSelector: '.stk-block-feature-grid > .stk-inner-blocks',
 		enableInnerBlockAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 
 	afterEach( () => {

@@ -105,6 +105,7 @@ function blockTab( viewport ) {
 	assertBlockTab( {
 		viewport,
 		mainSelector: '.stk-block-button',
+		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 
 	afterEach( () => {

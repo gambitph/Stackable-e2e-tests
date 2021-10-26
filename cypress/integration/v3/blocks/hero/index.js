@@ -72,6 +72,7 @@ function blockTab( viewport ) {
 		mainSelector: '.stk-block-hero',
 		alignmentSelector: '.stk-block-hero .stk-inner-blocks',
 		enableColumnAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 
 	afterEach( () => {

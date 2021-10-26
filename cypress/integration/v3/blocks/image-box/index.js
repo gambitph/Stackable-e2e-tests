@@ -40,7 +40,7 @@ function assertIcon() {
 	it( 'should assert the correct icon is added for the image box', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/image-box', { variation: 'Basic' } )
+		cy.addBlock( 'stackable/image-box', { variation: 'Default Layout' } )
 		cy.get( '.stk-block-image-box .fa-arrow-right' ).should( 'exist' )
 	} )
 }
@@ -69,6 +69,7 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-image-box > .stk-inner-blocks',
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 
 	afterEach( () => {

@@ -103,6 +103,7 @@ function blockTab( viewport ) {
 		mainSelector: '.stk-block-card',
 		alignmentSelector: '.stk-block-card .stk-inner-blocks',
 		enableColumnAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 
 	afterEach( () => {

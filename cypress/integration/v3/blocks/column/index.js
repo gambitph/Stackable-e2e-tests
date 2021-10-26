@@ -78,6 +78,7 @@ function blockTab( viewport ) {
 		viewport,
 		mainSelector: '.stk-block-column',
 		alignmentSelector: '.stk-block-column .stk-inner-blocks',
+		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 
 	afterEach( () => {

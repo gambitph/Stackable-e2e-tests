@@ -86,6 +86,7 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-accordion',
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 
 	afterEach( () => {

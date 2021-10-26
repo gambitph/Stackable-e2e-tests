@@ -93,6 +93,7 @@ function blockTab( viewport ) {
 		mainSelector: '.stk-block-feature',
 		alignmentSelector: '.stk-block-feature .stk-inner-blocks',
 		enableInnerBlockAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 
 	afterEach( () => {

@@ -42,6 +42,7 @@ function blockTab( viewport ) {
 	assertBlockTab( {
 		viewport,
 		mainSelector: '.stk-block-separator',
+		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 
 	afterEach( () => {

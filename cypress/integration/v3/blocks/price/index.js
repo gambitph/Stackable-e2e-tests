@@ -63,6 +63,7 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-price',
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 
 	afterEach( () => {

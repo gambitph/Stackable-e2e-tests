@@ -62,5 +62,6 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-posts',
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 }
