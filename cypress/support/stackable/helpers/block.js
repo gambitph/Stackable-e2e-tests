@@ -25,9 +25,11 @@ class BlockModule extends Module {
 		viewport,
 		mainSelector = null,
 		alignmentSelector,
+		alignmentSelectorFrontend = '',
 		enableContentAlignment = true,
 		enableColumnAlignment = true,
 		enableInnerBlockAlignment = true,
+		columnAlignmentEditorMainSelector = false,
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 
@@ -38,10 +40,18 @@ class BlockModule extends Module {
 					: align === 'right' ? 'end'
 						: align
 				const responsiveClass = viewport === 'Desktop' ? '' : `-${ lowerCase( viewport ) }`
-				cy.adjust( 'Content Alignment', align, { viewport } )
-					.assertComputedStyle( { [ alignmentSelector ]: { 'text-align': alignValue } } )
-				cy.get( '.block-editor-block-list__block.is-selected' )
-					.assertClassName( alignmentSelector, `has-text-align-${ align }${ responsiveClass }` )
+
+				if ( ! alignmentSelectorFrontend ) {
+					cy.adjust( 'Content Alignment', align, { viewport } )
+						.assertComputedStyle( { [ alignmentSelector ]: { 'text-align': alignValue } } )
+					cy.get( '.block-editor-block-list__block.is-selected' )
+						.assertClassName( alignmentSelector, `has-text-align-${ align }${ responsiveClass }` )
+				} else {
+					cy.adjust( 'Content Alignment', align, { viewport } )
+						.assertClassName( alignmentSelector, `has-text-align-${ align }${ responsiveClass }`, { assertFrontend: false } )
+					cy.get( '.block-editor-block-list__block.is-selected' )
+						.assertClassName( alignmentSelectorFrontend, `has-text-align-${ align }${ responsiveClass }`, { assertBackend: false } )
+				}
 			} )
 		}
 
@@ -53,15 +63,24 @@ class BlockModule extends Module {
 					cy.get( '.block-editor-block-list__block.is-selected' ).then( $block => {
 						if ( $block.find( `.stk--block-align-${ blockId }` ).length ) {
 							// The block alignment classname is present
+							// Backend assertion
+							cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+								[ `.stk--block-align-${ blockId } > .block-editor-inner-blocks > .block-editor-block-list__layout` ]: {
+									'align-items': align,
+								},
+							}, { assertFrontend: false } )
+
+							// Frontend assertion
 							cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 								[ `.stk--block-align-${ blockId }` ]: {
 									'align-items': align,
 								},
-							} )
+							}, { assertBackend: false } )
 							return
 						}
+
 						cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-							[ `.stk-${ blockId }` ]: {
+							[ `${ columnAlignmentEditorMainSelector ? '' : `.stk-${ blockId }` }` ]: {
 								'align-self': align,
 							},
 						} )

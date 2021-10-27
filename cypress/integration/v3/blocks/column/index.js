@@ -78,6 +78,7 @@ function blockTab( viewport ) {
 		viewport,
 		mainSelector: '.stk-block-column',
 		alignmentSelector: '.stk-block-column .stk-inner-blocks',
+		columnAlignmentEditorMainSelector: true, // `.is-selected` element if true
 		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 

@@ -64,7 +64,7 @@ function pressBackspace() {
 	it( 'should test pressing the backspace in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/card' )
+		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } )
 		cy.addBlock( 'stackable/text' )
 
 		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'Hello World!', 1 )

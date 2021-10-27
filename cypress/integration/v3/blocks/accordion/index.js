@@ -58,7 +58,7 @@ function assertIcon() {
 	it( 'should assert the correct icon is added for the accordion', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/accordion' )
+		cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } )
 		cy.get( '.stk-block-accordion .fa-chevron-down' ).should( 'exist' )
 	} )
 }

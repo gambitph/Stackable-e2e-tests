@@ -53,6 +53,7 @@ function blockTab( viewport ) {
 		viewport,
 		mainSelector: '.stk-block-blockquote',
 		alignmentSelector: '.stk-block-blockquote .stk-inner-blocks',
+		alignmentSelectorFrontend: '.stk-block-blockquote > .stk-block-blockquote__content',
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
 		contentVerticalAlignFrontendProperty: 'align-items',
