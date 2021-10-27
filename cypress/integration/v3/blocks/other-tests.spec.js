@@ -28,21 +28,6 @@ function addInnerBlocksToQueryLoop() {
 			stkBlocks
 				.filter( blockName => ! Array( 'stackable/button', 'stackable/icon-button' ).includes( blockName ) )
 				.forEach( blockName => {
-					cy.addInnerBlock( 'core/query', blockName )
-					cy.assertBlockError()
-					cy.publish()
-					cy.reload()
-					cy.waitLoader( '.components-spinner' )
-					cy.deleteBlock( blockName )
-					cy.assertBlockError()
-					cy.publish()
-					cy.reload()
-					cy.waitLoader( '.components-spinner' )
-				} )
-
-			stkBlocks
-				.filter( blockName => ! Array( 'stackable/button', 'stackable/icon-button' ).includes( blockName ) )
-				.forEach( blockName => {
 					cy.addInnerBlock( 'core/post-template', blockName )
 					cy.assertBlockError()
 					cy.publish()
