@@ -29,6 +29,7 @@ class BlockModule extends Module {
 		enableContentAlignment = true,
 		enableColumnAlignment = true,
 		enableInnerBlockAlignment = true,
+		columnAlignmentEditorExtendedSelector = '',
 		columnAlignmentEditorMainSelector = false,
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
@@ -65,7 +66,7 @@ class BlockModule extends Module {
 							// The block alignment classname is present
 							// Backend assertion
 							cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-								[ `.stk--block-align-${ blockId } > .block-editor-inner-blocks > .block-editor-block-list__layout` ]: {
+								[ `.stk--block-align-${ blockId }${ columnAlignmentEditorExtendedSelector }` ]: {
 									'align-items': align,
 								},
 							}, { assertFrontend: false } )
@@ -79,11 +80,19 @@ class BlockModule extends Module {
 							return
 						}
 
+						// Backend assertion
 						cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 							[ `${ columnAlignmentEditorMainSelector ? '' : `.stk-${ blockId }` }` ]: {
 								'align-self': align,
 							},
-						} )
+						}, { assertFrontend: false } )
+
+						// Frontend assertion
+						cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+							[ `.stk-${ blockId }` ]: {
+								'align-self': align,
+							},
+						}, { assertBackend: false } )
 					} )
 				} )
 			} )

@@ -30,6 +30,8 @@ function typeContent() {
 		cy.registerPosts( { numOfPosts: 1 } )
 		cy.newPage()
 		cy.addBlock( 'stackable/posts', { variation: 'Default Layout' } )
+		cy.openInspector( 'stackable/posts', 'Style' )
+		cy.collapse( 'Read More Link' )
 
 		cy.typeBlock( 'stackable/posts', '.stk-block-posts__readmore', 'Click to read more', 0 )
 			.assertBlockContent( '.stk-block-posts__readmore', 'Click to read more' )

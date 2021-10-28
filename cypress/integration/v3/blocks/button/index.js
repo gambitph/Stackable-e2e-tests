@@ -2,6 +2,7 @@
 /**
  * External dependencies
  */
+import { uniqueId } from 'lodash'
 import {
 	assertBlockExist, blockErrorTest, assertLinks, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
@@ -33,6 +34,16 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'stackable/button-group' )
 		cy.selectBlock( 'stackable/button-group' ).addNewColumn( { blockToAdd: 'Button' } )
+
+		// Add a unique e2e className for the 2nd button added
+		// TODO: Find a better way to add this directly when calling `.addNewColumn`
+		cy.selectBlock( 'stackable/button', 1 ).then( $block => {
+			const clientId = $block.data( 'block' )
+			cy.wp().then( wp => {
+				const className = wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes.className
+				wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `${ className ? className + ' ' : '' }e2etest-block-${ uniqueId() }` } )
+			} )
+		} )
 
 		cy.selectBlock( 'stackable/button', 0 ).asBlock( 'buttonBlock1', { isStatic: true } )
 		cy.selectBlock( 'stackable/button', 1 ).asBlock( 'buttonBlock2', { isStatic: true } )
@@ -71,6 +82,16 @@ function assertLink() {
 		cy.typePostTitle( 'Test Button Link' )
 		cy.addBlock( 'stackable/button-group' )
 		cy.selectBlock( 'stackable/button-group' ).addNewColumn( { blockToAdd: 'Button' } )
+
+		// Add a unique e2e className for the 2nd button added
+		// TODO: Find a better way to add this directly when calling `.addNewColumn`
+		cy.selectBlock( 'stackable/button', 1 ).then( $block => {
+			const clientId = $block.data( 'block' )
+			cy.wp().then( wp => {
+				const className = wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes.className
+				wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `${ className ? className + ' ' : '' }e2etest-block-${ uniqueId() }` } )
+			} )
+		} )
 
 		cy.selectBlock( 'stackable/button', 0 ).asBlock( 'buttonBlock1', { isStatic: true } )
 		cy.selectBlock( 'stackable/button', 1 ).asBlock( 'buttonBlock2', { isStatic: true } )

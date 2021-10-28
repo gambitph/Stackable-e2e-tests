@@ -48,6 +48,7 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-columns > .stk-inner-blocks',
 		enableInnerBlockAlignment: false,
 		contentVerticalAlignFrontendProperty: 'align-items',
+		columnAlignmentEditorExtendedSelector: ' > .block-editor-inner-blocks > .block-editor-block-list__layout',
 	} )
 
 	afterEach( () => {
