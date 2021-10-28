@@ -2,14 +2,19 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
 	blockError,
 	typeContent,
 	pressBackspace,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
@@ -35,7 +40,7 @@ function pressBackspace() {
 	it( 'should test pressing the backspace in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/card' )
+		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } )
 		cy.addBlock( 'stackable/subtitle' )
 
 		cy.typeBlock( 'stackable/subtitle', '.stk-block-subtitle__text', 'Hello World!', 1 )
@@ -47,5 +52,37 @@ function pressBackspace() {
 				`Expected that the block is deleted and focus is on 'stackable/card'. Found: '${ block }'`
 			)
 		} )
+	} )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/subtitle' ).asBlock( 'subtitleBlock', { isStatic: true } )
+		cy.typeBlock( 'stackable/subtitle', '.stk-block-subtitle__text', 'Subtitle', 0 )
+		cy.openInspector( 'stackable/subtitle', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-subtitle',
+		alignmentSelector: '.stk-block-subtitle__text',
+		enableColumnAlignment: false,
+		enableInnerBlockAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@subtitleBlock' )
 	} )
 }

@@ -2,8 +2,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -11,6 +13,9 @@ export {
 	typeContent,
 	pressEnterKey,
 	pressBackspace,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
@@ -57,7 +62,7 @@ function pressBackspace() {
 	it( 'should test pressing the backspace in the block', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/card' )
+		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } )
 		cy.addBlock( 'stackable/heading' )
 
 		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Hello World!', 1 )
@@ -69,5 +74,36 @@ function pressBackspace() {
 				`Expected that the block is deleted and focus is on 'stackable/card'. Found: '${ block }'`
 			)
 		} )
+	} )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/heading' ).asBlock( 'headingBlock', { isStatic: true } )
+		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Heading', 0 )
+		cy.openInspector( 'stackable/heading', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-heading',
+		alignmentSelector: '.stk-block-heading__text',
+		enableColumnAlignment: false,
+		enableInnerBlockAlignment: false,
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@headingBlock' )
 	} )
 }
