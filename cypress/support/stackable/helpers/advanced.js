@@ -640,16 +640,20 @@ class AdvancedModule extends Module {
 
 			const parentSelector = '.stk-condition-component'
 
-			cy.get( '.ugb-panel--conditional-display' ).contains( containsRegExp( 'Add New Condition' ) ).click( { force: true } )
+			const addNewCondition = () => cy
+				.get( '.ugb-panel--conditional-display' )
+				.contains( containsRegExp( 'Add New Condition' ) )
+				.click( { force: true } )
+
+			addNewCondition()
+			// Login Status
 			cy.adjust( 'Condition Type', 'login-status', { parentSelector } )
-			cy.adjust( 'Login Status', 'logged-in', { parentSelector } )
+			cy.adjust( '.components-base-control:contains(Login Status):last', 'logged-in', { parentSelector } )
 			cy.savePost()
 			assertFrontendExist( 'exist' )
 
-			// TODO: Check this, still failing.
-
 			selectInspector()
-			cy.adjust( 'Login Status', 'logged-out', { parentSelector } )
+			cy.adjust( '.components-base-control:contains(Login Status):last', 'logged-out', { parentSelector } )
 			cy.savePost()
 			assertFrontendExist( 'not.exist' )
 		}
