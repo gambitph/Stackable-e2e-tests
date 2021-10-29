@@ -16,8 +16,6 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 	if ( Cypress.env( 'STACKABLE_PREMIUM_CODE' ) && ! isStackableActivated ) {
 		cy.activateLicense()
 	}
-	// Enable optimization setting by default.
-	cy.loadFrontendJsCssFiles()
 	// Upload media to the server
 	cy.uploadMedia()
 } )

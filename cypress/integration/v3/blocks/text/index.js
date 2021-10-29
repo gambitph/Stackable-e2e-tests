@@ -3,15 +3,21 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
 	blockError,
 	typeContent,
 	pressEnterKey,
+	pressBackspace,
 	addBlocks,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
@@ -54,8 +60,32 @@ function pressEnterKey() {
 	} )
 }
 
+function pressBackspace() {
+	it( 'should test pressing the backspace in the block', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } )
+		cy.addBlock( 'stackable/text' )
+
+		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'Hello World!', 1 )
+		cy.get( '.stk-block-text__text' ).eq( 1 ).type( '{selectall}{backspace}{backspace}', { force: true } )
+
+		cy.get( '.block-editor-block-list__block.is-selected' ).invoke( 'attr', 'data-type' ).then( block => {
+			assert.isTrue(
+				block === 'stackable/card',
+				`Expected that the block is deleted and focus is on 'stackable/card'. Found: '${ block }'`
+			)
+		} )
+	} )
+}
+
 function addBlocks() {
 	it( 'should test adding stackable blocks using the / command', () => {
+		const selectSkip = () => cy
+			.get( '.block-editor-block-variation-picker' )
+			.find( '.block-editor-block-variation-picker__skip button' )
+			.click( { force: true } )
+
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'stackable/text' )
@@ -64,6 +94,8 @@ function addBlocks() {
 			.contains( 'Accordion' )
 			.first()
 			.click( { force: true } )
+
+		selectSkip()
 		cy.get( '.stk-block-accordion' ).should( 'exist' )
 
 		cy.addBlock( 'stackable/text' )
@@ -72,6 +104,39 @@ function addBlocks() {
 			.contains( 'Feature Grid' )
 			.first()
 			.click( { force: true } )
+		selectSkip()
 		cy.get( '.stk-block-feature-grid' ).should( 'exist' )
+	} )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/text' ).asBlock( 'textBlock', { isStatic: true } )
+		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'Text block', 0 )
+		cy.openInspector( 'stackable/text', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-text',
+		alignmentSelector: '.stk-block-text__text',
+		enableColumnAlignment: false,
+		enableInnerBlockAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@textBlock' )
 	} )
 }

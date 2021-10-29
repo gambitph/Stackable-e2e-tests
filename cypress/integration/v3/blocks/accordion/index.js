@@ -3,10 +3,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, checkJsFiles, assertInnerBlocks, responsiveAssertHelper, Advanced,
+	assertBlockExist, blockErrorTest, checkJsFiles, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
 
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
 export {
@@ -15,24 +16,28 @@ export {
 	innerBlocks,
 	innerBlocksExist,
 	loadedFiles,
+	assertIcon,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 	desktopAdvanced,
 	tabletAdvanced,
 	mobileAdvanced,
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/accordion', '.stk-block-accordion' ) )
+	it( 'should show the block', assertBlockExist( 'stackable/accordion', '.stk-block-accordion', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/accordion' ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/accordion', { variation: 'Default Layout' } ) )
 }
 
 function innerBlocks() {
 	it( 'should allow adding inner blocks', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/accordion' )
+		cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } )
 
 		stkBlocks
 			.filter( blockName => blockName !== 'stackable/accordion' )
@@ -46,13 +51,52 @@ function innerBlocksExist() {
 	it( 'should assert presence of inner blocks when the block is added', assertInnerBlocks( 'stackable/accordion', [
 		'.stk-block-icon-label',
 		'.stk-block-text',
-	] ) )
+	], { variation: 'Default Layout' } ) )
 }
 
 function loadedFiles() {
-	it( 'should assert the loaded files in the frontend', checkJsFiles( 'stackable/accordion', '#stk-frontend-accordion-js' ) )
+	it( 'should assert the loaded files in the frontend', checkJsFiles( 'stackable/accordion', '#stk-frontend-accordion-js', { variation: 'Default Layout' } ) )
 }
-// TODO: Assert down arrow icon
+
+function assertIcon() {
+	it( 'should assert the correct icon is added for the accordion', () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } )
+		cy.get( '.stk-block-accordion .fa-chevron-down' ).should( 'exist' )
+	} )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } ).asBlock( 'accordionBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/accordion', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-accordion',
+		alignmentSelector: '.stk-block-accordion',
+		enableColumnAlignment: false,
+		enableInnerBlockAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@accordionBlock' )
+	} )
+}
 
 const assertAdvancedTab = Advanced
 	.includes( [

@@ -4,7 +4,7 @@
 import {
 	kebabCase, keys, first,
 } from 'lodash'
-import { containsRegExp } from '~common/util'
+import { containsRegExp, dispatchResolver } from '~common/util'
 
 /**
  * Internal dependencies
@@ -38,6 +38,7 @@ Cypress.Commands.add( 'popoverControlReset', popoverControlReset )
 Cypress.Commands.add( 'focalPointControlReset', focalPointControlReset )
 Cypress.Commands.add( 'stkDateTimeControlReset', stkDateTimeControlReset )
 Cypress.Commands.add( 'imageControlReset', imageControlReset )
+Cypress.Commands.add( 'toolbarControlReset', toolbarControlReset )
 
 // Adjust styles
 Cypress.Commands.add( 'adjustLayout', adjustLayout )
@@ -85,8 +86,24 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 	optionsToPass.beforeAdjust = ( name, value, _options ) => {
 		const options = Object.assign( _options, { name, value } )
 		changeControlViewport( options )
-		changeUnit( options )
 		changeControlState( options )
+		changeUnit( options )
+	}
+
+	// Function to call after adjusting the options
+	optionsToPass.afterAdjust = () => {
+		// Always go back to the normal state after adjusting the options to support direct assertion.
+		cy.wp().then( wp => {
+			const hoverState = wp.data.select( 'stackable/hover-state' ).getHoverState()
+			 if ( hoverState !== 'normal' ) {
+				new Cypress.Promise( resolve => {
+					wp.data.dispatch( 'stackable/hover-state' ).updateHoverState( 'normal' ).then( dispatchResolver( resolve ) )
+				} )
+			}
+			if ( hoverState !== 'normal' ) {
+				cy.wait( 300 )
+			}
+		} )
 	}
 
 	// TODO: support null value in cy.adjust (Check this)
@@ -140,8 +157,8 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 	optionsToPass.beforeAdjust = ( name, value, _options ) => {
 		const options = Object.assign( _options, { name, value } )
 		changeControlViewport( options )
-		changeUnit( options )
 		changeControlState( options )
+		changeUnit( options )
 	}
 
 	const customOptions = {
@@ -149,11 +166,12 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 		 'ugb-button-icon-control': 'popoverControlReset',
 		 'ugb-advanced-autosuggest-control': 'suggestionControlClear',
 		 'ugb-four-range-control': 'fourRangeControlReset',
-		 '.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
+		 '.ugb-four-range-control__lock': 'fourRangeControlReset', // TODO: Find a better selector
 		 'ugb-icon-control': 'iconControlReset',
 		 '.stk-advanced-focal-point-control': 'focalPointControlReset',
 		 '.stk-date-time-control__field': 'stkDateTimeControlReset',
 		 '.ugb-image-control': 'imageControlReset',
+		 '.ugb-advanced-toolbar-control': 'toolbarControlReset',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -826,6 +844,36 @@ function imageControl( name, value, options = {} ) {
  * @param {Object} options
  */
 function imageControlReset( name, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+		mainComponentSelector,
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} )
+
+	beforeAdjust( name, null, options )
+	selector()
+		.contains( containsRegExp( name ) )
+		.closest( '.components-panel__body>.components-base-control' )
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+		.click( { force: true } )
+}
+
+/**
+ * Command for resetting the toolbar control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function toolbarControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},

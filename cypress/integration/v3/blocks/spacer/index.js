@@ -2,13 +2,18 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
 	blockError,
 	resizeHeight,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
@@ -41,5 +46,30 @@ function resizeHeight() {
 						},
 					} )
 			} )
+	} )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Background',
+		'Borders & Shadows',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/spacer' ).asBlock( 'spacerBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/spacer', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-spacer',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@spacerBlock' )
 	} )
 }

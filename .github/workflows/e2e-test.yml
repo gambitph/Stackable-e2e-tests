@@ -1,9 +1,9 @@
 name: e2e-test-latest
 on:
   push:
-    branches: [ master ]
+    branches: [ v3-commands ]
   pull_request:
-    branches: [ master, v3-commands ]
+    branches: [ v3-commands ]
 
 jobs:
   test:
@@ -15,8 +15,43 @@ jobs:
         total-machines: [20]
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v2 # Checkout the current branch (e2e).
+    - uses: actions/checkout@v2 # Checkout the Stackable Free repo.
+      with:
+        repository: 'gambitph/Stackable'
+        ref: 'v3'
+        path: 'Stackable'
+    - uses: actions/checkout@v2 # Checkout the Stackable Premium repo.
+      with:
+        repository: 'bfintal/Stackable-Premium'
+        ref: 'v3'
+        path: 'Stackable/pro__premium_only'
+        token: '${{ secrets.ACCESS_KEY }}'
 
+    # Change the PHP version to v7.4.1
+    - name: Setup PHP v7.4.1
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4.1'
+
+    # Check the current PHP version installed
+    - name: Check PHP version
+      run: php -v
+      
+    # Install all dependencies from composer.json
+    - name: Install dependencies
+      working-directory: Stackable
+      run: |
+        composer require wp-phpunit/wp-phpunit --dev
+        composer require roots/wordpress --dev
+        composer install --prefer-dist --no-progress
+    # Install all dependencies from composer.json
+    - name: Install dependencies in premium
+      working-directory: Stackable/pro__premium_only
+      run: |
+        composer require wp-phpunit/wp-phpunit --dev
+        composer require roots/wordpress --dev
+        composer install --prefer-dist --no-progress
     - name: Cache node modules
       uses: actions/cache@v2
       env:
@@ -28,14 +63,6 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-
-    - name: Setup the Stackable Free and Premium Repository
-      run: |
-        git clone -b v3 https://github.com/gambitph/Stackable.git
-        cd Stackable
-        git clone -b v3 https://${{ secrets.ACCESS_KEY }}@github.com/bfintal/Stackable-Premium pro__premium_only
-        cd ..
-
     - name: Setup Node
       uses: actions/setup-node@v1
       with:
@@ -51,7 +78,6 @@ jobs:
         cd pro__premium_only
         npm ci
         npm run build --if-present
-
     - name: Remove .wp-env.override.json
       run: rm .wp-env.override.json
 
