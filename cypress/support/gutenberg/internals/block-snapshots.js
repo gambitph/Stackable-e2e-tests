@@ -46,7 +46,9 @@ function createContentSnapshot( alias ) {
 		cy.get( `@${ alias }` ).then( _block => {
 			cy.get( 'body' ).then( $body => {
 				const { className } = _block.attributes
-				const blockElement = $body.find( `.${ className }` ).closest( '[data-block]' )
+				const $block = $body.find( `.${ className.replace( / /g, '.' ) }` )
+				// Check if the $block element has the data-block attribute already
+				const blockElement = $block.data( 'block' ) ? $block : $block.closest( '[data-block]' )
 				const clientId = blockElement.data( 'block' )
 				// Get the parent block first.
 				const parentBlockClientId = first( wp.data.select( 'core/block-editor' ).getBlockParents( clientId ) )
@@ -71,18 +73,16 @@ function createContentSnapshot( alias ) {
  */
 function stubStyles( alias, style, viewport ) {
 	cy.get( `@${ alias }.stubbedStyles` ).then( $stubbedStyles => {
-		$stubbedStyles.push( { style, viewport } )
+		$stubbedStyles.push( {
+			style, viewport,
+		} )
 		cy.wrap( $stubbedStyles ).as( `${ alias }.stubbedStyles` )
 	} )
 }
 
 export function blockSnapshotsAssertComputedStyle( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
-			.find( ( { attributes: { className } } ) =>
-				first( args ).attr( 'class' ).match( className ) ||
-				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
-
+		const isWithBlockSnapshotAlias = isBlockAStaticBlock( first( args ), $blockSnapshotBlocks )
 		if ( ! isWithBlockSnapshotAlias ) {
 			return originalFn( ...args )
 		}
@@ -110,14 +110,30 @@ export function blockSnapshotsAssertComputedStyle( originalFn, ...args ) {
 	} )
 }
 
+/**
+ *
+ * @param {JQuery} $el
+ * @param {*} $blockSnapshotBlocks
+ */
+function isBlockAStaticBlock( $el, $blockSnapshotBlocks ) {
+	//
+	/**
+	 * `isWithBlockSnapshotAlias` tells us whther the cyurrently
+	 * selected block is a static block (A block is considered "static" if
+	 * an `isStatic` property is passed upon adding the block.)
+	 *
+	 * @type {boolean}
+	 */
+	return $blockSnapshotBlocks
+		.find( ( { attributes: { className } } ) =>
+			className.split( ' ' ).some( c => $el.attr( 'class' ).match( c ) ) ||
+			( $el.find( `.${ className.replace( / /g, '.' ) }` ).length &&
+			! $el.find( `.block-editor-inner-blocks .${ className }` ).length ) )
+}
+
 export function blockSnapshotsAssertClassName( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
-			.find( ( { attributes: { className } } ) =>
-				first( args ).attr( 'class' ).match( className ) ||
-				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
-
-		if ( ! isWithBlockSnapshotAlias ) {
+		if ( ! isBlockAStaticBlock( first( args ), $blockSnapshotBlocks ) ) {
 			return originalFn( ...args )
 		}
 
@@ -160,12 +176,7 @@ export function blockSnapshotsAssertClassName( originalFn, ...args ) {
 
 export function blockSnapshotsAssertHtmlTag( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
-			.find( ( { attributes: { className } } ) =>
-				first( args ).attr( 'class' ).match( className ) ||
-				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
-
-		if ( ! isWithBlockSnapshotAlias ) {
+		if ( ! isBlockAStaticBlock( first( args ), $blockSnapshotBlocks ) ) {
 			return originalFn( ...args )
 		}
 
@@ -207,12 +218,7 @@ export function blockSnapshotsAssertHtmlTag( originalFn, ...args ) {
 
 export function blockSnapshotsAssertHtmlAttribute( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
-			.find( ( { attributes: { className } } ) =>
-				first( args ).attr( 'class' ).match( className ) ||
-				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
-
-		if ( ! isWithBlockSnapshotAlias ) {
+		if ( ! isBlockAStaticBlock( first( args ), $blockSnapshotBlocks ) ) {
 			return originalFn( ...args )
 		}
 
@@ -258,12 +264,7 @@ export function blockSnapshotsAssertHtmlAttribute( originalFn, ...args ) {
 
 export function blockSnapshotsAssertBlockContent( originalFn, ...args ) {
 	return cy.get( '@blockSnapshotBlocks' ).then( $blockSnapshotBlocks => {
-		const isWithBlockSnapshotAlias = $blockSnapshotBlocks
-			.find( ( { attributes: { className } } ) =>
-				first( args ).attr( 'class' ).match( className ) ||
-				( first( args ).find( `.${ className }` ).length && ! first( args ).find( `.block-editor-inner-blocks .${ className }` ).length ) )
-
-		if ( ! isWithBlockSnapshotAlias ) {
+		if ( ! isBlockAStaticBlock( first( args ), $blockSnapshotBlocks ) ) {
 			return originalFn( ...args )
 		}
 
@@ -281,7 +282,7 @@ export function blockSnapshotsAssertBlockContent( originalFn, ...args ) {
 
 				assert.isTrue(
 					( parsedClassList.match( customSelector ) ? saveElement : saveElement.querySelector( customSelector ) ).textContent === expectedValue,
-					`${ customSelector } must have content '${ expectedValue }' in Frontend'`
+					`${ customSelector } must have content '${ expectedValue }' in Frontend. Found: '${ ( parsedClassList.match( customSelector ) ? saveElement : saveElement.querySelector( customSelector ) ).textContent }'`
 				)
 			} )
 

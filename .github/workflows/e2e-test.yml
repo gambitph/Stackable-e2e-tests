@@ -65,7 +65,6 @@ jobs:
           ${{ runner.os }}-build-${{ env.cache-name }}-
           ${{ runner.os }}-build-
           ${{ runner.os }}-
-
     - name: Setup Node
       uses: actions/setup-node@v1
       with:
@@ -81,7 +80,6 @@ jobs:
         cd pro__premium_only
         npm ci
         npm run build --if-present
-
     - name: Remove .wp-env.override.json
       run: rm .wp-env.override.json
 

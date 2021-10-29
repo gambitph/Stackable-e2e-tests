@@ -3,9 +3,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -13,20 +15,23 @@ export {
 	innerBlocks,
 	innerBlocksExist,
 	addImage,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/card', '.stk-block-card' ) )
+	it( 'should show the block', assertBlockExist( 'stackable/card', '.stk-block-card', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/card' ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/card', { variation: 'Default Layout' } ) )
 }
 function innerBlocks() {
 	it( 'should allow adding inner blocks', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/card' )
+		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } )
 		cy.selectBlock( 'stackable/card' )
 
 		stkBlocks
@@ -43,20 +48,18 @@ function innerBlocksExist() {
 		'.stk-block-subtitle',
 		'.stk-block-text',
 		'.stk-block-button',
-	] ) )
+	], { variation: 'Default Layout' } ) )
 }
 
 function addImage() {
 	it( 'should add an image content and test the image size tooltip', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/card' ).asBlock( 'cardBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } ).asBlock( 'cardBlock', { isStatic: true } )
 		cy.selectBlock( 'stackable/card' )
-			.find( '.stk-img-placeholder' )
-			.click( { force: true } )
-		cy.selectFromMediaLibrary( 1 )
-		cy.savePost()
-		cy.reload()
+		cy.openInspector( 'stackable/card', 'Style' )
+		cy.collapse( 'Image' )
+		cy.adjust( 'Select Image', 1 )
 
 		// Adjust the Image Size tooltip
 		cy.get( '.stk-block-card__image' ).realHover()
@@ -74,5 +77,36 @@ function addImage() {
 						},
 					} )
 			} )
+	} )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+		'Link',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } ).asBlock( 'cardBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/card', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-card',
+		alignmentSelector: '.stk-block-card .stk-inner-blocks',
+		enableColumnAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@cardBlock' )
 	} )
 }

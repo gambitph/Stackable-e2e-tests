@@ -44,8 +44,7 @@ export function openInspector( subject, tab, selector ) {
 		.click( { force: true } )
 
 	cy
-		.get( 'button.edit-post-sidebar__panel-tab' )
-		.contains( containsRegExp( tab ) )
+		.get( `button[aria-label="${ tab } Tab"]` )
 		.click( { force: true } )
 }
 
