@@ -391,18 +391,6 @@ class AdvancedModule extends Module {
 			},
 		} )
 
-		// Hover state - % unit
-		cy.adjust( '.components-base-control:contains(Position):last', [ 20, 21, 22, 23 ], {
-			viewport, state: 'hover', unit: '%',
-		} ).assertComputedStyle( {
-			[ `${ MAIN_SELECTOR }:hover` ]: {
-				'top': '20%',
-				'right': '21%',
-				'bottom': '22%',
-				'left': '23%',
-			},
-		} )
-
 		// Normal state - px unit
 		cy.adjust( '.components-base-control:contains(Position):last', [ 5, 4, 3, 2 ], {
 			viewport, state: 'normal', unit: 'px',
@@ -412,6 +400,18 @@ class AdvancedModule extends Module {
 				'right': '4px',
 				'bottom': '3px',
 				'left': '2px',
+			},
+		} )
+
+		// Hover state - % unit
+		cy.adjust( '.components-base-control:contains(Position):last', [ 20, 21, 22, 23 ], {
+			viewport, state: 'hover', unit: '%',
+		} ).assertComputedStyle( {
+			[ `${ MAIN_SELECTOR }:hover` ]: {
+				'top': '20%',
+				'right': '21%',
+				'bottom': '22%',
+				'left': '23%',
 			},
 		} )
 
@@ -624,7 +624,7 @@ class AdvancedModule extends Module {
 		if ( viewport === 'Desktop' ) {
 			const MAIN_SELECTOR = mainSelector || null
 
-			const assertExistence = assertionValue => {
+			const assertFrontendExist = assertionValue => {
 				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 					cy.visit( previewUrl )
 					cy.get( MAIN_SELECTOR ).should( assertionValue )
@@ -644,14 +644,14 @@ class AdvancedModule extends Module {
 			cy.adjust( 'Condition Type', 'login-status', { parentSelector } )
 			cy.adjust( 'Login Status', 'logged-in', { parentSelector } )
 			cy.savePost()
-			assertExistence( 'exist' )
+			assertFrontendExist( 'exist' )
 
 			// TODO: Check this, still failing.
 
 			selectInspector()
 			cy.adjust( 'Login Status', 'logged-out', { parentSelector } )
 			cy.savePost()
-			assertExistence( 'not.exist' )
+			assertFrontendExist( 'not.exist' )
 		}
 	}
 }

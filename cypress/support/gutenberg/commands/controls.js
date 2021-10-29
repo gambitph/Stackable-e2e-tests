@@ -87,6 +87,7 @@ function rangeControlReset( name, options = {} ) {
 	} )
 
 	beforeAdjust( name, null, options )
+	cy.log( selector )
 	selector()
 		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
 		.click( { force: true, multiple: true } )
@@ -712,13 +713,22 @@ export function resetStyle( name, options = {} ) {
 		// overwrite selector options.
 		customOptions = {},
 		// overwrite parent element selector used to locate option labels.
-		parentSelector = '.components-panel__body > .components-base-control',
+		parentSelector = '.components-panel__body',
+		// overwrite the main component selector of the control we're adjusting
+		mainComponentSelector = '.components-base-control',
 		// if the option has no label, pass custom regex to find the control
+		supportedDelimiter = [],
 	} = options
+
 	const baseControlSelector = () => cy
-		.get( parentSelector )
-		.contains( containsRegExp( name ) )
-		.closest( parentSelector )
+		.getBaseControl( name, {
+			parentSelector, supportedDelimiter, mainComponentSelector,
+		} )
+
+	// const baseControlSelector = () => cy
+	// 	.get( parentSelector )
+	// 	.contains( containsRegExp( name ) )
+	// 	.closest( parentSelector )
 
 	/**
 	 * Specific selector to trigger one
