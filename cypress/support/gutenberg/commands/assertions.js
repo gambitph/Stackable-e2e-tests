@@ -125,6 +125,18 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 						element.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 						parentEl.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 
+						let dataBlockEl
+
+						while ( ! dataBlockEl || dataBlockEl.tagName === 'BODY' ) {
+							dataBlockEl = dataBlockEl ? dataBlockEl.parentNode : element
+						}
+
+						dataBlockEl.querySelectorAll( 'style' ).forEach( el => {
+							if ( el.innerHTML.includes( selector ) ) {
+								el.remove()
+							}
+						} )
+
 						const expectedStyles = Object.assign( {}, pick( win.getComputedStyle( element, pseudoEl || undefined ), ...keys( _cssObject ).map( camelCase ) ) )
 
 						keys( _cssObject ).forEach( key => {
