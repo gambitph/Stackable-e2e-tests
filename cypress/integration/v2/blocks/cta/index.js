@@ -93,11 +93,11 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/cta' ).asBlock( 'ctaBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/cta', '.ugb-cta__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/cta', '.ugb-cta__title', 'Hello World! 1', 0 )
 			.assertBlockContent( '.ugb-cta__title', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/cta', '.ugb-cta__description', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/cta', '.ugb-cta__description', 'Helloo World!! 12', 0 )
 			.assertBlockContent( '.ugb-cta__description', 'Helloo World!! 12' )
-		cy.typeBlock( 'ugb/cta', '.ugb-button--inner', 'Hellooo World!!! 123' )
+		cy.typeBlock( 'ugb/cta', '.ugb-button--inner', 'Hellooo World!!! 123', 0 )
 			.assertBlockContent( '.ugb-button--inner', 'Hellooo World!!! 123' )
 	} )
 }
@@ -132,7 +132,7 @@ function styleTab( viewport, desktopOnly ) {
 				'padding-left': '28px',
 			},
 		} )
-		cy.resetStyle( 'Paddings' )
+		cy.resetStyle( 'Paddings', { viewport } )
 		cy.adjust( 'Paddings', [ 3, 4, 5, 6 ], { viewport, unit: 'em' } ).assertComputedStyle( {
 			'.ugb-cta__item': {
 				'padding-top': '3em',
@@ -141,7 +141,7 @@ function styleTab( viewport, desktopOnly ) {
 				'padding-left': '6em',
 			},
 		} )
-		cy.resetStyle( 'Paddings' )
+		cy.resetStyle( 'Paddings', { viewport } )
 		cy.adjust( 'Paddings', [ 17, 18, 19, 20 ], { viewport, unit: '%' } ).assertComputedStyle( {
 			'.ugb-cta__item': {
 				'padding-top': '17%',

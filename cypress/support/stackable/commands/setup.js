@@ -1,4 +1,9 @@
 /**
+ * External dependencies
+ */
+import { containsRegExp } from '~common/util'
+
+/**
  * Register functions to Cypress Commands
  */
 Cypress.Commands.add( 'activateLicense', activateLicense )
@@ -16,8 +21,25 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 	if ( Cypress.env( 'STACKABLE_PREMIUM_CODE' ) && ! isStackableActivated ) {
 		cy.activateLicense()
 	}
-	// Enable optimization setting by default.
+
+	// TODO: Remove this when version is released.
+	// Turn on Load Version 2 blocks in the editor
+	const selectCheckbox = () => cy
+		.get( 'article[id="other-settings"]' )
+		.contains( containsRegExp( 'Load version 2 blocks in the editor' ) )
+		.parent()
+
+	cy.visit( '/wp-admin/options-general.php?page=stackable' )
+	selectCheckbox().then( $parentEl => {
+		if ( ! $parentEl.find( 'svg.components-checkbox-control__checked' ).length ) {
+			selectCheckbox().find( 'input.components-checkbox-control__input' ).click( { force: true } )
+		}
+	} )
+	// Activate optimization setting for version 2
 	cy.loadFrontendJsCssFiles()
+
+	// Upload media to the server
+	cy.uploadMedia()
 } )
 
 function _activateLicense() {

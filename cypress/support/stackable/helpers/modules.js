@@ -104,7 +104,7 @@ export const assertBlockTitleDescriptionContent = ( subject, assertOptions = {} 
 		cy.collapse( `Block ${ typographyAssertion }` )
 		cy.toggleStyle( `Block ${ typographyAssertion }` )
 
-		cy.typeBlock( subject, typographySelector, 'Hello World! 1234' )
+		cy.typeBlock( subject, typographySelector, 'Hello World! 1234', 0 )
 			.assertBlockContent( typographySelector, 'Hello World! 1234', assertOptions )
 	} )
 }
@@ -138,7 +138,7 @@ export const assertBlockBackground = ( selector, options = {}, assertOptions = {
 			cy.adjust( 'Background Color #1', '#6d6d6d' )
 			cy.adjust( 'Background Color #2', '#cd2653' )
 			cy.adjust( 'Adv. Gradient Color Settings', {
-				'Gradient Direction (degrees)': '180deg',
+				'Gradient Direction (degrees)': '180',
 				'Color 1 Location': '11',
 				'Color 2 Location': '80',
 				'Background Gradient Blend Mode': 'multiply',

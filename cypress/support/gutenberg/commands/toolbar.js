@@ -19,7 +19,7 @@ Cypress.Commands.add( 'addToReusableBlocks', addToReusableBlocks )
 export function selectTopToolbar() {
 	const options = () => cy
 		.get( '.edit-post-more-menu' )
-		.find( 'button[aria-label="Options"], button[aria-label="More tools & options"]' )
+		.find( 'button[aria-label="Options"]' )
 		.click( { force: true } )
 
 	const toolbar = () => cy
@@ -86,8 +86,8 @@ export function changeHeadingLevel( blockName, blockSelector, level ) {
  */
 export function changeAlignment( blockName, blockSelector, alignment ) {
 	cy.selectBlock( blockName, blockSelector )
-	// For versions > 5.6.4
-	if ( compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.6.4', '>' ) ) {
+	// For versions > 5.7.0
+	if ( compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.7.0', '>' ) ) {
 		cy.adjustToolbar( 'Align', () => {
 			cy
 				.get( '.components-popover__content' )
@@ -97,6 +97,7 @@ export function changeAlignment( blockName, blockSelector, alignment ) {
 			parentSelector: '.components-dropdown-menu:contains(Change alignment)',
 		} )
 	} else {
+		// For WP version 5.6 backwards compatibility
 		cy.selectTopToolbar()
 		cy
 			.get( '.block-editor-block-toolbar button[aria-label="Change alignment"]' )
@@ -113,8 +114,8 @@ export function changeAlignment( blockName, blockSelector, alignment ) {
  */
 export function changeTextAlignment( blockName, blockSelector, alignment ) {
 	cy.selectBlock( blockName, blockSelector )
-	// For versions > 5.6.4
-	if ( compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.6.4', '>' ) ) {
+	// For versions > 5.7.0
+	if ( compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.7.0', '>' ) ) {
 		cy.adjustToolbar( 'Align', () => {
 			cy
 				.get( '.components-popover__content' )
@@ -124,6 +125,7 @@ export function changeTextAlignment( blockName, blockSelector, alignment ) {
 			parentSelector: '.components-dropdown-menu:contains(Change text alignment)',
 		} )
 	} else {
+		// For WP version 5.6 backwards compatibility
 		cy.selectTopToolbar()
 		cy
 			.get( '.block-editor-block-toolbar button[aria-label="Change text alignment"]' )
@@ -142,7 +144,7 @@ export function addToReusableBlocks( blockName, blockSelector ) {
 
 	cy.selectTopToolbar()
 	cy.get( '.block-editor-block-toolbar' )
-		.find( 'button[aria-label="Options"], button[aria-label="More options"]' ) // For backwards compatibility: WP 5.5
+		.find( 'button[aria-label="Options"], button[aria-label="More options"]' ) // For backwards compatibility: WP 5.6
 		.click( { force: true } )
 
 	cy.get( '.components-dropdown-menu__menu' )

@@ -1,9 +1,9 @@
 /**
  * External dependencies
  */
-import { range } from 'lodash'
+import { range, escape } from 'lodash'
 import { registerTests } from '~stackable-e2e/helpers'
-import { setupMatchPostFieldValues } from './helpers/index'
+import { setupMatchPostFieldValues } from './helpers/'
 
 describe( 'Dynamic Content - Latest Page', registerTests( [
 	matchPostData,
@@ -39,7 +39,7 @@ function matchPostData() {
 
 		cy.get( '@fieldsToAssert' ).then( fieldsToAssert => {
 			fieldsToAssert.forEach( ( {
-				name: fieldName, value, options: fieldOptions = {},
+				name: fieldName, value, options: fieldOptions = {}, willEscape,
 			} ) => {
 				cy.addBlock( 'ugb/cta' )
 
@@ -52,7 +52,8 @@ function matchPostData() {
 				} )
 
 				// Assert the value.
-				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
+				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', willEscape ? escape( value ) : value, { assertFrontend: false } )
+				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value, { assertBackend: false } )
 				cy.deleteBlock( 'ugb/cta' )
 			} )
 		} )
@@ -65,7 +66,7 @@ function adjustFieldOptions() {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'core/paragraph' )
-		cy.typeBlock( 'core/paragraph', '', 'Excerpt content here. Lorem ipsum dolor sit amet.' )
+		cy.typeBlock( 'core/paragraph', '', 'Excerpt content here. Lorem ipsum dolor sit amet.', 0 )
 		// Adjusting Post Title
 		cy.typePostTitle( 'Latest Page 1' )
 		cy.addBlock( 'ugb/cta' )

@@ -83,7 +83,7 @@ function roleManagerTest() {
 
 				// Set the toolbar to top
 				cy
-					.get( 'button[aria-label="Options"], button[aria-label="More tools & options"]' ) // To support WP 5.5
+					.get( 'button[aria-label="Options"]' )
 					.click( { force: true } )
 				toolbar()
 					.invoke( 'attr', 'aria-checked' )
@@ -119,11 +119,11 @@ function roleManagerTest() {
 					.then( () => {
 						cy.document().then( doc => {
 							const allowedTextBlocks = doc.querySelectorAll( '.block-editor-block-types-list[aria-label="Text"] .block-editor-block-types-list__list-item' )
-							const allowedStackableBlocks = doc.querySelectorAll( '.block-editor-block-types-list[aria-label="Stackable"] .block-editor-block-types-list__list-item' )
+							const allowedStackableBlocks = doc.querySelectorAll( '.block-editor-block-types-list[aria-label="Stackable (v2)"] .block-editor-block-types-list__list-item' )
 
 							assert.isTrue(
-								Array.from( allowedTextBlocks ).length === 4,
-								`Allowed text blocks for editor mode expected to be '4' in Editor. Found '${ Array.from( allowedTextBlocks ).length }'`
+								Array.from( allowedTextBlocks ).length === 2,
+								`Allowed text blocks for editor mode expected to be '2' in Editor. Found '${ Array.from( allowedTextBlocks ).length }'`
 							)
 							assert.isTrue(
 								Array.from( allowedStackableBlocks ).length === 2,
