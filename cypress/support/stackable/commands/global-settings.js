@@ -167,8 +167,14 @@ function adjustGlobalTypography( selector = 'h1', options = {} ) {
 		'h4',
 		'h5',
 		'h6',
+		'subtitle',
 		'p',
 	]
+
+	// TODO: Do this in v3 tests by feature
+	if ( ! selector || selector === 'subtitle' ) {
+		return
+	}
 
 	cy.openSidebar( 'Stackable Settings' )
 	cy.collapse( 'Global Typography' )

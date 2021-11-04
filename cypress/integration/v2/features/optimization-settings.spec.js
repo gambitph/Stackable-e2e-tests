@@ -11,12 +11,12 @@ describe( 'Optimization Settings', registerTests( [
 ] ) )
 
 const cssJsSelectors = [
-	'#ugb-style-css-inline-css',
-	'#ugb-style-css-css',
-	'#ugb-style-css-premium-css',
-	'#ugb-block-frontend-js-js-extra',
-	'#ugb-block-frontend-js-js',
-	'#ugb-block-frontend-js-premium-js',
+	'#ugb-style-css-v2-inline-css',
+	'#ugb-style-css-v2-css',
+	'#ugb-style-css-premium-v2-css',
+	'#ugb-block-frontend-js-v2-js-extra',
+	'#ugb-block-frontend-js-v2-js',
+	'#ugb-block-frontend-js-premium-v2-js',
 ]
 
 function optimizationSettings() {
@@ -127,8 +127,7 @@ function globalSettingTest() {
 		]
 
 		const globalCssSelectors = [
-			'#ugb-style-global-colors-inline-css',
-			'#ugb-style-global-typography-inline-css',
+			'#ugb-style-css-nodep-inline-css',
 		]
 
 		// Optimization is enabled by default upon calling setupWP

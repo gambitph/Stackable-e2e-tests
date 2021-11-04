@@ -38,8 +38,6 @@ function typeContent() {
 	} )
 }
 
-// TODO: Add tests for adding the Load more button & Pagination
-
 const assertBlockTab = Block
 	.includes( [
 		'Alignment',
@@ -67,3 +65,5 @@ function blockTab( viewport ) {
 		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 }
+
+// TODO: Add tests for adding the Load more button & Pagination

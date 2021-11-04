@@ -96,7 +96,7 @@ function styleTab( viewport, desktopOnly ) {
 				'padding-left': '28px',
 			},
 		} )
-		cy.resetStyle( 'Paddings' )
+		cy.resetStyle( 'Paddings', { viewport } )
 		cy.adjust( 'Paddings', [ 3, 4, 5, 6 ], { viewport, unit: 'em' } ).assertComputedStyle( {
 			'.ugb-blockquote__item': {
 				'padding-top': '3em',
@@ -105,7 +105,7 @@ function styleTab( viewport, desktopOnly ) {
 				'padding-left': '6em',
 			},
 		} )
-		cy.resetStyle( 'Paddings' )
+		cy.resetStyle( 'Paddings', { viewport } )
 		cy.adjust( 'Paddings', [ 17, 18, 19, 20 ], { viewport, unit: '%' } ).assertComputedStyle( {
 			'.ugb-blockquote__item': {
 				'padding-top': '17%',
