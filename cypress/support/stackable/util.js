@@ -54,7 +54,7 @@ export function changeUnit( options = {} ) {
 		unit = '',
 		name = '',
 	} = options
-	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
+	if ( ! name.match( /^(\.|#|:)/g ) && ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
 
@@ -93,7 +93,7 @@ export function changeControlViewport( options = {} ) {
 		viewport = 'Desktop',
 		name = '',
 	} = options
-	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
+	if ( ! name.match( /^(\.|#|:)/g ) && ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
 
@@ -176,7 +176,7 @@ export function changeControlState( options = {} ) {
 		state = 'normal',
 		name = '',
 	} = options
-	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
+	if ( ! name.match( /^(\.|#|:)/g ) && ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
 

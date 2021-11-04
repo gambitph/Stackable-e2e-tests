@@ -318,7 +318,7 @@ class AdvancedModule extends Module {
 		if ( viewport === 'Desktop' ) {
 			const tags = [ 'address', 'article', 'aside', 'blockquote', 'div', 'details', 'footer', 'header', 'hgroup', 'main', 'nav', 'section', 'summary' ]
 			tags.forEach( tag => {
-				cy.adjust( 'Block HTML Tag', tag ).assertHtmlTag( MAIN_SELECTOR, tag )
+				cy.adjust( 'Block HTML Tag', tag ).assertHtmlTag( MAIN_SELECTOR, tag, { assertBackend: false } )
 			} )
 
 			const clear = [ 'left', 'right', 'both', 'none' ]
@@ -403,6 +403,9 @@ class AdvancedModule extends Module {
 			},
 		} )
 
+		cy.resetStyle( '.components-base-control:contains(Position):last', { viewport, state: 'hover' } )
+		cy.resetStyle( '.components-base-control:contains(Position):last', { viewport, state: 'normal' } )
+
 		// Hover state - % unit
 		cy.adjust( '.components-base-control:contains(Position):last', [ 20, 21, 22, 23 ], {
 			viewport, state: 'hover', unit: '%',
@@ -435,11 +438,11 @@ class AdvancedModule extends Module {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 
 		if ( viewport === 'Desktop' ) {
-			cy.adjust( 'Transition Duration (secs)', 1.14 ).assertComputedStyle( {
+			cy.adjust( 'Transition Duration (secs)', '0.79' ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
-					'transition-duration': '1.14',
+					'transition-duration': '0.79s',
 				},
-			} )
+			}, { assertBackend: false } )
 
 			const transitions = [
 				'ease',
@@ -462,7 +465,7 @@ class AdvancedModule extends Module {
 					[ MAIN_SELECTOR ]: {
 						'transition-timing-function': value,
 					},
-				} )
+				}, { assertBackend: false } )
 			} )
 
 			const transformOrigin = [ 'top left', 'top center', 'top center', 'center left', 'center center', 'center right', 'bottom left', 'bottom center', 'bottom right' ]
@@ -475,7 +478,23 @@ class AdvancedModule extends Module {
 			} )
 		}
 
-		// TODO: support null values in Stackable overwrite commands -> only to change the viewport & state controls
+		const setParentControlToHover = () => cy
+			.adjust( 'Transform', null, { viewport, state: 'hover' } )
+
+		setParentControlToHover()
+		cy.adjust( 'Translate X', '-40', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		setParentControlToHover()
+		cy.adjust( 'Translate Y', '-23', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		setParentControlToHover()
+		cy.adjust( 'Rotate', '-11.2', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		setParentControlToHover()
+		cy.adjust( 'Scale', 1.37, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+			.assertComputedStyle( {
+				[ `${ MAIN_SELECTOR }:hover` ]: {
+					'transform': 'translateX(-40px) translateY(-23px) rotate(-11.2deg) scale(1.37)',
+				},
+			} )
+
 		cy.adjust( 'Transform', null, { viewport, state: 'normal' } )
 		cy.adjust( 'Translate X', 21, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
 		cy.adjust( 'Translate Y', 16, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
@@ -486,18 +505,6 @@ class AdvancedModule extends Module {
 					'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
 				},
 			} )
-
-		// TODO: support null values in Stackable overwrite commands -> only to change the viewport & state controls
-		cy.adjust( 'Transform', null, { viewport, state: 'hover' } )
-		cy.adjust( 'Translate X', '-40', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-		cy.adjust( 'Translate Y', '-23', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-		cy.adjust( 'Rotate', '-11.2', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-		cy.adjust( 'Scale', 1.37, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-			.assertComputedStyle( {
-				[ `${ MAIN_SELECTOR }:hover` ]: {
-					'transform': 'translateX(-40px) translateY(-23px) rotate(-11.2deg) scale(1.37)',
-				},
-			} )
 	}
 
 	assertMotionEffects( {
@@ -505,16 +512,16 @@ class AdvancedModule extends Module {
 		mainSelector = null,
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
+		const parentSelector = '.stk-effects-entrance-transforms-control > .components-base-control__field > .stk-control-content'
 
 		// Entrance Animation
 		cy.adjust( 'Effect', 'entrance' )
 
-		// TODO: support null values in Stackable overwrite commands -> only to change the viewport & state controls
 		cy.adjust( 'Start Position', null, { viewport } )
-		cy.adjust( 'Horizontal Position', 34 )
-		cy.adjust( 'Vertical Position', 52 )
-		cy.adjust( 'Scale', 0.85 )
-		cy.adjust( 'Rotate', 136.8 )
+		cy.adjust( 'Horizontal Position', 34, { parentSelector } )
+		cy.adjust( 'Vertical Position', 52, { parentSelector } )
+		cy.adjust( 'Scale', 0.85, { parentSelector } )
+		cy.adjust( 'Rotate', 136.8, { parentSelector } )
 			.assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'--entrance-transform': 'translateX(34px) translateY(52px) scale(0.85) rotate(136.8deg)',
@@ -541,11 +548,6 @@ class AdvancedModule extends Module {
 			cy.adjust( 'Use 3D Transforms', true )
 			cy.adjust( 'Perspective', 1700 ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-perspective-in', '1700' )
 			cy.get( '.block-editor-block-list__block.is-selected' ).assertHtmlAttribute( MAIN_SELECTOR, 'data-stk-anim-perspective-out', '1700' )
-			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-				[ MAIN_SELECTOR ]: {
-					'transform': 'perspective(1700px) translate3d(0.0001px, 0.0001px, 0.0001px)', // TODO: Update to correct value
-				},
-			}, { assertBackend: false } )
 
 			// TODO: Update the parent selectors
 			const entranceAnimationParentSelector = '.stk-effects-entrance-transforms-control:contains(Entrance Animation) .stk-control-content'
@@ -580,32 +582,38 @@ class AdvancedModule extends Module {
 	}
 
 	assertCustomAttributes( {
+		viewport,
 		mainSelector = null,
 	} ) {
-		const MAIN_SELECTOR = mainSelector || '.stk-block'
+		if ( viewport === 'Desktop' ) {
+			const MAIN_SELECTOR = mainSelector || '.stk-block'
 
-		cy.adjust( 'Custom Attributes', 'data-type="some-text"' ).assertHtmlAttribute( MAIN_SELECTOR, 'data-type', 'some-text' )
-		cy.adjust( 'Custom Attributes', 'data-type="some-text" aria-label="block"' ).assertHtmlAttribute( MAIN_SELECTOR, 'aria-label', 'block' )
-		cy.adjust( 'Custom Attributes', 'data-type="some-text" aria-label="block" data-title="title123"' ).assertHtmlAttribute( MAIN_SELECTOR, 'data-title', 'title123' )
+			cy.adjust( 'Custom Attributes', 'data-type="some-text"' ).assertHtmlAttribute( MAIN_SELECTOR, 'data-type', 'some-text' )
+			cy.adjust( 'Custom Attributes', 'data-type="some-text" aria-label="block"' ).assertHtmlAttribute( MAIN_SELECTOR, 'aria-label', 'block' )
+			cy.adjust( 'Custom Attributes', 'data-type="some-text" aria-label="block" data-title="title123"' ).assertHtmlAttribute( MAIN_SELECTOR, 'data-title', 'title123' )
+		}
 	}
 
 	assertCustomCSS( {
+		viewport,
 		mainSelector = null,
 	} ) {
-		const MAIN_SELECTOR = mainSelector || '.stk-block'
+		if ( viewport === 'Desktop' ) {
+			const MAIN_SELECTOR = mainSelector || '.stk-block'
 
-		const assertionObj = {}
-		const customCssString = `
-			${ MAIN_SELECTOR } {
-				color: #808080;
-			}
-		`
-		assertionObj[ MAIN_SELECTOR ] = { 'color': '#808080' }
+			const assertionObj = {}
+			const customCssString = `
+				${ MAIN_SELECTOR } {
+					color: red;
+				}
+			`
+			assertionObj[ MAIN_SELECTOR ] = { 'color': 'red' }
 
-		cy.setBlockAttribute( {
-			'customCSS': customCssString,
-		} )
-		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( assertionObj )
+			cy.setBlockAttribute( {
+				'customCSS': customCssString,
+			} )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( assertionObj )
+		}
 	}
 
 	assertResponsive( {
@@ -613,29 +621,32 @@ class AdvancedModule extends Module {
 		mainSelector = null,
 	} ) {
 		const MAIN_SELECTOR = mainSelector || null
-		cy.adjust( `Hide on ${ viewport }`, true ).assertClassName( MAIN_SELECTOR, `stk--hide-${ lowerCase( viewport ) }` )
+		cy.adjust( `Hide on ${ viewport }`, true ).assertClassName( MAIN_SELECTOR, `stk--hide-${ lowerCase( viewport ) }`, { assertBackend: false } )
 	}
 
 	assertConditionalDisplay( {
 		viewport,
 		mainSelector = null,
 		blockName,
+		postType = 'page',
 	} ) {
 		if ( viewport === 'Desktop' ) {
 			const MAIN_SELECTOR = mainSelector || null
-
-			const assertFrontendExist = assertionValue => {
-				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
-					cy.visit( previewUrl )
-					cy.get( MAIN_SELECTOR ).should( assertionValue )
-					cy.visit( editorUrl )
-				} )
-			}
 
 			const selectInspector = () => {
 				cy.selectBlock( blockName )
 				cy.openInspector( blockName, 'Advanced' )
 				cy.collapse( 'Conditional Display' )
+			}
+
+			const assertFrontendExistence = assertionValue => {
+				cy.savePost()
+				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
+					cy.visit( previewUrl )
+					cy.get( MAIN_SELECTOR ).should( assertionValue )
+					cy.visit( editorUrl )
+					selectInspector()
+				} )
 			}
 
 			const parentSelector = '.stk-condition-component'
@@ -649,13 +660,153 @@ class AdvancedModule extends Module {
 			// Login Status
 			cy.adjust( 'Condition Type', 'login-status', { parentSelector } )
 			cy.adjust( '.components-base-control:contains(Login Status):last', 'logged-in', { parentSelector } )
-			cy.savePost()
-			assertFrontendExist( 'exist' )
+			assertFrontendExistence( 'exist' )
 
-			selectInspector()
 			cy.adjust( '.components-base-control:contains(Login Status):last', 'logged-out', { parentSelector } )
-			cy.savePost()
-			assertFrontendExist( 'not.exist' )
+			assertFrontendExistence( 'not.exist' )
+
+			cy.adjust( 'Visibility', 'hide' )
+			cy.adjust( 'Condition Type', 'login-status', { parentSelector } )
+			cy.adjust( '.components-base-control:contains(Login Status):last', 'logged-in', { parentSelector } )
+			assertFrontendExistence( 'not.exist' )
+
+			cy.adjust( 'Condition Type', 'login-status', { parentSelector } )
+			cy.adjust( '.components-base-control:contains(Login Status):last', 'logged-out', { parentSelector } )
+			assertFrontendExistence( 'exist' )
+
+			// Role
+			cy.adjust( 'Visibility', 'hide' )
+			cy.adjust( 'Condition Type', 'role', { parentSelector } )
+			cy.adjust( 'Enter Role', [ 'Administrator', 'Subscriber' ], { parentSelector, mainComponentSelector: '.components-form-token-field' } )
+			assertFrontendExistence( 'not.exist' )
+
+			cy.resetStyle( 'Visibility' ) // Reset visibility to show
+			assertFrontendExistence( 'exist' )
+
+			// Date & Time
+			cy.adjust( 'Visibility', 'hide' )
+			cy.adjust( 'Condition Type', 'date-time', { parentSelector } )
+			cy.adjust( 'Start Date', {
+				day: '4',
+				month: 'November',
+				year: '2021',
+			}, { parentSelector } )
+			cy.adjust( 'Sunday', true, { parentSelector: `${ parentSelector } .stk-days-checkbox > .components-base-control__field` } )
+			cy.adjust( 'Monday', true, { parentSelector: `${ parentSelector } .stk-days-checkbox > .components-base-control__field` } )
+			cy.adjust( 'Tuesday', true, { parentSelector: `${ parentSelector } .stk-days-checkbox > .components-base-control__field` } )
+			cy.adjust( 'Wednesday', true, { parentSelector: `${ parentSelector } .stk-days-checkbox > .components-base-control__field` } )
+			cy.adjust( 'Thursday', true, { parentSelector: `${ parentSelector } .stk-days-checkbox > .components-base-control__field` } )
+			cy.adjust( 'Friday', true, { parentSelector: `${ parentSelector } .stk-days-checkbox > .components-base-control__field` } )
+			cy.adjust( 'Saturday', true, { parentSelector: `${ parentSelector } .stk-days-checkbox > .components-base-control__field` } )
+			assertFrontendExistence( 'not.exist' )
+
+			cy.resetStyle( 'Visibility' ) // Reset visibility to show
+			assertFrontendExistence( 'exist' )
+
+			// Custom PHP
+			cy.adjust( 'Condition Type', 'custom-php', { parentSelector } )
+			cy.adjust( '.components-base-control:contains(Custom PHP):last', '$_GET[ \'preview\' ] === \'true\'', { parentSelector } )
+			assertFrontendExistence( 'exist' )
+
+			cy.adjust( '.components-base-control:contains(Custom PHP):last', '$_GET[ \'preview\' ] !== \'true\'', { parentSelector } )
+			assertFrontendExistence( 'not.exist' )
+
+			// Conditional Tag
+			cy.adjust( 'Visibility', 'hide' )
+			cy.adjust( 'Condition Type', 'conditional-tag', { parentSelector } )
+			cy.adjust( 'Enter Conditional Tag', [ 'Any Page - is_page' ], { parentSelector, mainComponentSelector: '.components-form-token-field' } )
+			assertFrontendExistence( 'not.exist' )
+
+			cy.resetStyle( 'Visibility' ) // Reset visibility to show
+			assertFrontendExistence( 'exist' )
+
+			// Query String
+			cy.adjust( 'Visibility', 'hide' )
+			cy.adjust( 'Condition Type', 'query-string', { parentSelector } )
+			cy.adjust( 'Enter Queries', 'preview=true', { parentSelector } )
+			assertFrontendExistence( 'not.exist' )
+
+			cy.resetStyle( 'Visibility' ) // Reset visibility to show
+			assertFrontendExistence( 'exist' )
+
+			// Post Meta
+			cy.adjust( 'Visibility', 'hide' )
+			cy.adjust( 'Condition Type', 'post-meta', { parentSelector } )
+			cy.adjust( 'Post Meta Key', 'type', { parentSelector } )
+			cy.adjust( 'Operator', 'equal', { parentSelector } )
+			cy.adjust( 'Enter Value', 'page', { parentSelector } )
+			// TODO: Assert Post Meta condition.
+
+			// Site Option
+			cy.adjust( 'Visibility', 'hide' )
+			cy.adjust( 'Condition Type', 'site-option', { parentSelector } )
+			cy.adjust( 'Option Name', 'blogname', { parentSelector } )
+			cy.adjust( 'Operator', 'equal', { parentSelector } )
+			cy.adjust( 'Enter Value', 'e2etest', { parentSelector } )
+			assertFrontendExistence( 'not.exist' )
+
+			cy.resetStyle( 'Visibility' ) // Reset visibility to show
+			assertFrontendExistence( 'exist' )
+
+			// Post IDs
+			cy.adjust( 'Visibility', 'hide' )
+			cy.adjust( 'Condition Type', 'post-id', { parentSelector } )
+			cy.getPostData().then( data => {
+				cy.adjust( 'Enter Post IDs', [ `${ data.id },` ], { parentSelector, mainComponentSelector: '.components-form-token-field' } )
+			} )
+			assertFrontendExistence( 'not.exist' )
+
+			cy.resetStyle( 'Visibility' ) // Reset visibility to show
+			assertFrontendExistence( 'exist' )
+
+			// Post Type
+			cy.adjust( 'Visibility', 'hide' )
+			cy.adjust( 'Condition Type', 'post-type', { parentSelector } )
+			cy.adjust( 'Enter Post Types', [ postType ], { parentSelector, mainComponentSelector: '.components-form-token-field' } )
+			assertFrontendExistence( 'not.exist' )
+
+			cy.resetStyle( 'Visibility' ) // Reset visibility to show
+			assertFrontendExistence( 'exist' )
+
+			// Post Taxonomy
+			cy.adjust( 'Visibility', 'hide' )
+			cy.adjust( 'Condition Type', 'post-taxonomy', { parentSelector } )
+			cy.adjust( 'Post Type', 'post', { parentSelector: `${ parentSelector } > .stk-taxonomy-control` } )
+			cy.adjust( 'Filter by Taxonomy', 'category', { parentSelector: `${ parentSelector } > .stk-taxonomy-control` } )
+			cy.adjust( 'Taxonomy Filter Type', '__in', { parentSelector: `${ parentSelector } > .stk-taxonomy-control` } )
+			// TODO: Assert Post Taxonomy condition.
+
+			// Test Multiple conditions
+			cy.resetStyle( 'Visibility' ) // Reset visibility to show
+			cy.adjust( 'Condition Type', 'login-status', { parentSelector } )
+			cy.adjust( '.components-base-control:contains(Login Status):last', 'logged-out', { parentSelector } )
+			addNewCondition()
+			cy.adjust( '.components-base-control:contains(Condition Type):last', 'role', { parentSelector } )
+			cy.adjust( 'Enter Role', [ 'Editor' ], { parentSelector, mainComponentSelector: '.components-form-token-field' } )
+			cy.adjust( 'Trigger if ANY condition matches', true )
+			assertFrontendExistence( 'not.exist' )
+
+			cy.adjust( '.components-base-control:contains(Login Status):nth-of-type(2)', 'logged-in', { parentSelector } )
+			assertFrontendExistence( 'exist' )
+
+			cy.adjust( 'Visibility', 'hide' )
+			assertFrontendExistence( 'not.exist' )
+
+			cy.adjust( 'Trigger if ALL conditions match', true )
+			assertFrontendExistence( 'exist' )
+
+			cy.resetStyle( 'Visibility' ) // Reset visibility to show
+			assertFrontendExistence( 'not.exist' )
+		}
+	}
+
+	assertAdvanced( {
+		viewport,
+		mainSelector = null,
+	} ) {
+		if ( viewport === 'Desktop' ) {
+			const MAIN_SELECTOR = mainSelector || null
+			cy.adjust( 'HTML anchor', 'e2e-html-anchor' ).assertHtmlAttribute( MAIN_SELECTOR, 'id', 'e2e-html-anchor' )
 		}
 	}
 }

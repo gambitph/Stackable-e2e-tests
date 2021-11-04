@@ -100,7 +100,15 @@ function blockTab( viewport ) {
 
 const assertAdvancedTab = Advanced
 	.includes( [
+		'General',
+		'Position',
 		'Transform & Transition',
+		'Motion Effects',
+		'Custom Attributes',
+		'Custom CSS',
+		'Responsive',
+		'Conditional Display',
+		'Advanced',
 	] )
 	.run
 
@@ -108,9 +116,9 @@ function advancedTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } )
-		cy.selectBlock( 'stackable/accordion' ).asBlock( 'accordionBlock', { isStatic: true } )
+		cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } ).asBlock( 'accordionBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/accordion', 'Advanced' )
+		cy.savePost()
 	} )
 
 	assertAdvancedTab( {

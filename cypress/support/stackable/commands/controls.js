@@ -110,8 +110,8 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 	if ( args[ 1 ] === null ) {
 		const options = Object.assign( optionsToPass, { name: label, value: args[ 1 ] } )
 		changeControlViewport( options )
-		changeUnit( options )
 		changeControlState( options )
+		changeUnit( options )
 		return cy.get( '.block-editor-block-list__block.is-selected' )
 	}
 
@@ -163,11 +163,12 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 
 	const customOptions = {
 		// Pass our own reset controls.
-		 'ugb-button-icon-control': 'popoverControlReset',
-		 'ugb-advanced-autosuggest-control': 'suggestionControlClear',
-		 'ugb-four-range-control': 'fourRangeControlReset',
+		 '.ugb-button-icon-control': 'popoverControlReset',
+		 '.ugb-advanced-autosuggest-control': 'suggestionControlClear',
+		 '.ugb-four-range-control': 'fourRangeControlReset',
+		 '.ugb-four-range-control__range': 'fourRangeControlReset',
 		 '.ugb-four-range-control__lock': 'fourRangeControlReset', // TODO: Find a better selector
-		 'ugb-icon-control': 'iconControlReset',
+		 '.ugb-icon-control': 'iconControlReset',
 		 '.stk-advanced-focal-point-control': 'focalPointControlReset',
 		 '.stk-date-time-control__field': 'stkDateTimeControlReset',
 		 '.ugb-image-control': 'imageControlReset',
@@ -473,19 +474,28 @@ function fourRangeControlReset( name, options = {} ) {
 		.click( { force: true } )
 
 	beforeAdjust( name, null, options )
-	selector( isInPopover )
-		.find( 'button.ugb-four-range-control__lock' )
-		.invoke( 'attr', 'class' )
-		.then( className => {
-			const parsedClassName = className.split( ' ' )
-			if ( ! parsedClassName.includes( 'ugb--is-locked' ) ) {
-				clickLockButton()
-			}
-
+	selector( isInPopover ).then( $baseControl => {
+		if ( ! $baseControl.find( 'button.ugb-four-range-control__lock' ).length ) {
 			selector( isInPopover )
 				.find( 'button[aria-label="Reset"], button:contains(Reset)' )
 				.click( { force: true, multiple: true } )
-		} )
+			return
+		}
+
+		selector( isInPopover )
+			.find( 'button.ugb-four-range-control__lock' )
+			.invoke( 'attr', 'class' )
+			.then( className => {
+				const parsedClassName = className.split( ' ' )
+				if ( ! parsedClassName.includes( 'ugb--is-locked' ) ) {
+					clickLockButton()
+				}
+
+				selector( isInPopover )
+					.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+					.click( { force: true, multiple: true } )
+			} )
+	} )
 }
 
 /**
