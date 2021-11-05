@@ -1,9 +1,9 @@
 name: e2e-test-wp57
 on:
   push:
-    branches: [ master ]
+    branches: [ v3-commands ]
   pull_request:
-    branches: [ master ]
+    branches: [ v3-commands ]
 
 jobs:
   test:
