@@ -64,6 +64,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.openInspector( 'ugb/icon', 'Style' )
 		cy.collapse( 'General' )
 		cy.adjust( 'Number of Icons / Columns', 4 )
+		cy.savePost()
 	} )
 
 	afterEach( () => cy.assertFrontendStyles( '@iconBlock' ) )

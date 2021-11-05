@@ -24,16 +24,16 @@ function testCssFilesPrecedence() {
 		cy.savePost()
 		cy.document().then( doc => {
 			// Gets the id of the element next to the free editor css file.
-			let nextElementId = doc.getElementById( 'ugb-block-editor-css-css' ).nextElementSibling.id
+			let nextElementId = doc.getElementById( 'ugb-block-editor-css-v2-css' ).nextElementSibling.id
 
 			// Handle the next element as well.
-			if ( nextElementId !== 'ugb-block-editor-css-premium-css' ) {
-				nextElementId = doc.getElementById( 'ugb-block-editor-css-css' ).nextElementSibling.nextElementSibling.id
+			if ( nextElementId !== 'ugb-block-editor-css-premium-v2-css' ) {
+				nextElementId = doc.getElementById( 'ugb-block-editor-css-v2-css' ).nextElementSibling.nextElementSibling.id
 			}
 
 			// Check the next element if it is the premium file using the premium selector
 			assert.isTrue(
-				nextElementId === 'ugb-block-editor-css-premium-css',
+				nextElementId === 'ugb-block-editor-css-premium-v2-css',
 				`Expected the free css file is loaded first in the Editor. Found: ${ nextElementId }`
 			)
 		} )
@@ -41,16 +41,16 @@ function testCssFilesPrecedence() {
 			cy.visit( previewUrl )
 			cy.document().then( doc => {
 				// Gets the id of the element next to the free frontend css file.
-				let nextElementId = doc.getElementById( 'ugb-style-css-css' ).nextElementSibling.id
+				let nextElementId = doc.getElementById( 'ugb-style-css-v2-css' ).nextElementSibling.id
 
 				// Handle the next element as well.
-				if ( nextElementId !== 'ugb-style-css-premium-css' ) {
-					nextElementId = doc.getElementById( 'ugb-style-css-css' ).nextElementSibling.nextElementSibling.id
+				if ( nextElementId !== 'ugb-style-css-premium-v2-css' ) {
+					nextElementId = doc.getElementById( 'ugb-style-css-v2-css' ).nextElementSibling.nextElementSibling.id
 				}
 
 				// Check the next element if it is the premium file using the premium selector
 				assert.isTrue(
-					nextElementId === 'ugb-style-css-premium-css',
+					nextElementId === 'ugb-style-css-premium-v2-css',
 					`Expected the free css file is loaded first in the Frontend. Found: ${ nextElementId }`
 				)
 			} )
@@ -68,8 +68,8 @@ function checkEditorFilesInFrontend() {
 		cy.getPostUrls().then( ( { previewUrl } ) => {
 			cy.visit( previewUrl )
 			cy.document().then( doc => {
-				const freeCssFile = doc.getElementById( 'ugb-block-editor-css-css' )
-				const premiumCssFile = doc.getElementById( 'ugb-block-editor-css-premium-css' )
+				const freeCssFile = doc.getElementById( 'ugb-block-editor-css-v2-css' )
+				const premiumCssFile = doc.getElementById( 'ugb-block-editor-css-premium-v2-css' )
 
 				// The editor files should not be in frontend.
 				assert.isTrue(

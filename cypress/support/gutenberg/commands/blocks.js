@@ -118,7 +118,7 @@ export function selectBlock( subject, selector ) {
 	if ( selector === '' ) {
 		selector = undefined
 	}
-	cy.wp().then( wp => {
+	return cy.wp().then( wp => {
 		cy.get( 'body' ).then( $body => {
 			return new Cypress.Promise( resolve => {
 				const willSelectBlock = getBlocksRecursive( wp.data.select( 'core/block-editor' ).getBlocks() ).filter( block => block.name === subject )
@@ -134,14 +134,14 @@ export function selectBlock( subject, selector ) {
 							const clientId = blockElement.data( 'block' )
 							wp.data.dispatch( 'core/block-editor' )
 								.selectBlock( clientId )
-								.then( dispatchResolver( () => resolve( $body.find( `.wp-block[data-block="${ clientId }"]` ) ) ) )
+								.then( dispatchResolver( () => resolve( $body.find( `[data-block="${ clientId }"]` ) ) ) )
 						} )
 					}
 
 					willSelectBlock.forEach( ( { clientId } ) => {
-						if ( ! foundClientId && $body.find( `.wp-block[data-block="${ clientId }"]:contains(${ selector })` ).length ) {
+						if ( ! foundClientId && $body.find( `[data-block="${ clientId }"]:contains(${ selector })` ).length ) {
 							foundClientId = clientId
-							resolveCallback = $body.find( `.wp-block[data-block="${ clientId }"]:contains(${ selector })` )
+							resolveCallback = $body.find( `[data-block="${ clientId }"]:contains(${ selector })` )
 						}
 					} )
 
@@ -151,7 +151,7 @@ export function selectBlock( subject, selector ) {
 				} else if ( typeof selector === 'number' ) {
 					wp.data.dispatch( 'core/block-editor' )
 						.selectBlock( willSelectBlock[ selector ].clientId )
-						.then( dispatchResolver( () => resolve( $body.find( `.wp-block[data-block="${ willSelectBlock[ selector ].clientId }"]` ) ) ) )
+						.then( dispatchResolver( () => resolve( $body.find( `[data-block="${ willSelectBlock[ selector ].clientId }"]` ) ) ) )
 				} else if ( typeof selector === 'object' ) {
 					const {
 						clientId,
@@ -163,7 +163,7 @@ export function selectBlock( subject, selector ) {
 				} else {
 					wp.data.dispatch( 'core/block-editor' )
 						.selectBlock( ( first( willSelectBlock ) || {} ).clientId )
-						.then( dispatchResolver( () => resolve( $body.find( `.wp-block[data-block="${ ( first( willSelectBlock ) || {} ).clientId }"]` ) ) ) )
+						.then( dispatchResolver( () => resolve( $body.find( `[data-block="${ ( first( willSelectBlock ) || {} ).clientId }"]` ) ) ) )
 				}
 			} )
 		} )

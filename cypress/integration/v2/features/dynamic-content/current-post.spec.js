@@ -3,7 +3,7 @@
  */
 import { registerTests } from '~stackable-e2e/helpers'
 import { setupMatchPostFieldValues } from './helpers'
-import { range } from 'lodash'
+import { range, escape } from 'lodash'
 
 describe( 'Dynamic Content Current Post', registerTests( [
 	matchPostFieldValues,
@@ -32,7 +32,7 @@ function matchPostFieldValues() {
 		setupMatchPostFieldValues( 'post' )
 		cy.get( '@fieldsToAssert' ).then( fieldsToAssert => {
 			fieldsToAssert.forEach( ( {
-				name: fieldName, value, options: fieldOptions = {},
+				name: fieldName, value, options: fieldOptions = {}, willEscape,
 			} ) => {
 				cy.addBlock( 'ugb/cta' )
 
@@ -44,7 +44,9 @@ function matchPostFieldValues() {
 				} )
 
 				// Assert the value.
-				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value )
+				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', willEscape ? escape( value ) : value, { assertFrontend: false } )
+				cy.selectBlock( 'ugb/cta' ).assertBlockContent( '.ugb-cta__title', value, { assertBackend: false } )
+
 				cy.deleteBlock( 'ugb/cta' )
 			} )
 			cy.savePost()

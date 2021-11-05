@@ -14,6 +14,7 @@ Cypress.Commands.add( 'rangeControlReset', rangeControlReset )
 Cypress.Commands.add( 'dateTimeControlReset', dateTimeControlReset )
 Cypress.Commands.add( 'urlInputControlReset', urlInputControlReset )
 Cypress.Commands.add( 'dropdownControlReset', dropdownControlReset )
+Cypress.Commands.add( 'textControlReset', textControlReset )
 Cypress.Commands.add( 'dropdownControl', dropdownControl )
 Cypress.Commands.add( 'colorControl', colorControl )
 Cypress.Commands.add( 'rangeControl', rangeControl )
@@ -145,6 +146,34 @@ function urlInputControlReset( name, options = {} ) {
  * @param {Object} options
  */
 function dropdownControlReset( name, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+		mainComponentSelector,
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} )
+
+	beforeAdjust( name, null, options )
+	selector()
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+		.click( { force: true, multiple: true } )
+}
+
+/**
+ * Command for resetting the text control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function textControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
@@ -784,6 +813,7 @@ export function resetStyle( name, options = {} ) {
 		'.components-datetime': 'dateTimeControlReset',
 		'.block-editor-link-control': 'urlInputControlReset',
 		'.components-select-control__input': 'dropdownControlReset',
+		'.components-text-control__input': 'textControlReset',
 	}
 
 	baseControlSelector()

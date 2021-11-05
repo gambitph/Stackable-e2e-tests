@@ -65,12 +65,12 @@ function typeContent() {
 		cy.newPage()
 		cy.addBlock( 'ugb/count-up' ).asBlock( 'countUpBlock', { isStatic: true } )
 
-		cy.typeBlock( 'ugb/count-up', '.ugb-countup__title', 'Hello World! 1', 0 )
-			.assertBlockContent( '.ugb-countup__title', 'Hello World! 1' )
-		cy.typeBlock( 'ugb/count-up', '.ugb-countup__counter', '1234', 0 )
-			.assertBlockContent( '.ugb-countup__counter', '1234' )
-		cy.typeBlock( 'ugb/count-up', '.ugb-countup__description', 'Helloo World!! 12', 0 )
-			.assertBlockContent( '.ugb-countup__description', 'Helloo World!! 12' )
+		cy.typeBlock( 'ugb/count-up', '.ugb-countup__item1 > .ugb-countup__title', 'Hello World! 1', 0 )
+			.assertBlockContent( '.ugb-countup__item1 > .ugb-countup__title', 'Hello World! 1' )
+		cy.typeBlock( 'ugb/count-up', '.ugb-countup__item1 > .ugb-countup__counter', '1234', 0 )
+			.assertBlockContent( '.ugb-countup__item1 > .ugb-countup__counter', '1234' )
+		cy.typeBlock( 'ugb/count-up', '.ugb-countup__item1 > .ugb-countup__description', 'Helloo World!! 12', 0 )
+			.assertBlockContent( '.ugb-countup__item1 > .ugb-countup__description', 'Helloo World!! 12' )
 
 		cy.openInspector( 'ugb/count-up', 'Style' )
 		assertBlockTitleDescriptionContent( 'ugb/count-up' )
@@ -186,7 +186,7 @@ function styleTab( viewport, desktopOnly ) {
 				'padding-left': '28px',
 			},
 		} )
-		cy.resetStyle( 'Paddings' )
+		cy.resetStyle( 'Paddings', { viewport } )
 		cy.adjust( 'Paddings', [ 3, 4, 5, 6 ], { viewport, unit: 'em' } ).assertComputedStyle( {
 			'.ugb-countup__item': {
 				'padding-top': '3em',
@@ -195,7 +195,7 @@ function styleTab( viewport, desktopOnly ) {
 				'padding-left': '6em',
 			},
 		} )
-		cy.resetStyle( 'Paddings' )
+		cy.resetStyle( 'Paddings', { viewport } )
 		cy.adjust( 'Paddings', [ 17, 18, 19, 20 ], { viewport, unit: '%' } ).assertComputedStyle( {
 			'.ugb-countup__item': {
 				'padding-top': '17%',
