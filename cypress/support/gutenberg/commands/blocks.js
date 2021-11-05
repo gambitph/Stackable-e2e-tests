@@ -106,12 +106,6 @@ export function addBlock( blockName = 'ugb/accordion', options = {} ) {
 
 		return cy.get( '[data-block].is-selected' )
 	} )
-	if ( variation ) {
-		cy.get( '.block-editor-block-list__block.is-selected' )
-			.find( '.block-editor-block-variation-picker' )
-			.find( `button[aria-label="${ variation }"]` )
-			.click( { force: true } )
-	}
 }
 
 /**
