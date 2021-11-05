@@ -2,11 +2,12 @@
  * External dependencies
  */
 import {
-	responsiveAssertHelper, Block,
+	responsiveAssertHelper, Block, Advanced,
 } from '~stackable-e2e/helpers'
 import { uniqueId } from 'lodash'
 
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -14,6 +15,9 @@ export {
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 }
 
 function blockExist() {
@@ -76,6 +80,53 @@ function blockTab( viewport ) {
 	assertBlockTab( {
 		viewport,
 		mainSelector: '.stk-block-icon-button',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@iconButtonBlock' )
+	} )
+}
+
+const assertAdvancedTab = Advanced
+	.includes( [
+		'General',
+		'Position',
+		'Transform & Transition',
+		'Motion Effects',
+		'Custom Attributes',
+		'Custom CSS',
+		'Responsive',
+		'Conditional Display',
+		'Advanced',
+	] )
+	.run
+
+function advancedTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'core/paragraph' )
+		cy.typeBlock( 'core/paragraph', '', '/icon-button', 0 )
+		cy.get( '.components-popover__content' )
+			.contains( 'Icon Button' )
+			.click( { force: true } )
+		cy.selectBlock( 'stackable/icon-button' ).then( $block => {
+			const clientId = $block.data( 'block' )
+			cy.wp().then( wp => {
+				const className = wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes.className
+				wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `${ className ? className + ' ' : '' }e2etest-block-${ uniqueId() }` } )
+			} )
+		} )
+		cy.selectBlock( 'stackable/icon-button' ).asBlock( 'iconButtonBlock', { isStatic: true } )
+
+		cy.openInspector( 'stackable/icon-button', 'Advanced' )
+		cy.savePost()
+	} )
+
+	assertAdvancedTab( {
+		viewport,
+		mainSelector: '.stk-block-icon-button',
+		blockName: 'stackable/icon-button',
 	} )
 
 	afterEach( () => {

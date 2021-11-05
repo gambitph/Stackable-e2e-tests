@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced,
 } from '~stackable-e2e/helpers'
 
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -14,6 +15,9 @@ export {
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 }
 
 function blockExist() {
@@ -37,8 +41,6 @@ function typeContent() {
 			.assertBlockContent( '.stk-block-posts__readmore', 'Click to read more' )
 	} )
 }
-
-// TODO: Add tests for adding the Load more button & Pagination
 
 const assertBlockTab = Block
 	.includes( [
@@ -67,3 +69,36 @@ function blockTab( viewport ) {
 		contentVerticalAlignFrontendProperty: 'align-items',
 	} )
 }
+
+const assertAdvancedTab = Advanced
+	.includes( [
+		'General',
+		'Position',
+		'Transform & Transition',
+		'Motion Effects',
+		'Custom Attributes',
+		'Custom CSS',
+		'Responsive',
+		'Conditional Display',
+		'Advanced',
+	] )
+	.run
+
+function advancedTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.registerPosts( { numOfPosts: 3 } )
+		cy.newPage()
+		cy.addBlock( 'stackable/posts', { variation: 'Default Layout' } )
+		cy.openInspector( 'stackable/posts', 'Advanced' )
+		cy.savePost()
+	} )
+
+	assertAdvancedTab( {
+		viewport,
+		mainSelector: '.stk-block-posts',
+		blockName: 'stackable/posts',
+	} )
+}
+
+// TODO: Add tests for adding the Load more button & Pagination

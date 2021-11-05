@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced,
 } from '~stackable-e2e/helpers'
 
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -16,6 +17,9 @@ export {
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 }
 
 function blockExist() {
@@ -101,6 +105,41 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-heading__text',
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@headingBlock' )
+	} )
+}
+
+const assertAdvancedTab = Advanced
+	.includes( [
+		'General',
+		'Position',
+		'Transform & Transition',
+		'Motion Effects',
+		'Custom Attributes',
+		'Custom CSS',
+		'Responsive',
+		'Conditional Display',
+		'Advanced',
+	] )
+	.run
+
+function advancedTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/heading' ).asBlock( 'headingBlock', { isStatic: true } )
+		cy.typeBlock( 'stackable/heading', '.stk-block-heading__text', 'Heading', 0 )
+		cy.openInspector( 'stackable/heading', 'Advanced' )
+		cy.savePost()
+	} )
+
+	assertAdvancedTab( {
+		viewport,
+		mainSelector: '.stk-block-heading',
+		blockName: 'stackable/heading',
 	} )
 
 	afterEach( () => {
