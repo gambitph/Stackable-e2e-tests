@@ -61,7 +61,7 @@ export function getBaseControl( matches, options = {} ) {
 		supportedDelimiter = [],
 	} = options
 
-	if ( matches.match( /^(\.|#|:)/g ) ) {
+	if ( matches.toString().match( /^(\.|#|:)/g ) ) {
 		return ( ! isInPopover
 			? cy.get( matches )
 			: cy.get( '.components-popover__content' ).find( matches )

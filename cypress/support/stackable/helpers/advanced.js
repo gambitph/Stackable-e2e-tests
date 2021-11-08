@@ -312,6 +312,7 @@ class AdvancedModule extends Module {
 	assertGeneral( {
 		viewport,
 		mainSelector = null,
+		generalEditorSelector = false,
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 
@@ -324,40 +325,61 @@ class AdvancedModule extends Module {
 			const clear = [ 'left', 'right', 'both', 'none' ]
 			clear.forEach( value => {
 				cy.adjust( 'Clear', value ).assertComputedStyle( {
+					[ `${ generalEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+						'clear': value,
+					},
+				}, { assertFrontend: false } )
+				cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 					[ MAIN_SELECTOR ]: {
 						'clear': value,
 					},
-				} )
+				}, { assertBackend: false } )
 			} )
 		}
 
 		const overflow = [ 'auto', 'hidden', 'scroll', 'visible' ]
 		overflow.forEach( value => {
 			cy.adjust( 'Overflow', value, { viewport } ).assertComputedStyle( {
+				[ `${ generalEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+					'overflow': value,
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'overflow': value,
 				},
-			} )
+			}, { assertBackend: false } )
 		} )
 	}
 
 	assertPosition( {
 		viewport,
 		mainSelector = null,
+		positionEditorSelector = false,
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 
 		cy.adjust( 'Opacity', 0.6, { viewport, state: 'hover' } ).assertComputedStyle( {
+			[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }:hover` ]: {
+				'opacity': '0.6',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 			[ `${ MAIN_SELECTOR }:hover` ]: {
 				'opacity': '0.6',
 			},
-		} )
+		}, { assertBackend: false } )
 
 		cy.adjust( 'Opacity', 0.8, { viewport, state: 'normal' } ).assertComputedStyle( {
+			[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+				'opacity': '0.8',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 			[ MAIN_SELECTOR ]: {
 				'opacity': '0.8',
 			},
-		} )
+		}, { assertBackend: false } )
 
 		cy.adjust( 'Z-Index', 7, { viewport } ).assertComputedStyle( {
 			'': { // assert the .is-selected element in editor
@@ -373,35 +395,56 @@ class AdvancedModule extends Module {
 		const positions = [ 'static', 'relative', 'absolute', 'sticky' ]
 		positions.forEach( value => {
 			cy.adjust( '.components-base-control:contains(Position):first', value, { viewport } ).assertComputedStyle( {
+				[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+					'position': value,
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 				[ MAIN_SELECTOR ]: {
 					'position': value,
 				},
-			} )
+			}, { assertBackend: false } )
 		} )
 
 		// Hover state - px unit
 		cy.adjust( '.components-base-control:contains(Position):last', [ 16, 17, 18, 19 ], {
 			viewport, state: 'hover', unit: 'px',
 		} ).assertComputedStyle( {
+			[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }:hover` ]: {
+				'top': '16px',
+				'right': '17px',
+				'bottom': '18px',
+				'left': '19px',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 			[ `${ MAIN_SELECTOR }:hover` ]: {
 				'top': '16px',
 				'right': '17px',
 				'bottom': '18px',
 				'left': '19px',
 			},
-		} )
+		}, { assertBackend: false } )
 
 		// Normal state - px unit
 		cy.adjust( '.components-base-control:contains(Position):last', [ 5, 4, 3, 2 ], {
 			viewport, state: 'normal', unit: 'px',
 		} ).assertComputedStyle( {
+			[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+				'top': '5px',
+				'right': '4px',
+				'bottom': '3px',
+				'left': '2px',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 			[ MAIN_SELECTOR ]: {
 				'top': '5px',
 				'right': '4px',
 				'bottom': '3px',
 				'left': '2px',
 			},
-		} )
+		}, { assertBackend: false } )
 
 		cy.resetStyle( '.components-base-control:contains(Position):last', { viewport, state: 'hover' } )
 		cy.resetStyle( '.components-base-control:contains(Position):last', { viewport, state: 'normal' } )
@@ -410,36 +453,59 @@ class AdvancedModule extends Module {
 		cy.adjust( '.components-base-control:contains(Position):last', [ 20, 21, 22, 23 ], {
 			viewport, state: 'hover', unit: '%',
 		} ).assertComputedStyle( {
+			[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }:hover` ]: {
+				'top': '20%',
+				'right': '21%',
+				'bottom': '22%',
+				'left': '23%',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 			[ `${ MAIN_SELECTOR }:hover` ]: {
 				'top': '20%',
 				'right': '21%',
 				'bottom': '22%',
 				'left': '23%',
 			},
-		} )
+		}, { assertBackend: false } )
 
 		// Normal state - % unit
 		cy.adjust( '.components-base-control:contains(Position):last', [ 23, 24, 25, 26 ], {
 			viewport, state: 'normal', unit: '%',
 		} ).assertComputedStyle( {
+			[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+				'top': '23%',
+				'right': '24%',
+				'bottom': '25%',
+				'left': '26%',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 			[ MAIN_SELECTOR ]: {
 				'top': '23%',
 				'right': '24%',
 				'bottom': '25%',
 				'left': '26%',
 			},
-		} )
+		}, { assertBackend: false } )
 	}
 
 	assertTransformTransition( {
 		viewport,
 		mainSelector = null,
+		transformTransitionEditorSelector = false,
+		transformTransitionFrontendSelector = '',
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 
 		if ( viewport === 'Desktop' ) {
 			cy.adjust( 'Transition Duration (secs)', '0.79' ).assertComputedStyle( {
-				[ MAIN_SELECTOR ]: {
+				[ `${ transformTransitionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+					'transition-duration': '0.79s',
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
 					'transition-duration': '0.79s',
 				},
 			}, { assertBackend: false } )
@@ -462,7 +528,12 @@ class AdvancedModule extends Module {
 			]
 			transitions.forEach( value => {
 				cy.adjust( 'Transition Function', value ).assertComputedStyle( {
-					[ MAIN_SELECTOR ]: {
+					[ `${ transformTransitionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+						'transition-timing-function': value,
+					},
+				}, { assertFrontend: false } )
+				cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+					[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
 						'transition-timing-function': value,
 					},
 				}, { assertBackend: false } )
@@ -471,10 +542,15 @@ class AdvancedModule extends Module {
 			const transformOrigin = [ 'top left', 'top center', 'top center', 'center left', 'center center', 'center right', 'bottom left', 'bottom center', 'bottom right' ]
 			transformOrigin.forEach( value => {
 				cy.adjust( 'Transform Origin', value ).assertComputedStyle( {
-					[ MAIN_SELECTOR ]: {
+					[ `${ transformTransitionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
 						'transform-origin': value,
 					},
-				} )
+				}, { assertFrontend: false } )
+				cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+					[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
+						'transform-origin': value,
+					},
+				}, { assertBackend: false } )
 			} )
 		}
 
@@ -488,23 +564,31 @@ class AdvancedModule extends Module {
 		setParentControlToHover()
 		cy.adjust( 'Rotate', '-11.2', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
 		setParentControlToHover()
-		cy.adjust( 'Scale', 1.37, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-			.assertComputedStyle( {
-				[ `${ MAIN_SELECTOR }:hover` ]: {
-					'transform': 'translateX(-40px) translateY(-23px) rotate(-11.2deg) scale(1.37)',
-				},
-			} )
+		cy.adjust( 'Scale', 1.37, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } ).assertComputedStyle( {
+			[ `${ transformTransitionEditorSelector ? '' : MAIN_SELECTOR }:hover` ]: {
+				'transform': 'translateX(-40px) translateY(-23px) rotate(-11.2deg) scale(1.37)',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+			[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }:hover` ]: {
+				'transform': 'translateX(-40px) translateY(-23px) rotate(-11.2deg) scale(1.37)',
+			},
+		}, { assertBackend: false } )
 
 		cy.adjust( 'Transform', null, { viewport, state: 'normal' } )
 		cy.adjust( 'Translate X', 21, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
 		cy.adjust( 'Translate Y', 16, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
 		cy.adjust( 'Rotate', 14.3, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-		cy.adjust( 'Scale', 0.89, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-			.assertComputedStyle( {
-				[ MAIN_SELECTOR ]: {
-					'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
-				},
-			} )
+		cy.adjust( 'Scale', 0.89, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } ).assertComputedStyle( {
+			[ `${ transformTransitionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+				'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+			[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
+				'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
+			},
+		}, { assertBackend: false } )
 	}
 
 	assertMotionEffects( {
