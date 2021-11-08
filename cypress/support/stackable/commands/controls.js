@@ -421,7 +421,7 @@ function fourRangeControl( name, value, options = {} ) {
 	} else if ( Array.isArray( value ) ) {
 		// Adjust the four control field.
 		beforeAdjust( name, value, options )
-		cy.get( '.ugb-four-range-control__range' ).then( $control => {
+		selector().then( $control => {
 			if ( $control.find( 'button.ugb-four-range-control__lock' ).length ) {
 				selector()
 					.find( 'button.ugb-four-range-control__lock' )
