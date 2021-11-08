@@ -81,7 +81,7 @@ function styleTab( viewport, desktopOnly ) {
 				'height': '240px',
 			},
 		} )
-		cy.resetStyle( 'Height' )
+		cy.resetStyle( 'Height', { viewport } )
 
 		desktopOnly( () => {
 			cy.adjust( 'Flip Vertically', true )
@@ -108,7 +108,7 @@ function styleTab( viewport, desktopOnly ) {
 					'height': '126px',
 				},
 			} )
-			cy.resetStyle( 'Padding Top' )
+			cy.resetStyle( 'Padding Top', { viewport } )
 			cy.adjust( 'Padding Top', 40, { unit: 'em' } ).assertComputedStyle( {
 				'.ugb-separator__top-pad': {
 					'height': '40em',
@@ -119,7 +119,7 @@ function styleTab( viewport, desktopOnly ) {
 					'height': '111px',
 				},
 			} )
-			cy.resetStyle( 'Padding Bottom' )
+			cy.resetStyle( 'Padding Bottom', { viewport } )
 			cy.adjust( 'Padding Bottom', 36, { unit: 'em' } ).assertComputedStyle( {
 				'.ugb-separator__bottom-pad': {
 					'height': '36em',
@@ -198,7 +198,7 @@ function styleTab( viewport, desktopOnly ) {
 					'height': '126px',
 				},
 			} )
-			cy.resetStyle( 'Padding Top' )
+			cy.resetStyle( 'Padding Top', { viewport } )
 			cy.adjust( 'Padding Top', 40, { viewport, unit: 'em' } ).assertComputedStyle( {
 				'.ugb-separator__top-pad': {
 					'height': '40em',
@@ -209,7 +209,7 @@ function styleTab( viewport, desktopOnly ) {
 					'height': '111px',
 				},
 			} )
-			cy.resetStyle( 'Padding Bottom' )
+			cy.resetStyle( 'Padding Bottom', { viewport } )
 			cy.adjust( 'Padding Bottom', 36, { viewport, unit: 'em' } ).assertComputedStyle( {
 				'.ugb-separator__bottom-pad': {
 					'height': '36em',

@@ -64,10 +64,13 @@ export function changeUnit( options = {} ) {
 		selector()
 			.then( $baseControl => {
 				if ( $baseControl.find( '.stk-control-label__units' ).length ) {
-					selector().find( '.stk-control-label__units button.is-active' ).invoke( 'attr', 'data-value' ).then( value => {
+					// Some unit pickers does not have the selector `.is-active`
+					const unitButtonSelector = $baseControl.find( '.stk-control-label__units button.is-active' ).length
+						? '.is-active' : '.components-button'
+					selector().find( `.stk-control-label__units button${ unitButtonSelector }` ).first().invoke( 'attr', 'data-value' ).then( value => {
 						if ( value !== unit ) {
 							// Change the unit only if the selected unit is not the active unit.
-							selector().find( '.stk-control-label__units button.is-active' ).click( { force: true } )
+							selector().find( `.stk-control-label__units button${ unitButtonSelector }` ).first().click( { force: true } )
 							selector().find( `.stk-control-label__units button[data-value="${ unit }"]` ).click( { force: true } )
 						}
 					} )

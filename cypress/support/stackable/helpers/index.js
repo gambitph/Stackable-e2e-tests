@@ -156,7 +156,7 @@ export const registerTests = ( testsList = [] ) => () => _registerTests(
 			cy.server()
 			cy.route( {
 				method: 'GET',
-				url: /stk_design_library/,
+				url: /design_library/,
 				status: 200,
 			} ).as( 'designLibrary' )
 		} )
