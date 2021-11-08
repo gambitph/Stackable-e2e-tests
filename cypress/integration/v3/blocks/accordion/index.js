@@ -82,6 +82,7 @@ function styleTab( viewport, desktopOnly ) {
 			cy.deleteBlock( 'stackable/accordion' )
 
 			range( 1, 4 ).forEach( idx => {
+				// Test Close adjacent on open
 				cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } )
 				cy.typeBlock( 'stackable/accordion', '.stk-block-heading__text', `Accordion ${ idx }`, idx - 1 )
 				cy.openInspector( 'stackable/accordion', 'Style', `Accordion ${ idx }` )
