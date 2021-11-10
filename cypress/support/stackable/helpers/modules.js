@@ -337,3 +337,312 @@ export const assertSeparators = ( options = {}, assertOptions = {} ) => {
 	}
 	assertFunctions[ viewport ]()
 }
+
+/**
+ * Assertion function for Container Background in Style tab (V3)
+ *
+ * @param {Object} options
+ * @param {Object} assertOptions
+ */
+export const assertContainerBackground = ( options = {}, assertOptions = {} ) => {
+	const {
+		viewport = 'Desktop',
+	} = options
+
+	cy.collapse( 'Container Background' )
+	cy.get( '.block-editor-block-list__block.is-selected [data-block-id].stk-block' )
+		.invoke( 'attr', 'data-block-id' )
+		.then( blockId => {
+			if ( viewport === 'Desktop' ) {
+				cy.adjust( 'Trigger hover state on nested blocks', true )
+				cy.adjust( 'Color Type', 'gradient' )
+				cy.adjust( 'Background Color #1', '#cfe5f7' )
+				cy.adjust( 'Background Color #2', '#a0dda9' )
+				cy.adjust( 'Adv. Gradient Color Settings', {
+					'Gradient Direction (degrees)': 164,
+					'Color 1 Location': 41,
+					'Color 2 Location': 88,
+					'Background Gradient Blend Mode': 'darken',
+				} ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container:before` ]: {
+						'mix-blend-mode': 'darken',
+						'background-image': 'linear-gradient(164deg, #cfe5f7 41%, #a0dda9 88%)',
+					},
+				}, assertOptions )
+
+				cy.adjust( 'Color Type', 'single' )
+				cy.adjust( 'Background Color', '#f3daa3', { state: 'normal' } )
+				cy.adjust( 'Background Color', '#f6c3f9', { state: 'hover' } )
+				cy.adjust( 'Background Color Opacity', 0.6, { state: 'normal' } ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container` ]: {
+						'background-color': 'rgba(243, 218, 163, 0.6)',
+					},
+				}, assertOptions )
+				cy.adjust( 'Background Color Opacity', 0.8, { state: 'hover' } ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container:hover` ]: {
+						'background-color': 'rgba(246, 195, 249, 0.8)',
+					},
+				}, assertOptions )
+			}
+
+			cy.adjust( 'Background Image or Video', 1, { viewport } )
+			if ( viewport === 'Desktop' ) {
+				cy.adjust( 'Background Media Tint Strength', 7, { state: 'normal' } ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container:before` ]: {
+						'opacity': '0.7',
+					},
+				}, assertOptions )
+				cy.adjust( 'Background Media Tint Strength', 4, { state: 'hover' } ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container:before:hover` ]: {
+						'opacity': '0.4',
+					},
+				}, assertOptions )
+				cy.adjust( 'Fixed Background', true )
+				cy.adjust( 'Adv. Background Image Settings', {
+					'Image Blend Mode': 'exclusion',
+				} ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container` ]: {
+						'background-attachment': 'fixed',
+						'background-blend-mode': 'exclusion',
+					},
+				}, assertOptions )
+			}
+
+			// Test Custom size px unit
+			cy.adjust( 'Adv. Background Image Settings', {
+				'Image Position': {
+					viewport,
+					value: 'top right',
+				},
+				'Image Repeat': {
+					viewport,
+					value: 'no-repeat',
+				},
+				'Image Size': {
+					viewport,
+					value: 'custom',
+				},
+				'Custom Size': {
+					viewport,
+					value: 872,
+					unit: 'px',
+				},
+			} ).assertComputedStyle( {
+				[ `.stk-${ blockId }-container` ]: {
+					'background-position': '100% 0%',
+					'background-repeat': 'no-repeat',
+					'background-size': '872px',
+				},
+			}, assertOptions )
+			// Test Custom size vw unit
+			cy.adjust( 'Adv. Background Image Settings', {
+				'Image Size': {
+					viewport,
+					value: 'custom',
+				},
+				'Custom Size': {
+					viewport,
+					value: 58,
+					unit: 'vw',
+				},
+			} ).assertComputedStyle( {
+				[ `.stk-${ blockId }-container` ]: {
+					'background-size': '58vw',
+				},
+			}, assertOptions )
+			// Test Custom size % unit
+			cy.adjust( 'Adv. Background Image Settings', {
+				'Image Size': {
+					viewport,
+					value: 'custom',
+				},
+				'Custom Size': {
+					viewport,
+					value: 43,
+					unit: '%',
+				},
+			} ).assertComputedStyle( {
+				[ `.stk-${ blockId }-container` ]: {
+					'background-size': '43%',
+				},
+			}, assertOptions )
+		} )
+}
+
+/**
+ * Assertion function for Container Size & Spacing in Style tab (V3)
+ *
+ * @param {Object} options
+ * @param {Object} assertOptions
+ */
+export const assertContainerSizeSpacing = ( options = {}, assertOptions = {} ) => {
+	const {
+		viewport = 'Desktop',
+		selector = '',
+	} = options
+
+	cy.collapse( 'Container Size & Spacing' )
+	cy.adjust( 'Min. Height', 498, { viewport, unit: 'px' } ).assertComputedStyle( {
+		[ selector ]: {
+			'min-height': '498px',
+		},
+	}, assertOptions )
+	cy.adjust( 'Min. Height', 62, { viewport, unit: 'vh' } ).assertComputedStyle( {
+		[ selector ]: {
+			'min-height': '62vh',
+		},
+	}, assertOptions )
+
+	const aligns = [ 'flex-start', 'center', 'flex-end' ]
+	aligns.forEach( align => {
+		cy.adjust( 'Content Vertical Align', align, { viewport } ).assertComputedStyle( {
+			[ selector ]: {
+				'justify-content': align,
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+			[ selector ]: {
+				'align-items': align,
+			},
+		}, { assertBackend: false } )
+	} )
+
+	cy.adjust( 'Max. Content Width', 555, { viewport, unit: 'px' } ).assertComputedStyle( {
+		[ selector ]: {
+			'max-width': '555px',
+		},
+	}, assertOptions )
+	cy.adjust( 'Max. Content Width', 74, { viewport, unit: '%' } ).assertComputedStyle( {
+		[ selector ]: {
+			'max-width': '74%',
+		},
+	}, assertOptions )
+
+	aligns.forEach( align => {
+		cy.adjust( 'Max. Content Width', 555, { viewport, unit: 'px' } )
+		cy.adjust( 'Content Horizontal Align', align, { viewport } ).assertComputedStyle( {
+			[ selector ]: {
+				'margin-right': `${ align === 'flex-end' ? '0px' : 'auto' }`,
+				'margin-left': `${ align === 'flex-start' ? '0px' : 'auto' }`,
+			},
+		}, assertOptions )
+	} )
+
+	// Unit - px
+	cy.adjust( 'Paddings', [ 129, 19, 64, 31 ], {
+		viewport, state: 'normal', unit: 'px',
+	} ).assertComputedStyle( {
+		[ selector ]: {
+			'padding-top': '129px',
+			'padding-right': '19px',
+			'padding-bottom': '64px',
+			'padding-left': '31px',
+		},
+	}, assertOptions )
+	cy.adjust( 'Paddings', [ 130, 20, 65, 32 ], {
+		viewport, state: 'hover', unit: 'px',
+	} ).assertComputedStyle( {
+		[ `${ selector }:hover` ]: {
+			'padding-top': '130px',
+			'padding-right': '20px',
+			'padding-bottom': '65px',
+			'padding-left': '32px',
+		},
+	}, assertOptions )
+
+	// Unit - em
+	cy.adjust( 'Paddings', [ 6, 14, 24, 3 ], {
+		viewport, state: 'normal', unit: 'em',
+	} ).assertComputedStyle( {
+		[ selector ]: {
+			'padding-top': '6em',
+			'padding-right': '14em',
+			'padding-bottom': '24em',
+			'padding-left': '3em',
+		},
+	}, assertOptions )
+	cy.adjust( 'Paddings', [ 7, 15, 25, 4 ], {
+		viewport, state: 'hover', unit: 'em',
+	} ).assertComputedStyle( {
+		[ `${ selector }:hover` ]: {
+			'padding-top': '7em',
+			'padding-right': '15em',
+			'padding-bottom': '25em',
+			'padding-left': '4em',
+		},
+	}, assertOptions )
+
+	// Unit - %
+	cy.adjust( 'Paddings', [ 38, 26, 45, 8 ], {
+		viewport, state: 'normal', unit: '%',
+	} ).assertComputedStyle( {
+		[ selector ]: {
+			'padding-top': '38%',
+			'padding-right': '26%',
+			'padding-bottom': '45%',
+			'padding-left': '8%',
+		},
+	}, assertOptions )
+	cy.adjust( 'Paddings', [ 39, 27, 46, 9 ], {
+		viewport, state: 'hover', unit: '%',
+	} ).assertComputedStyle( {
+		[ `${ selector }:hover` ]: {
+			'padding-top': '39%',
+			'padding-right': '27%',
+			'padding-bottom': '46%',
+			'padding-left': '9%',
+		},
+	}, assertOptions )
+}
+
+/**
+ * Assertion function for Container Borders & Shadow in Style tab (V3)
+ *
+ * @param {Object} options
+ * @param {Object} assertOptions
+ */
+export const assertContainerBordersShadow = ( options = {}, assertOptions = {} ) => {
+	const {
+		viewport = 'Desktop',
+	} = options
+
+	cy.collapse( 'Container Borders & Shadow' )
+	cy.get( '.block-editor-block-list__block.is-selected [data-block-id].stk-block' )
+		.invoke( 'attr', 'data-block-id' )
+		.then( blockId => {
+			if ( viewport === 'Desktop' ) {
+				const borders = [ 'solid', 'dashed', 'dotted' ]
+				borders.forEach( border => {
+					cy.adjust( 'Borders', border ).assertComputedStyle( {
+						[ `.stk-${ blockId }-container` ]: {
+							'border-style': border,
+						},
+					}, assertOptions )
+				} )
+
+				cy.adjust( 'Border Color', '#3930ab', { state: 'normal' } ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container` ]: {
+						'border-color': '#3930ab',
+					},
+				}, assertOptions )
+				cy.adjust( 'Border Color', '#ff42fc', { state: 'hover' } ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container:hover` ]: {
+						'border-color': '#ff42fc',
+					},
+				}, assertOptions )
+
+				cy.adjust( 'Shadow / Outline', 7, { state: 'hover' } ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container:hover` ]: {
+						'box-shadow': '7px 5px 30px rgba(72, 73, 121, 0.15)',
+					},
+				}, assertOptions )
+				cy.adjust( 'Shadow / Outline', 5, { state: 'normal' } ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container` ]: {
+						'box-shadow': '0 5px 30px -10px rgba(18, 63, 82, 0.3)',
+					},
+				}, assertOptions )
+			}
+			// TODO: continue the tests. missing - responsive options & adv shadow options
+			cy.adjust( 'Borders', 'solid' )
+		} )
+}
