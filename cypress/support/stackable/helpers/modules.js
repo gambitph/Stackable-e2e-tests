@@ -641,8 +641,71 @@ export const assertContainerBordersShadow = ( options = {}, assertOptions = {} )
 						'box-shadow': '0 5px 30px -10px rgba(18, 63, 82, 0.3)',
 					},
 				}, assertOptions )
+				cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+				cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+
+				// Adjust Adv. Shadow Options - normal
+				const parentSelector = '.components-popover__content .stk-control-content'
+				// Press the cog symbol to open Shadow settings
+				cy.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
+				cy.adjust( 'Horizontal Offset', 8, { parentSelector, state: 'normal' } )
+				cy.adjust( 'Vertical Offset', 11, { parentSelector, state: 'normal' } )
+				cy.adjust( 'Blur', 25, { parentSelector, state: 'normal' } )
+				cy.adjust( 'Shadow Spread', 5, { parentSelector, state: 'normal' } )
+				cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector, state: 'normal' } )
+				cy.adjust( 'Shadow Opacity', 0.6, { parentSelector, state: 'normal' } ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container` ]: {
+						'box-shadow': '8px 11px 25px 5px rgba(42, 138, 98, 0.6)',
+					},
+				} )
+
+				const selectAdvancedShadowHoverState = () => cy
+					.adjust( 'Advanced Shadow Options', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
+
+				cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+				cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+				// Adjust Adv. Shadow Options - hover
+				selectAdvancedShadowHoverState()
+				cy.adjust( 'Horizontal Offset', 7, { parentSelector } )
+				selectAdvancedShadowHoverState()
+				cy.adjust( 'Vertical Offset', 31, { parentSelector } )
+				selectAdvancedShadowHoverState()
+				cy.adjust( 'Blur', 71, { parentSelector } )
+				selectAdvancedShadowHoverState()
+				cy.adjust( 'Shadow Spread', 26, { parentSelector } )
+				selectAdvancedShadowHoverState()
+				cy.adjust( 'Shadow Color', '#0f9294', { parentSelector } )
+				selectAdvancedShadowHoverState()
+				cy.adjust( 'Shadow Opacity', 0.4, { parentSelector } ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container:hover` ]: {
+						'box-shadow': '7px 31px 71px 26px rgba(15, 146, 148, 0.4)',
+					},
+				} )
 			}
-			// TODO: continue the tests. missing - responsive options & adv shadow options
+
 			cy.adjust( 'Borders', 'solid' )
+			cy.adjust( 'Border Width', [ 3, 6, 9, 12 ], { viewport, state: 'normal' } ).assertComputedStyle( {
+				[ `.stk-${ blockId }-container` ]: {
+					'border-style': 'solid',
+					'border-top-width': '3px',
+					'border-right-width': '6px',
+					'border-bottom-width': '9px',
+					'border-left-width': '12px',
+				},
+			} )
+			cy.adjust( 'Border Width', [ 1, 2, 3, 4 ], { viewport, state: 'hover' } ).assertComputedStyle( {
+				[ `.stk-${ blockId }-container:hover` ]: {
+					'border-style': 'solid',
+					'border-top-width': '1px',
+					'border-right-width': '2px',
+					'border-bottom-width': '3px',
+					'border-left-width': '4px',
+				},
+			} )
+			cy.adjust( 'Border Radius', 37, { viewport } ).assertComputedStyle( {
+				[ `.stk-${ blockId }-container` ]: {
+					'border-radius': '37px',
+				},
+			} )
 		} )
 }
