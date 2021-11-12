@@ -74,9 +74,9 @@ jobs:
     - name: Build Stackable Premium
       run: |
         cd Stackable
-        npm ci
+        npm install
         cd pro__premium_only
-        npm ci
+        npm install
         npm run build --if-present
     - name: Remove .wp-env.override.json
       run: rm .wp-env.override.json
