@@ -217,6 +217,7 @@ class BlockModule extends Module {
 		enablePaddings = true,
 		enableMargins = true,
 		contentVerticalAlignFrontendProperty = 'justify-content',
+		contentHorizontalAlignAssertOptions = {},
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 		const aligns = [ 'flex-start', 'center', 'flex-end' ]
@@ -290,7 +291,7 @@ class BlockModule extends Module {
 							'margin-right': `${ align === 'flex-end' ? '0px' : 'auto' }`,
 							'margin-left': `${ align === 'flex-start' ? '0px' : 'auto' }`,
 						},
-					} )
+					}, contentHorizontalAlignAssertOptions )
 			} )
 		}
 
