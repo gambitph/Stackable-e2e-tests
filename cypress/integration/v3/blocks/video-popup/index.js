@@ -74,6 +74,7 @@ function blockTab( viewport ) {
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
 		contentVerticalAlignFrontendProperty: 'align-items',
+		contentHorizontalAlignAssertOptions: { assertBackend: false },
 	} )
 
 	afterEach( () => {

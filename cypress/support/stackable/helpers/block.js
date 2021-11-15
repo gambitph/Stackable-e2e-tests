@@ -217,6 +217,7 @@ class BlockModule extends Module {
 		enablePaddings = true,
 		enableMargins = true,
 		contentVerticalAlignFrontendProperty = 'justify-content',
+		contentHorizontalAlignAssertOptions = {},
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 		const aligns = [ 'flex-start', 'center', 'flex-end' ]
@@ -279,35 +280,18 @@ class BlockModule extends Module {
 			} )
 
 			// Additional control added when Max. Content Width is adjusted:
-			const contentHorizontalValues = [
-				{
-					align: 'flex-start',
-					right: 'auto',
-					left: '0px',
-				},
-				{
-					align: 'center',
-					right: 'auto',
-					left: 'auto',
-				},
-				{
-					align: 'flex-end',
-					right: '0px',
-					left: 'auto',
-				},
-			]
-			contentHorizontalValues.forEach( value => {
+			aligns.forEach( align => {
 				// Content Horizontal Align is conditionally rendered upon editing the Width
 				cy.adjust( 'Max. Content Width', 54, {
 					viewport, unit: '%',
 				} )
-				cy.adjust( 'Content Horizontal Align', value.align, { viewport } )
+				cy.adjust( 'Content Horizontal Align', align, { viewport } )
 					.assertComputedStyle( {
 						[ MAIN_SELECTOR ]: {
-							'margin-right': value.right,
-							'margin-left': value.left,
+							'margin-right': `${ align === 'flex-end' ? '0px' : 'auto' }`,
+							'margin-left': `${ align === 'flex-start' ? '0px' : 'auto' }`,
 						},
-					} )
+					}, contentHorizontalAlignAssertOptions )
 			} )
 		}
 
