@@ -46,12 +46,55 @@ function assertWidth() {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'stackable/columns', { variation: 'Two columns; equal split' } )
-		cy.selectBlock( 'stackable/column', 1 ).resizeWidth( 25 )
-		cy.selectBlock( 'stackable/column', 1 ).assertComputedStyle( {
+		cy.selectBlock( 'stackable/column', 0 ).asBlock( 'columnBlock1', { isStatic: true } )
+		cy.selectBlock( 'stackable/column', 0 ).asBlock( 'columnBlock2', { isStatic: true } )
+		cy.selectBlock( 'stackable/column', 0 ).resizeWidth( 25 )
+		cy.selectBlock( 'stackable/column', 0 )
+		cy.selectBlock( 'stackable/column', 0 ).assertComputedStyle( {
 			'': { // Assert the `.is-selected` element
-				'flex-basis': '25%',
+				'max-width': '25%',
+				'flex': '1 1 25%',
 			},
 		}, { assertFrontend: false } )
+		cy.selectBlock( 'stackable/column', 0 ).assertComputedStyle( {
+			'.stk-block-column': {
+				'flex': '1 1 25%',
+			},
+		}, { assertBackend: false } )
+
+		// Revert back to 50% 50% for Tablet & Mobile assertion
+		cy.selectBlock( 'stackable/column', 0 ).resizeWidth( 50 )
+		const viewports = [ 'Tablet', 'Mobile' ]
+
+		viewports.forEach( viewport => {
+			cy.changePreviewMode( viewport )
+			cy.selectBlock( 'stackable/column', 0 ).resizeWidth( 30 )
+			cy.selectBlock( 'stackable/column', 0 ).assertComputedStyle( {
+				'': { // Assert the `.is-selected` element
+					'flex-basis': '30%',
+				},
+			}, { assertFrontend: false } )
+			cy.selectBlock( 'stackable/column', 0 ).resizeWidth( 30 )
+			cy.selectBlock( 'stackable/column', 0 ).assertComputedStyle( {
+				'.stk-block-column': {
+					'flex-basis': '30%',
+				},
+			}, { assertBackend: false } )
+			cy.selectBlock( 'stackable/column', 1 ).resizeWidth( 70 )
+			cy.selectBlock( 'stackable/column', 1 ).assertComputedStyle( {
+				'': { // Assert the `.is-selected` element
+					'flex-basis': '70%',
+				},
+			}, { assertFrontend: false } )
+			cy.selectBlock( 'stackable/column', 1 ).assertComputedStyle( {
+				'.stk-block-column': {
+					'flex-basis': '70%',
+				},
+			}, { assertBackend: false } )
+		} )
+
+		cy.assertFrontendStyles( '@columnBlock1' )
+		cy.assertFrontendStyles( '@columnBlock2' )
 	} )
 }
 
