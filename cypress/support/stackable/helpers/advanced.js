@@ -502,11 +502,6 @@ class AdvancedModule extends Module {
 
 		if ( viewport === 'Desktop' ) {
 			cy.adjust( 'Transition Duration (secs)', '0.79' ).assertComputedStyle( {
-				[ `${ transformTransitionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }` ]: {
-					'transition-duration': '0.79s',
-				},
-			}, { assertFrontend: false } )
-			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 				[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
 					'transition-duration': '0.79s',
 				},
@@ -530,11 +525,6 @@ class AdvancedModule extends Module {
 			]
 			transitions.forEach( value => {
 				cy.adjust( 'Transition Function', value ).assertComputedStyle( {
-					[ `${ transformTransitionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }` ]: {
-						'transition-timing-function': value,
-					},
-				}, { assertFrontend: false } )
-				cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 					[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
 						'transition-timing-function': value,
 					},
