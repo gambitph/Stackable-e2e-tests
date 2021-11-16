@@ -98,6 +98,8 @@ function advancedTab( viewport ) {
 		viewport,
 		mainSelector: '.stk-block-posts',
 		blockName: 'stackable/posts',
+		positionEditorSelector: '.stk-block-posts__item > .stk-container',
+		positionFrontendSelector: '.stk-block-posts__item > .stk-container',
 	} )
 }
 
