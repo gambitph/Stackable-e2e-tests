@@ -11,7 +11,6 @@ import {
 	blockError,
 	innerBlocks,
 	innerBlocksExist,
-	assertWidth,
 } from '.'
 
 describe( 'Feature Block ( Other Tests )', registerTests( [
@@ -19,5 +18,4 @@ describe( 'Feature Block ( Other Tests )', registerTests( [
 	blockError,
 	innerBlocks,
 	innerBlocksExist,
-	assertWidth,
 ] ) )

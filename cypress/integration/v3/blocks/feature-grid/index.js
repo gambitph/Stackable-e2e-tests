@@ -11,7 +11,6 @@ export {
 	blockExist,
 	blockError,
 	innerBlocksExist,
-	assertWidth,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -32,25 +31,6 @@ function innerBlocksExist() {
 		'.stk-block-text',
 		'.stk-block-button',
 	], { variation: 'Default Layout' } ) )
-}
-
-function assertWidth() {
-	it( 'should test the adjustment of width using the tooltip', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/feature-grid', { variation: 'Default Layout' } )
-		cy.selectBlock( 'stackable/column', 0 ).resizeWidth( 30 )
-		cy.selectBlock( 'stackable/column', 0 ).assertComputedStyle( {
-			'': { // Assert the `.is-selected` element
-				'flex-basis': '30%',
-			},
-		}, { assertFrontend: false } )
-		cy.selectBlock( 'stackable/column', 0 ).assertComputedStyle( {
-			'.stk-block-column': {
-				'max-width': '30%',
-			},
-		}, { assertBackend: false } )
-	} )
 }
 
 const assertBlockTab = Block
