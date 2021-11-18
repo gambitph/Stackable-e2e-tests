@@ -167,6 +167,7 @@ function advancedTab( viewport ) {
 		viewport,
 		mainSelector: '.stk-block-button',
 		blockName: 'stackable/button',
+		customSelector: '.stk-block-button > a.stk-button',
 	} )
 
 	afterEach( () => {

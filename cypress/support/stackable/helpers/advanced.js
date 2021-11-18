@@ -660,9 +660,10 @@ class AdvancedModule extends Module {
 	assertCustomAttributes( {
 		viewport,
 		mainSelector = null,
+		customSelector = null,
 	} ) {
 		if ( viewport === 'Desktop' ) {
-			const MAIN_SELECTOR = mainSelector || '.stk-block'
+			const MAIN_SELECTOR = customSelector || mainSelector || '.stk-block'
 
 			cy.adjust( 'Custom Attributes', 'data-type="some-text"' ).assertHtmlAttribute( MAIN_SELECTOR, 'data-type', 'some-text' )
 			cy.adjust( 'Custom Attributes', 'data-type="some-text" aria-label="block"' ).assertHtmlAttribute( MAIN_SELECTOR, 'aria-label', 'block' )
@@ -879,9 +880,10 @@ class AdvancedModule extends Module {
 	assertAdvanced( {
 		viewport,
 		mainSelector = null,
+		customSelector = null,
 	} ) {
 		if ( viewport === 'Desktop' ) {
-			const MAIN_SELECTOR = mainSelector || null
+			const MAIN_SELECTOR = customSelector || mainSelector || '.stk-block'
 			cy.adjust( 'HTML anchor', 'e2e-html-anchor' ).assertHtmlAttribute( MAIN_SELECTOR, 'id', 'e2e-html-anchor' )
 		}
 	}
