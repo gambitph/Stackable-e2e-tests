@@ -29,21 +29,13 @@ function addInnerBlocksToQueryLoop() {
 				.filter( blockName => ! Array( 'stackable/button', 'stackable/icon-button' ).includes( blockName ) )
 				.forEach( blockName => {
 					cy.addInnerBlock( 'core/post-template', blockName )
-					cy.assertBlockError()
-					cy.publish()
-					cy.reload()
-					cy.waitLoader( '.components-spinner' )
-					cy.selectBlock( blockName )
-					cy.adjustToolbar( 'Options', () => {
-						cy.get( '.components-popover__content' )
-							.contains( 'Remove block' )
-							.click( { force: true } )
-					} )
-					cy.assertBlockError()
-					cy.publish()
-					cy.reload()
-					cy.waitLoader( '.components-spinner' )
 				} )
+
+			cy.assertBlockError()
+			cy.publish()
+			cy.reload()
+			cy.assertBlockError()
+			cy.publish()
 		} )
 	} )
 }
