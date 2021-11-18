@@ -46,7 +46,6 @@ jobs:
         composer require wp-phpunit/wp-phpunit:${{ matrix.wp-versions }} --dev
         composer require roots/wordpress:${{ matrix.wp-versions }} --dev
         composer install --prefer-dist --no-progress
-
     # Install all dependencies from composer.json
     - name: Install dependencies in premium
       working-directory: Stackable/pro__premium_only
@@ -54,7 +53,6 @@ jobs:
         composer require wp-phpunit/wp-phpunit:${{ matrix.wp-versions }} --dev
         composer require roots/wordpress:${{ matrix.wp-versions }} --dev
         composer install --prefer-dist --no-progress
-
     - name: Cache node modules
       uses: actions/cache@v2
       env:
@@ -85,7 +83,6 @@ jobs:
     - name: Install WordPress Version
       run: |
         composer require roots/wordpress:${{ matrix.wp-versions }} --dev
-
     - name: Run WordPress Environment
       run: wp-env start
 

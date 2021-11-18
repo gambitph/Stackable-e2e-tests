@@ -45,7 +45,6 @@ jobs:
         composer require wp-phpunit/wp-phpunit --dev
         composer require roots/wordpress --dev
         composer install --prefer-dist --no-progress
-
     # Install all dependencies from composer.json
     - name: Install dependencies in premium
       working-directory: Stackable/pro__premium_only
@@ -53,7 +52,6 @@ jobs:
         composer require wp-phpunit/wp-phpunit --dev
         composer require roots/wordpress --dev
         composer install --prefer-dist --no-progress
-
     - name: Cache node modules
       uses: actions/cache@v2
       env:
