@@ -2,11 +2,12 @@
 /**
  * External dependencies
  */
-import { uniqueId } from 'lodash'
+import { uniqueId, lowerCase } from 'lodash'
 import {
 	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
@@ -14,6 +15,9 @@ export {
 	blockError,
 	typeContent,
 	pressEnterKey,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -71,6 +75,42 @@ function pressEnterKey() {
 		cy.savePost()
 		// Reloading should not cause a block error
 		cy.reload()
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/button-group' )
+		cy.selectBlock( 'stackable/button', 0 ).asBlock( 'buttonBlock', { isStatic: true } )
+		cy.typeBlock( 'stackable/button', '.stk-button__inner-text', 'Button 1', 0 )
+		cy.openInspector( 'stackable/button', 'Style' )
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@buttonBlock' ) )
+
+	it( 'should assert Styles panel in Style tab', () => {
+		desktopOnly( () => {
+			const styles = [ 'Ghost', 'Plain', 'Link', 'Default' ]
+			styles.forEach( style => {
+				const assertOptions = style === 'Default' ? { assertFrontend: false } : {}
+				cy.adjust( '.block-editor-block-styles', style ).assertClassName( '.stk-block-button', `is-style-${ lowerCase( style ) }`, assertOptions )
+			} )
+			const hoverEffects = [ 'darken', 'lift', 'scale', 'lift-scale', 'lift-more', 'scale-more', 'lift-scale-more' ]
+			hoverEffects.forEach( effect => {
+				cy.adjust( 'Hover Effect', effect ).assertClassName( '.stk-block-button > a.stk-button', `stk--hover-effect-${ effect }` )
+			} )
+		} )
+	} )
+
+	it( 'should assert Link panel in Style tab', () => {
+		desktopOnly( () => {
+			cy.adjust( 'Link / URL', 'https://wpstackable.com/' ).assertHtmlAttribute( '.stk-block-button > a.stk-button', 'href', 'https://wpstackable.com/', { assertBackend: false } )
+			cy.resetStyle( 'Link / URL' )
+			// The dynamic content for Link / URL should exist
+			cy.getBaseControl( 'Link / URL' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+		} )
 	} )
 }
 
