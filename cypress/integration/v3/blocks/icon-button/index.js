@@ -128,7 +128,6 @@ function advancedTab( viewport ) {
 		viewport,
 		mainSelector: '.stk-block-icon-button',
 		blockName: 'stackable/icon-button',
-		transformTransitionFrontendSelector: '.stk-block-icon-button .stk-button',
 		customSelector: '.stk-block-icon-button > a.stk-button',
 	} )
 

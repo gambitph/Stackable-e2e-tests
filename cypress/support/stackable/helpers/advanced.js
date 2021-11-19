@@ -496,13 +496,12 @@ class AdvancedModule extends Module {
 		viewport,
 		mainSelector = null,
 		transformTransitionEditorSelectorIsSelected = false,
-		transformTransitionFrontendSelector = '',
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 
 		if ( viewport === 'Desktop' ) {
 			cy.adjust( 'Transition Duration (secs)', '0.79' ).assertComputedStyle( {
-				[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
+				[ `${ MAIN_SELECTOR }` ]: {
 					'transition-duration': '0.79s',
 				},
 			}, { assertBackend: false } )
@@ -525,7 +524,7 @@ class AdvancedModule extends Module {
 			]
 			transitions.forEach( value => {
 				cy.adjust( 'Transition Function', value ).assertComputedStyle( {
-					[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
+					[ `${ MAIN_SELECTOR }` ]: {
 						'transition-timing-function': value,
 					},
 				}, { assertBackend: false } )
@@ -539,7 +538,7 @@ class AdvancedModule extends Module {
 					},
 				}, { assertFrontend: false } )
 				cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-					[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
+					[ `${ MAIN_SELECTOR }` ]: {
 						'transform-origin': value,
 					},
 				}, { assertBackend: false } )
@@ -548,6 +547,21 @@ class AdvancedModule extends Module {
 
 		const setParentControlToHover = () => cy
 			.adjust( 'Transform', null, { viewport, state: 'hover' } )
+
+		cy.adjust( 'Transform', null, { viewport, state: 'normal' } )
+		cy.adjust( 'Translate X', 21, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		cy.adjust( 'Translate Y', 16, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		cy.adjust( 'Rotate', 14.3, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		cy.adjust( 'Scale', 0.89, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } ).assertComputedStyle( {
+			[ `${ transformTransitionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }` ]: {
+				'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+			[ `${ MAIN_SELECTOR }` ]: {
+				'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
+			},
+		}, { assertBackend: false } )
 
 		setParentControlToHover()
 		cy.adjust( 'Translate X', '-40', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
@@ -562,23 +576,8 @@ class AdvancedModule extends Module {
 			},
 		}, { assertFrontend: false } )
 		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }:hover` ]: {
+			[ `${ MAIN_SELECTOR }:hover` ]: {
 				'transform': 'translateX(-40px) translateY(-23px) rotate(-11.2deg) scale(1.37)',
-			},
-		}, { assertBackend: false } )
-
-		cy.adjust( 'Transform', null, { viewport, state: 'normal' } )
-		cy.adjust( 'Translate X', 21, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-		cy.adjust( 'Translate Y', 16, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-		cy.adjust( 'Rotate', 14.3, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-		cy.adjust( 'Scale', 0.89, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } ).assertComputedStyle( {
-			[ `${ transformTransitionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }` ]: {
-				'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
-			},
-		}, { assertFrontend: false } )
-		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
-				'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
 			},
 		}, { assertBackend: false } )
 	}
