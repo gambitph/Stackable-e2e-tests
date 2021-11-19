@@ -3,9 +3,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced, assertContainerBackground, assertContainerSizeSpacing, assertContainerBordersShadow,
 } from '~stackable-e2e/helpers'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -13,6 +14,9 @@ export {
 	blockExist,
 	blockError,
 	innerBlocksExist,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -34,6 +38,31 @@ function innerBlocksExist() {
 		'.stk-block-icon',
 		'.stk-block-text',
 	], { variation: 'Default Layout' } ) )
+}
+
+function styleTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/blockquote', { variation: 'Default Layout' } ).asBlock( 'blockquoteBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/blockquote', 'Style' )
+	} )
+
+	it( `should assert Container Background options in ${ viewport }`, () => {
+		assertContainerBackground( { viewport } )
+	} )
+
+	it( `should assert Container Size & Spacing options in ${ viewport }`, () => {
+		assertContainerSizeSpacing( { viewport, selector: '.stk-block-blockquote__content' } )
+	} )
+
+	it( `should assert Container Borders & Shadow options in ${ viewport }`, () => {
+		assertContainerBordersShadow( { viewport, selector: '.stk-block-blockquote__content' } )
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@blockquoteBlock' )
+	} )
 }
 
 const assertBlockTab = Block
