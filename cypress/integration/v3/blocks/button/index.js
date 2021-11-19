@@ -113,7 +113,7 @@ function styleTab( viewport, desktopOnly ) {
 			cy.adjust( 'Link / URL', 'https://wpstackable.com/' ).assertHtmlAttribute( '.stk-block-button > a.stk-button', 'href', 'https://wpstackable.com/', { assertBackend: false } )
 			cy.resetStyle( 'Link / URL' )
 			// The dynamic content for Link / URL should exist
-			cy.getBaseControl( 'Link / URL' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+			cy.getBaseControl( '.stk-link-control:contains(Link / URL)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
 		} )
 	} )
 }
