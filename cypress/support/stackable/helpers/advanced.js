@@ -312,7 +312,7 @@ class AdvancedModule extends Module {
 	assertGeneral( {
 		viewport,
 		mainSelector = null,
-		generalEditorSelector = false,
+		generalEditorSelectorIsSelected = false,
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 
@@ -325,7 +325,7 @@ class AdvancedModule extends Module {
 			const clear = [ 'left', 'right', 'both', 'none' ]
 			clear.forEach( value => {
 				cy.adjust( 'Clear', value ).assertComputedStyle( {
-					[ `${ generalEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+					[ `${ generalEditorSelectorIsSelected ? '' : MAIN_SELECTOR }` ]: {
 						'clear': value,
 					},
 				}, { assertFrontend: false } )
@@ -340,7 +340,7 @@ class AdvancedModule extends Module {
 		const overflow = [ 'auto', 'hidden', 'scroll', 'visible' ]
 		overflow.forEach( value => {
 			cy.adjust( 'Overflow', value, { viewport } ).assertComputedStyle( {
-				[ `${ generalEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+				[ `${ generalEditorSelectorIsSelected ? '' : MAIN_SELECTOR }` ]: {
 					'overflow': value,
 				},
 			}, { assertFrontend: false } )
@@ -355,12 +355,14 @@ class AdvancedModule extends Module {
 	assertPosition( {
 		viewport,
 		mainSelector = null,
-		positionEditorSelector = false,
+		positionEditorSelectorIsSelected = false,
+		positionEditorSelector = '',
+		positionFrontendSelector = '',
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 
 		cy.adjust( 'Opacity', 0.6, { viewport, state: 'hover' } ).assertComputedStyle( {
-			[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }:hover` ]: {
+			[ `${ positionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }:hover` ]: {
 				'opacity': '0.6',
 			},
 		}, { assertFrontend: false } )
@@ -371,7 +373,7 @@ class AdvancedModule extends Module {
 		}, { assertBackend: false } )
 
 		cy.adjust( 'Opacity', 0.8, { viewport, state: 'normal' } ).assertComputedStyle( {
-			[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+			[ `${ positionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }` ]: {
 				'opacity': '0.8',
 			},
 		}, { assertFrontend: false } )
@@ -395,7 +397,7 @@ class AdvancedModule extends Module {
 		const positions = [ 'static', 'relative', 'absolute', 'sticky' ]
 		positions.forEach( value => {
 			cy.adjust( '.components-base-control:contains(Position):first', value, { viewport } ).assertComputedStyle( {
-				[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+				[ `${ positionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }` ]: {
 					'position': value,
 				},
 			}, { assertFrontend: false } )
@@ -410,7 +412,7 @@ class AdvancedModule extends Module {
 		cy.adjust( '.components-base-control:contains(Position):last', [ 16, 17, 18, 19 ], {
 			viewport, state: 'hover', unit: 'px',
 		} ).assertComputedStyle( {
-			[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }:hover` ]: {
+			[ `${ positionEditorSelectorIsSelected ? '' : positionEditorSelector ? positionEditorSelector : MAIN_SELECTOR }:hover` ]: {
 				'top': '16px',
 				'right': '17px',
 				'bottom': '18px',
@@ -418,7 +420,7 @@ class AdvancedModule extends Module {
 			},
 		}, { assertFrontend: false } )
 		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			[ `${ MAIN_SELECTOR }:hover` ]: {
+			[ `${ positionFrontendSelector ? positionFrontendSelector : MAIN_SELECTOR }:hover` ]: {
 				'top': '16px',
 				'right': '17px',
 				'bottom': '18px',
@@ -430,7 +432,7 @@ class AdvancedModule extends Module {
 		cy.adjust( '.components-base-control:contains(Position):last', [ 5, 4, 3, 2 ], {
 			viewport, state: 'normal', unit: 'px',
 		} ).assertComputedStyle( {
-			[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+			[ `${ positionEditorSelectorIsSelected ? '' : positionEditorSelector ? positionEditorSelector : MAIN_SELECTOR }` ]: {
 				'top': '5px',
 				'right': '4px',
 				'bottom': '3px',
@@ -438,7 +440,7 @@ class AdvancedModule extends Module {
 			},
 		}, { assertFrontend: false } )
 		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			[ MAIN_SELECTOR ]: {
+			[ `${ positionFrontendSelector ? positionFrontendSelector : MAIN_SELECTOR }` ]: {
 				'top': '5px',
 				'right': '4px',
 				'bottom': '3px',
@@ -453,7 +455,7 @@ class AdvancedModule extends Module {
 		cy.adjust( '.components-base-control:contains(Position):last', [ 20, 21, 22, 23 ], {
 			viewport, state: 'hover', unit: '%',
 		} ).assertComputedStyle( {
-			[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }:hover` ]: {
+			[ `${ positionEditorSelectorIsSelected ? '' : positionEditorSelector ? positionEditorSelector : MAIN_SELECTOR }:hover` ]: {
 				'top': '20%',
 				'right': '21%',
 				'bottom': '22%',
@@ -461,7 +463,7 @@ class AdvancedModule extends Module {
 			},
 		}, { assertFrontend: false } )
 		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			[ `${ MAIN_SELECTOR }:hover` ]: {
+			[ `${ positionFrontendSelector ? positionFrontendSelector : MAIN_SELECTOR }:hover` ]: {
 				'top': '20%',
 				'right': '21%',
 				'bottom': '22%',
@@ -473,7 +475,7 @@ class AdvancedModule extends Module {
 		cy.adjust( '.components-base-control:contains(Position):last', [ 23, 24, 25, 26 ], {
 			viewport, state: 'normal', unit: '%',
 		} ).assertComputedStyle( {
-			[ `${ positionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+			[ `${ positionEditorSelectorIsSelected ? '' : positionEditorSelector ? positionEditorSelector : MAIN_SELECTOR }` ]: {
 				'top': '23%',
 				'right': '24%',
 				'bottom': '25%',
@@ -481,7 +483,7 @@ class AdvancedModule extends Module {
 			},
 		}, { assertFrontend: false } )
 		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			[ MAIN_SELECTOR ]: {
+			[ `${ positionFrontendSelector ? positionFrontendSelector : MAIN_SELECTOR }` ]: {
 				'top': '23%',
 				'right': '24%',
 				'bottom': '25%',
@@ -493,19 +495,13 @@ class AdvancedModule extends Module {
 	assertTransformTransition( {
 		viewport,
 		mainSelector = null,
-		transformTransitionEditorSelector = false,
-		transformTransitionFrontendSelector = '',
+		transformTransitionEditorSelectorIsSelected = false,
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 
 		if ( viewport === 'Desktop' ) {
 			cy.adjust( 'Transition Duration (secs)', '0.79' ).assertComputedStyle( {
-				[ `${ transformTransitionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
-					'transition-duration': '0.79s',
-				},
-			}, { assertFrontend: false } )
-			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-				[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
+				[ `${ MAIN_SELECTOR }` ]: {
 					'transition-duration': '0.79s',
 				},
 			}, { assertBackend: false } )
@@ -528,12 +524,7 @@ class AdvancedModule extends Module {
 			]
 			transitions.forEach( value => {
 				cy.adjust( 'Transition Function', value ).assertComputedStyle( {
-					[ `${ transformTransitionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
-						'transition-timing-function': value,
-					},
-				}, { assertFrontend: false } )
-				cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-					[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
+					[ `${ MAIN_SELECTOR }` ]: {
 						'transition-timing-function': value,
 					},
 				}, { assertBackend: false } )
@@ -542,12 +533,12 @@ class AdvancedModule extends Module {
 			const transformOrigin = [ 'top left', 'top center', 'top center', 'center left', 'center center', 'center right', 'bottom left', 'bottom center', 'bottom right' ]
 			transformOrigin.forEach( value => {
 				cy.adjust( 'Transform Origin', value ).assertComputedStyle( {
-					[ `${ transformTransitionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
+					[ `${ transformTransitionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }` ]: {
 						'transform-origin': value,
 					},
 				}, { assertFrontend: false } )
 				cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-					[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
+					[ `${ MAIN_SELECTOR }` ]: {
 						'transform-origin': value,
 					},
 				}, { assertBackend: false } )
@@ -557,6 +548,21 @@ class AdvancedModule extends Module {
 		const setParentControlToHover = () => cy
 			.adjust( 'Transform', null, { viewport, state: 'hover' } )
 
+		cy.adjust( 'Transform', null, { viewport, state: 'normal' } )
+		cy.adjust( 'Translate X', 21, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		cy.adjust( 'Translate Y', 16, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		cy.adjust( 'Rotate', 14.3, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
+		cy.adjust( 'Scale', 0.89, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } ).assertComputedStyle( {
+			[ `${ transformTransitionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }` ]: {
+				'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+			[ `${ MAIN_SELECTOR }` ]: {
+				'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
+			},
+		}, { assertBackend: false } )
+
 		setParentControlToHover()
 		cy.adjust( 'Translate X', '-40', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
 		setParentControlToHover()
@@ -565,28 +571,13 @@ class AdvancedModule extends Module {
 		cy.adjust( 'Rotate', '-11.2', { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
 		setParentControlToHover()
 		cy.adjust( 'Scale', 1.37, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } ).assertComputedStyle( {
-			[ `${ transformTransitionEditorSelector ? '' : MAIN_SELECTOR }:hover` ]: {
+			[ `${ transformTransitionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }:hover` ]: {
 				'transform': 'translateX(-40px) translateY(-23px) rotate(-11.2deg) scale(1.37)',
 			},
 		}, { assertFrontend: false } )
 		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }:hover` ]: {
+			[ `${ MAIN_SELECTOR }:hover` ]: {
 				'transform': 'translateX(-40px) translateY(-23px) rotate(-11.2deg) scale(1.37)',
-			},
-		}, { assertBackend: false } )
-
-		cy.adjust( 'Transform', null, { viewport, state: 'normal' } )
-		cy.adjust( 'Translate X', 21, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-		cy.adjust( 'Translate Y', 16, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-		cy.adjust( 'Rotate', 14.3, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } )
-		cy.adjust( 'Scale', 0.89, { parentSelector: '.ugb-panel--transform-transition .stk-control-content' } ).assertComputedStyle( {
-			[ `${ transformTransitionEditorSelector ? '' : MAIN_SELECTOR }` ]: {
-				'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
-			},
-		}, { assertFrontend: false } )
-		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			[ `${ transformTransitionFrontendSelector ? transformTransitionFrontendSelector : MAIN_SELECTOR }` ]: {
-				'transform': 'translateX(21px) translateY(16px) rotate(14.3deg) scale(0.89)',
 			},
 		}, { assertBackend: false } )
 	}
@@ -668,9 +659,10 @@ class AdvancedModule extends Module {
 	assertCustomAttributes( {
 		viewport,
 		mainSelector = null,
+		customSelector = null,
 	} ) {
 		if ( viewport === 'Desktop' ) {
-			const MAIN_SELECTOR = mainSelector || '.stk-block'
+			const MAIN_SELECTOR = customSelector || mainSelector || '.stk-block'
 
 			cy.adjust( 'Custom Attributes', 'data-type="some-text"' ).assertHtmlAttribute( MAIN_SELECTOR, 'data-type', 'some-text' )
 			cy.adjust( 'Custom Attributes', 'data-type="some-text" aria-label="block"' ).assertHtmlAttribute( MAIN_SELECTOR, 'aria-label', 'block' )
@@ -887,9 +879,10 @@ class AdvancedModule extends Module {
 	assertAdvanced( {
 		viewport,
 		mainSelector = null,
+		customSelector = null,
 	} ) {
 		if ( viewport === 'Desktop' ) {
-			const MAIN_SELECTOR = mainSelector || null
+			const MAIN_SELECTOR = customSelector || mainSelector || '.stk-block'
 			cy.adjust( 'HTML anchor', 'e2e-html-anchor' ).assertHtmlAttribute( MAIN_SELECTOR, 'id', 'e2e-html-anchor' )
 		}
 	}

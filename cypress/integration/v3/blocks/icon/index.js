@@ -98,9 +98,9 @@ function advancedTab( viewport ) {
 		viewport,
 		mainSelector: '.stk-block-icon',
 		blockName: 'stackable/icon',
-		generalEditorSelector: true, // .is-selected element
-		positionEditorSelector: true, // .is-selected element
-		transformTransitionEditorSelector: true, // .is-selected element
+		generalEditorSelectorIsSelected: true, // .is-selected element
+		positionEditorSelectorIsSelected: true, // .is-selected element
+		transformTransitionEditorSelectorIsSelected: true, // .is-selected element
 	} )
 
 	it( 'should assert Accessibility inside the Advanced Tab', () => {
