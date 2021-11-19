@@ -10,13 +10,13 @@ import { registerTests as _registerTests } from '~gutenberg-e2e/helpers'
  * Export Block Module assertions.
  */
 export {
-	assertBlockTitleDescription, assertBlockTitleDescriptionContent, assertBlockBackground, assertSeparators,
+	assertBlockTitleDescription, assertBlockTitleDescriptionContent, assertBlockBackground, assertSeparators, assertContainerBackground, assertContainerSizeSpacing, assertContainerBordersShadow,
 } from './modules'
 
 /*
 * Export Tab assertions.
 */
-export { assertAdvancedTab } from './advanced'
+export { assertAdvancedTab, Advanced } from './advanced'
 export { Block } from './block'
 
 /**

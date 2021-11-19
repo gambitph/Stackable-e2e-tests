@@ -2,12 +2,15 @@
 /**
  * External dependencies
  */
+import { range } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, checkJsFiles, assertInnerBlocks, responsiveAssertHelper, Block,
+	assertBlockExist, blockErrorTest, checkJsFiles, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
 
+const [ desktopStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -16,9 +19,13 @@ export {
 	innerBlocksExist,
 	loadedFiles,
 	assertIcon,
+	desktopStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 }
 
 function blockExist() {
@@ -63,6 +70,65 @@ function assertIcon() {
 	} )
 }
 
+function styleTab( viewport, desktopOnly ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } ).asBlock( 'accordionBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/accordion', 'Style' )
+		cy.savePost()
+	} )
+
+	it( `should assert General options in ${ viewport }`, () => {
+		desktopOnly( () => {
+			cy.collapse( 'General' )
+			cy.adjust( 'Open at the start', true ).assertClassName( '.stk-block-accordion', 'stk--is-open', { assertBackend: false } )
+			cy.deleteBlock( 'stackable/accordion' )
+
+			range( 1, 4 ).forEach( idx => {
+				// Test Close adjacent on open
+				cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } )
+				cy.typeBlock( 'stackable/accordion', '.stk-block-heading__text', `Accordion ${ idx }`, idx - 1 )
+				cy.openInspector( 'stackable/accordion', 'Style', `Accordion ${ idx }` )
+				cy.collapse( 'General' )
+				cy.adjust( 'Close adjacent on open', true )
+			} )
+
+			cy.savePost()
+			cy.getPostUrls().then( ( { previewUrl } ) => {
+				cy.visit( previewUrl )
+				range( 0, 3 ).forEach( idx1 => {
+					cy
+						.get( '.stk-block-accordion' )
+						.eq( idx1 )
+						.find( '.stk-block-heading__text' )
+						.click( { force: true } )
+						.then( () => {
+							range( 0, 3 ).forEach( idx2 => {
+								if ( idx1 !== idx2 ) {
+									cy
+										.get( '.stk-block-accordion' )
+										.eq( idx2 )
+										.invoke( 'attr', 'class' )
+										.then( classNames => {
+											assert.isTrue(
+												! classNames.includes( 'stk--is-open' ),
+												`Expected that Accordion ${ idx2 + 1 } does not have the 'stk--is-open' classname.`
+											)
+										} )
+								}
+							} )
+						} )
+				} )
+			} )
+		} )
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@accordionBlock' )
+	} )
+}
+
 const assertBlockTab = Block
 	.includes( [
 		'Alignment',
@@ -87,6 +153,40 @@ function blockTab( viewport ) {
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
 		contentVerticalAlignFrontendProperty: 'align-items',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@accordionBlock' )
+	} )
+}
+
+const assertAdvancedTab = Advanced
+	.includes( [
+		'General',
+		'Position',
+		'Transform & Transition',
+		'Motion Effects',
+		'Custom Attributes',
+		'Custom CSS',
+		'Responsive',
+		'Conditional Display',
+		'Advanced',
+	] )
+	.run
+
+function advancedTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/accordion', { variation: 'Default Layout' } ).asBlock( 'accordionBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/accordion', 'Advanced' )
+		cy.savePost()
+	} )
+
+	assertAdvancedTab( {
+		viewport,
+		mainSelector: '.stk-block-accordion',
+		blockName: 'stackable/accordion',
 	} )
 
 	afterEach( () => {

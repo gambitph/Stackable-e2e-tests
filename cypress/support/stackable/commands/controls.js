@@ -106,6 +106,15 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		} )
 	}
 
+	// TODO: support null value in cy.adjust (Check this)
+	if ( args[ 1 ] === null ) {
+		const options = Object.assign( optionsToPass, { name: label, value: args[ 1 ] } )
+		changeControlViewport( options )
+		changeControlState( options )
+		changeUnit( options )
+		return cy.get( '.block-editor-block-list__block.is-selected' )
+	}
+
 	// Handle options with no label
 	if ( label === 'Color Type' ) {
 		args.shift()
@@ -117,6 +126,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		// Pass our own adjust controls.
 		'.ugb-icon-control__wrapper': 'iconControl',
 		'.ugb-four-range-control': 'fourRangeControl',
+		'.ugb-four-range-control__range': 'fourRangeControl',
 		'.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
 		'.react-autosuggest__input': 'suggestionControl',
 		'.ugb-button-icon-control__wrapper': 'popoverControl',
@@ -153,11 +163,12 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 
 	const customOptions = {
 		// Pass our own reset controls.
-		 'ugb-button-icon-control': 'popoverControlReset',
-		 'ugb-advanced-autosuggest-control': 'suggestionControlClear',
-		 'ugb-four-range-control': 'fourRangeControlReset',
+		 '.ugb-button-icon-control': 'popoverControlReset',
+		 '.ugb-advanced-autosuggest-control': 'suggestionControlClear',
+		 '.ugb-four-range-control': 'fourRangeControlReset',
+		 '.ugb-four-range-control__range': 'fourRangeControlReset',
 		 '.ugb-four-range-control__lock': 'fourRangeControlReset', // TODO: Find a better selector
-		 'ugb-icon-control': 'iconControlReset',
+		 '.ugb-icon-control': 'iconControlReset',
 		 '.stk-advanced-focal-point-control': 'focalPointControlReset',
 		 '.stk-date-time-control__field': 'stkDateTimeControlReset',
 		 '.ugb-image-control': 'imageControlReset',
@@ -410,15 +421,20 @@ function fourRangeControl( name, value, options = {} ) {
 	} else if ( Array.isArray( value ) ) {
 		// Adjust the four control field.
 		beforeAdjust( name, value, options )
-		selector()
-			.find( 'button.ugb-four-range-control__lock' )
-			.invoke( 'attr', 'class' )
-			.then( className => {
-				const parsedClassName = className.split( ' ' )
-				if ( parsedClassName.includes( 'ugb--is-locked' ) ) {
-					clickLockButton()
-				}
-			} )
+		selector().then( $control => {
+			if ( $control.find( 'button.ugb-four-range-control__lock' ).length ) {
+				selector()
+					.find( 'button.ugb-four-range-control__lock' )
+					.invoke( 'attr', 'class' )
+					.then( className => {
+						const parsedClassName = className.split( ' ' )
+
+						if ( parsedClassName.includes( 'ugb--is-locked' ) ) {
+							clickLockButton()
+						}
+					} )
+			}
+		} )
 
 		value.forEach( ( entry, index ) => {
 			if ( entry !== undefined ) {
@@ -458,19 +474,28 @@ function fourRangeControlReset( name, options = {} ) {
 		.click( { force: true } )
 
 	beforeAdjust( name, null, options )
-	selector( isInPopover )
-		.find( 'button.ugb-four-range-control__lock' )
-		.invoke( 'attr', 'class' )
-		.then( className => {
-			const parsedClassName = className.split( ' ' )
-			if ( ! parsedClassName.includes( 'ugb--is-locked' ) ) {
-				clickLockButton()
-			}
-
+	selector( isInPopover ).then( $baseControl => {
+		if ( ! $baseControl.find( 'button.ugb-four-range-control__lock' ).length ) {
 			selector( isInPopover )
 				.find( 'button[aria-label="Reset"], button:contains(Reset)' )
 				.click( { force: true, multiple: true } )
-		} )
+			return
+		}
+
+		selector( isInPopover )
+			.find( 'button.ugb-four-range-control__lock' )
+			.invoke( 'attr', 'class' )
+			.then( className => {
+				const parsedClassName = className.split( ' ' )
+				if ( ! parsedClassName.includes( 'ugb--is-locked' ) ) {
+					clickLockButton()
+				}
+
+				selector( isInPopover )
+					.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+					.click( { force: true, multiple: true } )
+			} )
+	} )
 }
 
 /**
