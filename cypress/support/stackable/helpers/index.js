@@ -16,7 +16,7 @@ export {
 /*
 * Export Tab assertions.
 */
-export { assertAdvancedTab } from './advanced'
+export { assertAdvancedTab, Advanced } from './advanced'
 export { Block } from './block'
 
 /**

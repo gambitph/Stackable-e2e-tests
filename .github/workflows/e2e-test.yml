@@ -1,9 +1,9 @@
 name: e2e-test-latest
 on:
   push:
-    branches: [ master ]
+    branches: [ v3-commands ]
   pull_request:
-    branches: [ master ]
+    branches: [ v3-commands ]
 
 jobs:
   test:
@@ -19,12 +19,12 @@ jobs:
     - uses: actions/checkout@v2 # Checkout the Stackable Free repo.
       with:
         repository: 'gambitph/Stackable'
-        ref: 'develop'
+        ref: 'master'
         path: 'Stackable'
     - uses: actions/checkout@v2 # Checkout the Stackable Premium repo.
       with:
         repository: 'bfintal/Stackable-Premium'
-        ref: 'develop'
+        ref: 'master'
         path: 'Stackable/pro__premium_only'
         token: '${{ secrets.ACCESS_KEY }}'
 
