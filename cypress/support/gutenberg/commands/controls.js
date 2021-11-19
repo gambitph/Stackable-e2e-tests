@@ -667,6 +667,7 @@ export function adjust( name, value, options ) {
 		mainComponentSelector = '.components-base-control',
 		// if the option has no label, pass custom regex to find the control
 		supportedDelimiter = [],
+		afterAdjust = () => {},
 	} = options
 
 	// Handle options with no label
@@ -725,6 +726,8 @@ export function adjust( name, value, options ) {
 
 			cy[ combinedControlHandlers[ commandClassKey ] ]( name, value, omit( options, 'customOptions' ) )
 		} )
+
+	afterAdjust( name, value, options )
 
 	// Always return the selected block which will be used in functions that require chained wp-block elements.
 	return cy.get( '.block-editor-block-list__block.is-selected' )

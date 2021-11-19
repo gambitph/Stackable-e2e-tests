@@ -11,6 +11,7 @@ import {
 	blockError,
 	typeContent,
 	pressEnterKey,
+	pressBackspace,
 } from '.'
 
 describe( 'Heading Block ( Other Tests )', registerTests( [
@@ -18,4 +19,5 @@ describe( 'Heading Block ( Other Tests )', registerTests( [
 	blockError,
 	typeContent,
 	pressEnterKey,
+	pressBackspace,
 ] ) )

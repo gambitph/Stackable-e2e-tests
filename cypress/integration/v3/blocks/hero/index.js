@@ -2,30 +2,35 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
+
+const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 
 export {
 	blockExist,
 	blockError,
 	innerBlocks,
 	innerBlocksExist,
+	desktopBlock,
+	tabletBlock,
+	mobileBlock,
 }
 
 function blockExist() {
-	it( 'should show the block', assertBlockExist( 'stackable/hero', '.stk-block-hero' ) )
+	it( 'should show the block', assertBlockExist( 'stackable/hero', '.stk-block-hero', { variation: 'Default Layout' } ) )
 }
 
 function blockError() {
-	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/hero' ) )
+	it( 'should not trigger block error when refreshing the page', blockErrorTest( 'stackable/hero', { variation: 'Default Layout' } ) )
 }
 
 function innerBlocks() {
 	it( 'should allow adding inner blocks', () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/hero' )
+		cy.addBlock( 'stackable/hero', { variation: 'Default Layout' } )
 
 		stkBlocks
 			.filter( blockName => blockName !== 'stackable/hero' )
@@ -40,5 +45,37 @@ function innerBlocksExist() {
 		'.stk-block-heading',
 		'.stk-block-text',
 		'.stk-block-button',
-	] ) )
+	], { variation: 'Default Layout' } ) )
+}
+
+const assertBlockTab = Block
+	.includes( [
+		'Alignment',
+		'Background',
+		'Size & Spacing',
+		'Borders & Shadows',
+		'Top Separator',
+		'Bottom Separator',
+	] )
+	.run
+
+function blockTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/hero', { variation: 'Default Layout' } ).asBlock( 'heroBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/hero', 'Block' )
+	} )
+
+	assertBlockTab( {
+		viewport,
+		mainSelector: '.stk-block-hero',
+		alignmentSelector: '.stk-block-hero .stk-inner-blocks',
+		enableColumnAlignment: false,
+		contentVerticalAlignFrontendProperty: 'align-items',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@heroBlock' )
+	} )
 }

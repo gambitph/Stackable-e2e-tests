@@ -12,6 +12,7 @@ import {
 	innerBlocks,
 	innerBlocksExist,
 	loadedFiles,
+	assertIcon,
 } from '.'
 
 describe( 'Accordion Block ( Other Tests )', registerTests( [
@@ -20,4 +21,5 @@ describe( 'Accordion Block ( Other Tests )', registerTests( [
 	innerBlocks,
 	innerBlocksExist,
 	loadedFiles,
+	assertIcon,
 ] ) )
