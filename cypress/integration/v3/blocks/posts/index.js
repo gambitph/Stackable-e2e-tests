@@ -72,15 +72,15 @@ function blockTab( viewport ) {
 
 const assertAdvancedTab = Advanced
 	.includes( [
-		'General',
+		// 'General',
 		'Position',
-		'Transform & Transition',
-		'Motion Effects',
-		'Custom Attributes',
-		'Custom CSS',
-		'Responsive',
-		'Conditional Display',
-		'Advanced',
+		// 'Transform & Transition',
+		// 'Motion Effects',
+		// 'Custom Attributes',
+		// 'Custom CSS',
+		// 'Responsive',
+		// 'Conditional Display',
+		// 'Advanced',
 	] )
 	.run
 
