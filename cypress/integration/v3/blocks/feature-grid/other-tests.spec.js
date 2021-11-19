@@ -10,12 +10,10 @@ import {
 	blockExist,
 	blockError,
 	innerBlocksExist,
-	assertWidth,
 } from '.'
 
 describe( 'Feature Grid Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	innerBlocksExist,
-	assertWidth,
 ] ) )

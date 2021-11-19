@@ -223,14 +223,34 @@ export function deleteBlock( subject, selector ) {
  * @param {string} blockName
  * @param {string} blockToAdd
  * @param {string | number | Object} customSelector
+ * @param {Object} options
  */
-export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/accordion', customSelector ) {
+export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/accordion', customSelector, options = {} ) {
+	const {
+		variation = '',
+	} = options
+
 	cy.selectBlock( blockName, customSelector )
 	cy.wp().then( wp => {
 		return new Cypress.Promise( resolve => {
 			const selectedBlockClientId = wp.data.select( 'core/block-editor' ).getSelectedBlockClientId()
 			const newBlock = wp.blocks.createBlock( blockToAdd, { className: `e2etest-block-${ uniqueId() }` } )
 			wp.data.dispatch( 'core/editor' ).insertBlock( newBlock, 0, selectedBlockClientId ).then( dispatchResolver( resolve ) )
+
+			if ( variation ) {
+				cy.get( '.block-editor-block-list__block.is-selected' )
+					.find( '.block-editor-block-variation-picker' )
+					.find( `button[aria-label="${ variation }"]` )
+					.click( { force: true } )
+			} else {
+				cy.get( '.block-editor-block-list__layout' ).then( $editor => {
+					if ( $editor.find( '.block-editor-block-variation-picker' ).length ) {
+						cy.get( '.block-editor-block-variation-picker' )
+							.find( '.block-editor-block-variation-picker__skip button' )
+							.click( { force: true } )
+					}
+				} )
+			}
 		} )
 	} )
 }

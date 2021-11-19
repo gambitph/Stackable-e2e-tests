@@ -517,44 +517,6 @@ export const assertUgbButtons = ( blockName, blockSelector, options = {}, assert
 }
 
 /**
- * Helper function for asserting the links in stackable buttons.
- *
- * @param {string} blockName
- * @param {Object} options
- */
-export const assertLinks = ( blockName, options = {} ) => {
-	const {
-		editorSelector = '',
-		frontendSelector = '',
-	} = options
-
-	cy.get( editorSelector ).its( 'length' ).then( links => {
-		range( 0, links ).forEach( index => {
-			// Click the button to open popover
-			cy.selectBlock( blockName, index ).find( editorSelector ).click( { force: true } )
-
-			const parentSelector = '.components-popover__content'
-			const supportedDelimiter = [ ' ' ]
-
-			/**
-			 * TODO: This will not work on dynamic blocks since we need to do some extra steps
-			 * before adjusting the options again.
-			 */
-
-			cy.get( parentSelector ).then( () => {
-				cy.adjust( 'Link / URL', `https://wpstackable${ index }.com/`, { parentSelector, supportedDelimiter } )
-					.assertHtmlAttribute( frontendSelector, 'href', `https://wpstackable${ index }.com/`, { assertBackend: false } )
-				cy.adjust( 'Open in new tab', true, { parentSelector, supportedDelimiter } )
-					.assertHtmlAttribute( frontendSelector, 'rel', /noreferrer noopener/, { assertBackend: false } )
-				cy.adjust( 'Link rel', 'sponsored ugc', { parentSelector, supportedDelimiter } )
-					.assertHtmlAttribute( frontendSelector, 'rel', /sponsored ugc/, { assertBackend: false } )
-			} )
-			cy.resetStyle( 'Link / URL', { parentSelector, supportedDelimiter } )
-		} )
-	} )
-}
-
-/**
  * Helper function for asserting the loaded js files of a block
  *
  * @param {string} blockName
