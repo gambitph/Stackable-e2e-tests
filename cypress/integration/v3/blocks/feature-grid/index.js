@@ -2,19 +2,22 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
 } from '~stackable-e2e/helpers'
 
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
 export {
 	blockExist,
 	blockError,
 	innerBlocksExist,
-	assertWidth,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 }
 
 function blockExist() {
@@ -32,25 +35,6 @@ function innerBlocksExist() {
 		'.stk-block-text',
 		'.stk-block-button',
 	], { variation: 'Default Layout' } ) )
-}
-
-function assertWidth() {
-	it( 'should test the adjustment of width using the tooltip', () => {
-		cy.setupWP()
-		cy.newPage()
-		cy.addBlock( 'stackable/feature-grid', { variation: 'Default Layout' } )
-		cy.selectBlock( 'stackable/column', 0 ).resizeWidth( 30 )
-		cy.selectBlock( 'stackable/column', 0 ).assertComputedStyle( {
-			'': { // Assert the `.is-selected` element
-				'flex-basis': '30%',
-			},
-		}, { assertFrontend: false } )
-		cy.selectBlock( 'stackable/column', 0 ).assertComputedStyle( {
-			'.stk-block-column': {
-				'max-width': '30%',
-			},
-		}, { assertBackend: false } )
-	} )
 }
 
 const assertBlockTab = Block
@@ -78,6 +62,40 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-feature-grid > .stk-inner-blocks',
 		enableInnerBlockAlignment: false,
 		contentVerticalAlignFrontendProperty: 'align-items',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@featureGridBlock' )
+	} )
+}
+
+const assertAdvancedTab = Advanced
+	.includes( [
+		'General',
+		'Position',
+		'Transform & Transition',
+		'Motion Effects',
+		'Custom Attributes',
+		'Custom CSS',
+		'Responsive',
+		'Conditional Display',
+		'Advanced',
+	] )
+	.run
+
+function advancedTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/feature-grid', { variation: 'Default Layout' } ).asBlock( 'featureGridBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/feature-grid', 'Advanced' )
+		cy.savePost()
+	} )
+
+	assertAdvancedTab( {
+		viewport,
+		mainSelector: '.stk-block-feature-grid',
+		blockName: 'stackable/feature-grid',
 	} )
 
 	afterEach( () => {

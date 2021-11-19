@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
 } from '~stackable-e2e/helpers'
 
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -14,6 +15,9 @@ export {
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 }
 
 function blockExist() {
@@ -58,6 +62,40 @@ function blockTab( viewport ) {
 		alignmentSelector: '.stk-block-team-member .stk-inner-blocks',
 		enableColumnAlignment: false,
 		contentVerticalAlignFrontendProperty: 'align-items',
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@teamMemberBlock' )
+	} )
+}
+
+const assertAdvancedTab = Advanced
+	.includes( [
+		'General',
+		'Position',
+		'Transform & Transition',
+		'Motion Effects',
+		'Custom Attributes',
+		'Custom CSS',
+		'Responsive',
+		'Conditional Display',
+		'Advanced',
+	] )
+	.run
+
+function advancedTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/team-member', { variation: 'Default Layout' } ).asBlock( 'teamMemberBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/team-member', 'Advanced' )
+		cy.savePost()
+	} )
+
+	assertAdvancedTab( {
+		viewport,
+		mainSelector: '.stk-block-team-member',
+		blockName: 'stackable/team-member',
 	} )
 
 	afterEach( () => {

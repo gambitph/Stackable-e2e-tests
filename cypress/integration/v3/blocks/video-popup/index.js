@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, checkJsFiles, assertInnerBlocks, responsiveAssertHelper, Block,
+	assertBlockExist, blockErrorTest, checkJsFiles, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
 } from '~stackable-e2e/helpers'
 
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
+const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
 export {
 	blockExist,
@@ -16,6 +17,9 @@ export {
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
+	desktopAdvanced,
+	tabletAdvanced,
+	mobileAdvanced,
 }
 
 function blockExist() {
@@ -70,6 +74,41 @@ function blockTab( viewport ) {
 		enableColumnAlignment: false,
 		enableInnerBlockAlignment: false,
 		contentVerticalAlignFrontendProperty: 'align-items',
+		contentHorizontalAlignAssertOptions: { assertBackend: false },
+	} )
+
+	afterEach( () => {
+		cy.assertFrontendStyles( '@videoPopupBlock' )
+	} )
+}
+
+const assertAdvancedTab = Advanced
+	.includes( [
+		'General',
+		'Position',
+		'Transform & Transition',
+		'Motion Effects',
+		'Custom Attributes',
+		'Custom CSS',
+		'Responsive',
+		'Conditional Display',
+		'Advanced',
+	] )
+	.run
+
+function advancedTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/video-popup' ).asBlock( 'videoPopupBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/video-popup', 'Advanced' )
+		cy.savePost()
+	} )
+
+	assertAdvancedTab( {
+		viewport,
+		mainSelector: '.stk-block-video-popup',
+		blockName: 'stackable/video-popup',
 	} )
 
 	afterEach( () => {
