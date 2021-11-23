@@ -63,6 +63,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.newPage()
 		cy.addBlock( 'stackable/call-to-action', { variation: 'Default Layout' } ).asBlock( 'callToActionBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/call-to-action', 'Style' )
+		cy.savePost()
 	} )
 
 	afterEach( () => cy.assertFrontendStyles( '@callToActionBlock' ) )
