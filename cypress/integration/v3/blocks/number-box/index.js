@@ -54,6 +54,7 @@ function blockTab( viewport ) {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'stackable/number-box' ).asBlock( 'numberBoxBlock', { isStatic: true } )
+		cy.typeBlock( 'stackable/number-box', '.stk-block-number-box__text', '21', 0 )
 		cy.openInspector( 'stackable/number-box', 'Block' )
 	} )
 
@@ -90,6 +91,7 @@ function advancedTab( viewport ) {
 		cy.setupWP()
 		cy.newPage()
 		cy.addBlock( 'stackable/number-box' ).asBlock( 'numberBoxBlock', { isStatic: true } )
+		cy.typeBlock( 'stackable/number-box', '.stk-block-number-box__text', '21', 0 )
 		cy.openInspector( 'stackable/number-box', 'Advanced' )
 		cy.savePost()
 	} )
