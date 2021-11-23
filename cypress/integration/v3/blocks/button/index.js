@@ -128,7 +128,7 @@ function styleTab( viewport, desktopOnly ) {
 		} )
 	} )
 
-	it( 'should assert Link panel in Style tab', () => {
+	it( 'should assert Button Colors panel in Style tab', () => {
 		desktopOnly( () => {
 			// Gradient - Normal state
 			cy.collapse( 'Button Colors' )
