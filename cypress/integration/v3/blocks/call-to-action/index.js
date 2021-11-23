@@ -3,10 +3,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced, assertContainerBackground, assertContainerSizeSpacing, assertContainerBordersShadow,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -15,6 +16,9 @@ export {
 	blockError,
 	innerBlocks,
 	innerBlocksExist,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -51,6 +55,41 @@ function innerBlocksExist() {
 		'.stk-block-text',
 		'.stk-block-button',
 	], { variation: 'Default Layout' } ) )
+}
+
+function styleTab( viewport, desktopOnly ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/call-to-action', { variation: 'Default Layout' } ).asBlock( 'callToActionBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/call-to-action', 'Style' )
+		cy.savePost()
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@callToActionBlock' ) )
+
+	it( 'should assert General panel in Style tab', () => {
+		desktopOnly( () => {
+			cy.collapse( 'General' )
+			cy.changeAlignment( 'stackable/call-to-action', 0, 'Full width' )
+			const aligns = [ 'alignwide', 'alignfull' ]
+			aligns.forEach( align => {
+				cy.adjust( 'Content Width', align ).assertClassName( '.stk-block-call-to-action__content', align )
+			} )
+		} )
+	} )
+
+	it( 'should assert Container Background panel in Style tab', () => {
+		assertContainerBackground( { viewport } )
+	} )
+
+	it( 'should assert Container Size & Spacing panel in Style tab', () => {
+		assertContainerSizeSpacing( { viewport, selector: '.stk-block-call-to-action__content' } )
+	} )
+
+	it( 'should assert Container Borders & Shadow panel in Style tab', () => {
+		assertContainerBordersShadow( { viewport } )
+	} )
 }
 
 const assertBlockTab = Block

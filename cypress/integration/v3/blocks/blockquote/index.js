@@ -48,16 +48,16 @@ function styleTab( viewport ) {
 		cy.openInspector( 'stackable/blockquote', 'Style' )
 	} )
 
-	it( `should assert Container Background options in ${ viewport }`, () => {
+	it( 'should assert Container Background panel in Style tab', () => {
 		assertContainerBackground( { viewport } )
 	} )
 
-	it( `should assert Container Size & Spacing options in ${ viewport }`, () => {
+	it( 'should assert Container Size & Spacing panel in Style tab', () => {
 		assertContainerSizeSpacing( { viewport, selector: '.stk-block-blockquote__content' } )
 	} )
 
-	it( `should assert Container Borders & Shadow options in ${ viewport }`, () => {
-		assertContainerBordersShadow( { viewport, selector: '.stk-block-blockquote__content' } )
+	it( 'should assert Container Borders & Shadow panel in Style tab', () => {
+		assertContainerBordersShadow( { viewport } )
 	} )
 
 	afterEach( () => {
