@@ -83,17 +83,6 @@ function styleTab( viewport ) {
 
 	it( 'should assert General panel in Style tab', () => {
 		cy.collapse( 'General' )
-		cy.adjust( 'Column Gap', 43, { viewport } ).assertComputedStyle( {
-			'.stk-block-button-group .block-editor-block-list__layout': {
-				'column-gap': '43px',
-			},
-		}, { assertFrontend: false } )
-		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			'.stk-block-button-group .stk-inner-blocks': {
-				'column-gap': '43px',
-			},
-		}, { assertBackend: false } )
-
 		cy.adjust( 'Collapse Buttons On', lowerCase( viewport ) ).assertClassName( '.stk-block-button-group > .stk-inner-blocks', `stk--collapse-on-${ lowerCase( viewport ) }` )
 		cy.adjust( 'Row Gap', 54, { viewport } )
 
@@ -109,6 +98,16 @@ function styleTab( viewport ) {
 				'flex-direction': 'column',
 				'row-gap': '54px',
 				'flex-wrap': 'wrap',
+			},
+		}, { assertBackend: false } )
+		cy.adjust( 'Column Gap', 43, { viewport } ).assertComputedStyle( {
+			'.stk-block-button-group .block-editor-block-list__layout': {
+				'column-gap': '43px',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+			'.stk-block-button-group .stk-inner-blocks': {
+				'column-gap': '43px',
 			},
 		}, { assertBackend: false } )
 	} )
