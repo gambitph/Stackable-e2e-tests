@@ -269,6 +269,7 @@ export function blockSnapshotsAssertBlockContent( originalFn, ...args ) {
 		}
 
 		function modifiedFn( ...passedArgs ) {
+			cy.savePost()
 			const options = passedArgs.pop()
 			// Since Cypress commands are asynchronous, we need to pass a separate object to originalFn to avoid directly mutating the options argument.
 			const optionsToPass = cloneDeep( options )
@@ -284,7 +285,7 @@ export function blockSnapshotsAssertBlockContent( originalFn, ...args ) {
 
 				assert.isTrue(
 					element.textContent === expectedValue,
-					`${ customSelector } must have content '${ expectedValue }' in Frontend. Found: '${ element.textContent }''`
+					`${ customSelector } must have content '${ expectedValue }' in Frontend. Found: '${ element.textContent }'`
 				)
 			} )
 

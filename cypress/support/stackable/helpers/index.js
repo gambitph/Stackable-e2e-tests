@@ -570,3 +570,165 @@ export const assertInnerBlocks = ( blockName = 'stackable/accordion', innerBlock
 	} )
 	cy.savePost()
 }
+
+/**
+ * Helper function for asserting the typography panel of v3 blocks
+ *
+ * @param {Object} options
+ */
+export function assertTypographyModule( options = {} ) {
+	const {
+		selector,
+		viewport,
+		enableTextColor = true,
+		enableShadowOutline = true,
+	} = options
+
+	const desktopOnly = callback => viewport === 'Desktop' && callback()
+
+	cy.collapse( 'Typography' )
+	desktopOnly( () => {
+		cy.adjust( 'Content', 'Hello Stackable' ).assertBlockContent( selector, 'Hello Stackable' )
+		cy.getBaseControl( 'Content' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+
+		cy.adjust( 'Typography', {
+			'Font Family': 'Abel',
+			'Weight': '500',
+			'Transform': 'lowercase',
+			'Font Style': 'italic',
+			'Letter Spacing': 0.7,
+		} ).assertComputedStyle( {
+			[ selector ]: {
+				'font-family': '"Abel", Sans-serif',
+				'font-weight': '500',
+				'text-transform': 'lowercase',
+				'font-style': 'italic',
+				'letter-spacing': '0.7px',
+			},
+		} )
+
+		if ( enableTextColor ) {
+			cy.adjust( 'Color Type', 'gradient' )
+			cy.adjust( 'Text Color #1', '#3884ff' )
+			cy.adjust( 'Text Color #2', '#ff1a1d' )
+			cy.adjust( 'radient Direction (degrees)', 236 ).assertComputedStyle( {
+				[ selector ]: {
+					'background-image': 'linear-gradient(236deg, #3884ff, #ff1a1d)',
+				},
+			} )
+
+			cy.adjust( 'Color Type', 'single' )
+			cy.adjust( 'Text Color', '#233491', { state: 'hover' } ).assertComputedStyle( {
+				[ `${ selector }:hover` ]: {
+					'color': '#233491',
+				},
+			} )
+			cy.adjust( 'Text Color', '#18875a', { state: 'normal' } ).assertComputedStyle( {
+				[ selector ]: {
+					'color': '#18875a',
+				},
+			} )
+		}
+
+		if ( enableShadowOutline ) {
+			cy.adjust( 'Shadow / Outline', 7, { state: 'hover' } ).assertComputedStyle( {
+				[ `${ selector }:hover` ]: {
+					'text-shadow': '25px 10px 14px rgba(18, 63, 82, 0.3)',
+				},
+			} )
+			cy.adjust( 'Shadow / Outline', 5, { state: 'normal' } ).assertComputedStyle( {
+				[ selector ]: {
+					'text-shadow': '4px 4px 0px rgba(0, 0, 0, 1)',
+				},
+			} )
+			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+			cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+
+			// Adjust Adv. Shadow Options - normal
+			const parentSelector = '.components-popover__content .stk-control-content'
+			// Press the cog symbol to open Shadow settings
+			cy.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
+			cy.adjust( 'Horizontal Offset', 8, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Vertical Offset', 11, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Blur', 25, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Opacity', 0.6, { parentSelector, state: 'normal' } ).assertComputedStyle( {
+				[ selector ]: {
+					'text-shadow': '8px 11px 25px rgba(42, 138, 98, 0.6)',
+				},
+			} )
+
+			const selectAdvancedShadowHoverState = () => cy
+				.adjust( 'Advanced Shadow Options', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
+
+			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+			cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+			// Adjust Adv. Shadow Options - hover
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Horizontal Offset', 7, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Vertical Offset', 31, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Blur', 71, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Shadow Color', '#0f9294', { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Shadow Opacity', 0.4, { parentSelector } ).assertComputedStyle( {
+				[ `${ selector }:hover` ]: {
+					'text-shadow': '7px 31px 71px rgba(15, 146, 148, 0.4)',
+				},
+			} )
+		}
+	} )
+
+	const lineHeightAssertion = [
+		{
+			value: '2.8',
+			unit: 'em',
+		},
+		{
+			value: '11',
+			unit: 'rem',
+		},
+		{
+			value: '114',
+			unit: 'px',
+		},
+	]
+
+	lineHeightAssertion.forEach( lineHeight => {
+		cy.adjust( 'Typography', {
+			'Line-Height': {
+				value: lineHeight.value,
+				unit: lineHeight.unit,
+				viewport,
+			},
+		} ).assertComputedStyle( {
+			[ selector ]: {
+				'line-height': `${ lineHeight.value }${ lineHeight.unit }`,
+			},
+		} )
+	} )
+
+	const sizeAssertion = [
+		{
+			value: '26',
+			unit: 'px',
+		},
+		{
+			value: '1.6',
+			unit: 'em',
+		},
+		{
+			value: '4',
+			unit: 'rem',
+		},
+	]
+	sizeAssertion.forEach( size => {
+		cy.adjust( 'Size', size.value, { unit: size.unit, viewport } ).assertComputedStyle( {
+			[ selector ]: {
+				'font-size': `${ size.value }${ size.unit }`,
+			},
+		} )
+	} )
+}
