@@ -79,7 +79,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.savePost()
 	} )
 
-	it( `should assert General options in ${ viewport }`, () => {
+	it( 'should assert General panel in Style tab', () => {
 		desktopOnly( () => {
 			cy.collapse( 'General' )
 			cy.adjust( 'Open at the start', true ).assertClassName( '.stk-block-accordion', 'stk--is-open', { assertBackend: false } )
