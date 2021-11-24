@@ -479,6 +479,7 @@ export const assertContainerSizeSpacing = ( options = {}, assertOptions = {} ) =
 	const {
 		viewport = 'Desktop',
 		selector = '',
+		contentWidthSelector = null,
 	} = options
 
 	cy.collapse( 'Container Size & Spacing' )
@@ -508,12 +509,12 @@ export const assertContainerSizeSpacing = ( options = {}, assertOptions = {} ) =
 	} )
 
 	cy.adjust( 'Max. Content Width', 555, { viewport, unit: 'px' } ).assertComputedStyle( {
-		[ selector ]: {
+		[ `${ contentWidthSelector ? contentWidthSelector : selector }` ]: {
 			'max-width': '555px',
 		},
 	}, assertOptions )
 	cy.adjust( 'Max. Content Width', 74, { viewport, unit: '%' } ).assertComputedStyle( {
-		[ selector ]: {
+		[ `${ contentWidthSelector ? contentWidthSelector : selector }` ]: {
 			'max-width': '74%',
 		},
 	}, assertOptions )
@@ -521,7 +522,7 @@ export const assertContainerSizeSpacing = ( options = {}, assertOptions = {} ) =
 	aligns.forEach( align => {
 		cy.adjust( 'Max. Content Width', 555, { viewport, unit: 'px' } )
 		cy.adjust( 'Content Horizontal Align', align, { viewport } ).assertComputedStyle( {
-			[ selector ]: {
+			[ `${ contentWidthSelector ? contentWidthSelector : selector }` ]: {
 				'margin-right': `${ align === 'flex-end' ? '0px' : 'auto' }`,
 				'margin-left': `${ align === 'flex-start' ? '0px' : 'auto' }`,
 			},

@@ -732,3 +732,111 @@ export function assertTypographyModule( options = {} ) {
 		} )
 	} )
 }
+
+/**
+ * Helper function for asserting the image panel of v3 blocks
+ *
+ * @param {Object} options
+ */
+export function assertImageModule( options = {} ) {
+	const {
+		selector,
+		viewport,
+	} = options
+
+	const desktopOnly = callback => viewport === 'Desktop' && callback()
+
+	cy.collapse( 'Image' )
+	cy.adjust( 'Select Image', 1 )
+
+	cy.adjust( 'Height', 284, { viewport } ).assertComputedStyle( {
+		[ selector ]: {
+			'height': '284px',
+		},
+	} )
+	desktopOnly( () => {
+		// Dynamic Fields button should be present
+		cy.getBaseControl( '.ugb-image-control:contains(Select Image)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+		cy.adjust( 'Image Alt', 'stackable the best' ).assertHtmlAttribute( `${ selector } img`, 'alt', 'stackable the best', { assertBackend: false } )
+		cy.adjust( 'Zoom', 0.73, { state: 'hover' } ).assertComputedStyle( {
+			[ `${ selector } img:hover` ]: {
+				'transform': 'scale(0.73)',
+			},
+		} )
+		cy.adjust( 'Zoom', 1.27, { state: 'normal' } ).assertComputedStyle( {
+			[ `${ selector } img` ]: {
+				'transform': 'scale(1.27)',
+			},
+		} )
+
+		// We won't be able to assert image size for now since it requires server handling.
+		// `assertHtmlAttribute` command was introduced for the purpose of asserting html attribute values in a selected DOM Element.
+		// TODO: Add assertion for Image Size
+		cy.adjust( 'Image Size', 'large' )
+
+		// Adjust Image Filter
+		const parentSelector = '.components-popover__content .stk-control-content'
+		const selectImageFilterPopover = () => cy
+			.getBaseControl( '.components-base-control:contains(Image Filter)' ).find( 'button[aria-label="Edit"]' ).click( { force: true } )
+
+		selectImageFilterPopover()
+		cy.adjust( 'Blur', 2, { parentSelector, state: 'normal' } )
+		cy.adjust( 'Brightness', 1.3, { parentSelector, state: 'normal' } )
+		cy.adjust( 'Contrast', 0.9, { parentSelector, state: 'normal' } )
+		cy.adjust( 'Grayscale', 0.22, { parentSelector, state: 'normal' } )
+		cy.adjust( 'Hue Rotate', 166, { parentSelector, state: 'normal' } )
+		cy.adjust( 'Invert', 0.14, { parentSelector, state: 'normal' } )
+		cy.adjust( 'Opacity', 0.83, { parentSelector, state: 'normal' } )
+		cy.adjust( 'Saturate', 1.8, { parentSelector, state: 'normal' } )
+		cy.adjust( 'Sepia', 0.28, { parentSelector, state: 'normal' } ).assertComputedStyle( {
+			[ `${ selector } img` ]: {
+				'filter': 'blur(2px) brightness(1.3) contrast(0.9) grayscale(0.22) hue-rotate(166deg) invert(0.14) opacity(0.83) saturate(1.8) sepia(0.28)',
+			},
+		} )
+
+		const selectImageFilterHoverState = () => cy
+			.adjust( 'Image Filter', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
+
+		selectImageFilterPopover()
+		cy.resetStyle( 'Image Filter', { state: 'normal' } )
+		cy.resetStyle( 'Image Filter', { state: 'hover' } )
+		selectImageFilterPopover()
+		selectImageFilterHoverState()
+		cy.adjust( 'Blur', 0.5, { parentSelector, state: 'hover' } )
+		selectImageFilterHoverState()
+		cy.adjust( 'Brightness', 1.9, { parentSelector, state: 'hover' } )
+		selectImageFilterHoverState()
+		cy.adjust( 'Contrast', 0.8, { parentSelector, state: 'hover' } )
+		selectImageFilterHoverState()
+		cy.adjust( 'Grayscale', 0.61, { parentSelector, state: 'hover' } )
+		selectImageFilterHoverState()
+		cy.adjust( 'Hue Rotate', 47, { parentSelector, state: 'hover' } )
+		selectImageFilterHoverState()
+		cy.adjust( 'Invert', 0.33, { parentSelector, state: 'hover' } )
+		selectImageFilterHoverState()
+		cy.adjust( 'Opacity', 0.76, { parentSelector, state: 'hover' } )
+		selectImageFilterHoverState()
+		cy.adjust( 'Saturate', 0.9, { parentSelector, state: 'hover' } )
+		selectImageFilterHoverState()
+		cy.adjust( 'Sepia', 0.34, { parentSelector, state: 'hover' } ).assertComputedStyle( {
+			[ `${ selector } img:hover` ]: {
+				'filter': 'blur(0.5px) brightness(1.9) contrast(0.8) grayscale(0.61) hue-rotate(47deg) invert(0.33) opacity(0.76) saturate(0.9) sepia(0.34)',
+			},
+		} )
+	} )
+	cy.adjust( 'Focal point', [ 32, 59 ], { viewport, state: 'hover' } ).assertComputedStyle( {
+		[ `${ selector } img:hover` ]: {
+			'object-position': '32% 59%',
+		},
+	} )
+	cy.adjust( 'Focal point', [ 63, 53 ], { viewport, state: 'normal' } ).assertComputedStyle( {
+		[ `${ selector } img` ]: {
+			'object-position': '63% 53%',
+		},
+	} )
+	cy.adjust( 'Image Fit', 'contain', { viewport } ).assertComputedStyle( {
+		[ `${ selector } img` ]: {
+			'object-fit': 'contain',
+		},
+	} )
+}

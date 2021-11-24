@@ -320,7 +320,7 @@ function styleTab( viewport, desktopOnly ) {
 		desktopOnly( () => {
 			cy.get( '.block-editor-block-list__block.is-selected' ).assertHtmlAttribute( '.stk-button .stk--inner-svg svg:last-child', 'data-icon', 'info' )
 			cy.adjust( 'Icon Color', '#33f1ff', { state: 'hover' } ).assertComputedStyle( {
-				'.stk-button:hover .stk--inner-svg svg:last-child': {
+				'.stk-button .stk--inner-svg svg:last-child:hover': {
 					'fill': '#33f1ff',
 				},
 			} )
@@ -331,7 +331,7 @@ function styleTab( viewport, desktopOnly ) {
 			} )
 			cy.adjust( 'Icon Opacity', 0.7, { state: 'hover' } )
 			cy.adjust( 'Icon Rotation', 57, { state: 'hover' } ).assertComputedStyle( {
-				'.stk-button:hover .stk--inner-svg svg:last-child': {
+				'.stk-button .stk--inner-svg svg:last-child:hover': {
 					'opacity': '0.7',
 					'transform': 'rotate(57deg)',
 				},
