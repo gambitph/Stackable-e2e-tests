@@ -373,14 +373,14 @@ export const assertContainerBackground = ( options = {}, assertOptions = {} ) =>
 				cy.adjust( 'Color Type', 'single' )
 				cy.adjust( 'Background Color', '#f3daa3', { state: 'normal' } )
 				cy.adjust( 'Background Color', '#f6c3f9', { state: 'hover' } )
-				cy.adjust( 'Background Color Opacity', 0.6, { state: 'normal' } ).assertComputedStyle( {
-					[ `.stk-${ blockId }-container` ]: {
-						'background-color': 'rgba(243, 218, 163, 0.6)',
-					},
-				}, assertOptions )
 				cy.adjust( 'Background Color Opacity', 0.8, { state: 'hover' } ).assertComputedStyle( {
 					[ `.stk-${ blockId }-container:hover` ]: {
 						'background-color': 'rgba(246, 195, 249, 0.8)',
+					},
+				}, assertOptions )
+				cy.adjust( 'Background Color Opacity', 0.6, { state: 'normal' } ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container` ]: {
+						'background-color': 'rgba(243, 218, 163, 0.6)',
 					},
 				}, assertOptions )
 			}
