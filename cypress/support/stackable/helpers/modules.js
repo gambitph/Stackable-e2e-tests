@@ -373,14 +373,14 @@ export const assertContainerBackground = ( options = {}, assertOptions = {} ) =>
 				cy.adjust( 'Color Type', 'single' )
 				cy.adjust( 'Background Color', '#f3daa3', { state: 'normal' } )
 				cy.adjust( 'Background Color', '#f6c3f9', { state: 'hover' } )
-				cy.adjust( 'Background Color Opacity', 0.6, { state: 'normal' } ).assertComputedStyle( {
-					[ `.stk-${ blockId }-container` ]: {
-						'background-color': 'rgba(243, 218, 163, 0.6)',
-					},
-				}, assertOptions )
 				cy.adjust( 'Background Color Opacity', 0.8, { state: 'hover' } ).assertComputedStyle( {
 					[ `.stk-${ blockId }-container:hover` ]: {
 						'background-color': 'rgba(246, 195, 249, 0.8)',
+					},
+				}, assertOptions )
+				cy.adjust( 'Background Color Opacity', 0.6, { state: 'normal' } ).assertComputedStyle( {
+					[ `.stk-${ blockId }-container` ]: {
+						'background-color': 'rgba(243, 218, 163, 0.6)',
 					},
 				}, assertOptions )
 			}
@@ -479,6 +479,7 @@ export const assertContainerSizeSpacing = ( options = {}, assertOptions = {} ) =
 	const {
 		viewport = 'Desktop',
 		selector = '',
+		contentWidthSelector = null,
 	} = options
 
 	cy.collapse( 'Container Size & Spacing' )
@@ -508,12 +509,12 @@ export const assertContainerSizeSpacing = ( options = {}, assertOptions = {} ) =
 	} )
 
 	cy.adjust( 'Max. Content Width', 555, { viewport, unit: 'px' } ).assertComputedStyle( {
-		[ selector ]: {
+		[ `${ contentWidthSelector ? contentWidthSelector : selector }` ]: {
 			'max-width': '555px',
 		},
 	}, assertOptions )
 	cy.adjust( 'Max. Content Width', 74, { viewport, unit: '%' } ).assertComputedStyle( {
-		[ selector ]: {
+		[ `${ contentWidthSelector ? contentWidthSelector : selector }` ]: {
 			'max-width': '74%',
 		},
 	}, assertOptions )
@@ -521,7 +522,7 @@ export const assertContainerSizeSpacing = ( options = {}, assertOptions = {} ) =
 	aligns.forEach( align => {
 		cy.adjust( 'Max. Content Width', 555, { viewport, unit: 'px' } )
 		cy.adjust( 'Content Horizontal Align', align, { viewport } ).assertComputedStyle( {
-			[ selector ]: {
+			[ `${ contentWidthSelector ? contentWidthSelector : selector }` ]: {
 				'margin-right': `${ align === 'flex-end' ? '0px' : 'auto' }`,
 				'margin-left': `${ align === 'flex-start' ? '0px' : 'auto' }`,
 			},

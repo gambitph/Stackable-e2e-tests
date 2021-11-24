@@ -476,6 +476,46 @@ class BlockModule extends Module {
 						'box-shadow': '0px 10px 60px rgba(0, 0, 0, 0.1)',
 					},
 				} )
+			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+			cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+
+			// Adjust Adv. Shadow Options - normal
+			const parentSelector = '.components-popover__content .stk-control-content'
+			// Press the cog symbol to open Shadow settings
+			cy.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
+			cy.adjust( 'Horizontal Offset', 8, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Vertical Offset', 11, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Blur', 25, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Spread', 5, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Opacity', 0.6, { parentSelector, state: 'normal' } ).assertComputedStyle( {
+				[ MAIN_SELECTOR ]: {
+					'box-shadow': '8px 11px 25px 5px rgba(42, 138, 98, 0.6)',
+				},
+			} )
+
+			const selectAdvancedShadowHoverState = () => cy
+				.adjust( 'Advanced Shadow Options', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
+
+			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+			cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+			// Adjust Adv. Shadow Options - hover
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Horizontal Offset', 7, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Vertical Offset', 31, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Blur', 71, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Shadow Spread', 26, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Shadow Color', '#0f9294', { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Shadow Opacity', 0.4, { parentSelector } ).assertComputedStyle( {
+				[ `${ MAIN_SELECTOR }:hover` ]: {
+					'box-shadow': '7px 31px 71px 26px rgba(15, 146, 148, 0.4)',
+				},
+			} )
 		}
 	}
 
@@ -486,6 +526,7 @@ class BlockModule extends Module {
 			cy.adjust( 'Link / URL', 'https://wpstackable.com/' ).assertHtmlAttribute( '.stk-block-link', 'href', 'https://wpstackable.com/', { assertBackend: false } )
 			cy.adjust( 'Open in new tab', true ).assertHtmlAttribute( '.stk-block-link', 'rel', /noreferrer noopener/, { assertBackend: false } )
 			cy.adjust( 'Link rel', 'sponsored ugc' ).assertHtmlAttribute( '.stk-block-link', 'rel', /sponsored ugc/, { assertBackend: false } )
+			cy.adjust( 'Link Title', 'WP Stackable' ).assertHtmlAttribute( '.stk-block-link', 'title', 'WP Stackable', { assertBackend: false } )
 		}
 		cy.savePost()
 	}

@@ -3,10 +3,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced, assertImageModule, assertContainerBackground, assertContainerSizeSpacing, assertContainerBordersShadow,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -16,6 +17,9 @@ export {
 	innerBlocks,
 	innerBlocksExist,
 	addImage,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -81,6 +85,38 @@ function addImage() {
 						},
 					} )
 			} )
+	} )
+}
+
+function styleTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/card', { variation: 'Default Layout' } ).asBlock( 'cardBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/card', 'Style' )
+		cy.savePost()
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@cardBlock' ) )
+
+	it( 'should assert Image panel in Style tab', () => {
+		assertImageModule( { viewport, selector: '.stk-block-card__image' } )
+	} )
+
+	it( 'should assert Container Background panel in Style tab', () => {
+		assertContainerBackground( { viewport } )
+	} )
+
+	it( 'should assert Container Size & Spacing panel in Style tab', () => {
+		assertContainerSizeSpacing( {
+			viewport,
+			selector: '.stk-block-card__content',
+			contentWidthSelector: '.stk-container',
+		} )
+	} )
+
+	it( 'should assert Container Borders & Shadow panel in Style tab', () => {
+		assertContainerBordersShadow( { viewport } )
 	} )
 }
 
