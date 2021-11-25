@@ -582,6 +582,8 @@ export function assertTypographyModule( options = {} ) {
 		viewport,
 		enableTextColor = true,
 		enableShadowOutline = true,
+		enableRemoveMargin = false,
+		enableHtmlTag = false,
 	} = options
 
 	const desktopOnly = callback => viewport === 'Desktop' && callback()
@@ -590,6 +592,18 @@ export function assertTypographyModule( options = {} ) {
 	desktopOnly( () => {
 		cy.adjust( 'Content', 'Hello Stackable' ).assertBlockContent( selector, 'Hello Stackable' )
 		cy.getBaseControl( 'Content' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+
+		if ( enableRemoveMargin ) {
+			cy.adjust( 'Remove extra text margins', true ).assertComputedStyle( {
+				[ selector ]: {
+					'margin': '0px',
+				},
+			} )
+		}
+
+		if ( enableHtmlTag ) {
+			cy.adjust( 'Title HTML Tag', 'h4' ).assertHtmlTag( selector, 'h4' )
+		}
 
 		cy.adjust( 'Typography', {
 			'Font Family': 'Abel',
@@ -611,7 +625,7 @@ export function assertTypographyModule( options = {} ) {
 			cy.adjust( 'Color Type', 'gradient' )
 			cy.adjust( 'Text Color #1', '#3884ff' )
 			cy.adjust( 'Text Color #2', '#ff1a1d' )
-			cy.adjust( 'radient Direction (degrees)', 236 ).assertComputedStyle( {
+			cy.adjust( 'Gradient Direction (degrees)', 236 ).assertComputedStyle( {
 				[ selector ]: {
 					'background-image': 'linear-gradient(236deg, #3884ff, #ff1a1d)',
 				},
