@@ -3,10 +3,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced, assertContainerBackground, assertContainerSizeSpacing, assertContainerBordersShadow,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -15,6 +16,9 @@ export {
 	blockError,
 	innerBlocks,
 	assertWidth,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -101,6 +105,55 @@ function assertWidth() {
 				},
 			}, { assertBackend: false } )
 		} )
+	} )
+}
+
+function styleTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/columns', { variation: 'Two columns; equal split' } )
+		cy.selectBlock( 'stackable/column', 0 ).asBlock( 'columnBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/column', 'Style', 0 )
+		cy.savePost()
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@columnBlock' ) )
+
+	it( 'should assert Column Spacing panel in Style tab', () => {
+		cy.collapse( 'Column Spacing' )
+		cy.adjust( 'Spacing', [ 39, 40, 41, 42 ], { viewport, unit: 'px' } ).assertComputedStyle( {
+			'.stk-block-column__content': {
+				'margin-top': '39px',
+				'margin-right': '40px',
+				'margin-bottom': '41px',
+				'margin-left': '42px',
+			},
+		} )
+		cy.adjust( 'Spacing', [ 11, 12, 13, 14 ], { viewport, unit: 'em' } ).assertComputedStyle( {
+			'.stk-block-column__content': {
+				'margin-top': '11em',
+				'margin-right': '12em',
+				'margin-bottom': '13em',
+				'margin-left': '14em',
+			},
+		} )
+	} )
+
+	it( 'should assert Container Background panel in Style tab', () => {
+		cy.toggleStyle( 'Container Background' )
+		assertContainerBackground( { viewport } )
+	} )
+
+	it( 'should assert Container Size & Spacing panel in Style tab', () => {
+		assertContainerSizeSpacing( {
+			viewport,
+			selector: '.stk-block-column__content',
+		} )
+	} )
+
+	it( 'should assert Container Borders & Shadow panel in Style tab', () => {
+		assertContainerBordersShadow( { viewport } )
 	} )
 }
 
