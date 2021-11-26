@@ -2,10 +2,11 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced, assertContainerBackground, assertContainerSizeSpacing, assertContainerBordersShadow,
 } from '~stackable-e2e/helpers'
 import { stkBlocks } from '~stackable-e2e/config'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -14,6 +15,9 @@ export {
 	blockError,
 	innerBlocks,
 	innerBlocksExist,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -51,6 +55,42 @@ function innerBlocksExist() {
 		'.stk-block-text',
 		'.stk-block-button',
 	], { variation: 'Default Layout' } ) )
+}
+
+function styleTab( viewport, desktopOnly ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/feature', { variation: 'Default Layout' } ).asBlock( 'featureBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/feature', 'Style' )
+		cy.savePost()
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@featureBlock' ) )
+
+	it( 'should assert General panel in Style tab', () => {
+		desktopOnly( () => {
+			cy.collapse( 'General' )
+			cy.adjust( 'Content Width', 'alignwide' ).assertClassName( '.stk-block-feature > .stk-container', 'alignwide' )
+			cy.adjust( 'Content Width', 'alignfull' ).assertClassName( '.stk-block-feature > .stk-container', 'alignfull' )
+		} )
+	} )
+
+	it( 'should assert Container Background panel in Style tab', () => {
+		cy.toggleStyle( 'Container Background' )
+		assertContainerBackground( { viewport } )
+	} )
+
+	it( 'should assert Container Size & Spacing panel in Style tab', () => {
+		assertContainerSizeSpacing( {
+			viewport,
+			selector: '.stk-block-feature > .stk-container',
+		} )
+	} )
+
+	it( 'should assert Container Borders & Shadow panel in Style tab', () => {
+		assertContainerBordersShadow( { viewport } )
+	} )
 }
 
 const assertBlockTab = Block
