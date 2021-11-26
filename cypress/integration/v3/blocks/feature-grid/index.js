@@ -5,6 +5,7 @@ import {
 	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
 } from '~stackable-e2e/helpers'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -12,6 +13,9 @@ export {
 	blockExist,
 	blockError,
 	innerBlocksExist,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -35,6 +39,72 @@ function innerBlocksExist() {
 		'.stk-block-text',
 		'.stk-block-button',
 	], { variation: 'Default Layout' } ) )
+}
+
+function styleTab( viewport, desktopOnly ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/feature-grid', { variation: 'Default Layout' } ).asBlock( 'featureGridBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/feature-grid', 'Style' )
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@featureGridBlock' ) )
+
+	it( 'should assert General panel in Style tab', () => {
+		cy.collapse( 'General' )
+
+		desktopOnly( () => {
+			// Enable column cloning
+			cy.getBaseControl( '.components-base-control:contains(Columns)' )
+				.find( 'button[aria-label="Settings"]' )
+				.click( { force: true } )
+			cy.adjust( 'Columns', 4 )
+
+			cy.selectBlock( 'stackable/column', 3 )
+			cy.get( '.block-editor-block-list__block.is-selected' ).find( '.stk-block-heading' ).should( 'exist' )
+			cy.get( '.block-editor-block-list__block.is-selected' ).find( '.stk-block-text' ).should( 'exist' )
+
+			cy.openInspector( 'stackable/feature-grid', 'Style' )
+			cy.collapse( 'General' )
+			cy.getBaseControl( '.components-base-control:contains(Columns)' )
+				.find( 'button[aria-label="Settings"]' )
+				.click( { force: true } )
+			cy.adjust( 'Columns', 5 )
+			cy.get( '.stk-block-feature-grid' ).find( '.stk-block-column' ).should( 'have.length', 5 )
+
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertClassName( '.stk-block-feature-grid > .stk-inner-blocks', 'alignwide' )
+			cy.adjust( 'Content Width', 'alignfull' ).assertClassName( '.stk-block-feature-grid > .stk-inner-blocks', 'alignfull' )
+		} )
+
+		cy.adjust( 'Fit all columns to content', true ).assertClassName( '.stk-block-feature-grid > .stk-inner-blocks', 'stk--fit-content' )
+		const aligns = [ 'flex-start', 'center', 'flex-end' ]
+		aligns.forEach( align => {
+			cy.adjust( 'Columns Alignment', align, { viewport } ).assertComputedStyle( {
+				'.stk-inner-blocks > .block-editor-inner-blocks > .block-editor-block-list__layout': {
+					'justify-content': align,
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				'.stk-block-feature-grid > .stk-inner-blocks': {
+					'justify-content': align,
+				},
+			}, { assertBackend: false } )
+		} )
+		cy.adjust( 'Column Gap', 41, { viewport } )
+		cy.adjust( 'Row Gap', 23, { viewport } ).assertComputedStyle( {
+			'.stk-inner-blocks > .block-editor-inner-blocks > .block-editor-block-list__layout': {
+				'column-gap': '41px',
+				'row-gap': '23px',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+			'.stk-block-feature-grid > .stk-inner-blocks': {
+				'column-gap': '41px',
+				'row-gap': '23px',
+			},
+		}, { assertBackend: false } )
+	} )
 }
 
 const assertBlockTab = Block
