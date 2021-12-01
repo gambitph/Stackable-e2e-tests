@@ -1,5 +1,5 @@
 {
-	"core": "https://wordpress.org/latest.zip",
+	"core": "https://wordpress.org/nightly-builds/wordpress-latest.zip",
 	"themes": [ "WordPress/theme-experiments/tt1-blocks#tt1-blocks@0.4.7" ],
 	"plugins": [ ".", "./Stackable" ]
 }
