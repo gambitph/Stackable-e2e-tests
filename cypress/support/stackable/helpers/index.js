@@ -854,3 +854,33 @@ export function assertImageModule( options = {} ) {
 		},
 	} )
 }
+
+/**
+ * Helper function for asserting the Link panel (Style tab) in v3 blocks
+ *
+ * @param {Object} options
+ */
+export function assertLinks( options = {} ) {
+	const {
+		selector,
+		viewport,
+	} = options
+
+	const desktopOnly = callback => viewport === 'Desktop' && callback()
+
+	desktopOnly( () => {
+		cy.collapse( 'Link' )
+		cy.adjust( 'Link / URL', 'https://wpstackable.com/' ).assertHtmlAttribute( selector, 'href', 'https://wpstackable.com/', { assertBackend: false } )
+		// The dynamic content for Link / URL should exist
+		cy.getBaseControl( '.stk-link-control:contains(Link / URL)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+
+		cy.adjust( 'Open in new tab', true ).assertHtmlAttribute( selector, 'rel', /noreferrer noopener/, { assertBackend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertHtmlAttribute( selector, 'target', '_blank', { assertBackend: false } )
+		cy.adjust( 'Link rel', 'ugc sponsored' ).assertHtmlAttribute( selector, 'rel', /ugc sponsored/, { assertBackend: false } )
+
+		cy.adjust( 'Link Title', 'Stackable site' ).assertHtmlAttribute( selector, 'title', 'Stackable site', { assertBackend: false } )
+		// The dynamic content for Link Title should exist
+		cy.getBaseControl( '.components-base-control:contains(Link Title)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+		cy.savePost()
+	} )
+}

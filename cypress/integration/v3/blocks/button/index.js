@@ -4,7 +4,7 @@
  */
 import { uniqueId, lowerCase } from 'lodash'
 import {
-	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced, assertTypographyModule,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced, assertTypographyModule, assertLinks,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
@@ -109,23 +109,7 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( 'should assert Link panel in Style tab', () => {
-		desktopOnly( () => {
-			cy.collapse( 'Link' )
-			cy.adjust( 'Link / URL', 'https://wpstackable.com/' ).assertHtmlAttribute( '.stk-block-button > a.stk-button', 'href', 'https://wpstackable.com/', { assertBackend: false } )
-			cy.resetStyle( 'Link / URL' )
-			// The dynamic content for Link / URL should exist
-			cy.getBaseControl( '.stk-link-control:contains(Link / URL)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
-
-			cy.adjust( 'Open in new tab', true ).assertHtmlAttribute( '.stk-block-button > a.stk-button', 'rel', /noreferrer noopener/, { assertBackend: false } )
-			cy.get( '.block-editor-block-list__block.is-selected' ).assertHtmlAttribute( '.stk-block-button > a.stk-button', 'target', '_blank', { assertBackend: false } )
-			cy.adjust( 'Link rel', 'ugc sponsored' ).assertHtmlAttribute( '.stk-block-button > a.stk-button', 'rel', /ugc sponsored/, { assertBackend: false } )
-
-			cy.adjust( 'Link Title', 'Stackable site' ).assertHtmlAttribute( '.stk-block-button > a.stk-button', 'title', 'Stackable site', { assertBackend: false } )
-			cy.resetStyle( 'Link Title' )
-			// The dynamic content for Link Title should exist
-			cy.getBaseControl( '.components-base-control:contains(Link Title)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
-			cy.savePost()
-		} )
+		assertLinks( { selector: '.stk-block-button > a.stk-button', viewport } )
 	} )
 
 	it( 'should assert Button Colors panel in Style tab', () => {

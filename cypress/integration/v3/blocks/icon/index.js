@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced, assertLinks,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
@@ -114,7 +114,7 @@ function styleTab( viewport, desktopOnly ) {
 		desktopOnly( () => {
 			cy.adjust( 'Color Type', 'gradient' )
 			cy.adjust( 'Icon Color #1', '#6bcdb5' )
-			cy.adjust( 'Icon Color #1', '#5172dd' )
+			cy.adjust( 'Icon Color #2', '#5172dd' )
 			cy.adjust( 'Gradient Direction (degrees)', 162 ).assertComputedStyle( {
 				'.stk--svg-wrapper .stk--inner-svg': {
 					'background-image': 'linear-gradient(162deg, #6bcdb5, #5172dd)',
@@ -147,7 +147,7 @@ function styleTab( viewport, desktopOnly ) {
 	it( 'should assert Background Shape panel in Style tab', () => {
 		desktopOnly( () => {
 			cy.toggleStyle( 'Background Shape' )
-			cy.adjust( 'Shape', 'blob4' )
+			cy.adjust( 'Shape', { label: 'Circle', value: 'circle' } )
 			cy.adjust( 'Shape Color', '#2680bc', { state: 'hover' } )
 			cy.adjust( 'Shape Opacity', 0.8, { state: 'hover' } ).assertComputedStyle( {
 				'.stk--svg-wrapper .stk--shape-icon:hover': {
@@ -173,7 +173,8 @@ function styleTab( viewport, desktopOnly ) {
 	} )
 
 	it( 'should assert Link panel in Style tab', () => {
-
+		cy.toggleStyle( 'Link' )
+		assertLinks( { selector: '.stk-block-icon > a.stk-link', viewport } )
 	} )
 }
 
