@@ -3,9 +3,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced, assertTypographyModule,
 } from '~stackable-e2e/helpers'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -13,6 +14,9 @@ export {
 	blockExist,
 	blockError,
 	typeContent,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -72,6 +76,95 @@ function typeContent() {
 // 		} )
 // 	} )
 // }
+
+function styleTab( viewport, desktopOnly ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/icon-list' ).asBlock( 'iconListBlock', { isStatic: true } )
+		cy.typeBlock( 'stackable/icon-list', '.stk-block-icon-list ul', 'Icon list 1', 0 )
+		cy.get( '.stk-block-icon-list' ).find( 'ul[role="textbox"]' ).type( '{enter}', { force: true } )
+			.type( 'Icon list 2', { force: true } )
+		cy.get( '.stk-block-icon-list' ).find( 'ul[role="textbox"]' ).type( '{enter}', { force: true } )
+			.type( 'Icon list 3', { force: true } )
+		cy.openInspector( 'stackable/icon-list', 'Style' )
+		cy.savePost()
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@iconListBlock' ) )
+
+	it( 'should assert General panel in Style tab', () => {
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 3, { viewport } )
+		cy.adjust( 'Column Gap', 24, { viewport } )
+		cy.adjust( 'Icon Gap', 13, { viewport } )
+		cy.adjust( 'Indentation', 37, { viewport } ).assertComputedStyle( {
+			'.stk-block-icon-list': {
+				'column-count': '3',
+				'column-gap': '24px',
+			},
+			'.stk-block-icon-list li': {
+				'padding-inline-start': '13px',
+			},
+			'.stk-block-icon-list ul': {
+				'padding-left': '37px',
+			},
+		} )
+		const aligns = [ 'left', 'center', 'right' ]
+		aligns.forEach( align => {
+			cy.adjust( 'List Alignment', align, { viewport } ).assertComputedStyle( {
+				'.stk-block-icon-list li': {
+					'margin-inline': `${ align === 'left' ? '0 ' : '' }auto${ align === 'right' ? ' 0' : '' }`,
+				},
+			} )
+		} )
+	} )
+
+	it( 'should assert Icons & Numbers panel in Style tab', () => {
+		cy.collapse( 'Icons & Numbers' )
+		desktopOnly( () => {
+			cy.adjust( 'Icon', 'info' )
+			cy.adjustToolbar( 'Ordered' )
+			cy.adjust( 'List Type', 'lower-roman' ).assertComputedStyle( {
+				'.stk-block-icon-list ol': {
+					'list-style-type': 'lower-roman',
+				},
+			} )
+			cy.adjust( 'Color', '#009cb8', { state: 'hover' } ).assertComputedStyle( {
+				'.stk-block-icon-list li:marker:hover': {
+					'color': '#009cb8',
+				},
+			} )
+			cy.adjust( 'Color', '#34a400', { state: 'normal' } ).assertComputedStyle( {
+				'.stk-block-icon-list li:marker': {
+					'color': '#34a400',
+				},
+			} )
+
+			// TODO: Add assertion for Icon Opacity, Icon Rotation.
+			// We won't be able to assert this since it requires server handling.
+			cy.adjust( 'Icon Opacity', 0.9, { state: 'hover' } )
+			cy.adjust( 'Icon Opacity', 0.5, { state: 'normal' } )
+			cy.adjustToolbar( 'Unordered' )
+			cy.adjust( 'Icon Rotation', 158 )
+		} )
+		cy.adjust( 'Icon / Number Size', 1.6, { viewport } ).assertComputedStyle( {
+			'.stk-block-icon-list li:marker': {
+				'font-size': '1.6em',
+			},
+		} )
+	} )
+
+	it( 'should assert Typography panel in Style tab', () => {
+		assertTypographyModule( {
+			selector: '.stk-block-icon-list ul li',
+			viewport,
+			enableContent: false,
+			enableTextColor: true,
+			enableShadowOutline: false,
+		} )
+	} )
+}
 
 const assertBlockTab = Block
 	.includes( [
