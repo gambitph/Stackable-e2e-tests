@@ -142,7 +142,6 @@ function styleTab( viewport, desktopOnly ) {
 			} )
 
 			// TODO: Add assertion for Icon Opacity, Icon Rotation.
-			// We won't be able to assert this since it requires server handling.
 			cy.adjust( 'Icon Opacity', 0.9, { state: 'hover' } )
 			cy.adjust( 'Icon Opacity', 0.5, { state: 'normal' } )
 			cy.adjustToolbar( 'Unordered' )
