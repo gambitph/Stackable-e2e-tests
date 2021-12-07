@@ -580,6 +580,7 @@ export function assertTypographyModule( options = {} ) {
 	const {
 		selector,
 		viewport,
+		enableContent = true,
 		enableTextColor = true,
 		enableShadowOutline = true,
 		enableRemoveMargin = false,
@@ -590,8 +591,10 @@ export function assertTypographyModule( options = {} ) {
 
 	cy.collapse( 'Typography' )
 	desktopOnly( () => {
-		cy.adjust( 'Content', 'Hello Stackable' ).assertBlockContent( selector, 'Hello Stackable' )
-		cy.getBaseControl( 'Content' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+		if ( enableContent ) {
+			cy.adjust( 'Content', 'Hello Stackable' ).assertBlockContent( selector, 'Hello Stackable' )
+			cy.getBaseControl( 'Content' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+		}
 
 		if ( enableRemoveMargin ) {
 			cy.adjust( 'Remove extra text margins', true ).assertComputedStyle( {
