@@ -6,6 +6,7 @@ import {
 	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
 } from '~stackable-e2e/helpers'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -13,6 +14,9 @@ export {
 	blockExist,
 	blockError,
 	innerBlocksExist,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -34,6 +38,32 @@ function innerBlocksExist() {
 		'.stk-block-heading',
 		'.stk-block-icon',
 	] ) )
+}
+
+function styleTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/icon-label' ).asBlock( 'iconLabelBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/icon-label', 'Style' )
+		cy.savePost()
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@iconLabelBlock' ) )
+
+	it( 'should assert General panel in Style tab', () => {
+		cy.collapse( 'General' )
+		cy.adjust( 'Icon Gap', 163, { viewport } ).assertComputedStyle( {
+			'.stk-inner-blocks .stk-block-icon': {
+				'flex-basis': '163px',
+			},
+		}, { assertBackend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+			'.stk-inner-blocks [data-type="stackable/icon"]': {
+				'flex-basis': '163px',
+			},
+		}, { assertFrontend: false } )
+	} )
 }
 
 const assertBlockTab = Block

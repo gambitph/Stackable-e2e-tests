@@ -3,9 +3,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
+	assertBlockExist, blockErrorTest, assertInnerBlocks, responsiveAssertHelper, Block, Advanced, assertContainerBackground, assertContainerSizeSpacing, assertContainerBordersShadow,
 } from '~stackable-e2e/helpers'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -13,6 +14,9 @@ export {
 	blockExist,
 	blockError,
 	innerBlocksExist,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -35,6 +39,34 @@ function innerBlocksExist() {
 		'.stk-block-text',
 		'.stk-block-icon',
 	] ) )
+}
+
+function styleTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/icon-box' ).asBlock( 'iconBoxBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/icon-box', 'Style' )
+		cy.savePost()
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@iconBoxBlock' ) )
+
+	it( 'should assert Container Background panel in Style tab', () => {
+		cy.toggleStyle( 'Container Background' )
+		assertContainerBackground( { viewport } )
+	} )
+
+	it( 'should assert Container Size & Spacing panel in Style tab', () => {
+		assertContainerSizeSpacing( {
+			viewport,
+			selector: '.stk-block-icon-box__content',
+		} )
+	} )
+
+	it( 'should assert Container Borders & Shadow panel in Style tab', () => {
+		assertContainerBordersShadow( { viewport } )
+	} )
 }
 
 const assertBlockTab = Block

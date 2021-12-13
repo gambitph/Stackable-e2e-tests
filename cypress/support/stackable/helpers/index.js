@@ -580,6 +580,7 @@ export function assertTypographyModule( options = {} ) {
 	const {
 		selector,
 		viewport,
+		enableContent = true,
 		enableTextColor = true,
 		enableShadowOutline = true,
 		enableRemoveMargin = false,
@@ -590,8 +591,10 @@ export function assertTypographyModule( options = {} ) {
 
 	cy.collapse( 'Typography' )
 	desktopOnly( () => {
-		cy.adjust( 'Content', 'Hello Stackable' ).assertBlockContent( selector, 'Hello Stackable' )
-		cy.getBaseControl( 'Content' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+		if ( enableContent ) {
+			cy.adjust( 'Content', 'Hello Stackable' ).assertBlockContent( selector, 'Hello Stackable' )
+			cy.getBaseControl( 'Content' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+		}
 
 		if ( enableRemoveMargin ) {
 			cy.adjust( 'Remove extra text margins', true ).assertComputedStyle( {
@@ -756,6 +759,12 @@ export function assertImageModule( options = {} ) {
 	const {
 		selector,
 		viewport,
+		enableWidth = false,
+		enableShadowOutline = false,
+		enableBorderRadius = false,
+		enableImageShape = false,
+		shadowEditorSelector = '',
+		shadowFrontendSelector = '',
 	} = options
 
 	const desktopOnly = callback => viewport === 'Desktop' && callback()
@@ -763,11 +772,39 @@ export function assertImageModule( options = {} ) {
 	cy.collapse( 'Image' )
 	cy.adjust( 'Select Image', 1 )
 
+	// Default is px unit
 	cy.adjust( 'Height', 284, { viewport } ).assertComputedStyle( {
 		[ selector ]: {
 			'height': '284px',
 		},
 	} )
+
+	if ( enableWidth ) {
+		cy.adjust( 'Width', 471, { viewport, unit: 'px' } )
+		cy.adjust( 'Height', 559, { viewport, unit: 'px' } ).assertComputedStyle( {
+			[ selector ]: {
+				'width': '471px',
+				'height': '559px',
+			},
+		} )
+
+		cy.adjust( 'Width', 62, { viewport, unit: '%' } )
+		cy.adjust( 'Height', 91, { viewport, unit: '%' } ).assertComputedStyle( {
+			[ selector ]: {
+				'width': '62%',
+				'height': '91%',
+			},
+		} )
+
+		cy.adjust( 'Width', 32, { viewport, unit: 'vw' } )
+		cy.adjust( 'Height', 65, { viewport, unit: 'vh' } ).assertComputedStyle( {
+			[ selector ]: {
+				'width': '32vw',
+				'height': '65vh',
+			},
+		} )
+	}
+
 	desktopOnly( () => {
 		// Dynamic Fields button should be present
 		cy.getBaseControl( '.ugb-image-control:contains(Select Image)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
@@ -783,10 +820,112 @@ export function assertImageModule( options = {} ) {
 			},
 		} )
 
+		if ( enableShadowOutline ) {
+			cy.adjust( 'Shadow / Outline', 6, { state: 'hover' } ).assertComputedStyle( {
+				[ `${ shadowEditorSelector }:hover` ]: {
+					'filter': 'drop-shadow(0px 10px 30px rgba(0, 0, 0, 0.1))',
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ `${ shadowFrontendSelector }:hover` ]: {
+					'filter': 'drop-shadow(0px 10px 30px rgba(0, 0, 0, 0.1))',
+				},
+			}, { assertBackend: false } )
+			cy.adjust( 'Shadow / Outline', 3, { state: 'normal' } ).assertComputedStyle( {
+				[ shadowEditorSelector ]: {
+					'filter': 'drop-shadow(0px 5px 10px rgba(153, 153, 153, 0.35))',
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ shadowFrontendSelector ]: {
+					'filter': 'drop-shadow(0px 5px 10px rgba(153, 153, 153, 0.35))',
+				},
+			}, { assertBackend: false } )
+
+			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+			cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+
+			const parentSelector = '.components-popover__content .stk-control-content'
+			const selectAdvancedShadowHoverState = () => cy
+				.adjust( 'Advanced Shadow Options', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
+			const pressShadowSettings = () => cy
+				.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
+			// Press the cog symbol to open Shadow settings
+
+			pressShadowSettings()
+			// Adjust Adv. Shadow Options - hover
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Horizontal Offset', 7, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Vertical Offset', 31, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Blur', 71, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Shadow Color', '#0f9294', { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Shadow Opacity', 0.4, { parentSelector } ).assertComputedStyle( {
+				[ `${ shadowEditorSelector }:hover` ]: {
+					'filter': 'drop-shadow(7px 31px 71px rgba(15, 146, 148, 0.4))',
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ `${ shadowFrontendSelector }:hover` ]: {
+					'filter': 'drop-shadow(7px 31px 71px rgba(15, 146, 148, 0.4))',
+				},
+			}, { assertBackend: false } )
+
+			pressShadowSettings()
+			pressShadowSettings()
+
+			// Adjust Adv. Shadow Options - normal
+			cy.adjust( 'Horizontal Offset', 8, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Vertical Offset', 11, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Blur', 25, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Opacity', 0.6, { parentSelector, state: 'normal' } ).assertComputedStyle( {
+				[ shadowEditorSelector ]: {
+					'filter': 'drop-shadow(8px 11px 25px rgba(42, 138, 98, 0.6))',
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ shadowFrontendSelector ]: {
+					'filter': 'drop-shadow(8px 11px 25px rgba(42, 138, 98, 0.6))',
+				},
+			}, { assertBackend: false } )
+			pressShadowSettings()
+		}
+
 		// We won't be able to assert image size for now since it requires server handling.
 		// `assertHtmlAttribute` command was introduced for the purpose of asserting html attribute values in a selected DOM Element.
 		// TODO: Add assertion for Image Size
 		cy.adjust( 'Image Size', 'large' )
+
+		if ( enableBorderRadius ) {
+			cy.adjust( 'Border Radius', 41 ).assertComputedStyle( {
+				[ `${ selector } img` ]: {
+					'border-radius': '41px',
+				},
+			} )
+		}
+
+		if ( enableImageShape ) {
+			cy.adjust( 'Image Shape', {
+				'Shape': {
+					label: 'Blob 1',
+					value: 'blob1',
+				},
+				'Flip Shape Horizontally': true,
+				'Flip Shape Vertically': true,
+			} ).assertComputedStyle( {
+				[ `${ selector } img` ]: {
+					'-webkit-mask-image': 'url(\'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB0cmFuc2Zvcm09InNjYWxlKC0xLC0xKSI+PHBhdGggZD0iTTE4OC41IDMxLjljMTIuOSAxNS45IDEyLjUgNDMuMyAxMC4zIDc3LjFzLTYuMiA3NC4yLTI2LjIgODYuNS01Ni4xLTMuMy04OS40LTIxLjItNjMuNy0zOC4xLTc2LjQtNjkuOEMtNS45IDczLS44IDI5LjkgMjEuNiAxMS43IDQ0LTYuNCA4My44LjUgMTE2LjcgNi4xczU5IDEwIDcxLjggMjUuOHoiPjwvcGF0aD48L3N2Zz4=\')',
+				},
+			} )
+
+			cy.adjust( 'Image Shape', {
+				'Stretch Shape Mask': true,
+			} ).assertClassName( selector, 'stk-image--shape-stretch' )
+		}
 
 		// Adjust Image Filter
 		const parentSelector = '.components-popover__content .stk-control-content'
@@ -852,5 +991,35 @@ export function assertImageModule( options = {} ) {
 		[ `${ selector } img` ]: {
 			'object-fit': 'contain',
 		},
+	} )
+}
+
+/**
+ * Helper function for asserting the Link panel (Style tab) in v3 blocks
+ *
+ * @param {Object} options
+ */
+export function assertLinks( options = {} ) {
+	const {
+		selector,
+		viewport,
+	} = options
+
+	const desktopOnly = callback => viewport === 'Desktop' && callback()
+
+	desktopOnly( () => {
+		cy.collapse( 'Link' )
+		cy.adjust( 'Link / URL', 'https://wpstackable.com/' ).assertHtmlAttribute( selector, 'href', 'https://wpstackable.com/', { assertBackend: false } )
+		// The dynamic content for Link / URL should exist
+		cy.getBaseControl( '.stk-link-control:contains(Link / URL)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+
+		cy.adjust( 'Open in new tab', true ).assertHtmlAttribute( selector, 'rel', /noreferrer noopener/, { assertBackend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertHtmlAttribute( selector, 'target', '_blank', { assertBackend: false } )
+		cy.adjust( 'Link rel', 'ugc sponsored' ).assertHtmlAttribute( selector, 'rel', /ugc sponsored/, { assertBackend: false } )
+
+		cy.adjust( 'Link Title', 'Stackable site' ).assertHtmlAttribute( selector, 'title', 'Stackable site', { assertBackend: false } )
+		// The dynamic content for Link Title should exist
+		cy.getBaseControl( '.components-base-control:contains(Link Title)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+		cy.savePost()
 	} )
 }
