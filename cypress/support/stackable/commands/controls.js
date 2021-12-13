@@ -106,7 +106,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		} )
 	}
 
-	// TODO: support null value in cy.adjust (Check this)
+	// Supports null values in cy.adjust to change the viewport, unit, and hover state
 	if ( args[ 1 ] === null ) {
 		const options = Object.assign( optionsToPass, { name: label, value: args[ 1 ] } )
 		changeControlViewport( options )
@@ -231,7 +231,7 @@ function designControl( name, value, options = {} ) {
 
 	beforeAdjust( name, value, options )
 	cy.getBaseControl( typeof value === 'object' ? value.label : name, { isInPopover } )
-		.find( `input[value="${ typeof value === 'object' ? value.value : kebabCase( value ) }"]` )
+		.find( `input[value="${ typeof value === 'object' ? value.value : isInPopover === true ? value : kebabCase( value ) }"]` )
 		.click( { force: true } )
 }
 
@@ -265,7 +265,7 @@ function popoverControl( name, value = {}, options = {} ) {
 		 * If the value is an object, open the popover and adjust the settings
 		 */
 		keys( value ).forEach( key => {
-			// If an option entry is an object, get the value, unit, and vieport property to be passed
+			// If an option entry is an object, get the value, unit, viewport, and hover state property to be passed
 			// in adjust function.
 			if ( typeof value[ key ] === 'object' && ! Array.isArray( value[ key ] ) ) {
 				const {
@@ -273,10 +273,11 @@ function popoverControl( name, value = {}, options = {} ) {
 					unit = '',
 					value: childValue = '',
 					beforeAdjust = () => {},
+					state = '',
 				} = value[ key ]
 
 				cy.adjust( key, childValue === '' ? value[ key ] : childValue, {
-					viewport, unit, isInPopover: true, beforeAdjust,
+					viewport, unit, isInPopover: true, beforeAdjust, state,
 				} )
 			} else {
 				cy.adjust( key, value[ key ], { isInPopover: true } )

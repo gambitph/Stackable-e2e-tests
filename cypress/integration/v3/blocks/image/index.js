@@ -3,9 +3,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced, assertImageModule,
 } from '~stackable-e2e/helpers'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -13,6 +14,9 @@ export {
 	blockExist,
 	blockError,
 	addImage,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -108,6 +112,31 @@ function addImage() {
 					},
 				}, { assertBackend: false } )
 			} )
+	} )
+}
+
+function styleTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/image' ).asBlock( 'imageBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/image', 'Style' )
+		cy.savePost()
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@imageBlock' ) )
+
+	it( 'should assert Image panel in Style tab', () => {
+		assertImageModule( {
+			selector: '.stk-block-image .stk-img-wrapper',
+			viewport,
+			enableWidth: true,
+			enableShadowOutline: true,
+			enableBorderRadius: true,
+			enableImageShape: true,
+			shadowEditorSelector: '.stk-block-image .stk-img-wrapper .stk-img-resizer-wrapper',
+			shadowFrontendSelector: '.stk-block-image .stk-img-wrapper',
+		} )
 	} )
 }
 
