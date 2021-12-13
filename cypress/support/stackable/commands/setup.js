@@ -35,6 +35,20 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 			selectCheckbox().find( 'input.components-checkbox-control__input' ).click( { force: true } )
 		}
 	} )
+
+	// Temporarily turning off Auto-Collapse panels for WordPress 5.9 run
+	// For more info, @see issue link https://github.com/gambitph/Stackable/issues/2041
+	const selectAutoCollapse = () => cy
+		.get( 'article[id="editor-settings"]' )
+		.contains( containsRegExp( 'Auto-Collapse Panels' ) )
+		.parent()
+
+	selectAutoCollapse().find( 'button[role="switch"]' ).invoke( 'attr', 'aria-checked' ).then( isChecked => {
+		if ( isChecked === true ) {
+			selectAutoCollapse().find( 'button[role="switch"]' ).click( { force: true } )
+		}
+	} )
+
 	// Activate optimization setting for version 2
 	cy.loadFrontendJsCssFiles()
 
