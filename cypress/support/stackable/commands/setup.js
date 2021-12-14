@@ -22,6 +22,7 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 		cy.activateLicense()
 	}
 
+	cy.visit( '/wp-admin/options-general.php?page=stackable' )
 	// Temporarily turning off Auto-Collapse panels for WordPress 5.9 run
 	// For more info, @see issue link https://github.com/gambitph/Stackable/issues/2041
 	const selectAutoCollapse = () => cy
