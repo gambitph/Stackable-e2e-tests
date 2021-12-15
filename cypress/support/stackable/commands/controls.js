@@ -274,10 +274,11 @@ function popoverControl( name, value = {}, options = {} ) {
 					value: childValue = '',
 					beforeAdjust = () => {},
 					state = '',
+					parentSelector,
 				} = value[ key ]
 
 				cy.adjust( key, childValue === '' ? value[ key ] : childValue, {
-					viewport, unit, isInPopover: true, beforeAdjust, state,
+					viewport, unit, isInPopover: true, beforeAdjust, state, parentSelector,
 				} )
 			} else {
 				cy.adjust( key, value[ key ], { isInPopover: true } )

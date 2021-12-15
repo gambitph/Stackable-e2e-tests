@@ -538,7 +538,9 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 					if ( assertBackend ) {
 						cy.get( subject ).find( customSelector ).invoke( 'text' ).then( actualValue => {
 							assert.isTrue(
-								actualValue === expectedValue,
+								expectedValue instanceof RegExp
+									? !! actualValue.match( expectedValue )
+									: actualValue === expectedValue,
 								`${ customSelector } must have content '${ expectedValue }' in Editor. Found: '${ actualValue }'`
 							)
 						} )
@@ -554,9 +556,10 @@ export function assertBlockContent( subject, customSelector = '', expectedValue 
 							cy.document().then( doc => {
 								const blockElement = doc.querySelector( `${ selector }${ customSelector }` ) || doc.querySelector( `${ selector } ${ customSelector }` )
 								if ( blockElement ) {
-									assert.equal(
-										blockElement.textContent.replace( '\n', '' ),
-										expectedValue,
+									assert.isTrue(
+										expectedValue instanceof RegExp
+											? !! blockElement.textContent.replace( '\n', '' ).match( expectedValue )
+											: blockElement.textContent.replace( '\n', '' ) === expectedValue,
 										`${ customSelector } must have content '${ expectedValue }' in Frontend. Found: '${ blockElement.textContent.replace( '\n', '' ) }'`
 									)
 								}

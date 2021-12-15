@@ -585,11 +585,18 @@ export function assertTypographyModule( options = {} ) {
 		enableShadowOutline = true,
 		enableRemoveMargin = false,
 		enableHtmlTag = false,
+		enableAlign = false,
+		panelName = 'Typography',
+		frontendSelector = null,
+		assertOptions = {},
 	} = options
 
 	const desktopOnly = callback => viewport === 'Desktop' && callback()
 
-	cy.collapse( 'Typography' )
+	if ( panelName === 'Typography' ) {
+		cy.collapse( 'Typography' )
+	}
+
 	desktopOnly( () => {
 		if ( enableContent ) {
 			cy.adjust( 'Content', 'Hello Stackable' ).assertBlockContent( selector, 'Hello Stackable' )
@@ -615,49 +622,49 @@ export function assertTypographyModule( options = {} ) {
 			'Font Style': 'italic',
 			'Letter Spacing': 0.7,
 		} ).assertComputedStyle( {
-			[ selector ]: {
+			[ `${ frontendSelector ? frontendSelector : selector }` ]: {
 				'font-family': '"Abel", Sans-serif',
 				'font-weight': '500',
 				'text-transform': 'lowercase',
 				'font-style': 'italic',
 				'letter-spacing': '0.7px',
 			},
-		} )
+		}, assertOptions )
 
 		if ( enableTextColor ) {
 			cy.adjust( 'Color Type', 'gradient' )
 			cy.adjust( 'Text Color #1', '#3884ff' )
 			cy.adjust( 'Text Color #2', '#ff1a1d' )
 			cy.adjust( 'Gradient Direction (degrees)', 236 ).assertComputedStyle( {
-				[ selector ]: {
+				[ `${ frontendSelector ? frontendSelector : selector }` ]: {
 					'background-image': 'linear-gradient(236deg, #3884ff, #ff1a1d)',
 				},
-			} )
+			}, assertOptions )
 
 			cy.adjust( 'Color Type', 'single' )
 			cy.adjust( 'Text Color', '#233491', { state: 'hover' } ).assertComputedStyle( {
-				[ `${ selector }:hover` ]: {
+				[ `${ frontendSelector ? frontendSelector : selector }:hover` ]: {
 					'color': '#233491',
 				},
-			} )
+			}, assertOptions )
 			cy.adjust( 'Text Color', '#18875a', { state: 'normal' } ).assertComputedStyle( {
-				[ selector ]: {
+				[ `${ frontendSelector ? frontendSelector : selector }` ]: {
 					'color': '#18875a',
 				},
-			} )
+			}, assertOptions )
 		}
 
 		if ( enableShadowOutline ) {
 			cy.adjust( 'Shadow / Outline', 7, { state: 'hover' } ).assertComputedStyle( {
-				[ `${ selector }:hover` ]: {
+				[ `${ frontendSelector ? frontendSelector : selector }:hover` ]: {
 					'text-shadow': '25px 10px 14px rgba(18, 63, 82, 0.3)',
 				},
-			} )
+			}, assertOptions )
 			cy.adjust( 'Shadow / Outline', 5, { state: 'normal' } ).assertComputedStyle( {
-				[ selector ]: {
+				[ `${ frontendSelector ? frontendSelector : selector }` ]: {
 					'text-shadow': '4px 4px 0px rgba(0, 0, 0, 1)',
 				},
-			} )
+			}, assertOptions )
 			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
 			cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
 
@@ -670,10 +677,10 @@ export function assertTypographyModule( options = {} ) {
 			cy.adjust( 'Blur', 25, { parentSelector, state: 'normal' } )
 			cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector, state: 'normal' } )
 			cy.adjust( 'Shadow Opacity', 0.6, { parentSelector, state: 'normal' } ).assertComputedStyle( {
-				[ selector ]: {
+				[ `${ frontendSelector ? frontendSelector : selector }` ]: {
 					'text-shadow': '8px 11px 25px rgba(42, 138, 98, 0.6)',
 				},
-			} )
+			}, assertOptions )
 
 			const selectAdvancedShadowHoverState = () => cy
 				.adjust( 'Advanced Shadow Options', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
@@ -691,10 +698,10 @@ export function assertTypographyModule( options = {} ) {
 			cy.adjust( 'Shadow Color', '#0f9294', { parentSelector } )
 			selectAdvancedShadowHoverState()
 			cy.adjust( 'Shadow Opacity', 0.4, { parentSelector } ).assertComputedStyle( {
-				[ `${ selector }:hover` ]: {
+				[ `${ frontendSelector ? frontendSelector : selector }:hover` ]: {
 					'text-shadow': '7px 31px 71px rgba(15, 146, 148, 0.4)',
 				},
-			} )
+			}, assertOptions )
 		}
 	} )
 
@@ -721,10 +728,10 @@ export function assertTypographyModule( options = {} ) {
 				viewport,
 			},
 		} ).assertComputedStyle( {
-			[ selector ]: {
+			[ `${ frontendSelector ? frontendSelector : selector }` ]: {
 				'line-height': `${ lineHeight.value }${ lineHeight.unit }`,
 			},
-		} )
+		}, assertOptions )
 	} )
 
 	const sizeAssertion = [
@@ -743,11 +750,22 @@ export function assertTypographyModule( options = {} ) {
 	]
 	sizeAssertion.forEach( size => {
 		cy.adjust( 'Size', size.value, { unit: size.unit, viewport } ).assertComputedStyle( {
-			[ selector ]: {
+			[ `${ frontendSelector ? frontendSelector : selector }` ]: {
 				'font-size': `${ size.value }${ size.unit }`,
 			},
-		} )
+		}, assertOptions )
 	} )
+
+	if ( enableAlign ) {
+		const aligns = [ 'left', 'center', 'right' ]
+		aligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport } ).assertComputedStyle( {
+				[ selector ]: {
+					'text-align': align,
+				},
+			}, { assertBackend: false } )
+		} )
+	}
 }
 
 /**
@@ -759,18 +777,22 @@ export function assertImageModule( options = {} ) {
 	const {
 		selector,
 		viewport,
+		panelName = 'Image',
 		enableWidth = false,
 		enableShadowOutline = false,
 		enableBorderRadius = false,
 		enableImageShape = false,
 		shadowEditorSelector = '',
 		shadowFrontendSelector = '',
+		isStaticBlock = false,
 	} = options
 
 	const desktopOnly = callback => viewport === 'Desktop' && callback()
 
-	cy.collapse( 'Image' )
-	cy.adjust( 'Select Image', 1 )
+	if ( panelName === 'Image' ) {
+		cy.collapse( 'Image' )
+		cy.adjust( 'Select Image', 1 )
+	}
 
 	// Default is px unit
 	cy.adjust( 'Height', 284, { viewport } ).assertComputedStyle( {
@@ -806,9 +828,11 @@ export function assertImageModule( options = {} ) {
 	}
 
 	desktopOnly( () => {
-		// Dynamic Fields button should be present
-		cy.getBaseControl( '.ugb-image-control:contains(Select Image)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
-		cy.adjust( 'Image Alt', 'stackable the best' ).assertHtmlAttribute( `${ selector } img`, 'alt', 'stackable the best', { assertBackend: false } )
+		if ( panelName === 'Image' ) {
+			// Dynamic Fields button should be present
+			cy.getBaseControl( '.ugb-image-control:contains(Select Image)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+			cy.adjust( 'Image Alt', 'stackable the best' ).assertHtmlAttribute( `${ selector } img`, 'alt', 'stackable the best', { assertBackend: false } )
+		}
 		cy.adjust( 'Zoom', 0.73, { state: 'hover' } ).assertComputedStyle( {
 			[ `${ selector } img:hover` ]: {
 				'transform': 'scale(0.73)',
@@ -850,9 +874,32 @@ export function assertImageModule( options = {} ) {
 				.adjust( 'Advanced Shadow Options', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
 			const pressShadowSettings = () => cy
 				.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
-			// Press the cog symbol to open Shadow settings
+				// Press the cog symbol to open Shadow settings
 
 			pressShadowSettings()
+			// Adjust Adv. Shadow Options - normal
+			cy.adjust( 'Horizontal Offset', 8, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Vertical Offset', 11, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Blur', 25, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Opacity', 0.6, { parentSelector, state: 'normal' } ).assertComputedStyle( {
+				[ shadowEditorSelector ]: {
+					'filter': 'drop-shadow(8px 11px 25px rgba(42, 138, 98, 0.6))',
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ shadowFrontendSelector ]: {
+					'filter': 'drop-shadow(8px 11px 25px rgba(42, 138, 98, 0.6))',
+				},
+			}, { assertBackend: false } )
+
+			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+			if ( isStaticBlock ) {
+				pressShadowSettings()
+			} else {
+				cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+			}
+
 			// Adjust Adv. Shadow Options - hover
 			selectAdvancedShadowHoverState()
 			cy.adjust( 'Horizontal Offset', 7, { parentSelector } )
@@ -873,26 +920,6 @@ export function assertImageModule( options = {} ) {
 					'filter': 'drop-shadow(7px 31px 71px rgba(15, 146, 148, 0.4))',
 				},
 			}, { assertBackend: false } )
-
-			pressShadowSettings()
-			pressShadowSettings()
-
-			// Adjust Adv. Shadow Options - normal
-			cy.adjust( 'Horizontal Offset', 8, { parentSelector, state: 'normal' } )
-			cy.adjust( 'Vertical Offset', 11, { parentSelector, state: 'normal' } )
-			cy.adjust( 'Blur', 25, { parentSelector, state: 'normal' } )
-			cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector, state: 'normal' } )
-			cy.adjust( 'Shadow Opacity', 0.6, { parentSelector, state: 'normal' } ).assertComputedStyle( {
-				[ shadowEditorSelector ]: {
-					'filter': 'drop-shadow(8px 11px 25px rgba(42, 138, 98, 0.6))',
-				},
-			}, { assertFrontend: false } )
-			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-				[ shadowFrontendSelector ]: {
-					'filter': 'drop-shadow(8px 11px 25px rgba(42, 138, 98, 0.6))',
-				},
-			}, { assertBackend: false } )
-			pressShadowSettings()
 		}
 
 		// We won't be able to assert image size for now since it requires server handling.
@@ -928,50 +955,89 @@ export function assertImageModule( options = {} ) {
 		}
 
 		// Adjust Image Filter
-		const parentSelector = '.components-popover__content .stk-control-content'
-		const selectImageFilterPopover = () => cy
-			.getBaseControl( '.components-base-control:contains(Image Filter)' ).find( 'button[aria-label="Edit"]' ).click( { force: true } )
+		const parentSelector = '.stk-image-filter-control .stk-control-content'
 
-		selectImageFilterPopover()
-		cy.adjust( 'Blur', 2, { parentSelector, state: 'normal' } )
-		cy.adjust( 'Brightness', 1.3, { parentSelector, state: 'normal' } )
-		cy.adjust( 'Contrast', 0.9, { parentSelector, state: 'normal' } )
-		cy.adjust( 'Grayscale', 0.22, { parentSelector, state: 'normal' } )
-		cy.adjust( 'Hue Rotate', 166, { parentSelector, state: 'normal' } )
-		cy.adjust( 'Invert', 0.14, { parentSelector, state: 'normal' } )
-		cy.adjust( 'Opacity', 0.83, { parentSelector, state: 'normal' } )
-		cy.adjust( 'Saturate', 1.8, { parentSelector, state: 'normal' } )
-		cy.adjust( 'Sepia', 0.28, { parentSelector, state: 'normal' } ).assertComputedStyle( {
+		cy.adjust( 'Image Filter', {
+			'Blur': {
+				value: 2,
+				parentSelector,
+			},
+			'Brightness': {
+				value: 1.3,
+				parentSelector,
+			},
+			'Contrast': {
+				value: 0.9,
+				parentSelector,
+			},
+			'Grayscale': {
+				value: 0.22,
+				parentSelector,
+			},
+			'Hue Rotate': {
+				value: 166,
+				parentSelector,
+			},
+			'Invert': {
+				value: 0.14,
+				parentSelector,
+			},
+			'Opacity': {
+				value: 0.83,
+				parentSelector,
+			},
+			'Saturate': {
+				value: 1.8,
+				parentSelector,
+			},
+			'Sepia': {
+				value: 0.28,
+				parentSelector,
+			},
+		} ).assertComputedStyle( {
 			[ `${ selector } img` ]: {
 				'filter': 'blur(2px) brightness(1.3) contrast(0.9) grayscale(0.22) hue-rotate(166deg) invert(0.14) opacity(0.83) saturate(1.8) sepia(0.28)',
 			},
 		} )
 
-		const selectImageFilterHoverState = () => cy
-			.adjust( 'Image Filter', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
-
-		selectImageFilterPopover()
 		cy.resetStyle( 'Image Filter', { state: 'normal' } )
-		cy.resetStyle( 'Image Filter', { state: 'hover' } )
-		selectImageFilterPopover()
-		selectImageFilterHoverState()
-		cy.adjust( 'Blur', 0.5, { parentSelector, state: 'hover' } )
-		selectImageFilterHoverState()
-		cy.adjust( 'Brightness', 1.9, { parentSelector, state: 'hover' } )
-		selectImageFilterHoverState()
-		cy.adjust( 'Contrast', 0.8, { parentSelector, state: 'hover' } )
-		selectImageFilterHoverState()
-		cy.adjust( 'Grayscale', 0.61, { parentSelector, state: 'hover' } )
-		selectImageFilterHoverState()
-		cy.adjust( 'Hue Rotate', 47, { parentSelector, state: 'hover' } )
-		selectImageFilterHoverState()
-		cy.adjust( 'Invert', 0.33, { parentSelector, state: 'hover' } )
-		selectImageFilterHoverState()
-		cy.adjust( 'Opacity', 0.76, { parentSelector, state: 'hover' } )
-		selectImageFilterHoverState()
-		cy.adjust( 'Saturate', 0.9, { parentSelector, state: 'hover' } )
-		selectImageFilterHoverState()
-		cy.adjust( 'Sepia', 0.34, { parentSelector, state: 'hover' } ).assertComputedStyle( {
+
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Blur': { value: 0.5, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Brightness': { value: 1.9, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Contrast': { value: 0.8, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Grayscale': { value: 0.61, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Hue Rotate': { value: 47, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Invert': { value: 0.33, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Opacity': { value: 0.76, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Saturate': { value: 0.9, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Sepia': { value: 0.34, parentSelector },
+		} ).assertComputedStyle( {
 			[ `${ selector } img:hover` ]: {
 				'filter': 'blur(0.5px) brightness(1.9) contrast(0.8) grayscale(0.61) hue-rotate(47deg) invert(0.33) opacity(0.76) saturate(0.9) sepia(0.34)',
 			},

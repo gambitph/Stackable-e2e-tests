@@ -605,6 +605,7 @@ export const assertContainerSizeSpacing = ( options = {}, assertOptions = {} ) =
 export const assertContainerBordersShadow = ( options = {}, assertOptions = {} ) => {
 	const {
 		viewport = 'Desktop',
+		isStaticBlock = false,
 	} = options
 
 	cy.collapse( 'Container Borders & Shadow' )
@@ -649,6 +650,7 @@ export const assertContainerBordersShadow = ( options = {}, assertOptions = {} )
 				const parentSelector = '.components-popover__content .stk-control-content'
 				// Press the cog symbol to open Shadow settings
 				cy.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
+				// Adv Shadow Options - normal
 				cy.adjust( 'Horizontal Offset', 8, { parentSelector, state: 'normal' } )
 				cy.adjust( 'Vertical Offset', 11, { parentSelector, state: 'normal' } )
 				cy.adjust( 'Blur', 25, { parentSelector, state: 'normal' } )
@@ -660,11 +662,17 @@ export const assertContainerBordersShadow = ( options = {}, assertOptions = {} )
 					},
 				} )
 
+				cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+				if ( isStaticBlock ) {
+					// Press the shadow settings popover
+					cy.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
+				} else {
+					cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+				}
+
 				const selectAdvancedShadowHoverState = () => cy
 					.adjust( 'Advanced Shadow Options', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
 
-				cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
-				cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
 				// Adjust Adv. Shadow Options - hover
 				selectAdvancedShadowHoverState()
 				cy.adjust( 'Horizontal Offset', 7, { parentSelector } )
