@@ -74,8 +74,14 @@ function styleTab( viewport, desktopOnly ) {
 				'max-width': '568px',
 			},
 		} )
+		cy.adjust( '.ugb--help-tip-advanced-block-content-width:contains(Content Width)', 88, { viewport, unit: '%' } ).assertComputedStyle( {
+			'.stk-block-posts > .stk-content-align': {
+				'max-width': '88%',
+			},
+		} )
 		const aligns = [ 'flex-start', 'center', 'flex-end' ]
 		aligns.forEach( align => {
+			cy.adjust( '.ugb--help-tip-advanced-block-content-width:contains(Content Width)', 542, { viewport, unit: 'px' } )
 			cy.adjust( 'Content Horizontal Align', align, { viewport } ).assertComputedStyle( {
 				'.stk-block-posts > .stk-content-align': {
 					'margin-left': `${ align === 'flex-start' ? '0px' : 'auto' }`,

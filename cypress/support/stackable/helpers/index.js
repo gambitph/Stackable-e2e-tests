@@ -758,12 +758,9 @@ export function assertTypographyModule( options = {} ) {
 
 	if ( enableAlign ) {
 		const aligns = [ 'left', 'center', 'right' ]
+		const responsiveClass = viewport !== 'Desktop' ? `-${ lowerCase( viewport ) }` : ''
 		aligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport } ).assertComputedStyle( {
-				[ selector ]: {
-					'text-align': align,
-				},
-			}, { assertBackend: false } )
+			cy.adjust( 'Align', align, { viewport } ).assertClassName( selector, `has-text-align-${ align }${ responsiveClass }` )
 		} )
 	}
 }
