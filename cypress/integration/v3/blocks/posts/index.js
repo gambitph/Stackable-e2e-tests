@@ -261,6 +261,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.collapse( 'Category' )
 		assertTypographyModule( {
 			selector: '.stk-block-posts__category a',
+			alignmentSelector: '.stk-block-posts__category',
 			viewport,
 			panelName: 'Category',
 			enableContent: false,
@@ -288,6 +289,7 @@ function styleTab( viewport, desktopOnly ) {
 		cy.collapse( 'Excerpt' )
 		assertTypographyModule( {
 			selector: '.stk-block-posts__excerpt p',
+			alignmentSelector: '.stk-block-posts__excerpt',
 			viewport,
 			panelName: 'Excerpt',
 			enableContent: false,

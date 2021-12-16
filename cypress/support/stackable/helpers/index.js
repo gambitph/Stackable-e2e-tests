@@ -589,6 +589,7 @@ export function assertTypographyModule( options = {} ) {
 		panelName = 'Typography',
 		frontendSelector = null,
 		assertOptions = {},
+		alignmentSelector = null,
 	} = options
 
 	const desktopOnly = callback => viewport === 'Desktop' && callback()
@@ -760,7 +761,7 @@ export function assertTypographyModule( options = {} ) {
 		const aligns = [ 'left', 'center', 'right' ]
 		const responsiveClass = viewport !== 'Desktop' ? `-${ lowerCase( viewport ) }` : ''
 		aligns.forEach( align => {
-			cy.adjust( 'Align', align, { viewport } ).assertClassName( selector, `has-text-align-${ align }${ responsiveClass }` )
+			cy.adjust( 'Align', align, { viewport } ).assertClassName( `${ alignmentSelector ? alignmentSelector : selector }`, `has-text-align-${ align }${ responsiveClass }` )
 		} )
 	}
 }
