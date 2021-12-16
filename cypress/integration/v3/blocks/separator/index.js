@@ -43,22 +43,22 @@ function styleTab( viewport, desktopOnly ) {
 
 	afterEach( () => cy.assertFrontendStyles( '@separatorBlock' ) )
 
-	// it( 'should assert General panel in Style tab', () => {
-	// 	cy.collapse( 'General' )
-	// 	cy.adjust( 'Height', 327, { viewport } ).assertComputedStyle( {
-	// 		'.stk-block-separator__inner': {
-	// 			'height': '327px',
-	// 		},
-	// 	} )
-	// 	desktopOnly( () => {
-	// 		cy.adjust( 'Flip Horizontally', true )
-	// 		cy.adjust( 'Flip Vertically', true ).assertComputedStyle( {
-	// 			'.stk-block-separator': {
-	// 				'transform': 'scaleX(-1) scaleY(-1)',
-	// 			},
-	// 		} )
-	// 	} )
-	// } )
+	it( 'should assert General panel in Style tab', () => {
+		cy.collapse( 'General' )
+		cy.adjust( 'Height', 327, { viewport } ).assertComputedStyle( {
+			'.stk-block-separator__inner': {
+				'height': '327px',
+			},
+		} )
+		desktopOnly( () => {
+			cy.adjust( 'Flip Horizontally', true )
+			cy.adjust( 'Flip Vertically', true ).assertComputedStyle( {
+				'.stk-block-separator': {
+					'transform': 'scaleX(-1) scaleY(-1)',
+				},
+			} )
+		} )
+	} )
 
 	it( 'should assert Separator panel in Style tab', () => {
 		cy.collapse( 'Separator' )
