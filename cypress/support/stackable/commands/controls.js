@@ -136,6 +136,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		'.stk-advanced-focal-point-control': 'focalPointControl',
 		'.stk-date-time-control__field': 'stkDateTimeControl',
 		'.ugb-image-control': 'imageControl',
+		'.stk-color-palette-control': 'colorControl', // WP 5.9 Compatibility
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -173,6 +174,7 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 		 '.stk-date-time-control__field': 'stkDateTimeControlReset',
 		 '.ugb-image-control': 'imageControlReset',
 		 '.ugb-advanced-toolbar-control': 'toolbarControlReset',
+		 '.stk-color-palette-control': 'colorControlClear', // WP 5.9 Compatibility
 	}
 
 	if ( optionsToPass.customOptions ) {
