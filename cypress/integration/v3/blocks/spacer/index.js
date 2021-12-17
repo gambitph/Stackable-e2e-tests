@@ -5,6 +5,7 @@ import {
 	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced,
 } from '~stackable-e2e/helpers'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -12,6 +13,9 @@ export {
 	blockExist,
 	blockError,
 	resizeHeight,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -50,6 +54,27 @@ function resizeHeight() {
 						},
 					} )
 			} )
+	} )
+}
+
+function styleTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/spacer' ).asBlock( 'spacerBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/spacer', 'Style' )
+		cy.savePost()
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@spacerBlock' ) )
+
+	it( 'should assert General panel in Style tab', () => {
+		cy.collapse( 'General' )
+		cy.adjust( 'Height', 678, { viewport } ).assertComputedStyle( {
+			'.stk-block-spacer': {
+				'height': '678px',
+			},
+		} )
 	} )
 }
 
