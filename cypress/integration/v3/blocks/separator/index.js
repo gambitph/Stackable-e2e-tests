@@ -75,51 +75,24 @@ function styleTab( viewport, desktopOnly ) {
 				},
 			} )
 
-			cy.adjust( 'Shadow / Outline', 7, { state: 'hover' } ).assertComputedStyle( {
-				'.stk-block-separator svg:hover': {
-					'filter': 'drop-shadow(0px 10px 30px rgba(0, 0, 0, 0.05))',
-				},
-			} )
-			cy.adjust( 'Shadow / Outline', 5, { state: 'normal' } ).assertComputedStyle( {
+			cy.adjust( 'Shadow / Outline', 5 ).assertComputedStyle( {
 				'.stk-block-separator svg': {
 					'filter': 'drop-shadow(0px 2px 20px rgba(153, 153, 153, 0.2))',
 				},
 			} )
-			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
-			cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+			cy.resetStyle( 'Shadow / Outline' )
 
 			// Adjust Adv. Shadow Options - normal
 			const parentSelector = '.components-popover__content .stk-control-content'
 			// Press the cog symbol to open Shadow settings
 			cy.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
-			cy.adjust( 'Horizontal Offset', 8, { parentSelector, state: 'normal' } )
-			cy.adjust( 'Vertical Offset', 11, { parentSelector, state: 'normal' } )
-			cy.adjust( 'Blur', 25, { parentSelector, state: 'normal' } )
-			cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector, state: 'normal' } )
-			cy.adjust( 'Shadow Opacity', 0.6, { parentSelector, state: 'normal' } ).assertComputedStyle( {
+			cy.adjust( 'Horizontal Offset', 8, { parentSelector } )
+			cy.adjust( 'Vertical Offset', 11, { parentSelector } )
+			cy.adjust( 'Blur', 25, { parentSelector } )
+			cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector } )
+			cy.adjust( 'Shadow Opacity', 0.6, { parentSelector } ).assertComputedStyle( {
 				'.stk-block-separator svg': {
 					'filter': 'drop-shadow(8px 11px 25px rgba(42, 138, 98, 0.6))',
-				},
-			} )
-
-			const selectAdvancedShadowHoverState = () => cy
-				.adjust( 'Advanced Shadow Options', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
-
-			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
-			cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
-			// Adjust Adv. Shadow Options - hover
-			selectAdvancedShadowHoverState()
-			cy.adjust( 'Horizontal Offset', 7, { parentSelector } )
-			selectAdvancedShadowHoverState()
-			cy.adjust( 'Vertical Offset', 31, { parentSelector } )
-			selectAdvancedShadowHoverState()
-			cy.adjust( 'Blur', 71, { parentSelector } )
-			selectAdvancedShadowHoverState()
-			cy.adjust( 'Shadow Color', '#0f9294', { parentSelector } )
-			selectAdvancedShadowHoverState()
-			cy.adjust( 'Shadow Opacity', 0.4, { parentSelector } ).assertComputedStyle( {
-				'.stk-block-separator svg:hover': {
-					'filter': 'drop-shadow(7px 31px 71px rgba(15, 146, 148, 0.4))',
 				},
 			} )
 
