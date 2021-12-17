@@ -5,6 +5,7 @@ import {
 	assertBlockExist, blockErrorTest, checkJsFiles, assertInnerBlocks, responsiveAssertHelper, Block, Advanced,
 } from '~stackable-e2e/helpers'
 
+const [ desktopStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -14,6 +15,7 @@ export {
 	innerBlocksExist,
 	loadedFiles,
 	assertIcon,
+	desktopStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -47,6 +49,31 @@ function assertIcon() {
 		cy.newPage()
 		cy.addBlock( 'stackable/video-popup' )
 		cy.get( '.stk-block-video-popup .fa-play' ).should( 'exist' )
+	} )
+}
+
+function styleTab( viewport, desktopOnly ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/video-popup' ).asBlock( 'videoPopupBlock', { isStatic: true } )
+		cy.openInspector( 'stackable/video-popup', 'Style' )
+		cy.savePost()
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@videoPopupBlock' ) )
+
+	it( 'should assert General panel in Style tab', () => {
+		desktopOnly( () => {
+			cy.collapse( 'General' )
+			cy.setBlockAttribute( {
+				videoLink: Cypress.env( 'DUMMY_VIDEO_URL' ),
+			} )
+			cy.collapse( 'General' )
+			cy.adjust( 'Popup Option #2: Video URL', Cypress.env( 'DUMMY_VIDEO_URL' ) ).assertHtmlAttribute( '.stk-block-video-popup', 'data-video', Cypress.env( 'DUMMY_VIDEO_URL' ), { assertBackend: false } )
+			// Dynamic Content button should be present
+			cy.getBaseControl( '.components-base-control:contains(Popup Option #2: Video URL)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+		} )
 	} )
 }
 
