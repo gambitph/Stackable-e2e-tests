@@ -2,9 +2,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced, assertTypographyModule,
 } from '~stackable-e2e/helpers'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -13,6 +14,9 @@ export {
 	blockError,
 	typeContent,
 	pressBackspace,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -55,6 +59,26 @@ function pressBackspace() {
 				block === 'stackable/card',
 				`Expected that the block is deleted and focus is on 'stackable/card'. Found: '${ block }'`
 			)
+		} )
+	} )
+}
+
+function styleTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/subtitle' ).asBlock( 'subtitleBlock', { isStatic: true } )
+		cy.typeBlock( 'stackable/subtitle', '.stk-block-subtitle__text', 'Subtitle', 0 )
+		cy.openInspector( 'stackable/subtitle', 'Style' )
+		cy.savePost()
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@subtitleBlock' ) )
+
+	it( 'should assert Typography panel in Style tab', () => {
+		assertTypographyModule( {
+			selector: '.stk-block-subtitle__text',
+			viewport,
 		} )
 	} )
 }
