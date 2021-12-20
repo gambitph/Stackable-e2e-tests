@@ -3,9 +3,10 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced, assertTypographyModule,
 } from '~stackable-e2e/helpers'
 
+const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
 const [ desktopBlock, tabletBlock, mobileBlock ] = responsiveAssertHelper( blockTab, { tab: 'Block', disableItAssertion: true } )
 const [ desktopAdvanced, tabletAdvanced, mobileAdvanced ] = responsiveAssertHelper( advancedTab, { tab: 'Advanced', disableItAssertion: true } )
 
@@ -16,6 +17,9 @@ export {
 	pressEnterKey,
 	pressBackspace,
 	addBlocks,
+	desktopStyle,
+	tabletStyle,
+	mobileStyle,
 	desktopBlock,
 	tabletBlock,
 	mobileBlock,
@@ -110,6 +114,36 @@ function addBlocks() {
 			.click( { force: true } )
 		selectSkip()
 		cy.get( '.stk-block-feature-grid' ).should( 'exist' )
+	} )
+}
+
+function styleTab( viewport ) {
+	beforeEach( () => {
+		cy.setupWP()
+		cy.newPage()
+		cy.addBlock( 'stackable/text' ).asBlock( 'textBlock', { isStatic: true } )
+		cy.typeBlock( 'stackable/text', '.stk-block-text__text', 'Powering the next generation of web design. Have the confidence to easily build the fastest websites using a new page building experience for Gutenberg.', 0 )
+		cy.openInspector( 'stackable/text', 'Style' )
+	} )
+
+	afterEach( () => cy.assertFrontendStyles( '@textBlock' ) )
+
+	it( 'should assert General panel in Style tab', () => {
+		cy.collapse( 'General' )
+		cy.adjust( 'Columns', 3, { viewport } )
+		cy.adjust( 'Column Gap', 37, { viewport } ).assertComputedStyle( {
+			'.stk-block-text': {
+				'column-count': '3',
+				'column-gap': '37px',
+			},
+		} )
+	} )
+
+	it( 'should assert Typography panel in Style tab', () => {
+		assertTypographyModule( {
+			selector: '.stk-block-text__text',
+			viewport,
+		} )
 	} )
 }
 
