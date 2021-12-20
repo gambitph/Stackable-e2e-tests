@@ -11,8 +11,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3]
-        total-machines: [3]
+        containers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        total-machines: [20]
         wp-versions: ['5.6.5']
 
     steps:
@@ -89,7 +89,7 @@ jobs:
     - name: Run Test Suite
       uses: cypress-io/github-action@v2
       with:
-        command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec=cypress/integration/v3/blocks/testimonial/*style.spec.js --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=1 --config=baseUrl=http://localhost:8889
+        command: npm run cy:run:parallel -- --machine-number=${{ matrix.containers }} --total-machines=${{ matrix.total-machines }} --spec=cypress/integration/v3/**/*.spec.js --browser=chrome --env=STACKABLE_PREMIUM_CODE=${{ secrets.STACKABLE_PREMIUM_CODE }},GITHUB_ACTIONS=1 --config=baseUrl=http://localhost:8889
 
     - name: Upload E2E Test Results
       uses: actions/upload-artifact@v2
