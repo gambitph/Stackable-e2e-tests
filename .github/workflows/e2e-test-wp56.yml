@@ -20,12 +20,12 @@ jobs:
     - uses: actions/checkout@v2 # Checkout the Stackable Free repo.
       with:
         repository: 'gambitph/Stackable'
-        ref: 'master'
+        ref: 'develop'
         path: 'Stackable'
     - uses: actions/checkout@v2 # Checkout the Stackable Premium repo.
       with:
         repository: 'bfintal/Stackable-Premium'
-        ref: 'master'
+        ref: 'develop'
         path: 'Stackable/pro__premium_only'
         token: '${{ secrets.ACCESS_KEY }}'
 
