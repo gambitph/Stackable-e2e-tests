@@ -37,15 +37,10 @@ class BlockModule extends Module {
 		if ( enableContentAlignment ) {
 			const textAligns = [ 'left', 'center', 'right' ]
 			textAligns.forEach( align => {
-				const alignValue = align === 'left' ? 'start'
-					: align === 'right' ? 'end'
-						: align
 				const responsiveClass = viewport === 'Desktop' ? '' : `-${ lowerCase( viewport ) }`
 
 				if ( ! alignmentSelectorFrontend ) {
 					cy.adjust( 'Content Alignment', align, { viewport } )
-						.assertComputedStyle( { [ alignmentSelector ]: { 'text-align': alignValue } } )
-					cy.get( '.block-editor-block-list__block.is-selected' )
 						.assertClassName( alignmentSelector, `has-text-align-${ align }${ responsiveClass }` )
 				} else {
 					cy.adjust( 'Content Alignment', align, { viewport } )
