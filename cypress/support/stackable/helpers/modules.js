@@ -605,7 +605,6 @@ export const assertContainerSizeSpacing = ( options = {}, assertOptions = {} ) =
 export const assertContainerBordersShadow = ( options = {}, assertOptions = {} ) => {
 	const {
 		viewport = 'Desktop',
-		isStaticBlock = false,
 	} = options
 
 	cy.collapse( 'Container Borders & Shadow' )
@@ -646,50 +645,53 @@ export const assertContainerBordersShadow = ( options = {}, assertOptions = {} )
 				cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
 				cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
 
-				// Adjust Adv. Shadow Options - normal
 				const parentSelector = '.components-popover__content .stk-control-content'
-				// Press the cog symbol to open Shadow settings
-				cy.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
-				// Adv Shadow Options - normal
-				cy.adjust( 'Horizontal Offset', 8, { parentSelector, state: 'normal' } )
-				cy.adjust( 'Vertical Offset', 11, { parentSelector, state: 'normal' } )
-				cy.adjust( 'Blur', 25, { parentSelector, state: 'normal' } )
-				cy.adjust( 'Shadow Spread', 5, { parentSelector, state: 'normal' } )
-				cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector, state: 'normal' } )
-				cy.adjust( 'Shadow Opacity', 0.6, { parentSelector, state: 'normal' } ).assertComputedStyle( {
+
+				cy.adjust( 'Shadow / Outline', {
+					'Horizontal Offset': { value: 8, parentSelector },
+					'Vertical Offset': { value: 11, parentSelector },
+					'Blur': { value: 25, parentSelector },
+					'Shadow Spread': { value: 5, parentSelector },
+					'Shadow Color': { value: '#2a8a62', parentSelector },
+					'Shadow Opacity': { value: 0.6, parentSelector },
+				}, { buttonLabel: 'Shadow Settings' } ).assertComputedStyle( {
 					[ `.stk-${ blockId }-container` ]: {
 						'box-shadow': '8px 11px 25px 5px rgba(42, 138, 98, 0.6)',
 					},
 				} )
 
 				cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
-				if ( isStaticBlock ) {
-					// Press the shadow settings popover
-					cy.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
-				} else {
-					cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
-				}
+				cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
 
-				const selectAdvancedShadowHoverState = () => cy
-					.adjust( 'Advanced Shadow Options', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
-
-				// Adjust Adv. Shadow Options - hover
-				selectAdvancedShadowHoverState()
-				cy.adjust( 'Horizontal Offset', 7, { parentSelector } )
-				selectAdvancedShadowHoverState()
-				cy.adjust( 'Vertical Offset', 31, { parentSelector } )
-				selectAdvancedShadowHoverState()
-				cy.adjust( 'Blur', 71, { parentSelector } )
-				selectAdvancedShadowHoverState()
-				cy.adjust( 'Shadow Spread', 26, { parentSelector } )
-				selectAdvancedShadowHoverState()
-				cy.adjust( 'Shadow Color', '#0f9294', { parentSelector } )
-				selectAdvancedShadowHoverState()
-				cy.adjust( 'Shadow Opacity', 0.4, { parentSelector } ).assertComputedStyle( {
-					[ `.stk-${ blockId }-container:hover` ]: {
-						'box-shadow': '7px 31px 71px 26px rgba(15, 146, 148, 0.4)',
-					},
-				} )
+				cy.adjust( 'Shadow / Outline', {
+					'Advanced Shadow Options': { value: null, state: 'hover' },
+					'Horizontal Offset': { value: 7, parentSelector },
+				}, { buttonLabel: 'Shadow Settings' } )
+				cy.adjust( 'Shadow / Outline', {
+					'Advanced Shadow Options': { value: null, state: 'hover' },
+					'Vertical Offset': { value: 31, parentSelector },
+				}, { buttonLabel: 'Shadow Settings' } )
+				cy.adjust( 'Shadow / Outline', {
+					'Advanced Shadow Options': { value: null, state: 'hover' },
+					'Blur': { value: 71, parentSelector },
+				}, { buttonLabel: 'Shadow Settings' } )
+				cy.adjust( 'Shadow / Outline', {
+					'Advanced Shadow Options': { value: null, state: 'hover' },
+					'Shadow Spread': { value: 26, parentSelector },
+				}, { buttonLabel: 'Shadow Settings' } )
+				cy.adjust( 'Shadow / Outline', {
+					'Advanced Shadow Options': { value: null, state: 'hover' },
+					'Shadow Color': { value: '#0f9294', parentSelector },
+				}, { buttonLabel: 'Shadow Settings' } )
+				cy.adjust( 'Shadow / Outline', {
+					'Advanced Shadow Options': { value: null, state: 'hover' },
+					'Shadow Opacity': { value: 0.4, parentSelector },
+				}, { buttonLabel: 'Shadow Settings' } )
+					.assertComputedStyle( {
+						[ `.stk-${ blockId }-container:hover` ]: {
+							'box-shadow': '7px 31px 71px 26px rgba(15, 146, 148, 0.4)',
+						},
+					} )
 			}
 
 			cy.adjust( 'Borders', 'solid' )

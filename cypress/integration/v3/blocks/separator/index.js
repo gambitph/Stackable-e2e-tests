@@ -82,15 +82,15 @@ function styleTab( viewport, desktopOnly ) {
 			} )
 			cy.resetStyle( 'Shadow / Outline' )
 
-			// Adjust Adv. Shadow Options - normal
 			const parentSelector = '.components-popover__content .stk-control-content'
-			// Press the cog symbol to open Shadow settings
-			cy.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
-			cy.adjust( 'Horizontal Offset', 8, { parentSelector } )
-			cy.adjust( 'Vertical Offset', 11, { parentSelector } )
-			cy.adjust( 'Blur', 25, { parentSelector } )
-			cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector } )
-			cy.adjust( 'Shadow Opacity', 0.6, { parentSelector } ).assertComputedStyle( {
+
+			cy.adjust( 'Shadow / Outline', {
+				'Horizontal Offset': { value: 8, parentSelector },
+				'Vertical Offset': { value: 11, parentSelector },
+				'Blur': { value: 25, parentSelector },
+				'Shadow Color': { value: '#2a8a62', parentSelector },
+				'Shadow Opacity': { value: 0.6, parentSelector },
+			}, { buttonLabel: 'Shadow Settings' } ).assertComputedStyle( {
 				'.stk-block-separator svg': {
 					'filter': 'drop-shadow(8px 11px 25px rgba(42, 138, 98, 0.6))',
 				},

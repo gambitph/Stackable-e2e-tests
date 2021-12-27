@@ -213,7 +213,6 @@ function styleTab( viewport, desktopOnly ) {
 			shadowEditorSelector: '.stk-block-posts__item .stk-img-wrapper .stk-img-resizer-wrapper',
 			shadowFrontendSelector: '.stk-block-posts__item .stk-img-wrapper',
 			enableBorderRadius: true,
-			isStaticBlock: true,
 		} )
 		desktopOnly( () => {
 			cy.adjust( 'Add post links to images', true ).assertClassName( '.stk-block-posts__item article > a', 'stk-block-posts__image-link', { assertBackend: false } ) // image-link class should be present
