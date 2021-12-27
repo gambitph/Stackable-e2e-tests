@@ -80,6 +80,7 @@ function styleTab( viewport, desktopOnly ) {
 					'filter': 'drop-shadow(0px 2px 20px rgba(153, 153, 153, 0.2))',
 				},
 			} )
+			cy.resetStyle( 'Shadow / Outline' )
 
 			const parentSelector = '.components-popover__content .stk-control-content'
 
