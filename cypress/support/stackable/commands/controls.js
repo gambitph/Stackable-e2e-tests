@@ -130,6 +130,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		'.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
 		'.react-autosuggest__input': 'suggestionControl',
 		'.ugb-button-icon-control__wrapper': 'popoverControl',
+		'.stk-shadow-control__more-button': 'popoverControl',
 		'.ugb-columns-width-control': 'columnControl',
 		'.ugb-design-control': 'designControl',
 		'.ugb-icon-control': 'iconControl',
@@ -247,13 +248,15 @@ function popoverControl( name, value = {}, options = {} ) {
 		isInPopover = false,
 		parentSelector,
 		mainComponentSelector,
+		buttonLabel = 'Edit',
+		controlHandler = 'rangeControl',
 	} = options
 
 	const clickPopoverButton = () => {
 		cy.getBaseControl( name, {
 			isInPopover, parentSelector, mainComponentSelector,
 		} )
-			.find( 'button[aria-label="Edit"]' )
+			.find( `button[aria-label="${ buttonLabel }"]` )
 			.click( { force: true } )
 	}
 
@@ -274,10 +277,11 @@ function popoverControl( name, value = {}, options = {} ) {
 					value: childValue = '',
 					beforeAdjust = () => {},
 					state = '',
+					parentSelector,
 				} = value[ key ]
 
 				cy.adjust( key, childValue === '' ? value[ key ] : childValue, {
-					viewport, unit, isInPopover: true, beforeAdjust, state,
+					viewport, unit, isInPopover: true, beforeAdjust, state, parentSelector,
 				} )
 			} else {
 				cy.adjust( key, value[ key ], { isInPopover: true } )
@@ -303,6 +307,9 @@ function popoverControl( name, value = {}, options = {} ) {
 						.click( { force: true } )
 				}
 			} )
+	} else {
+		// Redirect to the correct control handler.
+		cy[ controlHandler ]( name, value, options )
 	}
 }
 
