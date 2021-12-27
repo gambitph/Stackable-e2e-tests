@@ -361,17 +361,6 @@ class AdvancedModule extends Module {
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
 
-		cy.adjust( 'Opacity', 0.6, { viewport, state: 'hover' } ).assertComputedStyle( {
-			[ `${ positionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }:hover` ]: {
-				'opacity': '0.6',
-			},
-		}, { assertFrontend: false } )
-		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			[ `${ MAIN_SELECTOR }:hover` ]: {
-				'opacity': '0.6',
-			},
-		}, { assertBackend: false } )
-
 		cy.adjust( 'Opacity', 0.8, { viewport, state: 'normal' } ).assertComputedStyle( {
 			[ `${ positionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }` ]: {
 				'opacity': '0.8',
@@ -380,6 +369,17 @@ class AdvancedModule extends Module {
 		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 			[ MAIN_SELECTOR ]: {
 				'opacity': '0.8',
+			},
+		}, { assertBackend: false } )
+
+		cy.adjust( 'Opacity', 0.6, { viewport, state: 'hover' } ).assertComputedStyle( {
+			[ `${ positionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }:hover` ]: {
+				'opacity': '0.6',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+			[ `${ MAIN_SELECTOR }:hover` ]: {
+				'opacity': '0.6',
 			},
 		}, { assertBackend: false } )
 
