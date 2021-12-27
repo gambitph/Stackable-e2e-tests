@@ -1,9 +1,9 @@
 name: e2e-test-latest
 on:
   push:
-    branches: [ master ]
+    branches: [ master ] # Run this when there's a commit push to master
   pull_request:
-    branches: [ master ]
+    branches: [ master ] # Run this for new PRs for master
 
 jobs:
   test:
