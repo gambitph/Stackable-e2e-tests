@@ -892,6 +892,9 @@ export function assertImageModule( options = {} ) {
 			}, { assertBackend: false } )
 
 			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+			// If a block is static, it always goes to the frontend when asserting
+			// Upon returning to the backend, the advanced shadow settings popup is already closed
+			// We need to open this again to adjust the Advanced Shadow options
 			if ( isStaticBlock ) {
 				pressShadowSettings()
 			} else {
