@@ -551,6 +551,9 @@ export const assertContainerSizeSpacing = ( options = {}, assertOptions = {} ) =
 		},
 	}, assertOptions )
 
+	cy.resetStyle( 'Paddings', { viewport, state: 'hover' } )
+	cy.resetStyle( 'Paddings', { viewport, state: 'normal' } )
+
 	// Unit - em
 	cy.adjust( 'Paddings', [ 6, 14, 24, 3 ], {
 		viewport, state: 'normal', unit: 'em',
@@ -572,6 +575,9 @@ export const assertContainerSizeSpacing = ( options = {}, assertOptions = {} ) =
 			'padding-left': '4em',
 		},
 	}, assertOptions )
+
+	cy.resetStyle( 'Paddings', { viewport, state: 'hover' } )
+	cy.resetStyle( 'Paddings', { viewport, state: 'normal' } )
 
 	// Unit - %
 	cy.adjust( 'Paddings', [ 38, 26, 45, 8 ], {

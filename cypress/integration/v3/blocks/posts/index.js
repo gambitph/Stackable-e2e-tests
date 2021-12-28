@@ -421,6 +421,7 @@ function advancedTab( viewport ) {
 		blockName: 'stackable/posts',
 		positionEditorSelector: '.stk-block-posts__item > .stk-container',
 		positionFrontendSelector: '.stk-block-posts__item > .stk-container',
+		assertPositionUnits: false,
 	} )
 }
 
