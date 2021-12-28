@@ -54,7 +54,7 @@ export function changeUnit( options = {} ) {
 		unit = '',
 		name = '',
 	} = options
-	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
+	if ( ! name.toString().match( /^(\.|#|:)/g ) && ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
 
@@ -96,7 +96,7 @@ export function changeControlViewport( options = {} ) {
 		viewport = 'Desktop',
 		name = '',
 	} = options
-	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
+	if ( ! name.toString().match( /^(\.|#|:)/g ) && ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
 
@@ -179,33 +179,24 @@ export function changeControlState( options = {} ) {
 		state = 'normal',
 		name = '',
 	} = options
-	if ( ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
+	if ( ! name.toString().match( /^(\.|#|:)/g ) && ! elementContainsText( Cypress.$( '.components-base-control' ), name ) ) {
 		return
 	}
 
-	let currentState
 	cy.wp().then( wp => {
-		currentState = wp.data.select( 'stackable/hover-state' ).getHoverState()
-	} )
-
-	const selector = () => cy.getBaseControl( name, options )
-	selector()
-		.then( $baseControl => {
-			if ( $baseControl.find( `.stk-control-label__toggles .stk-label-unit-toggle button[data-value="${ state }"]` ).length ) {
-				if ( currentState !== state ) {
-					// Change the state only if the selected state is not the active state.
+		if ( wp.data.select( 'stackable/hover-state' ).getHoverState() === state ) {
+			return null
+		}
+		const selector = () => cy.getBaseControl( name, options )
+		selector()
+			.then( $baseControl => {
+				if ( $baseControl.find( '.stk-control-label__toggles .stk-label-unit-toggle button[data-value="normal"]' ).length ) {
+					// Change the state only if the selected is not the active.
 					selector().find( '.stk-control-label__toggles .stk-label-unit-toggle button.is-active' ).click( { force: true, multiple: true } )
 					selector()
-						.find( '.stk-control-label__toggles .stk-label-unit-toggle' )
-						.invoke( 'attr', 'aria-expanded' )
-						.then( ariaExpanded => {
-							if ( ariaExpanded === 'true' ) {
-								selector()
-									.find( `.stk-control-label__toggles .stk-label-unit-toggle button[data-value="${ state }"]` )
-									.click( { force: true, log: false } )
-							}
-						} )
+						.find( `.stk-label-unit-toggle__wrapper button[data-value="${ state }"]` )
+						.click( { force: true } )
 				}
-			}
-		} )
+			} )
+	} )
 }

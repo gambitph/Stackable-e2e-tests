@@ -11,6 +11,7 @@ import {
 	blockError,
 	innerBlocksExist,
 	loadedFiles,
+	assertIcon,
 } from '.'
 
 describe( 'Video Popup Block ( Other Tests )', registerTests( [
@@ -18,4 +19,5 @@ describe( 'Video Popup Block ( Other Tests )', registerTests( [
 	blockError,
 	innerBlocksExist,
 	loadedFiles,
+	assertIcon,
 ] ) )

@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	first, uniqueId,
+	first, uniqueId, last,
 } from 'lodash'
 
 /**
@@ -41,37 +41,71 @@ export function addBlock( blockName = 'ugb/accordion', options = {} ) {
 		variation = '',
 	} = options
 
-	cy.wp().then( wp => {
-		return new Cypress.Promise( resolve => {
-			const block = wp.blocks.createBlock( blockName )
-			wp.data.dispatch( 'core/editor' ).insertBlock( block )
-				.then( dispatchResolver( () => {
-					const className = wp.data.select( 'core/block-editor' ).getBlock( block.clientId ).attributes.className
+	let clientIdCache
+	const addInnerBlockClasses = clientId => {
+		cy.wp().then( wp => {
+			if ( ! clientId && clientIdCache ) {
+				clientId = clientIdCache
+			}
+
+			if ( ! clientId ) {
+				const lastBlock = last( wp.data.select( 'core/block-editor' ).getBlocks() )
+				clientId = lastBlock ? lastBlock.clientId : clientId
+			}
+
+			// If there are innerBlocks, add unique classes.
+			const newlyAddedBlock = wp.data.select( 'core/block-editor' ).getBlock( clientId )
+
+			if ( newlyAddedBlock.innerBlocks.length ) {
+				newlyAddedBlock.innerBlocks.forEach( ( { clientId } ) => {
+					const innerBlockClassName = wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes.className
+					// TODO: Use updateBlockAttributes to update multiple blocks if gutenberg supports it already.
 					// Only append the e2e className if there is a default value.
-					wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( block.clientId, { className: `${ className ? className + ' ' : '' }e2etest-block-${ uniqueId() }` } )
+					wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `${ innerBlockClassName ? innerBlockClassName + ' ' : '' }e2etest-block-${ uniqueId() }` } )
+				} )
+			}
 
-					// If there are innerBlocks, add unique classes.
-					const newlyAddedBlock = wp.data.select( 'core/block-editor' ).getBlock( block.clientId )
-
-					if ( newlyAddedBlock.innerBlocks.length ) {
-						newlyAddedBlock.innerBlocks.forEach( ( { clientId } ) => {
-							const innerBlockClassName = wp.data.select( 'core/block-editor' ).getBlock( clientId ).attributes.className
-							// TODO: Use updateBlockAttributes to update multiple blocks if gutenberg supports it already.
-							// Only append the e2e className if there is a default value.
-							wp.data.dispatch( 'core/block-editor' ).updateBlockAttributes( clientId, { className: `${ innerBlockClassName ? innerBlockClassName + ' ' : '' }e2etest-block-${ uniqueId() }` } )
-						} )
-					}
-
-					resolve( newlyAddedBlock )
-				} ) )
+			clientIdCache = clientId
+			return newlyAddedBlock
 		} )
-	} )
-	if ( variation ) {
-		cy.get( '.block-editor-block-list__block.is-selected' )
-			.find( '.block-editor-block-variation-picker' )
-			.find( `button[aria-label="${ variation }"]` )
-			.click( { force: true } )
 	}
+
+	cy.wp().then( wp => {
+		const block = wp.blocks.createBlock( blockName )
+		new Cypress.Promise( resolve => {
+			wp.data.dispatch( 'core/editor' ).insertBlock( block )
+				.then( dispatchResolver( resolve ) )
+		} )
+
+		if ( variation ) {
+			cy.get( '.block-editor-block-list__block.is-selected' )
+				.find( '.block-editor-block-variation-picker' )
+				.find( `button[aria-label="${ variation }"]` )
+				.click( { force: true } )
+		}
+	} )
+
+	cy.wp().then( wp => {
+		const { clientId: newBlockId, attributes: { className } } = last( wp.data.select( 'core/block-editor' ).getBlocks() )
+
+		new Cypress.Promise( resolve => {
+			wp.data.dispatch( 'core/block-editor' ).selectBlock( newBlockId ).then( dispatchResolver( resolve ) )
+		} )
+
+		addInnerBlockClasses( newBlockId )
+
+		// Only append the e2e className if there is a default value.
+
+		cy.wp().then( newWp => {
+			new Cypress.Promise( resolve => {
+				newWp.data.dispatch( 'core/block-editor' )
+					.updateBlockAttributes( newBlockId, { className: `${ className ? className + ' ' : '' }e2etest-block-${ uniqueId() }` } )
+					.then( dispatchResolver( resolve ) )
+			} )
+		} )
+
+		return cy.get( '[data-block].is-selected' )
+	} )
 }
 
 /**
@@ -84,7 +118,7 @@ export function selectBlock( subject, selector ) {
 	if ( selector === '' ) {
 		selector = undefined
 	}
-	cy.wp().then( wp => {
+	return cy.wp().then( wp => {
 		cy.get( 'body' ).then( $body => {
 			return new Cypress.Promise( resolve => {
 				const willSelectBlock = getBlocksRecursive( wp.data.select( 'core/block-editor' ).getBlocks() ).filter( block => block.name === subject )
@@ -100,14 +134,14 @@ export function selectBlock( subject, selector ) {
 							const clientId = blockElement.data( 'block' )
 							wp.data.dispatch( 'core/block-editor' )
 								.selectBlock( clientId )
-								.then( dispatchResolver( () => resolve( $body.find( `.wp-block[data-block="${ clientId }"]` ) ) ) )
+								.then( dispatchResolver( () => resolve( $body.find( `[data-block="${ clientId }"]` ) ) ) )
 						} )
 					}
 
 					willSelectBlock.forEach( ( { clientId } ) => {
-						if ( ! foundClientId && $body.find( `.wp-block[data-block="${ clientId }"]:contains(${ selector })` ).length ) {
+						if ( ! foundClientId && $body.find( `[data-block="${ clientId }"]:contains(${ selector })` ).length ) {
 							foundClientId = clientId
-							resolveCallback = $body.find( `.wp-block[data-block="${ clientId }"]:contains(${ selector })` )
+							resolveCallback = $body.find( `[data-block="${ clientId }"]:contains(${ selector })` )
 						}
 					} )
 
@@ -117,7 +151,7 @@ export function selectBlock( subject, selector ) {
 				} else if ( typeof selector === 'number' ) {
 					wp.data.dispatch( 'core/block-editor' )
 						.selectBlock( willSelectBlock[ selector ].clientId )
-						.then( dispatchResolver( () => resolve( $body.find( `.wp-block[data-block="${ willSelectBlock[ selector ].clientId }"]` ) ) ) )
+						.then( dispatchResolver( () => resolve( $body.find( `[data-block="${ willSelectBlock[ selector ].clientId }"]` ) ) ) )
 				} else if ( typeof selector === 'object' ) {
 					const {
 						clientId,
@@ -129,7 +163,7 @@ export function selectBlock( subject, selector ) {
 				} else {
 					wp.data.dispatch( 'core/block-editor' )
 						.selectBlock( ( first( willSelectBlock ) || {} ).clientId )
-						.then( dispatchResolver( () => resolve( $body.find( `.wp-block[data-block="${ ( first( willSelectBlock ) || {} ).clientId }"]` ) ) ) )
+						.then( dispatchResolver( () => resolve( $body.find( `[data-block="${ ( first( willSelectBlock ) || {} ).clientId }"]` ) ) ) )
 				}
 			} )
 		} )
@@ -189,14 +223,34 @@ export function deleteBlock( subject, selector ) {
  * @param {string} blockName
  * @param {string} blockToAdd
  * @param {string | number | Object} customSelector
+ * @param {Object} options
  */
-export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/accordion', customSelector ) {
+export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/accordion', customSelector, options = {} ) {
+	const {
+		variation = '',
+	} = options
+
 	cy.selectBlock( blockName, customSelector )
 	cy.wp().then( wp => {
 		return new Cypress.Promise( resolve => {
 			const selectedBlockClientId = wp.data.select( 'core/block-editor' ).getSelectedBlockClientId()
 			const newBlock = wp.blocks.createBlock( blockToAdd, { className: `e2etest-block-${ uniqueId() }` } )
 			wp.data.dispatch( 'core/editor' ).insertBlock( newBlock, 0, selectedBlockClientId ).then( dispatchResolver( resolve ) )
+
+			if ( variation ) {
+				cy.get( '.block-editor-block-list__block.is-selected' )
+					.find( '.block-editor-block-variation-picker' )
+					.find( `button[aria-label="${ variation }"]` )
+					.click( { force: true } )
+			} else {
+				cy.get( '.block-editor-block-list__layout' ).then( $editor => {
+					if ( $editor.find( '.block-editor-block-variation-picker' ).length ) {
+						cy.get( '.block-editor-block-variation-picker' )
+							.find( '.block-editor-block-variation-picker__skip button' )
+							.click( { force: true } )
+					}
+				} )
+			}
 		} )
 	} )
 }
