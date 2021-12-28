@@ -13,6 +13,7 @@ Cypress.Commands.add( 'colorControlClear', colorControlClear )
 Cypress.Commands.add( 'rangeControlReset', rangeControlReset )
 Cypress.Commands.add( 'dateTimeControlReset', dateTimeControlReset )
 Cypress.Commands.add( 'urlInputControlReset', urlInputControlReset )
+Cypress.Commands.add( 'dropdownControlReset', dropdownControlReset )
 Cypress.Commands.add( 'textControlReset', textControlReset )
 Cypress.Commands.add( 'dropdownControl', dropdownControl )
 Cypress.Commands.add( 'colorControl', colorControl )
@@ -117,6 +118,34 @@ function dateTimeControlReset( name, options = {} ) {
  * @param {Object} options
  */
 function urlInputControlReset( name, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+		mainComponentSelector,
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} )
+
+	beforeAdjust( name, null, options )
+	selector()
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+		.click( { force: true, multiple: true } )
+}
+
+/**
+ * Command for resetting the dropdown control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function dropdownControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
@@ -524,13 +553,22 @@ function radioControl( name, value, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
 		mainComponentSelector,
 	} = options
 
-	beforeAdjust( name, value, options )
-	cy.getBaseControl( name, { isInPopover, mainComponentSelector } )
-		.find( `.components-radio-control__option:contains(${ value }) input` )
-		.click( { force: true } )
+	if ( value ) {
+		beforeAdjust( name, value, options )
+		cy.getBaseControl( name, {
+			isInPopover,
+			parentSelector,
+			supportedDelimiter,
+			mainComponentSelector,
+		} )
+			.find( `.components-radio-control__option:contains(${ name }) input` )
+			.click( { force: true } )
+	}
 }
 
 /**
@@ -558,6 +596,14 @@ function formTokenControl( name, value, options = {} ) {
 
 	beforeAdjust( name, value, options )
 	value.forEach( val => {
+		if ( val.endsWith( ',' ) ) {
+			// Just type the string if the last character is a comma
+			selector()
+				.find( '.components-form-token-field__input' )
+				.click( { force: true } )
+				.type( val, { force: true } )
+			return
+		}
 		// Type the string and then choose this from the suggestions.
 		selector()
 			.find( '.components-form-token-field__input' )
@@ -689,6 +735,7 @@ export function adjust( name, value, options ) {
 		mainComponentSelector = '.components-base-control',
 		// if the option has no label, pass custom regex to find the control
 		supportedDelimiter = [],
+		afterAdjust = () => {},
 	} = options
 
 	// Handle options with no label
@@ -749,6 +796,8 @@ export function adjust( name, value, options ) {
 			cy[ combinedControlHandlers[ commandClassKey ] ]( name, value, omit( options, 'customOptions' ) )
 		} )
 
+	afterAdjust( name, value, options )
+
 	// Always return the selected block which will be used in functions that require chained wp-block elements.
 	return cy.get( '.block-editor-block-list__block.is-selected' )
 }
@@ -764,13 +813,17 @@ export function resetStyle( name, options = {} ) {
 		// overwrite selector options.
 		customOptions = {},
 		// overwrite parent element selector used to locate option labels.
-		parentSelector = '.components-panel__body > .components-base-control',
+		parentSelector = '.components-panel__body',
+		// overwrite the main component selector of the control we're adjusting
+		mainComponentSelector = '.components-base-control',
 		// if the option has no label, pass custom regex to find the control
+		supportedDelimiter = [],
 	} = options
+
 	const baseControlSelector = () => cy
-		.get( parentSelector )
-		.contains( containsRegExp( name ) )
-		.closest( parentSelector )
+		.getBaseControl( name, {
+			parentSelector, supportedDelimiter, mainComponentSelector,
+		} )
 
 	/**
 	 * Specific selector to trigger one
@@ -783,6 +836,7 @@ export function resetStyle( name, options = {} ) {
 		'.block-editor-color-gradient-control': 'colorControlClear',
 		'.components-datetime': 'dateTimeControlReset',
 		'.block-editor-link-control': 'urlInputControlReset',
+		'.components-select-control__input': 'dropdownControlReset',
 		'.components-text-control__input': 'textControlReset',
 	}
 

@@ -4,7 +4,7 @@
 import {
 	kebabCase, keys, first,
 } from 'lodash'
-import { containsRegExp } from '~common/util'
+import { containsRegExp, dispatchResolver } from '~common/util'
 
 /**
  * Internal dependencies
@@ -38,6 +38,7 @@ Cypress.Commands.add( 'popoverControlReset', popoverControlReset )
 Cypress.Commands.add( 'focalPointControlReset', focalPointControlReset )
 Cypress.Commands.add( 'stkDateTimeControlReset', stkDateTimeControlReset )
 Cypress.Commands.add( 'imageControlReset', imageControlReset )
+Cypress.Commands.add( 'toolbarControlReset', toolbarControlReset )
 
 // Adjust styles
 Cypress.Commands.add( 'adjustLayout', adjustLayout )
@@ -85,8 +86,33 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 	optionsToPass.beforeAdjust = ( name, value, _options ) => {
 		const options = Object.assign( _options, { name, value } )
 		changeControlViewport( options )
-		changeUnit( options )
 		changeControlState( options )
+		changeUnit( options )
+	}
+
+	// Function to call after adjusting the options
+	optionsToPass.afterAdjust = () => {
+		// Always go back to the normal state after adjusting the options to support direct assertion.
+		cy.wp().then( wp => {
+			const hoverState = wp.data.select( 'stackable/hover-state' ).getHoverState()
+			 if ( hoverState !== 'normal' ) {
+				new Cypress.Promise( resolve => {
+					wp.data.dispatch( 'stackable/hover-state' ).updateHoverState( 'normal' ).then( dispatchResolver( resolve ) )
+				} )
+			}
+			if ( hoverState !== 'normal' ) {
+				cy.wait( 300 )
+			}
+		} )
+	}
+
+	// Supports null values in cy.adjust to change the viewport, unit, and hover state
+	if ( args[ 1 ] === null ) {
+		const options = Object.assign( optionsToPass, { name: label, value: args[ 1 ] } )
+		changeControlViewport( options )
+		changeControlState( options )
+		changeUnit( options )
+		return cy.get( '.block-editor-block-list__block.is-selected' )
 	}
 
 	// Handle options with no label
@@ -100,9 +126,11 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		// Pass our own adjust controls.
 		'.ugb-icon-control__wrapper': 'iconControl',
 		'.ugb-four-range-control': 'fourRangeControl',
+		'.ugb-four-range-control__range': 'fourRangeControl',
 		'.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
 		'.react-autosuggest__input': 'suggestionControl',
 		'.ugb-button-icon-control__wrapper': 'popoverControl',
+		'.stk-shadow-control__more-button': 'popoverControl',
 		'.ugb-columns-width-control': 'columnControl',
 		'.ugb-design-control': 'designControl',
 		'.ugb-icon-control': 'iconControl',
@@ -131,21 +159,23 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 	optionsToPass.beforeAdjust = ( name, value, _options ) => {
 		const options = Object.assign( _options, { name, value } )
 		changeControlViewport( options )
-		changeUnit( options )
 		changeControlState( options )
+		changeUnit( options )
 	}
 
 	const customOptions = {
 		// Pass our own reset controls.
-		 'ugb-button-icon-control': 'popoverControlReset',
-		 'ugb-advanced-autosuggest-control': 'suggestionControlClear',
-		 'ugb-four-range-control': 'fourRangeControlReset',
-		 '.ugb-four-range-control__lock': 'fourRangeControl', // TODO: Find a better selector
-		 'ugb-icon-control': 'iconControlReset',
+		 '.ugb-button-icon-control': 'popoverControlReset',
+		 '.ugb-advanced-autosuggest-control': 'suggestionControlClear',
+		 '.ugb-four-range-control': 'fourRangeControlReset',
+		 '.ugb-four-range-control__range': 'fourRangeControlReset',
+		 '.ugb-four-range-control__lock': 'fourRangeControlReset', // TODO: Find a better selector
+		 '.ugb-icon-control': 'iconControlReset',
 		 '.stk-advanced-focal-point-control': 'focalPointControlReset',
 		 '.stk-date-time-control__field': 'stkDateTimeControlReset',
 		 '.ugb-image-control': 'imageControlReset',
 		 '.stk-color-palette-control': 'colorControlClear',
+		 '.ugb-advanced-toolbar-control': 'toolbarControlReset',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -204,7 +234,7 @@ function designControl( name, value, options = {} ) {
 
 	beforeAdjust( name, value, options )
 	cy.getBaseControl( typeof value === 'object' ? value.label : name, { isInPopover } )
-		.find( `input[value="${ typeof value === 'object' ? value.value : kebabCase( value ) }"]` )
+		.find( `input[value="${ typeof value === 'object' ? value.value : isInPopover === true ? value : kebabCase( value ) }"]` )
 		.click( { force: true } )
 }
 
@@ -220,13 +250,15 @@ function popoverControl( name, value = {}, options = {} ) {
 		isInPopover = false,
 		parentSelector,
 		mainComponentSelector,
+		buttonLabel = 'Edit',
+		controlHandler = 'rangeControl',
 	} = options
 
 	const clickPopoverButton = () => {
 		cy.getBaseControl( name, {
 			isInPopover, parentSelector, mainComponentSelector,
 		} )
-			.find( 'button[aria-label="Edit"]' )
+			.find( `button[aria-label="${ buttonLabel }"]` )
 			.click( { force: true } )
 	}
 
@@ -238,7 +270,7 @@ function popoverControl( name, value = {}, options = {} ) {
 		 * If the value is an object, open the popover and adjust the settings
 		 */
 		keys( value ).forEach( key => {
-			// If an option entry is an object, get the value, unit, and vieport property to be passed
+			// If an option entry is an object, get the value, unit, viewport, and hover state property to be passed
 			// in adjust function.
 			if ( typeof value[ key ] === 'object' && ! Array.isArray( value[ key ] ) ) {
 				const {
@@ -246,10 +278,12 @@ function popoverControl( name, value = {}, options = {} ) {
 					unit = '',
 					value: childValue = '',
 					beforeAdjust = () => {},
+					state = '',
+					parentSelector,
 				} = value[ key ]
 
 				cy.adjust( key, childValue === '' ? value[ key ] : childValue, {
-					viewport, unit, isInPopover: true, beforeAdjust,
+					viewport, unit, isInPopover: true, beforeAdjust, state, parentSelector,
 				} )
 			} else {
 				cy.adjust( key, value[ key ], { isInPopover: true } )
@@ -275,6 +309,9 @@ function popoverControl( name, value = {}, options = {} ) {
 						.click( { force: true } )
 				}
 			} )
+	} else {
+		// Redirect to the correct control handler.
+		cy[ controlHandler ]( name, value, options )
 	}
 }
 
@@ -394,15 +431,20 @@ function fourRangeControl( name, value, options = {} ) {
 	} else if ( Array.isArray( value ) ) {
 		// Adjust the four control field.
 		beforeAdjust( name, value, options )
-		selector()
-			.find( 'button.ugb-four-range-control__lock' )
-			.invoke( 'attr', 'class' )
-			.then( className => {
-				const parsedClassName = className.split( ' ' )
-				if ( parsedClassName.includes( 'ugb--is-locked' ) ) {
-					clickLockButton()
-				}
-			} )
+		selector().then( $control => {
+			if ( $control.find( 'button.ugb-four-range-control__lock' ).length ) {
+				selector()
+					.find( 'button.ugb-four-range-control__lock' )
+					.invoke( 'attr', 'class' )
+					.then( className => {
+						const parsedClassName = className.split( ' ' )
+
+						if ( parsedClassName.includes( 'ugb--is-locked' ) ) {
+							clickLockButton()
+						}
+					} )
+			}
+		} )
 
 		value.forEach( ( entry, index ) => {
 			if ( entry !== undefined ) {
@@ -442,19 +484,28 @@ function fourRangeControlReset( name, options = {} ) {
 		.click( { force: true } )
 
 	beforeAdjust( name, null, options )
-	selector( isInPopover )
-		.find( 'button.ugb-four-range-control__lock' )
-		.invoke( 'attr', 'class' )
-		.then( className => {
-			const parsedClassName = className.split( ' ' )
-			if ( ! parsedClassName.includes( 'ugb--is-locked' ) ) {
-				clickLockButton()
-			}
-
+	selector( isInPopover ).then( $baseControl => {
+		if ( ! $baseControl.find( 'button.ugb-four-range-control__lock' ).length ) {
 			selector( isInPopover )
 				.find( 'button[aria-label="Reset"], button:contains(Reset)' )
 				.click( { force: true, multiple: true } )
-		} )
+			return
+		}
+
+		selector( isInPopover )
+			.find( 'button.ugb-four-range-control__lock' )
+			.invoke( 'attr', 'class' )
+			.then( className => {
+				const parsedClassName = className.split( ' ' )
+				if ( ! parsedClassName.includes( 'ugb--is-locked' ) ) {
+					clickLockButton()
+				}
+
+				selector( isInPopover )
+					.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+					.click( { force: true, multiple: true } )
+			} )
+	} )
 }
 
 /**
@@ -813,6 +864,36 @@ function imageControl( name, value, options = {} ) {
  * @param {Object} options
  */
 function imageControlReset( name, options = {} ) {
+	const {
+		isInPopover = false,
+		beforeAdjust = () => {},
+		parentSelector,
+		supportedDelimiter = [],
+		mainComponentSelector,
+	} = options
+
+	const selector = () => cy.getBaseControl( name, {
+		isInPopover,
+		parentSelector,
+		supportedDelimiter,
+		mainComponentSelector,
+	} )
+
+	beforeAdjust( name, null, options )
+	selector()
+		.contains( containsRegExp( name ) )
+		.closest( '.components-panel__body>.components-base-control' )
+		.find( 'button[aria-label="Reset"], button:contains(Reset)' )
+		.click( { force: true } )
+}
+
+/**
+ * Command for resetting the toolbar control.
+ *
+ * @param {string} name
+ * @param {Object} options
+ */
+function toolbarControlReset( name, options = {} ) {
 	const {
 		isInPopover = false,
 		beforeAdjust = () => {},

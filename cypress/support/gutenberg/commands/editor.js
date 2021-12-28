@@ -4,7 +4,7 @@
 import {
 	containsRegExp, dispatchResolver,
 } from '~common/util'
-import { removeGlobalCssTransitions, setBaseAndExtent } from '../util'
+import { setBaseAndExtent } from '../util'
 
 /**
  * Register functions to Cypress Commands.
@@ -29,20 +29,6 @@ Cypress.Commands.add( 'selectFromMediaLibrary', selectFromMediaLibrary )
 Cypress.Commands.add( 'addFeaturedImage', addFeaturedImage )
 Cypress.Commands.add( 'setSelection', { prevSubject: true }, setSelection )
 Cypress.Commands.add( 'selection', { prevSubject: true }, selection )
-
-/**
- * Overwrite Cypress Commands
- */
-Cypress.Commands.overwrite( 'visit', ( originalFn, url, options ) => {
-	return originalFn( url, Object.assign( options || {}, {
-		onLoad: () => {
-		// Check if the url matches the editor, and new page URL
-			if ( url.match( /(post|post-new)\.php/g ) && url.match( /wp-admin/g ) ) {
-				removeGlobalCssTransitions()
-			}
-		},
-	} ) )
-} )
 
 /**
  * Command for opening a new page in gutenberg editor.

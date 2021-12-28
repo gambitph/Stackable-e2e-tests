@@ -10,10 +10,12 @@ import {
 	blockExist,
 	blockError,
 	innerBlocksExist,
+	assertIcon,
 } from '.'
 
 describe( 'Image Box Block ( Other Tests )', registerTests( [
 	blockExist,
 	blockError,
 	innerBlocksExist,
+	assertIcon,
 ] ) )

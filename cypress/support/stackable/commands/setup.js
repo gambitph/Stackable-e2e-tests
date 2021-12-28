@@ -22,8 +22,8 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 		cy.activateLicense()
 	}
 
-	// TODO: Remove this when version is released.
-	// Turn on Load Version 2 blocks in the editor
+	// TODO: Remove this when running the version 3 tests in actions. And if v2 tests are completely removed.
+	// Turn on Load Version 2 blocks in the editor for testing v2 blocks
 	const selectCheckbox = () => cy
 		.get( 'article[id="other-settings"]' )
 		.contains( containsRegExp( 'Load version 2 blocks in the editor' ) )

@@ -153,7 +153,15 @@ export function removeGlobalCssTransitions() {
 				.join( ' ' ) } }` )
 		.join( ' ' )
 
-	Cypress.$( 'body' ).prepend( `<style id="e2e-test-inline-styles">${ styleText }</style>` )
+	cy.document().then( doc => {
+		if ( doc.getElementById( 'e2e-test-inline-styles' ) ) {
+			return null
+		}
+		const style = doc.createElement( 'style' )
+		style.innerHTML = styleText
+		style.setAttribute( 'id', 'e2e-test-inline-styles' )
+		doc.head.appendChild( style )
+	} )
 }
 
 /**

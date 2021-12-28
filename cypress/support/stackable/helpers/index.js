@@ -10,13 +10,14 @@ import { registerTests as _registerTests } from '~gutenberg-e2e/helpers'
  * Export Block Module assertions.
  */
 export {
-	assertBlockTitleDescription, assertBlockTitleDescriptionContent, assertBlockBackground, assertSeparators,
+	assertBlockTitleDescription, assertBlockTitleDescriptionContent, assertBlockBackground, assertSeparators, assertContainerBackground, assertContainerSizeSpacing, assertContainerBordersShadow,
 } from './modules'
 
 /*
-* Export Advanced Tab assertions.
+* Export Tab assertions.
 */
-export { assertAdvancedTab } from './advanced'
+export { assertAdvancedTab, Advanced } from './advanced'
+export { Block } from './block'
 
 /**
  * Helper function for creating block validation test.
@@ -516,44 +517,6 @@ export const assertUgbButtons = ( blockName, blockSelector, options = {}, assert
 }
 
 /**
- * Helper function for asserting the links in stackable buttons.
- *
- * @param {string} blockName
- * @param {Object} options
- */
-export const assertLinks = ( blockName, options = {} ) => {
-	const {
-		editorSelector = '',
-		frontendSelector = '',
-	} = options
-
-	cy.get( editorSelector ).its( 'length' ).then( links => {
-		range( 0, links ).forEach( index => {
-			// Click the button to open popover
-			cy.selectBlock( blockName, index ).find( editorSelector ).click( { force: true } )
-
-			const parentSelector = '.components-popover__content'
-			const supportedDelimiter = [ ' ' ]
-
-			/**
-			 * TODO: This will not work on dynamic blocks since we need to do some extra steps
-			 * before adjusting the options again.
-			 */
-
-			cy.get( parentSelector ).then( () => {
-				cy.adjust( 'Link / URL', `https://wpstackable${ index }.com/`, { parentSelector, supportedDelimiter } )
-					.assertHtmlAttribute( frontendSelector, 'href', `https://wpstackable${ index }.com/`, { assertBackend: false } )
-				cy.adjust( 'Open in new tab', true, { parentSelector, supportedDelimiter } )
-					.assertHtmlAttribute( frontendSelector, 'rel', /noreferrer noopener/, { assertBackend: false } )
-				cy.adjust( 'Link rel', 'sponsored ugc', { parentSelector, supportedDelimiter } )
-					.assertHtmlAttribute( frontendSelector, 'rel', /sponsored ugc/, { assertBackend: false } )
-			} )
-			cy.resetStyle( 'Link / URL', { parentSelector, supportedDelimiter } )
-		} )
-	} )
-}
-
-/**
  * Helper function for asserting the loaded js files of a block
  *
  * @param {string} blockName
@@ -606,4 +569,524 @@ export const assertInnerBlocks = ( blockName = 'stackable/accordion', innerBlock
 			.should( 'exist' )
 	} )
 	cy.savePost()
+}
+
+/**
+ * Helper function for asserting the typography panel of v3 blocks
+ *
+ * @param {Object} options
+ */
+export function assertTypographyModule( options = {} ) {
+	const {
+		selector,
+		viewport,
+		enableContent = true,
+		enableTextColor = true,
+		enableShadowOutline = true,
+		enableRemoveMargin = false,
+		enableHtmlTag = false,
+		enableAlign = false,
+		panelName = 'Typography',
+		frontendSelector = null,
+		assertOptions = {},
+		alignmentSelector = null,
+	} = options
+
+	const desktopOnly = callback => viewport === 'Desktop' && callback()
+
+	if ( panelName === 'Typography' ) {
+		cy.collapse( 'Typography' )
+	}
+
+	desktopOnly( () => {
+		if ( enableContent ) {
+			cy.adjust( 'Content', 'Hello Stackable' ).assertBlockContent( selector, 'Hello Stackable' )
+			cy.getBaseControl( 'Content' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+		}
+
+		if ( enableRemoveMargin ) {
+			cy.adjust( 'Remove extra text margins', true ).assertComputedStyle( {
+				[ selector ]: {
+					'margin': '0px',
+				},
+			} )
+		}
+
+		if ( enableHtmlTag ) {
+			cy.adjust( 'Title HTML Tag', 'h4' ).assertHtmlTag( selector, 'h4' )
+		}
+
+		cy.adjust( 'Typography', {
+			'Font Family': 'Abel',
+			'Weight': '500',
+			'Transform': 'lowercase',
+			'Font Style': 'italic',
+			'Letter Spacing': 0.7,
+		} ).assertComputedStyle( {
+			[ `${ frontendSelector ? frontendSelector : selector }` ]: {
+				'font-family': '"Abel", Sans-serif',
+				'font-weight': '500',
+				'text-transform': 'lowercase',
+				'font-style': 'italic',
+				'letter-spacing': '0.7px',
+			},
+		}, assertOptions )
+
+		if ( enableTextColor ) {
+			cy.adjust( 'Color Type', 'gradient' )
+			cy.adjust( 'Text Color #1', '#3884ff' )
+			cy.adjust( 'Text Color #2', '#ff1a1d' )
+			cy.adjust( 'Gradient Direction (degrees)', 236 ).assertComputedStyle( {
+				[ `${ frontendSelector ? frontendSelector : selector }` ]: {
+					'background-image': 'linear-gradient(236deg, #3884ff, #ff1a1d)',
+				},
+			}, assertOptions )
+
+			cy.adjust( 'Color Type', 'single' )
+			cy.adjust( 'Text Color', '#233491', { state: 'hover' } ).assertComputedStyle( {
+				[ `${ frontendSelector ? frontendSelector : selector }:hover` ]: {
+					'color': '#233491',
+				},
+			}, assertOptions )
+			cy.adjust( 'Text Color', '#18875a', { state: 'normal' } ).assertComputedStyle( {
+				[ `${ frontendSelector ? frontendSelector : selector }` ]: {
+					'color': '#18875a',
+				},
+			}, assertOptions )
+		}
+
+		if ( enableShadowOutline ) {
+			cy.adjust( 'Shadow / Outline', 7, { state: 'hover' } ).assertComputedStyle( {
+				[ `${ frontendSelector ? frontendSelector : selector }:hover` ]: {
+					'text-shadow': '25px 10px 14px rgba(18, 63, 82, 0.3)',
+				},
+			}, assertOptions )
+			cy.adjust( 'Shadow / Outline', 5, { state: 'normal' } ).assertComputedStyle( {
+				[ `${ frontendSelector ? frontendSelector : selector }` ]: {
+					'text-shadow': '4px 4px 0px rgba(0, 0, 0, 1)',
+				},
+			}, assertOptions )
+			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+			cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+
+			// Adjust Adv. Shadow Options - normal
+			const parentSelector = '.components-popover__content .stk-control-content'
+			// Press the cog symbol to open Shadow settings
+			cy.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
+			cy.adjust( 'Horizontal Offset', 8, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Vertical Offset', 11, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Blur', 25, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Opacity', 0.6, { parentSelector, state: 'normal' } ).assertComputedStyle( {
+				[ `${ frontendSelector ? frontendSelector : selector }` ]: {
+					'text-shadow': '8px 11px 25px rgba(42, 138, 98, 0.6)',
+				},
+			}, assertOptions )
+
+			const selectAdvancedShadowHoverState = () => cy
+				.adjust( 'Advanced Shadow Options', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
+
+			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+			cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+			// Adjust Adv. Shadow Options - hover
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Horizontal Offset', 7, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Vertical Offset', 31, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Blur', 71, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Shadow Color', '#0f9294', { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Shadow Opacity', 0.4, { parentSelector } ).assertComputedStyle( {
+				[ `${ frontendSelector ? frontendSelector : selector }:hover` ]: {
+					'text-shadow': '7px 31px 71px rgba(15, 146, 148, 0.4)',
+				},
+			}, assertOptions )
+		}
+	} )
+
+	const lineHeightAssertion = [
+		{
+			value: '2.8',
+			unit: 'em',
+		},
+		{
+			value: '11',
+			unit: 'rem',
+		},
+		{
+			value: '114',
+			unit: 'px',
+		},
+	]
+
+	lineHeightAssertion.forEach( lineHeight => {
+		cy.adjust( 'Typography', {
+			'Line-Height': {
+				value: lineHeight.value,
+				unit: lineHeight.unit,
+				viewport,
+			},
+		} ).assertComputedStyle( {
+			[ `${ frontendSelector ? frontendSelector : selector }` ]: {
+				'line-height': `${ lineHeight.value }${ lineHeight.unit }`,
+			},
+		}, assertOptions )
+	} )
+
+	const sizeAssertion = [
+		{
+			value: '26',
+			unit: 'px',
+		},
+		{
+			value: '1.6',
+			unit: 'em',
+		},
+		{
+			value: '4',
+			unit: 'rem',
+		},
+	]
+	sizeAssertion.forEach( size => {
+		cy.adjust( 'Size', size.value, { unit: size.unit, viewport } ).assertComputedStyle( {
+			[ `${ frontendSelector ? frontendSelector : selector }` ]: {
+				'font-size': `${ size.value }${ size.unit }`,
+			},
+		}, assertOptions )
+	} )
+
+	if ( enableAlign ) {
+		const aligns = [ 'left', 'center', 'right' ]
+		const responsiveClass = viewport !== 'Desktop' ? `-${ lowerCase( viewport ) }` : ''
+		aligns.forEach( align => {
+			cy.adjust( 'Align', align, { viewport } ).assertClassName( `${ alignmentSelector ? alignmentSelector : selector }`, `has-text-align-${ align }${ responsiveClass }` )
+		} )
+	}
+}
+
+/**
+ * Helper function for asserting the image panel of v3 blocks
+ *
+ * @param {Object} options
+ */
+export function assertImageModule( options = {} ) {
+	const {
+		selector,
+		viewport,
+		panelName = 'Image',
+		enableWidth = false,
+		enableShadowOutline = false,
+		enableBorderRadius = false,
+		enableImageShape = false,
+		shadowEditorSelector = '',
+		shadowFrontendSelector = '',
+		isStaticBlock = false,
+	} = options
+
+	const desktopOnly = callback => viewport === 'Desktop' && callback()
+
+	if ( panelName === 'Image' ) {
+		cy.collapse( 'Image' )
+		cy.adjust( 'Select Image', 1 )
+	}
+
+	// Default is px unit
+	cy.adjust( 'Height', 284, { viewport } ).assertComputedStyle( {
+		[ selector ]: {
+			'height': '284px',
+		},
+	} )
+
+	if ( enableWidth ) {
+		cy.adjust( 'Width', 471, { viewport, unit: 'px' } )
+		cy.adjust( 'Height', 559, { viewport, unit: 'px' } ).assertComputedStyle( {
+			[ selector ]: {
+				'width': '471px',
+				'height': '559px',
+			},
+		} )
+
+		cy.adjust( 'Width', 62, { viewport, unit: '%' } )
+		cy.adjust( 'Height', 91, { viewport, unit: '%' } ).assertComputedStyle( {
+			[ selector ]: {
+				'width': '62%',
+				'height': '91%',
+			},
+		} )
+
+		cy.adjust( 'Width', 32, { viewport, unit: 'vw' } )
+		cy.adjust( 'Height', 65, { viewport, unit: 'vh' } ).assertComputedStyle( {
+			[ selector ]: {
+				'width': '32vw',
+				'height': '65vh',
+			},
+		} )
+	}
+
+	desktopOnly( () => {
+		if ( panelName === 'Image' ) {
+			// Dynamic Fields button should be present
+			cy.getBaseControl( '.ugb-image-control:contains(Select Image)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+			cy.adjust( 'Image Alt', 'stackable the best' ).assertHtmlAttribute( `${ selector } img`, 'alt', 'stackable the best', { assertBackend: false } )
+		}
+		cy.adjust( 'Zoom', 0.73, { state: 'hover' } ).assertComputedStyle( {
+			[ `${ selector } img:hover` ]: {
+				'transform': 'scale(0.73)',
+			},
+		} )
+		cy.adjust( 'Zoom', 1.27, { state: 'normal' } ).assertComputedStyle( {
+			[ `${ selector } img` ]: {
+				'transform': 'scale(1.27)',
+			},
+		} )
+
+		if ( enableShadowOutline ) {
+			cy.adjust( 'Shadow / Outline', 6, { state: 'hover' } ).assertComputedStyle( {
+				[ `${ shadowEditorSelector }:hover` ]: {
+					'filter': 'drop-shadow(0px 10px 30px rgba(0, 0, 0, 0.1))',
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ `${ shadowFrontendSelector }:hover` ]: {
+					'filter': 'drop-shadow(0px 10px 30px rgba(0, 0, 0, 0.1))',
+				},
+			}, { assertBackend: false } )
+			cy.adjust( 'Shadow / Outline', 3, { state: 'normal' } ).assertComputedStyle( {
+				[ shadowEditorSelector ]: {
+					'filter': 'drop-shadow(0px 5px 10px rgba(153, 153, 153, 0.35))',
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ shadowFrontendSelector ]: {
+					'filter': 'drop-shadow(0px 5px 10px rgba(153, 153, 153, 0.35))',
+				},
+			}, { assertBackend: false } )
+
+			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+			cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+
+			const parentSelector = '.components-popover__content .stk-control-content'
+			const selectAdvancedShadowHoverState = () => cy
+				.adjust( 'Advanced Shadow Options', null, { state: 'hover', parentSelector: '.components-popover__content .components-panel__body' } )
+			const pressShadowSettings = () => cy
+				.get( 'button[aria-label="Shadow Settings"]' ).click( { force: true } )
+				// Press the cog symbol to open Shadow settings
+
+			pressShadowSettings()
+			// Adjust Adv. Shadow Options - normal
+			cy.adjust( 'Horizontal Offset', 8, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Vertical Offset', 11, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Blur', 25, { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Color', '#2a8a62', { parentSelector, state: 'normal' } )
+			cy.adjust( 'Shadow Opacity', 0.6, { parentSelector, state: 'normal' } ).assertComputedStyle( {
+				[ shadowEditorSelector ]: {
+					'filter': 'drop-shadow(8px 11px 25px rgba(42, 138, 98, 0.6))',
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ shadowFrontendSelector ]: {
+					'filter': 'drop-shadow(8px 11px 25px rgba(42, 138, 98, 0.6))',
+				},
+			}, { assertBackend: false } )
+
+			cy.resetStyle( 'Shadow / Outline', { state: 'normal' } )
+			// If a block is static, it always goes to the frontend when asserting
+			// Upon returning to the backend, the advanced shadow settings popup is already closed
+			// We need to open this again to adjust the Advanced Shadow options
+			if ( isStaticBlock ) {
+				pressShadowSettings()
+			} else {
+				cy.resetStyle( 'Shadow / Outline', { state: 'hover' } )
+			}
+
+			// Adjust Adv. Shadow Options - hover
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Horizontal Offset', 7, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Vertical Offset', 31, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Blur', 71, { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Shadow Color', '#0f9294', { parentSelector } )
+			selectAdvancedShadowHoverState()
+			cy.adjust( 'Shadow Opacity', 0.4, { parentSelector } ).assertComputedStyle( {
+				[ `${ shadowEditorSelector }:hover` ]: {
+					'filter': 'drop-shadow(7px 31px 71px rgba(15, 146, 148, 0.4))',
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ `${ shadowFrontendSelector }:hover` ]: {
+					'filter': 'drop-shadow(7px 31px 71px rgba(15, 146, 148, 0.4))',
+				},
+			}, { assertBackend: false } )
+		}
+
+		// We won't be able to assert image size for now since it requires server handling.
+		// `assertHtmlAttribute` command was introduced for the purpose of asserting html attribute values in a selected DOM Element.
+		// TODO: Add assertion for Image Size
+		cy.adjust( 'Image Size', 'large' )
+
+		if ( enableBorderRadius ) {
+			cy.adjust( 'Border Radius', 41 ).assertComputedStyle( {
+				[ `${ selector } img` ]: {
+					'border-radius': '41px',
+				},
+			} )
+		}
+
+		if ( enableImageShape ) {
+			cy.adjust( 'Image Shape', {
+				'Shape': {
+					label: 'Blob 1',
+					value: 'blob1',
+				},
+				'Flip Shape Horizontally': true,
+				'Flip Shape Vertically': true,
+			} ).assertComputedStyle( {
+				[ `${ selector } img` ]: {
+					'-webkit-mask-image': 'url(\'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIiBwcmVzZXJ2ZUFzcGVjdFJhdGlvPSJub25lIiB0cmFuc2Zvcm09InNjYWxlKC0xLC0xKSI+PHBhdGggZD0iTTE4OC41IDMxLjljMTIuOSAxNS45IDEyLjUgNDMuMyAxMC4zIDc3LjFzLTYuMiA3NC4yLTI2LjIgODYuNS01Ni4xLTMuMy04OS40LTIxLjItNjMuNy0zOC4xLTc2LjQtNjkuOEMtNS45IDczLS44IDI5LjkgMjEuNiAxMS43IDQ0LTYuNCA4My44LjUgMTE2LjcgNi4xczU5IDEwIDcxLjggMjUuOHoiPjwvcGF0aD48L3N2Zz4=\')',
+				},
+			} )
+
+			cy.adjust( 'Image Shape', {
+				'Stretch Shape Mask': true,
+			} ).assertClassName( selector, 'stk-image--shape-stretch' )
+		}
+
+		// Adjust Image Filter
+		const parentSelector = '.stk-image-filter-control .stk-control-content'
+
+		cy.adjust( 'Image Filter', {
+			'Blur': {
+				value: 2,
+				parentSelector,
+			},
+			'Brightness': {
+				value: 1.3,
+				parentSelector,
+			},
+			'Contrast': {
+				value: 0.9,
+				parentSelector,
+			},
+			'Grayscale': {
+				value: 0.22,
+				parentSelector,
+			},
+			'Hue Rotate': {
+				value: 166,
+				parentSelector,
+			},
+			'Invert': {
+				value: 0.14,
+				parentSelector,
+			},
+			'Opacity': {
+				value: 0.83,
+				parentSelector,
+			},
+			'Saturate': {
+				value: 1.8,
+				parentSelector,
+			},
+			'Sepia': {
+				value: 0.28,
+				parentSelector,
+			},
+		} ).assertComputedStyle( {
+			[ `${ selector } img` ]: {
+				'filter': 'blur(2px) brightness(1.3) contrast(0.9) grayscale(0.22) hue-rotate(166deg) invert(0.14) opacity(0.83) saturate(1.8) sepia(0.28)',
+			},
+		} )
+
+		cy.resetStyle( 'Image Filter', { state: 'normal' } )
+
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Blur': { value: 0.5, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Brightness': { value: 1.9, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Contrast': { value: 0.8, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Grayscale': { value: 0.61, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Hue Rotate': { value: 47, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Invert': { value: 0.33, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Opacity': { value: 0.76, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Saturate': { value: 0.9, parentSelector },
+		} )
+		cy.adjust( 'Image Filter', {
+			'Image Filter': { value: null, state: 'hover' },
+			'Sepia': { value: 0.34, parentSelector },
+		} ).assertComputedStyle( {
+			[ `${ selector } img:hover` ]: {
+				'filter': 'blur(0.5px) brightness(1.9) contrast(0.8) grayscale(0.61) hue-rotate(47deg) invert(0.33) opacity(0.76) saturate(0.9) sepia(0.34)',
+			},
+		} )
+	} )
+	cy.adjust( 'Focal point', [ 32, 59 ], { viewport, state: 'hover' } ).assertComputedStyle( {
+		[ `${ selector } img:hover` ]: {
+			'object-position': '32% 59%',
+		},
+	} )
+	cy.adjust( 'Focal point', [ 63, 53 ], { viewport, state: 'normal' } ).assertComputedStyle( {
+		[ `${ selector } img` ]: {
+			'object-position': '63% 53%',
+		},
+	} )
+	cy.adjust( 'Image Fit', 'contain', { viewport } ).assertComputedStyle( {
+		[ `${ selector } img` ]: {
+			'object-fit': 'contain',
+		},
+	} )
+}
+
+/**
+ * Helper function for asserting the Link panel (Style tab) in v3 blocks
+ *
+ * @param {Object} options
+ */
+export function assertLinks( options = {} ) {
+	const {
+		selector,
+		viewport,
+	} = options
+
+	const desktopOnly = callback => viewport === 'Desktop' && callback()
+
+	desktopOnly( () => {
+		cy.collapse( 'Link' )
+		cy.adjust( 'Link / URL', 'https://wpstackable.com/' ).assertHtmlAttribute( selector, 'href', 'https://wpstackable.com/', { assertBackend: false } )
+		// The dynamic content for Link / URL should exist
+		cy.getBaseControl( '.stk-link-control:contains(Link / URL)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+
+		cy.adjust( 'Open in new tab', true ).assertHtmlAttribute( selector, 'rel', /noreferrer noopener/, { assertBackend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertHtmlAttribute( selector, 'target', '_blank', { assertBackend: false } )
+		cy.adjust( 'Link rel', 'ugc sponsored' ).assertHtmlAttribute( selector, 'rel', /ugc sponsored/, { assertBackend: false } )
+
+		cy.adjust( 'Link Title', 'Stackable site' ).assertHtmlAttribute( selector, 'title', 'Stackable site', { assertBackend: false } )
+		// The dynamic content for Link Title should exist
+		cy.getBaseControl( '.components-base-control:contains(Link Title)' ).find( 'button[aria-label="Dynamic Fields"]' ).should( 'exist' )
+		cy.savePost()
+	} )
 }
