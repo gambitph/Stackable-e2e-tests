@@ -207,7 +207,7 @@ function advancedTab( viewport ) {
 	beforeEach( () => {
 		cy.setupWP()
 		cy.newPage()
-		cy.addBlock( 'stackable/columns', { variation: 'Two columns; equal split' } )
+		cy.addBlock( 'stackable/columns', { variation: 'One column' } )
 		cy.selectBlock( 'stackable/column', 0 ).asBlock( 'columnBlock', { isStatic: true } )
 		cy.openInspector( 'stackable/column', 'Advanced', 0 )
 		cy.savePost()
