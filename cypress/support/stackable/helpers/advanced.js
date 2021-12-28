@@ -358,19 +358,9 @@ class AdvancedModule extends Module {
 		positionEditorSelectorIsSelected = false,
 		positionEditorSelector = '',
 		positionFrontendSelector = '',
+		assertPositionUnits = true,
 	} ) {
 		const MAIN_SELECTOR = mainSelector || '.stk-block'
-
-		cy.adjust( 'Opacity', 0.6, { viewport, state: 'hover' } ).assertComputedStyle( {
-			[ `${ positionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }:hover` ]: {
-				'opacity': '0.6',
-			},
-		}, { assertFrontend: false } )
-		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			[ `${ MAIN_SELECTOR }:hover` ]: {
-				'opacity': '0.6',
-			},
-		}, { assertBackend: false } )
 
 		cy.adjust( 'Opacity', 0.8, { viewport, state: 'normal' } ).assertComputedStyle( {
 			[ `${ positionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }` ]: {
@@ -380,6 +370,17 @@ class AdvancedModule extends Module {
 		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 			[ MAIN_SELECTOR ]: {
 				'opacity': '0.8',
+			},
+		}, { assertBackend: false } )
+
+		cy.adjust( 'Opacity', 0.6, { viewport, state: 'hover' } ).assertComputedStyle( {
+			[ `${ positionEditorSelectorIsSelected ? '' : MAIN_SELECTOR }:hover` ]: {
+				'opacity': '0.6',
+			},
+		}, { assertFrontend: false } )
+		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+			[ `${ MAIN_SELECTOR }:hover` ]: {
+				'opacity': '0.6',
 			},
 		}, { assertBackend: false } )
 
@@ -408,26 +409,6 @@ class AdvancedModule extends Module {
 			}, { assertBackend: false } )
 		} )
 
-		// Hover state - px unit
-		cy.adjust( '.components-base-control:contains(Position):last', [ 16, 17, 18, 19 ], {
-			viewport, state: 'hover', unit: 'px',
-		} ).assertComputedStyle( {
-			[ `${ positionEditorSelectorIsSelected ? '' : positionEditorSelector ? positionEditorSelector : MAIN_SELECTOR }:hover` ]: {
-				'top': '16px',
-				'right': '17px',
-				'bottom': '18px',
-				'left': '19px',
-			},
-		}, { assertFrontend: false } )
-		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			[ `${ positionFrontendSelector ? positionFrontendSelector : MAIN_SELECTOR }:hover` ]: {
-				'top': '16px',
-				'right': '17px',
-				'bottom': '18px',
-				'left': '19px',
-			},
-		}, { assertBackend: false } )
-
 		// Normal state - px unit
 		cy.adjust( '.components-base-control:contains(Position):last', [ 5, 4, 3, 2 ], {
 			viewport, state: 'normal', unit: 'px',
@@ -448,48 +429,70 @@ class AdvancedModule extends Module {
 			},
 		}, { assertBackend: false } )
 
-		cy.resetStyle( '.components-base-control:contains(Position):last', { viewport, state: 'hover' } )
-		cy.resetStyle( '.components-base-control:contains(Position):last', { viewport, state: 'normal' } )
-
-		// Hover state - % unit
-		cy.adjust( '.components-base-control:contains(Position):last', [ 20, 21, 22, 23 ], {
-			viewport, state: 'hover', unit: '%',
+		// Hover state - px unit
+		cy.adjust( '.components-base-control:contains(Position):last', [ 16, 17, 18, 19 ], {
+			viewport, state: 'hover', unit: 'px',
 		} ).assertComputedStyle( {
 			[ `${ positionEditorSelectorIsSelected ? '' : positionEditorSelector ? positionEditorSelector : MAIN_SELECTOR }:hover` ]: {
-				'top': '20%',
-				'right': '21%',
-				'bottom': '22%',
-				'left': '23%',
+				'top': '16px',
+				'right': '17px',
+				'bottom': '18px',
+				'left': '19px',
 			},
 		}, { assertFrontend: false } )
 		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
 			[ `${ positionFrontendSelector ? positionFrontendSelector : MAIN_SELECTOR }:hover` ]: {
-				'top': '20%',
-				'right': '21%',
-				'bottom': '22%',
-				'left': '23%',
+				'top': '16px',
+				'right': '17px',
+				'bottom': '18px',
+				'left': '19px',
 			},
 		}, { assertBackend: false } )
 
-		// Normal state - % unit
-		cy.adjust( '.components-base-control:contains(Position):last', [ 23, 24, 25, 26 ], {
-			viewport, state: 'normal', unit: '%',
-		} ).assertComputedStyle( {
-			[ `${ positionEditorSelectorIsSelected ? '' : positionEditorSelector ? positionEditorSelector : MAIN_SELECTOR }` ]: {
-				'top': '23%',
-				'right': '24%',
-				'bottom': '25%',
-				'left': '26%',
-			},
-		}, { assertFrontend: false } )
-		cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
-			[ `${ positionFrontendSelector ? positionFrontendSelector : MAIN_SELECTOR }` ]: {
-				'top': '23%',
-				'right': '24%',
-				'bottom': '25%',
-				'left': '26%',
-			},
-		}, { assertBackend: false } )
+		cy.resetStyle( '.components-base-control:contains(Position):last', { viewport, state: 'hover' } )
+		cy.resetStyle( '.components-base-control:contains(Position):last', { viewport, state: 'normal' } )
+
+		if ( assertPositionUnits ) {
+			// Normal state - % unit
+			cy.adjust( '.components-base-control:contains(Position):last', [ 23, 24, 25, 26 ], {
+				viewport, state: 'normal', unit: '%',
+			} ).assertComputedStyle( {
+				[ `${ positionEditorSelectorIsSelected ? '' : positionEditorSelector ? positionEditorSelector : MAIN_SELECTOR }` ]: {
+					'top': '23%',
+					'right': '24%',
+					'bottom': '25%',
+					'left': '26%',
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ `${ positionFrontendSelector ? positionFrontendSelector : MAIN_SELECTOR }` ]: {
+					'top': '23%',
+					'right': '24%',
+					'bottom': '25%',
+					'left': '26%',
+				},
+			}, { assertBackend: false } )
+
+			// Hover state - % unit
+			cy.adjust( '.components-base-control:contains(Position):last', [ 20, 21, 22, 23 ], {
+				viewport, state: 'hover', unit: '%',
+			} ).assertComputedStyle( {
+				[ `${ positionEditorSelectorIsSelected ? '' : positionEditorSelector ? positionEditorSelector : MAIN_SELECTOR }:hover` ]: {
+					'top': '20%',
+					'right': '21%',
+					'bottom': '22%',
+					'left': '23%',
+				},
+			}, { assertFrontend: false } )
+			cy.get( '.block-editor-block-list__block.is-selected' ).assertComputedStyle( {
+				[ `${ positionFrontendSelector ? positionFrontendSelector : MAIN_SELECTOR }:hover` ]: {
+					'top': '20%',
+					'right': '21%',
+					'bottom': '22%',
+					'left': '23%',
+				},
+			}, { assertBackend: false } )
+		}
 	}
 
 	assertTransformTransition( {
