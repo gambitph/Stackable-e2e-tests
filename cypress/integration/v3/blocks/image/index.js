@@ -3,7 +3,7 @@
  * External dependencies
  */
 import {
-	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced, assertImageModule,
+	assertBlockExist, blockErrorTest, responsiveAssertHelper, Block, Advanced, assertImageModule, assertLinks,
 } from '~stackable-e2e/helpers'
 
 const [ desktopStyle, tabletStyle, mobileStyle ] = responsiveAssertHelper( styleTab, { disableItAssertion: true } )
@@ -137,6 +137,12 @@ function styleTab( viewport ) {
 			shadowEditorSelector: '.stk-block-image .stk-img-wrapper .stk-img-resizer-wrapper',
 			shadowFrontendSelector: '.stk-block-image .stk-img-wrapper',
 		} )
+	} )
+
+	it( 'should assert Link panel in Style tab', () => {
+		cy.collapse( 'Image' )
+		cy.adjust( 'Select Image', 1 )
+		assertLinks( { selector: '.stk-block-image > a.stk-link', viewport } )
 	} )
 }
 
