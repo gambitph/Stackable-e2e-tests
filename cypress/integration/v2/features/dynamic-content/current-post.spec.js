@@ -29,7 +29,7 @@ function matchPostFieldValues() {
 	it( 'should test dynamic content to match all field values', () => {
 		cy.setupWP()
 		// Setup function
-		setupMatchPostFieldValues( 'post' )
+		setupMatchPostFieldValues( 'post', true )
 		cy.get( '@fieldsToAssert' ).then( fieldsToAssert => {
 			fieldsToAssert.forEach( ( {
 				name: fieldName, value, options: fieldOptions = {}, willEscape,
@@ -85,6 +85,41 @@ function adjustFieldOptions() {
 		cy
 			.selectBlock( 'ugb/cta' )
 			.assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
+
+		// Post Taxonomy options
+		createNewPostWithCTA()
+		cy.addCategory( 'lifestyle' )
+		cy.addCategory( 'playlist' )
+		cy.savePost()
+		adjustField( 'Post Taxonomy', {
+			'Display Option': 2,
+		} )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', 'playlist' )
+
+		createNewPostWithCTA()
+		cy.addCategory( 'lifestyle' )
+		cy.addCategory( 'playlist' )
+		cy.savePost()
+		adjustField( 'Post Taxonomy', {
+			'Display Option': 'all',
+			'Delimiter': '-',
+		} )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', /lifestyle-playlist/ )
+
+		createNewPostWithCTA()
+		cy.addTags( [ 'food', 'lifestyle', 'music' ] )
+		cy.savePost()
+		adjustField( 'Post Taxonomy', {
+			'Taxonomy Type': 'Tags',
+			'Display Option': 2,
+		} )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', 'lifestyle' )
 
 		// Post Excerpt options
 		createNewPostWithCTA()

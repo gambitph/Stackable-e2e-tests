@@ -24,7 +24,7 @@ const adjustPostField = ( fieldName, fieldOptions = {}, nth ) => {
 function matchPostData() {
 	it( 'should test dynamic content to match all field values in latest post #1', () => {
 		cy.setupWP()
-		setupMatchPostFieldValues( 'post' )
+		setupMatchPostFieldValues( 'post', true )
 
 		cy.newPage()
 		cy.get( '@fieldsToAssert' ).then( fieldsToAssert => {
@@ -77,6 +77,43 @@ function adjustFieldOptions() {
 		cy.selectBlock( 'ugb/cta' ).assertHtmlTag( '.ugb-cta__title > *', 'a', { assertBackend: false } )
 		cy.selectBlock( 'ugb/cta' ).assertHtmlAttribute( '.ugb-cta__title a', 'rel', 'noreferrer noopener', { assertBackend: false } )
 		cy.deleteBlock( 'ugb/cta' )
+
+		// Post Taxonomy options
+		cy.addBlock( 'ugb/cta' )
+		cy.addCategory( 'lifestyle' )
+		cy.addCategory( 'playlist' )
+		cy.savePost()
+		adjustPostField( 'Post Taxonomy', {
+			'Display Option': 2,
+		}, '1st' )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', 'playlist' )
+
+		cy.deleteBlock( 'ugb/cta' )
+		cy.addBlock( 'ugb/cta' )
+		cy.addCategory( 'lifestyle' )
+		cy.addCategory( 'playlist' )
+		cy.savePost()
+		adjustPostField( 'Post Taxonomy', {
+			'Display Option': 'all',
+			'Delimiter': '-',
+		}, '1st' )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', /lifestyle-playlist/ )
+
+		cy.deleteBlock( 'ugb/cta' )
+		cy.addBlock( 'ugb/cta' )
+		cy.addTags( [ 'food', 'lifestyle', 'music' ] )
+		cy.savePost()
+		adjustPostField( 'Post Taxonomy', {
+			'Taxonomy Type': 'Tags',
+			'Display Option': 2,
+		}, '1st' )
+		cy
+			.selectBlock( 'ugb/cta' )
+			.assertBlockContent( '.ugb-cta__title', 'lifestyle' )
 
 		// Adjusting Post excerpt options
 		cy.addBlock( 'ugb/cta' )

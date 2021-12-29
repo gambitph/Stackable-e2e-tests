@@ -26,7 +26,7 @@ function matchPostFieldValues() {
 	it( 'should test dynamic content to match all field values', () => {
 		cy.setupWP()
 		// Setup function
-		setupMatchPostFieldValues( 'post' )
+		setupMatchPostFieldValues( 'post', true )
 		// Create a new page to assert the Other Posts / created post's field values.
 		cy.newPage()
 		cy.get( '@fieldsToAssert' ).then( fieldsToAssert => {
