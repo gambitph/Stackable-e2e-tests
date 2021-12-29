@@ -4,7 +4,7 @@
 import {
 	keys, first, omit, omitBy,
 } from 'lodash'
-import { containsRegExp } from '~common/util'
+import { containsRegExp, compareVersions } from '~common/util'
 
 /**
  * register functions to cypress commands.
@@ -250,21 +250,43 @@ function colorControl( name, value, options = {} ) {
 	if ( typeof value === 'string' ) {
 		beforeAdjust( name, value, options )
 		if ( value.match( /^#/ ) ) {
-		// Use custom color.
+			// Use custom color.
+
+			if ( compareVersions( Cypress.env( 'WORDPRESS_VERSION' ), '5.9.0', '<' ) ) {
+				// For versions < 5.9.0
+				selector()
+					.find( 'button' )
+					.contains( 'Custom color' )
+					.click( { force: true } )
+
+				cy
+					.get( '.components-popover__content .components-color-picker' )
+					.find( 'input[type="text"]' )
+					.type( `{selectall}${ value }{enter}`, { force: true } )
+
+				// Declare the variable again
+				selector()
+					.find( 'button' )
+					.contains( containsRegExp( 'Custom color' ) )
+					.click( { force: true } )
+
+				return
+			}
+
 			selector()
-				.find( 'button' )
-				.contains( 'Custom color' )
+				.find( 'button[aria-label="Custom color picker"]' )
 				.click( { force: true } )
 
 			cy
 				.get( '.components-popover__content .components-color-picker' )
-				.find( 'input[type="text"]' )
-				.type( `{selectall}${ value }{enter}`, { force: true } )
+				.find( 'button[aria-label="Show detailed inputs"]' )
+				.click( { force: true } )
+			cy
+				.get( 'input[maxlength="6"]' )
+				.type( `{selectall}${ value.replace( '#', '' ) }{enter}`, { force: true } )
 
-			// Declare the variable again
 			selector()
-				.find( 'button' )
-				.contains( containsRegExp( 'Custom color' ) )
+				.find( 'button[aria-label="Custom color picker"]' )
 				.click( { force: true } )
 		} else {
 			// Select based on color name.
@@ -743,6 +765,7 @@ export function adjust( name, value, options ) {
 	const baseControlHandler = {
 		// Populate default selectors.
 		'.components-circular-option-picker__dropdown-link-action': 'colorControl',
+		'.block-editor-color-gradient-control': 'colorControl',
 		'.components-select-control__input': 'dropdownControl',
 		'.components-input-control__input': 'rangeControl',
 		'.components-button-group': 'toolbarControl',
@@ -810,6 +833,7 @@ export function resetStyle( name, options = {} ) {
 		// Populate default selectors.
 		'.components-input-control__input': 'rangeControlReset',
 		'.components-circular-option-picker__dropdown-link-action': 'colorControlClear',
+		'.block-editor-color-gradient-control': 'colorControlClear',
 		'.components-datetime': 'dateTimeControlReset',
 		'.block-editor-link-control': 'urlInputControlReset',
 		'.components-select-control__input': 'dropdownControlReset',

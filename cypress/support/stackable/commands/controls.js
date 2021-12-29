@@ -137,6 +137,7 @@ Cypress.Commands.overwrite( 'adjust', ( originalFn, ...args ) => {
 		'.stk-advanced-focal-point-control': 'focalPointControl',
 		'.stk-date-time-control__field': 'stkDateTimeControl',
 		'.ugb-image-control': 'imageControl',
+		'.stk-color-palette-control': 'colorControl',
 	}
 
 	if ( optionsToPass.customOptions ) {
@@ -173,6 +174,7 @@ Cypress.Commands.overwrite( 'resetStyle', ( originalFn, ...args ) => {
 		 '.stk-advanced-focal-point-control': 'focalPointControlReset',
 		 '.stk-date-time-control__field': 'stkDateTimeControlReset',
 		 '.ugb-image-control': 'imageControlReset',
+		 '.stk-color-palette-control': 'colorControlClear',
 		 '.ugb-advanced-toolbar-control': 'toolbarControlReset',
 	}
 
