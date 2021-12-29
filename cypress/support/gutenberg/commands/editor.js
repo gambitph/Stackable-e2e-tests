@@ -5,6 +5,7 @@ import {
 	containsRegExp, dispatchResolver,
 } from '~common/util'
 import { setBaseAndExtent } from '../util'
+import { isArray } from 'lodash'
 
 /**
  * Register functions to Cypress Commands.
@@ -23,6 +24,8 @@ Cypress.Commands.add( 'wp', wp )
 Cypress.Commands.add( 'typePostTitle', typePostTitle )
 Cypress.Commands.add( 'getPostData', getPostData )
 Cypress.Commands.add( 'addPostExcerpt', addPostExcerpt )
+Cypress.Commands.add( 'addCategory', addCategory )
+Cypress.Commands.add( 'addTags', addTags )
 Cypress.Commands.add( 'addPostSlug', addPostSlug )
 Cypress.Commands.add( 'editPostDiscussion', editPostDiscussion )
 Cypress.Commands.add( 'selectFromMediaLibrary', selectFromMediaLibrary )
@@ -265,6 +268,59 @@ export function addPostExcerpt( text ) {
 		.get( '.editor-post-excerpt textarea.components-textarea-control__input' )
 		.type( `{selectall}${ text }`, { force: true } )
 	cy.savePost()
+}
+
+/**
+ * Command for adding category to a post.
+ *
+ * @param {string} category
+ */
+export function addCategory( category ) {
+	cy.openSidebar( 'Settings' )
+	cy
+		.get( '.edit-post-sidebar__panel-tabs' )
+		.find( 'li:first-child button.edit-post-sidebar__panel-tab' )
+		.click( { force: true } )
+	cy.collapse( 'Categories' )
+	cy
+		.get( '.components-panel__body:contains(Categories)' )
+		.contains( containsRegExp( 'Add New Category' ) )
+		.click( { force: true } )
+	cy.get( 'input.editor-post-taxonomies__hierarchical-terms-input' )
+		.click( { force: true } )
+		.type( category, { force: true } )
+	cy.get( 'button.editor-post-taxonomies__hierarchical-terms-submit' )
+		.click( { force: true } )
+}
+
+/**
+ * Command for adding tags to a post.
+ *
+ * @param {Array | string} tags
+ */
+export function addTags( tags ) {
+	cy.openSidebar( 'Settings' )
+	cy
+		.get( '.edit-post-sidebar__panel-tabs' )
+		.find( 'li:first-child button.edit-post-sidebar__panel-tab' )
+		.click( { force: true } )
+	cy.collapse( 'Tags' )
+
+	const selectTheTokenField = () => cy
+		.get( '.components-panel__body:contains(Tags)' )
+		.find( '.components-form-token-field:contains(Add New Tag)' )
+		.find( 'input.components-form-token-field__input' )
+		.click( { force: true } )
+
+	if ( isArray( tags ) ) {
+		tags.forEach( tag => {
+			selectTheTokenField()
+				.type( `${ tag },`, { force: true } )
+		} )
+	} else if ( typeof tags === 'string' ) {
+		selectTheTokenField()
+			.type( tags, { force: true } )
+	}
 }
 
 /**

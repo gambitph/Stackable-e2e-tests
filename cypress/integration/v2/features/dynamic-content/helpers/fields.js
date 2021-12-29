@@ -14,6 +14,7 @@ import {
  * Prefetch field values and store it as alias.
  *
  * @param {string} type
+ * @param {boolean} addTaxonomy
  * @example `@fieldsToAssert` structure
  * ```
  * [
@@ -26,7 +27,7 @@ import {
  * ```
  *
  */
-export function setupMatchPostFieldValues( type ) {
+export function setupMatchPostFieldValues( type, addTaxonomy = false ) {
 	if ( type === 'post' ) {
 		cy.newPost()
 	} else {
@@ -48,6 +49,12 @@ export function setupMatchPostFieldValues( type ) {
 
 	// Populate Post Slug.
 	addToTest( { name: 'Post Slug', value: `dynamic-content-test-${ id }` } )
+
+	if ( addTaxonomy ) {
+		cy.addCategory( 'lifestyle' )
+		cy.addCategory( 'playlist' )
+		addToTest( { name: 'Post Taxonomy', value: 'lifestyle, playlist, Uncategorized' } )
+	}
 
 	// Populate Post Excerpt.
 	if ( type === 'post' ) {
