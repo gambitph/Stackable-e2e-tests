@@ -1045,7 +1045,7 @@ export function assertImageModule( options = {} ) {
 		} )
 	} )
 	cy.adjust( 'Focal point', [ 32, 59 ], { viewport, state: 'hover' } ).assertComputedStyle( {
-		[ `${ selector } img:hover` ]: {
+		[ `${ selector }:hover img` ]: {
 			'object-position': '32% 59%',
 		},
 	} )
