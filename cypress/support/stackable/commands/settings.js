@@ -34,19 +34,24 @@ function forceTypographyStyles() {
  */
 function loadFrontendJsCssFiles( enable = true ) {
 	cy.visit( '/wp-admin/options-general.php?page=stackable' )
-	const selector = () => cy
-		.get( 'article[id="optimization-settings"]' )
-		.find( 'button[class="ugb-admin-toggle-setting__button"], button[role="switch"]' )
 
-	selector()
-		.invoke( 'attr', 'aria-checked' )
-		.then( checked => {
-			if ( checked === ( enable ? 'false' : 'true' ) ) {
-				selector()
-					.click( { force: true } )
-				cy.wait( 500 )
-			}
-		} )
+	cy.get( 'body' ).then( $body => {
+		// Only do this if the setting is available.
+		if ( $body.find( 'article[id="optimization-settings"]' ).length > 0 ) {
+			const setting = () => cy
+				.get( 'article[id="optimization-settings"]' )
+				.find( 'button[class="ugb-admin-toggle-setting__button"], button[role="switch"]' )
+
+			setting()
+				.invoke( 'attr', 'aria-checked' )
+				.then( checked => {
+					if ( checked === ( enable ? 'false' : 'true' ) ) {
+						setting().click( { force: true } )
+						cy.wait( 500 )
+					}
+				} )
+		}
+	} )
 }
 
 /**
