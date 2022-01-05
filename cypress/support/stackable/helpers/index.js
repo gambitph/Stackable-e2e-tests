@@ -921,6 +921,13 @@ export function assertImageModule( options = {} ) {
 					'filter': 'drop-shadow(7px 31px 71px rgba(15, 146, 148, 0.4))',
 				},
 			}, { assertBackend: false } )
+
+			// Ensure that the shadow popover panel is closed.
+			cy.get( 'body' ).then( $body => {
+				if ( $body.find( '.shadow-control__popover' ).length ) {
+					pressShadowSettings()
+				}
+			} )
 		}
 
 		// We won't be able to assert image size for now since it requires server handling.
