@@ -28,10 +28,11 @@ function forceTypographyStyles() {
 
 /**
  * Command for loading JS and CSS files across entire site in Stackable
- * Settings page.
+ * Settings page. Only applicable for V2 tests.
  *
+ * @param {boolean} enable Enable or disable frontend JS and CSS files.
  */
-function loadFrontendJsCssFiles() {
+function loadFrontendJsCssFiles( enable = true ) {
 	cy.visit( '/wp-admin/options-general.php?page=stackable' )
 	const selector = () => cy
 		.get( 'article[id="optimization-settings"]' )
@@ -40,7 +41,7 @@ function loadFrontendJsCssFiles() {
 	selector()
 		.invoke( 'attr', 'aria-checked' )
 		.then( checked => {
-			if ( checked === 'false' ) {
+			if ( checked === ( enable ? 'false' : 'true' ) ) {
 				selector()
 					.click( { force: true } )
 				cy.wait( 500 )

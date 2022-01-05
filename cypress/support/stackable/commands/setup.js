@@ -29,15 +29,22 @@ Cypress.Commands.overwrite( 'setupWP', ( originalFn, ...args ) => {
 		.contains( containsRegExp( 'Load version 2 blocks in the editor' ) )
 		.parent()
 
+	const isRunningV2Test = Cypress.spec.absolute.includes( 'integration/v2' )
+
 	cy.visit( '/wp-admin/options-general.php?page=stackable' )
 	selectCheckbox().then( $parentEl => {
-		if ( ! $parentEl.find( 'svg.components-checkbox-control__checked' ).length ) {
+		// Enable v2 blocks in the editor if running v2 specs.
+		if ( isRunningV2Test && ! $parentEl.find( 'svg.components-checkbox-control__checked' ).length ) {
+			selectCheckbox().find( 'input.components-checkbox-control__input' ).click( { force: true } )
+		}
+		// Ensure that v2 blocks are disabled if not running v2 specs.
+		if ( ! isRunningV2Test && $parentEl.find( 'svg.components-checkbox-control__checked' ).length ) {
 			selectCheckbox().find( 'input.components-checkbox-control__input' ).click( { force: true } )
 		}
 	} )
 
 	// Activate optimization setting for version 2
-	cy.loadFrontendJsCssFiles()
+	cy.loadFrontendJsCssFiles( isRunningV2Test )
 
 	// Upload media to the server
 	cy.uploadMedia()
