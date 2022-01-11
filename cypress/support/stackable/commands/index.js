@@ -6,7 +6,7 @@ import { modifyLogFunc } from '../util'
 /**
  * Overwrite Cypress Commands
  */
-Cypress.Commands.overwrite( 'get', modifyLogFunc() )
+// Cypress.Commands.overwrite( 'get', modifyLogFunc() ) // Don't overwrite the get command, it's overwritten by the Gutenberg get command already.
 Cypress.Commands.overwrite( 'click', modifyLogFunc() )
 Cypress.Commands.overwrite( 'type', modifyLogFunc() )
 Cypress.Commands.overwrite( 'reload', modifyLogFunc() )

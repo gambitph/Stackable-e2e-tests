@@ -7,6 +7,63 @@ import {
 import { setBaseAndExtent } from '../util'
 import { isArray } from 'lodash'
 
+// In WordPress 5.9, previewing Gutenberg in tablet/mobile now replaces the
+// editor area with an iframe. This produces an error because the Cypress get
+// command doesn't include the contents of an iframe.
+//
+// This overwrites the get command to also include the contents of the iframe.
+// If the normal get command fails, we try again within the iframe.
+Cypress.Commands.overwrite( 'get', ( originalFn, selector, options ) => {
+	// Turn off logging to help speed up tests.
+	const newOptions = Object.assign( options || {}, { log: false } )
+
+	if ( selector === 'iframe[name="editor-canvas"]' || selector === 'body' ) {
+		return originalFn( selector, newOptions )
+	}
+
+	return originalFn( 'body', { log: false } ).then( $body => {
+		try {
+			if ( $body.find( selector ).length > 0 ) {
+				return originalFn( selector, newOptions )
+			}
+		} catch ( $err ) {
+			return originalFn( selector, newOptions )
+		}
+
+		if ( $body.find( 'iframe[name="editor-canvas"]' ).length > 0 ) {
+			return new Cypress.Promise( resolve => {
+				originalFn( 'iframe[name="editor-canvas"]' ).then( $iframe => {
+					const jQueryObj = Cypress.$( $iframe[ 0 ].contentDocument.body.querySelector( selector ) )
+					resolve( jQueryObj )
+				} )
+			} )
+		}
+
+		return originalFn( selector, newOptions )
+	} )
+} );
+
+// In connection to the above fix, we also need to override the jQuery find
+// command since it also doesn't handle iframes. So when the jQuery find command
+// looks for an element that doesn't exist, also retry whether it's found inside
+// the editor iframe.
+( function( $ ) {
+	const oldFind = $.fn.find
+	$.fn.find = function() {
+		const findResults = oldFind.apply( this, arguments )
+
+		if ( ! findResults.length ) {
+			const iframe = oldFind.apply( this, [ 'iframe[name="editor-canvas"]' ] )
+			if ( iframe.length ) {
+				const iframeBody = $( iframe[ 0 ].contentDocument.body )
+				return iframeBody.find( arguments[ 0 ] )
+			}
+		}
+
+		return findResults
+	}
+}( Cypress.$ ) )
+
 /**
  * Register functions to Cypress Commands.
  */
