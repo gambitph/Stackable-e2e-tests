@@ -292,7 +292,7 @@ export function wp() {
 export function typePostTitle( title ) {
 	cy
 		.get( '.edit-post-visual-editor__post-title-wrapper' )
-		.find( 'textarea.editor-post-title__input' )
+		.find( 'textarea.editor-post-title__input, .editor-post-title__input' ) // In WP 5.9, it's no longer a textarea.
 		.type( `{selectall}${ title }`, { force: true } )
 	cy.publish()
 }
