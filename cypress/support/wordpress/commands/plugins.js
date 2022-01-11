@@ -44,5 +44,5 @@ export function activatePlugin( slug ) {
  * plugin activation.
  */
 export function assertPluginError() {
-	cy.get( '.xdebug-error' ).should( 'not.exist' )
+	cy.get( 'body' ).should( 'not.have.descendants', '.xdebug-error' )
 }

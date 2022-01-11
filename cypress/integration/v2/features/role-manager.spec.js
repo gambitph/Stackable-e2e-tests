@@ -19,12 +19,12 @@ function roleManagerTest() {
 			// By default, full site editing mode is set for all roles
 			// Content only mode notice should not be present
 			// Test this for administrator
-			cy.get( '.ugb-editor-mode-notice' ).should( 'not.exist' )
+			cy.get( 'body' ).should( 'not.have.descendants', '.ugb-editor-mode-notice' )
 		} )
 		coreblocks.forEach( blockName => {
 			// Test this for core blocks as well.
 			cy.addBlock( blockName )
-			cy.get( '.ugb-editor-mode-notice' ).should( 'not.exist' )
+			cy.get( 'body' ).should( 'not.have.descendants', '.ugb-editor-mode-notice' )
 		} )
 		cy.savePost()
 
@@ -57,11 +57,11 @@ function roleManagerTest() {
 				cy.visit( editorUrl )
 				blocks.forEach( blockName => {
 					cy.selectBlock( blockName )
-					cy.get( '.ugb-editor-mode-notice' ).should( 'not.exist' )
+					cy.get( 'body' ).should( 'not.have.descendants', '.ugb-editor-mode-notice' )
 				} )
 				coreblocks.forEach( blockName => {
 					cy.selectBlock( blockName )
-					cy.get( '.ugb-editor-mode-notice' ).should( 'not.exist' )
+					cy.get( 'body' ).should( 'not.have.descendants', '.ugb-editor-mode-notice' )
 				} )
 				cy.savePost()
 			} )
@@ -98,18 +98,18 @@ function roleManagerTest() {
 					cy.openInspector( blockName, 'Style' )
 					cy.selectBlock( blockName )
 					cy.get( '.ugb-editor-mode-notice' ).should( 'exist' )
-					cy.get( 'button[tooltip="Copy & Paste Styles"]' ).should( 'not.exist' )
-					cy.get( 'button[aria-label="Dynamic Fields"]' ).should( 'not.exist' )
+					cy.get( 'body' ).should( 'not.have.descendants', 'button[tooltip="Copy & Paste Styles"]' )
+					cy.get( 'body' ).should( 'not.have.descendants', 'button[aria-label="Dynamic Fields"]' )
 				} )
 				coreblocks.forEach( blockName => {
 					cy.selectBlock( blockName )
 					cy.get( '.ugb-editor-mode-notice' ).should( 'exist' )
-					cy.get( 'button[tooltip="Copy & Paste Styles"]' ).should( 'not.exist' )
-					cy.get( 'button[aria-label="Dynamic Fields"]' ).should( 'not.exist' )
+					cy.get( 'body' ).should( 'not.have.descendants', 'button[tooltip="Copy & Paste Styles"]' )
+					cy.get( 'body' ).should( 'not.have.descendants', 'button[aria-label="Dynamic Fields"]' )
 				} )
 
-				cy.get( 'button[aria-label="Stackable Settings"]' ).should( 'not.exist' )
-				cy.get( 'button[aria-label="Open Design Library"]' ).should( 'not.exist' )
+				cy.get( 'body' ).should( 'not.have.descendants', 'button[aria-label="Stackable Settings"]' )
+				cy.get( 'body' ).should( 'not.have.descendants', 'button[aria-label="Open Design Library"]' )
 
 				// The blocklist should only contain 4 text blocks.
 				// 2 of which are Stackable blocks.

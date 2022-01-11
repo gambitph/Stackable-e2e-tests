@@ -39,7 +39,7 @@ function optimizationSettings() {
 			cy.visit( previewUrl )
 			// CSS & JS files should not be present because there are no Stackable blocks.
 			cssJsSelectors.forEach( selector => {
-				cy.get( selector ).should( 'not.exist' )
+				cy.get( 'body' ).should( 'not.have.descendants', selector )
 			} )
 
 			cy.visit( editorUrl )

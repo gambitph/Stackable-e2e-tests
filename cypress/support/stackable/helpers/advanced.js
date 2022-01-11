@@ -722,7 +722,12 @@ class AdvancedModule extends Module {
 				cy.savePost()
 				cy.getPostUrls().then( ( { editorUrl, previewUrl } ) => {
 					cy.visit( previewUrl )
-					cy.get( MAIN_SELECTOR ).should( assertionValue )
+					if ( assertionValue === 'exist' ) {
+						cy.get( MAIN_SELECTOR ).should( assertionValue )
+					} else {
+						// Use this instead because get( MAIN_SELECTOR ) sometimes fails.
+						cy.get( 'body' ).should( 'not.have.descendants', MAIN_SELECTOR )
+					}
 					cy.visit( editorUrl )
 					selectInspector()
 				} )

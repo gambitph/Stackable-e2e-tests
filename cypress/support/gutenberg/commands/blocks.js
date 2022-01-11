@@ -27,7 +27,7 @@ Cypress.Commands.add( 'addNewColumn', { prevSubject: true }, addNewColumn )
  * Command for asserting block error.
  */
 export function assertBlockError() {
-	cy.get( '.block-editor-warning' ).should( 'not.exist' )
+	cy.get( 'body' ).should( 'not.have.descendants', '.block-editor-warning' )
 }
 
 /**
@@ -247,6 +247,7 @@ export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/ac
 					if ( $editor.find( '.block-editor-block-variation-picker' ).length ) {
 						cy.get( '.block-editor-block-variation-picker' )
 							.find( '.block-editor-block-variation-picker__skip button' )
+							.first() // There can be multiple buttons.
 							.click( { force: true } )
 					}
 				} )
