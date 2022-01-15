@@ -103,7 +103,6 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 					parentEl.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 
 					const assertionCallback = ( element, pseudoEl, parentEl ) => {
-						const computedStyles = Object.assign( {}, pick( win.getComputedStyle( element, pseudoEl || undefined ), ...keys( _cssObject ).map( camelCase ) ) )
 						const expectedStylesToEnqueue = keys( _cssObject ).map( key =>
 							`${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` ).join( '; ' )
 
@@ -120,6 +119,8 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 							// Enqueue our own dummy styles for comparison.
 							element.parentNode.insertBefore( dummyStyle, element )
 						}
+
+						const computedStyles = Object.assign( {}, pick( win.getComputedStyle( element, pseudoEl || undefined ), ...keys( _cssObject ).map( camelCase ) ) )
 
 						element.offsetHeight // eslint-disable-line no-unused-expressions
 						element.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
