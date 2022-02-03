@@ -19,7 +19,7 @@ jobs:
     - uses: actions/checkout@v2 # Checkout the Stackable Free repo.
       with:
         repository: 'gambitph/Stackable' # Stackable free repo
-        ref: 'develop' # Branch to checkout
+        ref: 'fix/performance' # Branch to checkout
         path: 'Stackable'
     - uses: actions/checkout@v2 # Checkout the Stackable Premium repo.
       with:
