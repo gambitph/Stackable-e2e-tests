@@ -72,6 +72,8 @@ export function addBlock( blockName = 'ugb/accordion', options = {} ) {
 
 	cy.wp().then( wp => {
 		const block = wp.blocks.createBlock( blockName )
+		const { clientId: newBlockId, attributes: { className } } = block
+
 		new Cypress.Promise( resolve => {
 			wp.data.dispatch( 'core/editor' ).insertBlock( block )
 				.then( dispatchResolver( resolve ) )
@@ -83,10 +85,6 @@ export function addBlock( blockName = 'ugb/accordion', options = {} ) {
 				.find( `button[aria-label="${ variation }"]` )
 				.click( { force: true } )
 		}
-	} )
-
-	cy.wp().then( wp => {
-		const { clientId: newBlockId, attributes: { className } } = last( wp.data.select( 'core/block-editor' ).getBlocks() )
 
 		new Cypress.Promise( resolve => {
 			wp.data.dispatch( 'core/block-editor' ).selectBlock( newBlockId ).then( dispatchResolver( resolve ) )

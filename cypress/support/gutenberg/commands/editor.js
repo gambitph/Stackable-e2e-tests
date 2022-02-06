@@ -33,8 +33,17 @@ Cypress.Commands.overwrite( 'get', ( originalFn, selector, options ) => {
 		if ( $body.find( 'iframe[name="editor-canvas"]' ).length > 0 ) {
 			return new Cypress.Promise( resolve => {
 				originalFn( 'iframe[name="editor-canvas"]' ).then( $iframe => {
-					const jQueryObj = Cypress.$( $iframe[ 0 ].contentDocument.body.querySelector( selector ) )
-					resolve( jQueryObj )
+					const body = $iframe[ 0 ].contentDocument.body
+					if ( body && body.querySelector( '.block-editor-block-list__layout' ) ) {
+						const jQueryObj = Cypress.$( body.querySelector( selector ) )
+						resolve( jQueryObj )
+					} else {
+						setTimeout( () => {
+							const body = $iframe[ 0 ].contentDocument.body
+							const jQueryObj = Cypress.$( body.querySelector( selector ) )
+							resolve( jQueryObj )
+						}, 200 )
+					}
 				} )
 			} )
 		}
