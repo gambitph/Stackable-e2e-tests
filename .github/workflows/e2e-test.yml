@@ -11,8 +11,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        containers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20] # Enumerate the total-machines as a range, this must match the total-machines number below.
-        total-machines: [20] # The number of concurrent test machines to run. You can lower this when there are only a few tests you know will run (max 20).
+        containers: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] # Enumerate the total-machines as a range, this must match the total-machines number below.
+        total-machines: [10] # The number of concurrent test machines to run. You can lower this when there are only a few tests you know will run (max 20).
 
     steps:
     - uses: actions/checkout@v2 # Checkout the current branch (e2e).
