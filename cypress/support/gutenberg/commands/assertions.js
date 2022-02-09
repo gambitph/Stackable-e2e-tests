@@ -638,7 +638,7 @@ export function assertFrontendStyles( subject, alias ) {
 							// Get the class selector.
 							const classList = ( isParent
 								? Array.from( blockElement.classList )
-								: Array.from( blockElement.querySelector( `.${ innerBlockUniqueClass }` ).classList ) ).map( _class => `.${ _class }` ).join( '' )
+								: Array.from( blockElement.querySelector( `.${ innerBlockUniqueClass.replace( / /g, '.' ) }` ).classList ) ).map( _class => `.${ _class }` ).join( '' )
 
 							// Remove all blocks inside .entry-content.
 							doc.querySelector( '.entry-content' ).innerHTML = ''
