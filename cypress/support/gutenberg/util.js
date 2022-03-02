@@ -31,7 +31,8 @@ export function withInspectorTabMemory( options = {} ) {
 
 				cy.document().then( doc => {
 					const optionsToPass = args.length === argumentLength ? args.pop() : {}
-					const activePanel = doc.querySelector( 'button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
+					// Don't include the Navigation panel.
+					const activePanel = doc.querySelector( '.components-panel__body:not(.ugb-panel--navigation-view) button.components-panel__body-toggle[aria-expanded="true"]' ).innerText
 					// This is for stackable only.
 					// After asserting the frontend, go back to the previous state.
 
