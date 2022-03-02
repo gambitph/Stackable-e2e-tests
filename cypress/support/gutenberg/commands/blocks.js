@@ -27,7 +27,7 @@ Cypress.Commands.add( 'addNewColumn', { prevSubject: true }, addNewColumn )
  * Command for asserting block error.
  */
 export function assertBlockError() {
-	cy.get( '.block-editor-warning' ).should( 'not.exist' )
+	cy.get( 'body' ).should( 'not.have.descendants', '.block-editor-warning' )
 }
 
 /**
@@ -72,6 +72,8 @@ export function addBlock( blockName = 'ugb/accordion', options = {} ) {
 
 	cy.wp().then( wp => {
 		const block = wp.blocks.createBlock( blockName )
+		const { clientId: newBlockId, attributes: { className } } = block
+
 		new Cypress.Promise( resolve => {
 			wp.data.dispatch( 'core/editor' ).insertBlock( block )
 				.then( dispatchResolver( resolve ) )
@@ -83,10 +85,6 @@ export function addBlock( blockName = 'ugb/accordion', options = {} ) {
 				.find( `button[aria-label="${ variation }"]` )
 				.click( { force: true } )
 		}
-	} )
-
-	cy.wp().then( wp => {
-		const { clientId: newBlockId, attributes: { className } } = last( wp.data.select( 'core/block-editor' ).getBlocks() )
 
 		new Cypress.Promise( resolve => {
 			wp.data.dispatch( 'core/block-editor' ).selectBlock( newBlockId ).then( dispatchResolver( resolve ) )
@@ -247,6 +245,7 @@ export function addInnerBlock( blockName = 'ugb/accordion', blockToAdd = 'ugb/ac
 					if ( $editor.find( '.block-editor-block-variation-picker' ).length ) {
 						cy.get( '.block-editor-block-variation-picker' )
 							.find( '.block-editor-block-variation-picker__skip button' )
+							.first() // There can be multiple buttons.
 							.click( { force: true } )
 					}
 				} )

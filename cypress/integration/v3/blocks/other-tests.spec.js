@@ -26,7 +26,7 @@ function addInnerBlocksToQueryLoop() {
 			// Filter out button & icon button when adding inner blocks.
 			// We'll add button group instead.
 			stkBlocks
-				.filter( blockName => ! Array( 'stackable/button', 'stackable/icon-button' ).includes( blockName ) )
+				.filter( blockName => ! Array( 'stackable/button', 'stackable/icon-button', 'stackable/icon-list' ).includes( blockName ) )
 				.forEach( blockName => {
 					cy.addInnerBlock( 'core/post-template', blockName )
 				} )

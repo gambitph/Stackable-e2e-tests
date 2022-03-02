@@ -38,13 +38,15 @@ export function openInspector( subject, tab, selector ) {
 	cy.selectBlock( subject, selector )
 	cy.toggleSidebar( 'edit-post/block', true )
 
+	// Ensure the block tab is open.
 	cy
-		.get( 'button.edit-post-sidebar__panel-tab' )
-		.contains( containsRegExp( 'Block' ) )
+		.get( '.edit-post-sidebar__panel-tabs' )
+		.contains( 'button', 'Block' )
 		.click( { force: true } )
 
+	// Open the Stackable tab we want.
 	cy
-		.get( `button[aria-label="${ tab } Tab"]` )
+		.get( `button.edit-post-sidebar__panel-tab[aria-label="${ tab } Tab"]` )
 		.click( { force: true } )
 }
 

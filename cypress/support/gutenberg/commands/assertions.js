@@ -103,7 +103,6 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 					parentEl.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
 
 					const assertionCallback = ( element, pseudoEl, parentEl ) => {
-						const computedStyles = Object.assign( {}, pick( win.getComputedStyle( element, pseudoEl || undefined ), ...keys( _cssObject ).map( camelCase ) ) )
 						const expectedStylesToEnqueue = keys( _cssObject ).map( key =>
 							`${ key }: ${ convertExpectedValueForEnqueue( _cssObject[ key ] ) } !important` ).join( '; ' )
 
@@ -120,6 +119,8 @@ export function _assertComputedStyle( selector, pseudoEl, _cssObject, assertType
 							// Enqueue our own dummy styles for comparison.
 							element.parentNode.insertBefore( dummyStyle, element )
 						}
+
+						const computedStyles = Object.assign( {}, pick( win.getComputedStyle( element, pseudoEl || undefined ), ...keys( _cssObject ).map( camelCase ) ) )
 
 						element.offsetHeight // eslint-disable-line no-unused-expressions
 						element.parentElement.offsetHeight // eslint-disable-line no-unused-expressions
@@ -637,7 +638,7 @@ export function assertFrontendStyles( subject, alias ) {
 							// Get the class selector.
 							const classList = ( isParent
 								? Array.from( blockElement.classList )
-								: Array.from( blockElement.querySelector( `.${ innerBlockUniqueClass }` ).classList ) ).map( _class => `.${ _class }` ).join( '' )
+								: Array.from( blockElement.querySelector( `.${ innerBlockUniqueClass.replace( / /g, '.' ) }` ).classList ) ).map( _class => `.${ _class }` ).join( '' )
 
 							// Remove all blocks inside .entry-content.
 							doc.querySelector( '.entry-content' ).innerHTML = ''

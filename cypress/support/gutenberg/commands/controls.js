@@ -279,10 +279,14 @@ function colorControl( name, value, options = {} ) {
 
 			cy
 				.get( '.components-popover__content .components-color-picker' )
-				.find( 'button[aria-label="Show detailed inputs"]' )
-				.click( { force: true } )
-			cy
-				.get( 'input[maxlength="6"]' )
+				// Expand the custom color field if it's not expanded.
+				.then( $el => {
+					if ( $el.find( 'button[aria-label="Show detailed inputs"]' ).length > 0 ) {
+						cy.get( 'button[aria-label="Show detailed inputs"]' ).click( { force: true } )
+					}
+					return cy.wrap( $el )
+				} )
+				.find( 'input.components-input-control__input' )
 				.type( `{selectall}${ value.replace( '#', '' ) }{enter}`, { force: true } )
 
 			selector()
