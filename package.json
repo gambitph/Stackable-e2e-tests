@@ -17,6 +17,7 @@
 	"devDependencies": {
 		"@wordpress/eslint-plugin": "^7.1.0",
 		"cypress": "^5.1.0",
+		"cypress-image-snapshot": "^4.0.1",
 		"cypress-jest-adapter": "^0.1.1",
 		"cypress-multi-reporters": "^1.5.0",
 		"eslint": "^7.8.1",
